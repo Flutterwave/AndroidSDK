@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">RaveAndroid</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="permissions_are_required_to_complete_payment">Rave Pay requires READ PHONE STATE permissions to work</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="permission_required_image">permission_required_image</string>
+    <string name="title_activity_entry">EntryActivity</string>
+    <string name="account_number">Account Number</string>
+    <string name="bank">Bank</string>
+    <string name="email_address">Email address</string>
+    <string name="phone_number">Phone number</string>
+    <string name="amount">Amount</string>
+    <string name="pci_dss_compliant">PCI-DSS COMPLIANT</string>
+    <string name="pin">PIN</string>
+    <string name="cancel">CANCEL</string>
+    <string name="enter">ENTER</string>
+    <string name="choose_saved_card">CHOOSE SAVED CARD</string>
+    <string name="pay">PAY</string>
+    <string name="save_card">Save card</string>
+    <string name="otp">OTP</string>
+    <string name="enter_your_one_ntime_password_otp">Enter your one  time password (OTP)</string>
+    <string name="card_number">Card Number</string>
+    <string name="powered_by">by Flutterwave</string>
+    <string name="please_enter_your_card_pin_nto_continue_your_transaction">Please enter your card pin  to continue your transaction.</string>
+    <string name="otp_icon">otp icon</string>
+    <string name="cvc_cvv2">CVC/CVV2</string>
+    <string name="expiration">Expiration</string>
+    <string name="email">Email</string>
+
+</resources>

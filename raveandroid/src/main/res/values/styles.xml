@@ -1,0 +1,93 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="tabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/tabIndicatorColor</item>
+    </style>
+
+    <style name="tabLayoutStyle2" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">#607d8b</item>
+    </style>
+
+    <style name="otpHeaderStyle">
+        <item name="android:background">@color/otpColorTheme</item>
+    </style>
+
+    <style name="pinHeaderStyle">
+        <item name="android:background">@color/pinColorTheme</item>
+    </style>
+
+    <style name="otpBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/otp_button_curved</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="pinButtonStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/otp_button_curved</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="svdCardsBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/blue_btn_curved</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="payBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/green_btn_curved</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DefaultTheme" parent="AppTheme.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="OTPButtonStyle">@style/otpBtnStyle</item>
+        <item name="PayButtonStyle">@style/payBtnStyle</item>
+        <item name="PinButtonStyle">@style/pinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/otpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/tabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
+        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
+    </style>
+
+    <style name="otpHeaderStyle2">
+        <item name="android:background">#5d4037</item>
+    </style>
+
+    <style name="pinHeaderStyle2">
+        <item name="android:background">#37474f</item>
+    </style>
+
+    <style name="otpBtnStyle2" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/otp_button_curved</item>
+        <item name="android:textColor">#009688</item>
+    </style>
+
+    <style name="svdCardsBtnStyle2" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/blue_btn_curved</item>
+        <item name="android:textColor">#039be5</item>
+    </style>
+
+    <style name="payBtnStyle2" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/green_btn_curved</item>
+        <item name="android:textColor">#bcaaa4</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>

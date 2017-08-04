@@ -1,0 +1,394 @@
+package com.flutterwave.raveandroid.card;
+
+import android.content.Context;
+import android.util.Log;
+
+
+import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.CardDetsToSave;
+import com.flutterwave.raveandroid.data.NetworkRequestImpl;
+import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
+import com.flutterwave.raveandroid.data.ValidateChargeBody;
+import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
+
+import java.util.List;
+
+/**
+ * Created by hamzafetuga on 18/07/2017.
+ */
+
+public class CardPresenter implements CardContract.UserActionsListener {
+    private Context context;
+    private CardContract.View mView;
+
+    public CardPresenter(Context context, CardContract.View mView) {
+        this.context = context;
+        this.mView = mView;
+    }
+
+
+    @Override
+    public void chargeCard(final Payload payload) {
+
+        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
+
+        Log.d("encrypted", encryptedCardRequestBody);
+
+        ChargeRequestBody body = new ChargeRequestBody();
+        body.setAlg("3DES-24");
+        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setClient(encryptedCardRequestBody);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+            @Override
+            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+
+                mView.showProgressIndicator(false);
+
+                if (response.getData() != null) {
+
+                    if (response.getData().getSuggested_auth() != null) {
+                        String suggested_auth = response.getData().getSuggested_auth();
+
+
+                        if (suggested_auth.equals(RaveConstants.PIN)) {
+                            mView.onPinAuthModelSuggested(payload);
+                        }
+                        else {
+                            mView.onPaymentError("Unknown auth model");
+                        }
+                    }
+                    else {
+                        String authModelUsed = response.getData().getAuthModelUsed();
+
+                        if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)) {
+                            String authUrlCrude = response.getData().getAuthurl();
+                            String flwRef = response.getData().getFlwRef();
+
+                            mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
+
+                        }
+                    }
+                }
+                else {
+                    mView.onPaymentError("No response data was returned");
+                }
+
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onPaymentError(message);
+            }
+        });
+    }
+
+    @Override
+    public void chargeCardWithSuggestedAuthModel(Payload payload, String pin, String authModel) {
+
+        payload.setPin(pin);
+        payload.setSuggestedAuth(authModel);
+
+        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
+
+        Log.d("encrypted", encryptedCardRequestBody);
+
+        ChargeRequestBody body = new ChargeRequestBody();
+        body.setAlg("3DES-24");
+        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setClient(encryptedCardRequestBody);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+            @Override
+            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+
+                mView.showProgressIndicator(false);
+
+                if (response.getData() != null && response.getData().getChargeResponseCode() != null) {
+                    String chargeResponseCode = response.getData().getChargeResponseCode();
+
+                    if (chargeResponseCode.equalsIgnoreCase("00")) {
+//                        mView.showToast("Payment successful");
+                        String chargeResponseMessage = response.getData().getChargeResponseMessage() == null
+                                ? "Payment Successful" : response.getData().getChargeResponseMessage();
+                        mView.onPaymentSuccessful(chargeResponseMessage, response.getData().getFlwRef(), responseAsJSONString);
+                    }
+                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                        if (response.getData().getAuthModelUsed().equalsIgnoreCase(RaveConstants.PIN)) {
+                            mView.showOTPLayout(response.getData().getFlwRef());
+                        }
+                        else {
+                            mView.onPaymentError("Unknown Auth Model");
+                        }
+                    }
+                    else {
+                        mView.onPaymentError("Unknown charge response code");
+                    }
+                }
+                else {
+                    mView.onPaymentError("Invalid charge response code");
+                }
+
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onPaymentError(message);
+            }
+        });
+
+    }
+
+    @Override
+    public void validateCardCharge(String flwRef, String otp, String PBFPubKey) {
+
+        ValidateChargeBody body = new ValidateChargeBody();
+        body.setPBFPubKey(PBFPubKey);
+        body.setOtp(otp);
+        body.setTransaction_reference(flwRef);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+            @Override
+            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+
+                if (response.getStatus() != null) {
+                    String status = response.getStatus();
+                    String message = response.getMessage();
+
+                    if (status.equalsIgnoreCase("success")) {
+                        mView.onValidateSuccessful(status, responseAsJSONString);
+                    }
+                    else {
+                        mView.onValidateError(message);
+                    }
+                }
+                else {
+                    mView.onPaymentFailed("Invalid charge card response", responseAsJSONString);
+                }
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onPaymentError(message);
+            }
+        });
+
+    }
+
+    @Override
+    public void requeryTx(final String flwRef, final String SECKEY, final boolean shouldISaveCard) {
+
+        RequeryRequestBody body = new RequeryRequestBody();
+        body.setFlw_ref(flwRef);
+        body.setSECKEY(SECKEY);
+
+        mView.showFullProgressIndicator(true);
+
+        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+            @Override
+            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
+                mView.showFullProgressIndicator(false);
+                if (response.getStatus() != null && response.getStatus().equalsIgnoreCase("success")) {
+                    mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
+                }
+                else {
+                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                }
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showFullProgressIndicator(false);
+                mView.onPaymentFailed(message, responseAsJSONString);
+            }
+        });
+    }
+
+    @Override
+    public void savePotentialCardDets(String cardFirst6, String cardLast4) {
+        new SharedPrefsRequestImpl(context).saveCardDetsToSave(new CardDetsToSave(cardFirst6, cardLast4));
+    }
+
+    @Override
+    public void onSavedCardsClicked(String email) {
+
+        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
+
+        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+
+        mView.showSavedCards(cards);
+
+    }
+
+    @Override
+    public void saveThisCard(String email, String flwRef, String secretKey) {
+        SharedPrefsRequestImpl sharedPrefsRequest = new SharedPrefsRequestImpl(context);
+        CardDetsToSave cardDetsToSave = sharedPrefsRequest.retrieveCardDetsToSave();
+
+        if (cardDetsToSave.getFirst6().length() == 6 && cardDetsToSave.getLast4().length() == 4) {
+            try {
+                //// TODO: 25/07/2017 take to another thread
+                SavedCard card = new SavedCard();
+                card.setFirst6(cardDetsToSave.getFirst6());
+                card.setLast4(cardDetsToSave.getLast4());
+                card.setFlwRef(Utils.encryptRef(secretKey, flwRef));
+                sharedPrefsRequest.saveACard(card, secretKey, email);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void fetchFee(final Payload payload, final int reason) {
+
+        FeeCheckRequestBody body = new FeeCheckRequestBody();
+        body.setAmount(payload.getAmount());
+        body.setCurrency(payload.getCurrency());
+        body.setPBFPubKey(payload.getPBFPubKey());
+
+        if (payload.getCardno() == null || payload.getCardno().length() == 0) {
+            body.setCard6(payload.getCardBIN());
+        }
+        else  {
+            body.setCard6(payload.getCardno().substring(0, 6));
+        }
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+            @Override
+            public void onSuccess(FeeCheckResponse response) {
+                mView.showProgressIndicator(false);
+
+                try {
+                    mView.displayFee(response.getData().getCharge_amount(), payload, reason);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                }
+             }
+
+            @Override
+            public void onError(String message) {
+                mView.showProgressIndicator(false);
+                Log.d(RaveConstants.RAVEPAY, message);
+                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+            }
+        });
+
+    }
+
+    @Override
+    public void requeryTxForToken(final String flwRef, final String SECKEY) {
+
+        RequeryRequestBody body = new RequeryRequestBody();
+        body.setFlw_ref(flwRef);
+        body.setSECKEY(SECKEY);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+            @Override
+            public void onSuccess(RequeryResponse response, String tokenResponseAsJSONString) {
+                mView.showFullProgressIndicator(false);
+                if (response.getStatus() != null
+                        && response.getStatus().equalsIgnoreCase("success")) {
+
+                    if (response.getData() != null)
+                    {
+                        try {
+                            List<RequeryResponse.Card_tokens> cardTokens = response.getData()
+                                    .getCard()
+                                    .getCard_tokens();
+
+                            String token = cardTokens
+                                    .get(cardTokens.size() - 1)
+                                    .getEmbedtoken();
+
+                            String cardBin = response.getData().getCard().getCardBIN();
+
+                            mView.onTokenRetrieved(flwRef, cardBin, token);
+                        }
+                        catch (NullPointerException e){
+                            e.printStackTrace();
+                            mView.onTokenRetrievalError("An error occurred while retrieving card details");
+                        }
+                    }
+                    else {
+                        mView.onTokenRetrievalError("An error occurred while retrieving card details");
+                    }
+                }
+                else {
+                    mView.onTokenRetrievalError("An error occurred while retrieving card details");
+                }
+            }
+
+            @Override
+            public void onError(String message, String tokenResponseAsJSONString) {
+                mView.onTokenRetrievalError(message);
+            }
+        });
+    }
+
+
+
+    @Override
+    public void chargeToken(Payload payload) {
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
+            @Override
+            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+
+                mView.showProgressIndicator(false);
+                mView.onPaymentSuccessful(response.getStatus(), "", responseAsJSONString);
+
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+
+
+                if (responseAsJSONString.contains("token not found")) {
+                    mView.onPaymentError("Token not found");
+                }
+                else if (responseAsJSONString.contains("expired")) {
+                    mView.onPaymentError("Token expired");
+                }
+                else {
+                    mView.onPaymentError(message);
+                }
+
+
+            }
+        });
+
+    }
+
+}
