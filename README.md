@@ -24,7 +24,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     compile 'com.github.Flutterwave:rave-android:1.0.0'
+	     compile 'com.github.Flutterwave:rave-android:1.0.1'
 	}
 **Step 3.** Add the required permission
 
@@ -77,7 +77,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
 ###  2. Handle the response
 In the calling activity, override the `onActivityResult` method to receive the payment response as shown below
 
-        @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
             String message = data.getStringExtra("response");
@@ -111,7 +111,7 @@ You can apply a new look by changing the color of certain parts of the UI to hig
         <item name="TabLayoutStyle">@style/tabLayoutStyle</item>
         <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
         <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
- </style>
+    </style>
 
 ##  Help
 * Find a bug? [Open an issue](https://github.com/Flutterwave/rave-android/issues)
