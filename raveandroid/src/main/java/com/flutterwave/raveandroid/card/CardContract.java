@@ -43,6 +43,8 @@ public interface CardContract {
         void displayFee(String charge_amount, Payload payload, int why);
 
         void showFetchFeeFailed(String s);
+
+        void hideSavedCardsButton();
     }
 
     interface UserActionsListener {
@@ -65,6 +67,8 @@ public interface CardContract {
         void saveThisCard(String email, String flwRef, String secretKey);
 
         void fetchFee(Payload payload, int reason);
+
+        void checkForSavedCards(String email);
     }
 
 }

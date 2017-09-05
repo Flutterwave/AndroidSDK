@@ -303,6 +303,17 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
+    public void checkForSavedCards(String email) {
+        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
+
+        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+
+        if (cards == null || cards.size() == 0) {
+            mView.hideSavedCardsButton();
+        }
+    }
+
+    @Override
     public void requeryTxForToken(final String flwRef, final String SECKEY) {
 
         RequeryRequestBody body = new RequeryRequestBody();

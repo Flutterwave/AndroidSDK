@@ -124,6 +124,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         pcidss_tv = (TextView) v.findViewById(R.id.pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.progressContainer);
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         TransformFilter filter = new TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -150,6 +151,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 }
             }
         });
+
+        presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
         savedCardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +193,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
         bottomSheetBehaviorVBV = BottomSheetBehavior.from(vbvLayout);
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
             emailTil.setVisibility(GONE);
@@ -727,6 +729,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void showFetchFeeFailed(String s) {
         showToast(s);
+    }
+
+    @Override
+    public void hideSavedCardsButton() {
+        savedCardBtn.setVisibility(GONE);
     }
 
     // Manages the behavior when URLs are loaded

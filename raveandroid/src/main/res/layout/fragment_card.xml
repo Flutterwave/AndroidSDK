@@ -117,7 +117,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/cvc_cvv2"
-                            android:inputType="number"
+                            android:inputType="numberPassword"
                             android:maxLength="4"
                             android:id="@+id/cvvTv"
                             android:imeOptions="actionDone"
