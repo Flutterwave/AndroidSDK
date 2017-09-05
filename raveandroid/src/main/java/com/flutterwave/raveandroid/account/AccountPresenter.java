@@ -165,6 +165,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
+                Log.e(RaveConstants.RAVEPAY, message);
                 mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
             }
         });

@@ -42,7 +42,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
 
-        Log.d("encrypted", encryptedCardRequestBody);
+//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -105,7 +105,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
 
-        Log.d("encrypted", encryptedCardRequestBody);
+//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -295,7 +295,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.d(RaveConstants.RAVEPAY, message);
+                Log.e(RaveConstants.RAVEPAY, message);
                 mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
             }
         });
