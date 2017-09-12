@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             amount = "0";
         }
 
-        //check for complusory fields
+        //check for compulsory fields
         if (!Utils.isEmailValid(email)) {
             valid = false;
             emailEt.setError("A valid email is required");

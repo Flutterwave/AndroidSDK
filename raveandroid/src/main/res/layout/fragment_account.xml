@@ -25,17 +25,14 @@
                 android:id="@+id/amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/amountTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/card1"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:hint="@string/amount"
                     android:inputType="numberDecimal" />
 
@@ -45,17 +42,14 @@
                 android:id="@+id/phoneTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/phoneEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/card1"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:hint="@string/phone_number"
                     android:inputType="numberDecimal" />
 
@@ -65,17 +59,15 @@
                 android:id="@+id/emailTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="20dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/emailEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/card1"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:hint="@string/email_address"
                     android:inputType="textEmailAddress" />
 
@@ -85,7 +77,6 @@
                 android:id="@+id/bankEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:focusableInTouchMode="false"

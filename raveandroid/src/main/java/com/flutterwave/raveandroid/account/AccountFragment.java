@@ -227,7 +227,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
             builder.setAmount(amount)
                     .setEmail(email)
                     .setCountry("NG").setCurrency("NGN")
-                    .setPBFPubKey(RaveConstants.PUBLIC_KEY)
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setDevice_fingerprint(Utils.getDeviceImei(getActivity()))
                     .setIP(Utils.getDeviceImei(getActivity())).setTxRef(txRef)
                     .setAccountbank(selectedBank.getBankcode())
@@ -449,7 +449,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (url.contains("/complete") || url.contains("submitting_mock_form")) {
-                presenter.requeryTx(flwRef, RaveConstants.PRIVATE_KEY);
+                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
             }
 
 //            Log.d("URLS", url);
