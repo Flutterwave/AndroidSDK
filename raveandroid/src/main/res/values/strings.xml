@@ -29,5 +29,7 @@
     <string name="cvc_cvv2">CVC/CVV2</string>
     <string name="expiration">Expiration</string>
     <string name="email">Email</string>
+    <string name="enter_your_billing_zip_code">Enter your billing zip code</string>
+    <string name="billing_zip_code">Billing zip code</string>
 
 </resources>

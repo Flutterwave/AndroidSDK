@@ -42,6 +42,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.responses.ChargeResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +52,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 
@@ -378,7 +380,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentError(String message) {
         dismissDialog();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -420,7 +422,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     /**
-     * Displays a toast with the message paramater
+     * Displays a toast with the message parameter
      * @param message = text to display
      */
     @Override
@@ -459,49 +461,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         closeBottomSheetsIfOpen();
 
-        String flwRef = null;
+        presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), shouldISaveThisCard);
 
-        //check for save tag
-        if (shouldISaveThisCard) {
-             flwRef = retrieveFlwRefFromValidateResponse(responseAsJSONString);
-        }
-
-        onPaymentSuccessful(status, flwRef, responseAsJSONString);
     }
 
-    /**
-     * Get the flutterwave reference from a response json string
-     * @param responseAsJSONString
-     * @return
-     */
-    private String retrieveFlwRefFromValidateResponse(String responseAsJSONString) {
-        try {
-            JSONObject responseObj = new JSONObject(responseAsJSONString);
-            JSONObject dataObj  = responseObj.getJSONObject("data").getJSONObject("tx");
 
-            String flwRef = null;
-
-            if (dataObj.has("flw_ref")) {
-                flwRef = dataObj.getString("flw_ref");
-            }
-            else if (dataObj.has("flwRef")) {
-                flwRef = dataObj.getString("flwRef");
-            }
-
-            // check if we have a valid flutterwave reference
-            if (flwRef != null && flwRef.length() > 0) {
-                return flwRef;
-            }
-
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.d(RAVEPAY, "Error parsing response for flwRef");
-            return flwRef;
-        }
-
-        return null;
-    }
 
     /**
      * Called when a validation error is received. Shows a toast
@@ -556,8 +520,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         intent.putExtra("response", responseAsJSONString);
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            ((RavePayActivity) getActivity()).finish();
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
         }
     }
 
@@ -734,6 +698,76 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void hideSavedCardsButton() {
         savedCardBtn.setVisibility(GONE);
+    }
+
+    @Override
+    public void onChargeTokenComplete(ChargeResponse response) {
+
+        presenter
+                .requeryTx(response.getData().getFlwRef(), ravePayInitializer.getSecretKey(), false);
+    }
+
+    @Override
+    public void onChargeCardSuccessful(ChargeResponse response) {
+        presenter
+                .requeryTx(response.getData().getFlwRef(),
+                        ravePayInitializer.getSecretKey(),
+                        shouldISaveThisCard);
+    }
+
+    @Override
+    public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View v = inflater.inflate(R.layout.avsvbv_layout, null, false);
+
+        Button zipBtn = (Button) v.findViewById(R.id.zipButton);
+        final TextInputEditText zipEt = (TextInputEditText) v.findViewById(R.id.zipEt);
+        final TextInputLayout zipTil = (TextInputLayout) v.findViewById(R.id.zipTil);
+
+        zipBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String zip = zipEt.getText().toString();
+
+                zipTil.setError(null);
+                zipTil.setErrorEnabled(false);
+
+                if (zip.length() == 0) {
+                    zipTil.setError("Enter a valid pin");
+                }
+                else {
+                    dialog.dismiss();
+                    presenter.chargeCardWithSuggestedAuthModel(payload, zip, AVS_VBVSECURECODE);
+                }
+            }
+        });
+
+        builder.setView(v);
+        dialog = builder.show();
+
+    }
+
+    /**
+     * Called when the auth model suggested is AVS_VBVSecureCode. It opens a webview
+     * that loads the authURL
+     *
+     * @param authurl = URL to display in webview
+     * @param flwRef = reference of the payment transaction
+     */
+    @Override
+    public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
+
+        this.flwRef = flwRef;
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        // Configure the client to use when opening URLs
+        webView.setWebViewClient(new MyBrowser());
+        // Load the initial URL
+        webView.loadUrl(authurl);
+        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     // Manages the behavior when URLs are loaded

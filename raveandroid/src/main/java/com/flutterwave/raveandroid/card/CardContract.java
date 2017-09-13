@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.card;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.responses.ChargeResponse;
 
 import java.util.List;
 
@@ -45,6 +46,14 @@ public interface CardContract {
         void showFetchFeeFailed(String s);
 
         void hideSavedCardsButton();
+
+        void onChargeTokenComplete(ChargeResponse response);
+
+        void onChargeCardSuccessful(ChargeResponse response);
+
+        void onAVS_VBVSECURECODEModelSuggested(Payload payload);
+
+        void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
     }
 
     interface UserActionsListener {

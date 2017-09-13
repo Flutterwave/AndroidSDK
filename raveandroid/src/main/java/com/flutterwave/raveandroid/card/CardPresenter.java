@@ -22,6 +22,9 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
+import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
+import static com.flutterwave.raveandroid.RaveConstants.PIN;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -66,6 +69,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         if (suggested_auth.equals(RaveConstants.PIN)) {
                             mView.onPinAuthModelSuggested(payload);
                         }
+                        else if (suggested_auth.equals(AVS_VBVSECURECODE)) {
+                            mView.onAVS_VBVSECURECODEModelSuggested(payload);
+                        }
                         else {
                             mView.onPaymentError("Unknown auth model");
                         }
@@ -97,9 +103,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String pin, String authModel) {
+    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel) {
 
-        payload.setPin(pin);
+        if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
+            payload.setBillingzip(zipOrPin);
+        }
+        else if (authModel.equalsIgnoreCase(PIN)){
+            payload.setPin(zipOrPin);
+        }
+
         payload.setSuggestedAuth(authModel);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
@@ -125,13 +137,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
 //                        mView.showToast("Payment successful");
-                        String chargeResponseMessage = response.getData().getChargeResponseMessage() == null
-                                ? "Payment Successful" : response.getData().getChargeResponseMessage();
-                        mView.onPaymentSuccessful(chargeResponseMessage, response.getData().getFlwRef(), responseAsJSONString);
+                        mView.onChargeCardSuccessful(response);
                     }
                     else if (chargeResponseCode.equalsIgnoreCase("02")) {
-                        if (response.getData().getAuthModelUsed().equalsIgnoreCase(RaveConstants.PIN)) {
+                        String authModelUsed = response.getData().getAuthModelUsed();
+                        if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
                             mView.showOTPLayout(response.getData().getFlwRef());
+                        }
+                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.AVS_VBVSECURECODE)){
+                            String flwRef = response.getData().getFlwRef();
+                            mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
                         else {
                             mView.onPaymentError("Unknown Auth Model");
@@ -377,7 +392,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
                 mView.showProgressIndicator(false);
-                mView.onPaymentSuccessful(response.getStatus(), "", responseAsJSONString);
+                mView.onChargeTokenComplete(response);
 
             }
 

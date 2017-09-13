@@ -112,6 +112,16 @@ public class Payload
 
     private String meta;
 
+    public String getBillingzip() {
+        return billingzip;
+    }
+
+    public void setBillingzip(String billingzip) {
+        this.billingzip = billingzip;
+    }
+
+    private String billingzip;
+
     public String getPayment_type() {
         return payment_type;
     }

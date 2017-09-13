@@ -15,6 +15,7 @@ public class RaveConstants {
     public static String LIVE_URL = "https://rave-api.herokuapp.com";
     public static String VBV = "VBVSECURECODE";
     public static String PIN = "PIN";
+    public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String RAVEPAY = "ravepay";
     public static String RAVE_PARAMS = "raveparams";
     public static int RAVE_REQUEST_CODE = 4199;
