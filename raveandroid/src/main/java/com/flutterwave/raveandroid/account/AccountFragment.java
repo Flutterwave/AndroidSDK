@@ -30,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -124,6 +123,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         otpLayout = (LinearLayout) v.findViewById(R.id.OTPBottomSheet);
         bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
         bankEt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,12 +150,10 @@ public class AccountFragment extends Fragment implements AccountContract.View {
                 if (otp.length() < 1) {
                     otpTil.setError("Enter a valid one time password");
                 } else {
-                    presenter.validateAccountCharge(flwRef, otp, RaveConstants.PUBLIC_KEY);
+                    presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
                 }
             }
         });
-
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
             emailTil.setVisibility(GONE);
@@ -211,7 +210,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         }
 
         if (amount.length() == 0) {
-            amount = "50";
+            valid = false;
+            showToast("Amount is required");
         }
 
         if (selectedBank == null) {
@@ -235,6 +235,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
 
             Payload body = builder.createBankPayload();
             body.setPhonenumber(phone);
+            body.setPBFSecKey(ravePayInitializer.getSecretKey());
+            body.setSECKEY(ravePayInitializer.getSecretKey());
 
             if (selectedBank.isInternetbanking()) {
                 body.setIs_internet_banking("1");

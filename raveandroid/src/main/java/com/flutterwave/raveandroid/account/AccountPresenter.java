@@ -58,9 +58,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void chargeAccount(final Payload payload, final boolean internetBanking) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RaveConstants.PRIVATE_KEY);
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, payload.getPBFSecKey());
 
-        Log.d("encrypted", encryptedCardRequestBody);
+//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
