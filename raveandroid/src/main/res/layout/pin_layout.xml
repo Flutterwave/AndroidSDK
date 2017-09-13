@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pin"
-            android:inputType="number"
+            android:inputType="numberPassword"
             android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
             android:drawableStart="@drawable/ic_lock_outline_black_24dp"
             android:drawablePadding="7dp"
