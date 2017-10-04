@@ -1,9 +1,11 @@
 package com.flutterwave.raveandroid.card;
 
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,9 +45,6 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -154,6 +153,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
         });
 
+
+
+
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
         savedCardBtn.setOnClickListener(new View.OnClickListener() {
@@ -245,10 +247,21 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     }
 
+    private void checkRunTimePermission() {
+        PackageManager pm = getActivity().getPackageManager();
+        if (pm.checkPermission(Manifest.permission.READ_PHONE_STATE, getActivity().getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            // do something
+        } else {
+            Toast.makeText(getContext(), "Added read READ_PHONE permissions ", Toast.LENGTH_SHORT).show();
+            // do something
+        }
+    }
+
     /**
      *  Validate card details and get the fee if available
      */
     private void validateDetails() {
+        checkRunTimePermission();
 
         clearErrors();
         Utils.hide_keyboard(getActivity());

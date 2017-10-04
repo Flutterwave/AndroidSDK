@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         clearErrors();
         String email = emailEt.getText().toString();
         String amount = amountEt.getText().toString();
-        String publicKey = publicKeyEt.getText().toString();
-        String secretKey = secretKeyEt.getText().toString();
+        String publicKey = "FLWPUBK-069968a4d140e577fdbbd46b66cd031d-X";
+        String secretKey = "FLWSECK-0d9e537d4e66a91e5795e57d043395aa-X";
         String txRef = txRefEt.getText().toString();
         String narration = narrationEt.getText().toString();
         String currency = currencyEt.getText().toString();
