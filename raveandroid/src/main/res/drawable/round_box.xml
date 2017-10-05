@@ -4,7 +4,7 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <solid android:color="#fff" />
-            <stroke android:color="@color/input_border" />
+            <stroke android:color="@color/colorPrimary" />
             <corners android:radius="4dp" />
             <padding android:bottom="12dp" android:left="12dp" android:right="12dp" android:top="12dp" />
         </shape>

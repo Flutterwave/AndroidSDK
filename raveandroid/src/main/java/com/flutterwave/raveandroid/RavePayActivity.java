@@ -5,16 +5,12 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.SyncStateContract;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -47,6 +43,12 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_SUCCESS = 111;
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
+
+    private int[] tabIcons = {
+            R.drawable.ic_credit_card_black_24dp,
+            R.drawable.ic_account_balance_black_24dp
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,16 +94,20 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithCard()) {
             raveFragments.add(new RaveFragment(new CardFragment(), "Card"));
+
         }
 
         if (ravePayInitializer.isWithAccount()) {
             raveFragments.add(new RaveFragment(new AccountFragment(), "Account"));
+
         }
 
         mainPagerAdapter.setFragments(raveFragments);
         pager.setAdapter(mainPagerAdapter);
 
         tabLayout.setupWithViewPager(pager);
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkForRequiredPermissions();

@@ -7,4 +7,5 @@
     <color name="pinColorTheme">#dd7a32</color>
     <color name="tabIndicatorColor">@color/colorPrimary</color>
     <color name="white">#fff</color>
+    <color name="input_border">#E0E0E0</color>
 </resources>
