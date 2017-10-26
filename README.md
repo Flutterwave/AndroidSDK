@@ -54,6 +54,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
                         .acceptAccountPayments(boolean)
                         .acceptCardPayments(boolean)
                         .onStagingEnv(boolean)
+                        .allowSaveCardFeature(boolean)
                         .withTheme(styleId)
                         .initialize();
 * `setAmount()` - This is the amount to be charged from card/account. `double`
@@ -69,6 +70,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
 * `acceptAccountPayments()` - Set to `true` if you want to accept payments via bank accounts, else set to false. `boolean`. Defaults to `true`
 * `acceptCardPayments()` - Set to `true` if you want to accept payments via cards, else set to `false`. `boolean`. Defaults to `true`
 * `onStagingEnv()` - Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to `false`
+* `allowSaveCardFeature` - Set to `true` if you want your users to be able to save their cards for later reuse otherwise set to `false`.
 * `withTheme()` - Sets the theme of the UI. `int`
 * `initialize` - Launch the Rave Payment UI
 
