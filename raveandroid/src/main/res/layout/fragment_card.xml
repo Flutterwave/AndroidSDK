@@ -19,6 +19,7 @@
                 android:padding="20dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/topLay"
+                android:background="@color/white"
                 android:paddingTop="10dp"
                 android:orientation="vertical">
 
@@ -32,6 +33,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/amount"
+                        android:background="@drawable/round_box"
                         android:id="@+id/amountTV"
                         android:inputType="numberDecimal"
                         android:layout_below="@+id/card1"
@@ -49,6 +51,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/email"
+                        android:background="@drawable/round_box"
                         android:id="@+id/emailTv"
                         android:inputType="textEmailAddress"
                         android:layout_below="@+id/card1"
@@ -66,6 +69,10 @@
 
                     <com.flutterwave.raveandroid.card.CreditCardView
                         android:hint="@string/card_number"
+                        android:drawableLeft="@drawable/ic_card"
+                        android:layout_marginTop="5dp"
+                        android:drawablePadding="5dp"
+                        android:background="@drawable/round_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/cardNoTv"
@@ -93,11 +100,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/expiration"
+
+                            android:drawableLeft="@drawable/ic_date_range_black_24dp"
+                            android:background="@drawable/round_box"
                             android:paddingRight="50dp"
                             android:paddingEnd="50dp"
                             android:focusableInTouchMode="false"
                             android:clickable="true"
                             android:id="@+id/cardExpiryTv"
+                            android:drawablePadding="5dp"
                             android:inputType="date"
                             android:layout_below="@+id/card1"
                             android:layout_marginBottom="10dp"
@@ -119,8 +130,11 @@
                             android:hint="@string/cvc_cvv2"
                             android:inputType="numberPassword"
                             android:maxLength="4"
+                            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+                            android:background="@drawable/round_box"
                             android:id="@+id/cvvTv"
                             android:imeOptions="actionDone"
+                            android:drawablePadding="5dp"
                             android:layout_below="@+id/card1"
                             android:layout_marginBottom="10dp"
                             />

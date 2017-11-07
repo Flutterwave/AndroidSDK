@@ -1,9 +1,13 @@
 package com.flutterwave.raveandroid;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -30,10 +34,25 @@ public class Utils {
     private static final String MD5 = "MD5";
     private static final String CHARSET_NAME = "UTF-8";
     private static final String UTF_8 = "utf-8";
+    private static  final String TAG = "Utils";
 
     public static String getDeviceImei(Context c) {
+        TelephonyManager mTelephonyManager;
 
-        TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(c, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+                throw new RuntimeException("Add READ_PHONE_STATE persmision to manifest");
+        }
+        else {
+             mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+        }
+
         return mTelephonyManager.getDeviceId();
     }
 
