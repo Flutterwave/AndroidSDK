@@ -54,6 +54,8 @@ public interface CardContract {
         void onAVS_VBVSECURECODEModelSuggested(Payload payload);
 
         void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
+
+        void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
     }
 
     interface UserActionsListener {

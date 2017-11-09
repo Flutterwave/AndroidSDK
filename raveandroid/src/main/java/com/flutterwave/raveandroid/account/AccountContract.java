@@ -29,7 +29,7 @@ public interface AccountContract {
 
         void onPaymentFailed(String status, String responseAsJSONString);
 
-        void onValidateSuccessful(String message, String responseAsJSONString);
+        void onValidateSuccessful(String flwRef, String responseAsJSONString);
 
         void onValidateError(String message, String responseAsJSONString);
 

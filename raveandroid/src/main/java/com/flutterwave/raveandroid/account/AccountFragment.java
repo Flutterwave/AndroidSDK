@@ -380,9 +380,9 @@ public class AccountFragment extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void onValidateSuccessful(String status, String responseAsJsonString) {
+    public void onValidateSuccessful(String flwRef, String responseAsJsonString) {
         dismissSheets();
-        onPaymentSuccessful(status, responseAsJsonString);
+        presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
     }
 
     @Override

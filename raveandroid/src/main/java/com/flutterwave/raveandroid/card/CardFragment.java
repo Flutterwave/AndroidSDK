@@ -245,6 +245,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     }
 
+    @Override
+    public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
+
+        dismissDialog();
+        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), false);
+
+    }
+
     /**
      *  Validate card details and get the fee if available
      */

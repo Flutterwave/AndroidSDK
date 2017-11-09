@@ -96,7 +96,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
     @Override
-    public void validateAccountCharge(String flwRef, String otp, String PBFPubKey) {
+    public void validateAccountCharge(final String flwRef, String otp, String PBFPubKey) {
 
         ValidateChargeBody body = new ValidateChargeBody();
         body.setPBFPubKey(PBFPubKey);
@@ -115,7 +115,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase("success")) {
-                        mView.onValidateSuccessful(status, responseAsJSONString);
+                        mView.onValidateSuccessful(flwRef, responseAsJSONString);
                     }
                     else {
                         mView.onValidateError(status, responseAsJSONString);

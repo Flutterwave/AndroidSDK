@@ -172,7 +172,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void validateCardCharge(String flwRef, String otp, String PBFPubKey) {
+    public void validateCardCharge(final String flwRef, String otp, String PBFPubKey) {
 
         ValidateChargeBody body = new ValidateChargeBody();
         body.setPBFPubKey(PBFPubKey);
@@ -198,7 +198,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     }
                 }
                 else {
-                    mView.onPaymentFailed("Invalid charge card response", responseAsJSONString);
+                    mView.onValidateCardChargeFailed(flwRef, responseAsJSONString);
                 }
             }
 
