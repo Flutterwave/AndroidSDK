@@ -44,9 +44,6 @@ import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,25 +103,25 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         presenter = new CardPresenter(getActivity(), this);
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_card, container, false);
-        otpTil = (TextInputLayout) v.findViewById(R.id.otpTil);
-        otpEt = (TextInputEditText) v.findViewById(R.id.otpEv);
-        otpButton = (Button) v.findViewById(R.id.otpButton);
-        savedCardBtn = (Button) v.findViewById(R.id.savedCardButton);
-        amountEt = (TextInputEditText) v.findViewById(R.id.amountTV);
-        emailEt = (TextInputEditText) v.findViewById(R.id.emailTv);
-        cardNoTv = (TextInputEditText) v.findViewById(R.id.cardNoTv);
-        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.cardExpiryTv);
-        cvvTv = (TextInputEditText) v.findViewById(R.id.cvvTv);
-        payButton = (Button) v.findViewById(R.id.payButton);
-        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.saveCardSwitch);
-        amountTil = (TextInputLayout) v.findViewById(R.id.amountTil);
-        emailTil = (TextInputLayout) v.findViewById(R.id.emailTil);
-        cardNoTil = (TextInputLayout) v.findViewById(R.id.cardNoTil);
-        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.cardExpiryTil);
-        cvvTil = (TextInputLayout) v.findViewById(R.id.cvvTil);
-        webView = (WebView) v.findViewById(R.id.webview);
-        pcidss_tv = (TextView) v.findViewById(R.id.pcidss_compliant_tv);
-        progressContainer = (FrameLayout) v.findViewById(R.id.progressContainer);
+        otpTil = (TextInputLayout) v.findViewById(R.id.rave_otpTil);
+        otpEt = (TextInputEditText) v.findViewById(R.id.rave_otpEv);
+        otpButton = (Button) v.findViewById(R.id.rave_otpButton);
+        savedCardBtn = (Button) v.findViewById(R.id.rave_savedCardButton);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
+        cardNoTv = (TextInputEditText) v.findViewById(R.id.rave_cardNoTv);
+        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.rave_cardExpiryTv);
+        cvvTv = (TextInputEditText) v.findViewById(R.id.rave_cvvTv);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
+        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
+        cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
+        webView = (WebView) v.findViewById(R.id.rave_webview);
+        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
+        progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -190,8 +187,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         payButton.setOnClickListener(this);
 
-        otpLayout = (LinearLayout) v.findViewById(R.id.OTPButtomSheet);
-        vbvLayout = (FrameLayout) v.findViewById(R.id.VBVBottomSheet);
+        otpLayout = (LinearLayout) v.findViewById(R.id.rave_OTPButtomSheet);
+        vbvLayout = (FrameLayout) v.findViewById(R.id.rave_VBVBottomSheet);
         bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
         bottomSheetBehaviorVBV = BottomSheetBehavior.from(vbvLayout);
 
@@ -239,7 +236,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onClick(View v) {
 
         int i = v.getId();
-        if (i == R.id.payButton) {
+        if (i == R.id.rave_payButton) {
             validateDetails();
         }
 
@@ -406,9 +403,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View v = inflater.inflate(R.layout.pin_layout, null, false);
 
-        Button pinBtn = (Button) v.findViewById(R.id.pinButton);
-        final TextInputEditText pinEv = (TextInputEditText) v.findViewById(R.id.pinEv);
-        final TextInputLayout pinTil = (TextInputLayout) v.findViewById(R.id.pinTil);
+        Button pinBtn = (Button) v.findViewById(R.id.rave_pinButton);
+        final TextInputEditText pinEv = (TextInputEditText) v.findViewById(R.id.rave_pinEv);
+        final TextInputLayout pinTil = (TextInputLayout) v.findViewById(R.id.rave_pinTil);
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -563,7 +560,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showFullProgressIndicator(boolean active) {
 
         if (progressContainer == null) {
-            progressContainer = (FrameLayout) v.findViewById(R.id.progressContainer);
+            progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
         }
 
         if (active) {
@@ -591,7 +588,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View v = inflater.inflate(R.layout.pick_saved_card_layout, null, false);
-            RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler);
+            RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
 
             SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
             adapter.set(cards);
@@ -732,9 +729,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View v = inflater.inflate(R.layout.avsvbv_layout, null, false);
 
-        Button zipBtn = (Button) v.findViewById(R.id.zipButton);
-        final TextInputEditText zipEt = (TextInputEditText) v.findViewById(R.id.zipEt);
-        final TextInputLayout zipTil = (TextInputLayout) v.findViewById(R.id.zipTil);
+        Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
+        final TextInputEditText zipEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
+        final TextInputLayout zipTil = (TextInputLayout) v.findViewById(R.id.rave_zipTil);
 
         zipBtn.setOnClickListener(new View.OnClickListener() {
             @Override

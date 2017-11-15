@@ -6,6 +6,8 @@ import android.util.Log;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Bank;
@@ -182,8 +184,13 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
+
+                RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
+                boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+
                 mView.showProgressIndicator(false);
-                if (response.getStatus() != null && response.getStatus().equalsIgnoreCase("status")) {
+
+                if (wasTxSuccessful) {
                     mView.onPaymentSuccessful(response.getStatus(), responseAsJSONString);
                 }
                 else {

@@ -8,6 +8,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.CardDetsToSave;
@@ -223,8 +224,12 @@ public class CardPresenter implements CardContract.UserActionsListener {
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
+
+                RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
+                boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
                 mView.showFullProgressIndicator(false);
-                if (response.getStatus() != null && response.getStatus().equalsIgnoreCase("success")) {
+
+                if (wasTxSuccessful) {
                     mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
                 }
                 else {

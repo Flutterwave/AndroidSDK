@@ -25,7 +25,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/pinTil"
+        android:id="@+id/rave_pinTil"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
@@ -40,13 +40,13 @@
             android:drawableStart="@drawable/ic_lock_outline_black_24dp"
             android:drawablePadding="7dp"
             android:maxLength="4"
-            android:id="@+id/pinEv"
+            android:id="@+id/rave_pinEv"
             />
 
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/pinButton"
+        android:id="@+id/rave_pinButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="30dp"

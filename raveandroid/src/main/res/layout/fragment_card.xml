@@ -18,23 +18,23 @@
                 android:layout_width="match_parent"
                 android:padding="20dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/topLay"
+                android:id="@+id/rave_topLay"
                 android:paddingTop="10dp"
                 android:orientation="vertical">
 
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:id="@+id/amountTil"
+                    android:id="@+id/rave_amountTil"
                     android:layout_height="wrap_content">
 
                     <android.support.design.widget.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/amount"
-                        android:id="@+id/amountTV"
+                        android:id="@+id/rave_amountTV"
                         android:inputType="numberDecimal"
-                        android:layout_below="@+id/card1"
+                        android:layout_below="@+id/rave_card1"
                         android:layout_marginBottom="10dp"
                         />
 
@@ -42,16 +42,16 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:id="@+id/emailTil"
+                    android:id="@+id/rave_emailTil"
                     android:layout_height="wrap_content">
 
                     <android.support.design.widget.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/email"
-                        android:id="@+id/emailTv"
+                        android:id="@+id/rave_emailTv"
                         android:inputType="textEmailAddress"
-                        android:layout_below="@+id/card1"
+                        android:layout_below="@+id/rave_card1"
                         android:layout_marginBottom="10dp"
                         />
 
@@ -60,7 +60,7 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:id="@+id/cardNoTil"
+                    android:id="@+id/rave_cardNoTil"
                     android:layout_marginBottom="10dp"
                     android:layout_height="wrap_content">
 
@@ -68,7 +68,7 @@
                         android:hint="@string/card_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/cardNoTv"
+                        android:id="@+id/rave_cardNoTv"
                         android:layout_gravity="center"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -77,13 +77,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cvvExpLay"
+                    android:id="@+id/rave_cvvExpLay"
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dip"
-                        android:id="@+id/cardExpiryTil"
+                        android:id="@+id/rave_cardExpiryTil"
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"
@@ -97,9 +97,9 @@
                             android:paddingEnd="50dp"
                             android:focusableInTouchMode="false"
                             android:clickable="true"
-                            android:id="@+id/cardExpiryTv"
+                            android:id="@+id/rave_cardExpiryTv"
                             android:inputType="date"
-                            android:layout_below="@+id/card1"
+                            android:layout_below="@+id/rave_card1"
                             android:layout_marginBottom="10dp"
                             />
 
@@ -107,7 +107,7 @@
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dip"
-                        android:id="@+id/cvvTil"
+                        android:id="@+id/rave_cvvTil"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
@@ -119,9 +119,9 @@
                             android:hint="@string/cvc_cvv2"
                             android:inputType="numberPassword"
                             android:maxLength="4"
-                            android:id="@+id/cvvTv"
+                            android:id="@+id/rave_cvvTv"
                             android:imeOptions="actionDone"
-                            android:layout_below="@+id/card1"
+                            android:layout_below="@+id/rave_card1"
                             android:layout_marginBottom="10dp"
                             />
 
@@ -136,7 +136,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:text="@string/save_card"
-                    android:id="@+id/saveCardSwitch"
+                    android:id="@+id/rave_saveCardSwitch"
                     />
 
 
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/pay"
                     style="?PayButtonStyle"
-                    android:id="@+id/payButton"
+                    android:id="@+id/rave_payButton"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="10dp"
@@ -164,7 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/choose_saved_card"
-                    android:id="@+id/savedCardButton"
+                    android:id="@+id/rave_savedCardButton"
                     style="?SavedCardButtonStyle"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="35dp"
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:drawablePadding="5dp"
-                    android:id="@+id/pcidss_compliant_tv"
+                    android:id="@+id/rave_pcidss_compliant_tv"
                     android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
                     android:drawableStart="@drawable/ic_lock_outline_black_24dp"
                     android:layout_gravity="center"
@@ -202,7 +202,7 @@
     <LinearLayout android:layout_width="match_parent"
         android:orientation="vertical"
         app:behavior_peekHeight="0dp"
-        android:id="@+id/OTPButtomSheet"
+        android:id="@+id/rave_OTPButtomSheet"
         android:clickable="true"
         android:background="#fff"
         app:behavior_hideable="true"
@@ -239,7 +239,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:id="@+id/otpTil"
+            android:id="@+id/rave_otpTil"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
@@ -254,7 +254,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:drawablePadding="10dp"
-                android:id="@+id/otpEv"
+                android:id="@+id/rave_otpEv"
                 />
 
         </android.support.design.widget.TextInputLayout>
@@ -262,7 +262,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/otpButton"
+            android:id="@+id/rave_otpButton"
             style="?OTPButtonStyle"
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="30dp"
@@ -276,7 +276,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:behavior_peekHeight="0dp"
-        android:id="@+id/VBVBottomSheet"
+        android:id="@+id/rave_VBVBottomSheet"
         android:background="#fff"
         android:clickable="true"
         app:behavior_hideable="true"
@@ -286,13 +286,13 @@
         <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/webview"/>
+            android:id="@+id/rave_webview"/>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:background="#372E4C"
             android:visibility="gone"
-            android:id="@+id/progressContainer"
+            android:id="@+id/rave_progressContainer"
             android:layout_height="match_parent">
 
             <ProgressBar

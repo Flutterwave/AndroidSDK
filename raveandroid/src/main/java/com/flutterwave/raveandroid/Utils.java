@@ -11,6 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
@@ -35,6 +38,50 @@ public class Utils {
 
         TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
         return mTelephonyManager.getDeviceId();
+    }
+
+    public static boolean wasTxSuccessful(RavePayInitializer ravePayInitializer, String responseAsJSONString){
+
+        String amount = ravePayInitializer.getAmount() + "";
+        String currency = ravePayInitializer.getCurrency();
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseAsJSONString);
+            JSONObject jsonData = jsonObject.getJSONObject("data");
+            String status = jsonData.getString("status");
+            String txAmount = jsonData.getString("amount");
+            String txCurrency = jsonData.getString("transaction_currency");
+            JSONObject flwMetaJsonObject = jsonData.getJSONObject("flwMeta");
+            String chargeResponse = flwMetaJsonObject.getString("chargeResponse");
+
+            if (chargeResponse.equalsIgnoreCase("00") &&
+                    status.contains("success") &&
+                    amount.equalsIgnoreCase(txAmount) &&
+                    currency.equalsIgnoreCase(txCurrency)) {
+                return true;
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+
+//        if (unNullify(status).equalsIgnoreCase("success") &&
+//                )
+
+
+        return true;
+    }
+
+    public static String unNullify(String text) {
+
+        if (text == null) {
+            return "";
+        }
+
+        return text;
+
     }
 
     public static void hide_keyboard(Activity activity) {

@@ -92,21 +92,21 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_account, container, false);
 
-        otpTil = (TextInputLayout) v.findViewById(R.id.otpTil);
-        otpEt = (TextInputEditText) v.findViewById(R.id.otpEv);
-        otpButton = (Button) v.findViewById(R.id.otpButton);
-        bankEt = (EditText) v.findViewById(R.id.bankEditText);
-        amountEt = (TextInputEditText) v.findViewById(R.id.amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.phoneTil);
-        emailEt = (TextInputEditText) v.findViewById(R.id.emailEt);
-        emailTil = (TextInputLayout) v.findViewById(R.id.emailTil);
-        accountNumberEt = (TextInputEditText) v.findViewById(R.id.accountNumberEt);
-        accountNumberTil = (TextInputLayout) v.findViewById(R.id.accountNumberTil);
-        payButton = (Button) v.findViewById(R.id.payButton);
-        webView = (WebView) v.findViewById(R.id.webview);
-        pcidss_tv = (TextView) v.findViewById(R.id.pcidss_compliant_tv);
+        otpTil = (TextInputLayout) v.findViewById(R.id.rave_otpTil);
+        otpEt = (TextInputEditText) v.findViewById(R.id.rave_otpEv);
+        otpButton = (Button) v.findViewById(R.id.rave_otpButton);
+        bankEt = (EditText) v.findViewById(R.id.rave_bankEditText);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
+        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
+        accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        webView = (WebView) v.findViewById(R.id.rave_webview);
+        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
 
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -117,10 +117,10 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
         Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
 
-        FrameLayout internetBankingLayout = (FrameLayout) v.findViewById(R.id.internetBankingBottomSheet);
+        FrameLayout internetBankingLayout = (FrameLayout) v.findViewById(R.id.rave_internetBankingBottomSheet);
         bottomSheetBehaviorInternetBanking = BottomSheetBehavior.from(internetBankingLayout);
 
-        otpLayout = (LinearLayout) v.findViewById(R.id.OTPBottomSheet);
+        otpLayout = (LinearLayout) v.findViewById(R.id.rave_OTPBottomSheet);
         bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
@@ -259,7 +259,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View v = inflater.inflate(R.layout.add_exisiting_bank, null, false);
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler);
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
 
         BanksRecyclerAdapter adapter = new BanksRecyclerAdapter();
         adapter.set(banks);
