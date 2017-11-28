@@ -24,7 +24,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     compile 'com.github.Flutterwave:rave-android:1.0.6'
+	     compile 'com.github.Flutterwave:rave-android:1.0.7'
 	}
 **Step 3.** Add the required permission
 
@@ -55,6 +55,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
                         .acceptCardPayments(boolean)
                         .onStagingEnv(boolean)
                         .allowSaveCardFeature(boolean)
+                        .setMeta(List<Meta>)
                         .withTheme(styleId)
                         .initialize();
 * `setAmount()` - This is the amount to be charged from card/account. `double`
@@ -71,6 +72,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
 * `acceptCardPayments()` - Set to `true` if you want to accept payments via cards, else set to `false`. `boolean`. Defaults to `true`
 * `onStagingEnv()` - Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to `false`
 * `allowSaveCardFeature` - Set to `true` if you want your users to be able to save their cards for later reuse otherwise set to `false`.
+* `setMeta()` - Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects
 * `withTheme()` - Sets the theme of the UI. `int`
 * `initialize` - Launch the Rave Payment UI
 
