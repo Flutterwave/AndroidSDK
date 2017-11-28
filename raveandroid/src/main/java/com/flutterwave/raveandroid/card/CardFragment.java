@@ -334,6 +334,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 .setCvv(cvv).setEmail(email).setFirstname(ravePayInitializer.getfName())
                 .setLastname(ravePayInitializer.getlName()).setIP(Utils.getDeviceImei(getActivity())).setTxRef(ravePayInitializer.getTxRef())
                 .setExpiryyear(expiryDate.substring(3,5)).setExpirymonth(expiryDate.substring(0,2))
+                .setMeta(ravePayInitializer.getMeta())
                 .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
 
             Payload body = builder.createPayload();
@@ -638,7 +639,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 .setLastname(ravePayInitializer.getlName())
                 .setIP(Utils.getDeviceImei(getActivity()))
                 .setTxRef(ravePayInitializer.getTxRef())
-                .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
+                .setDevice_fingerprint(Utils.getDeviceImei(getActivity()))
+                .setMeta(ravePayInitializer.getMeta());
 
         Payload body = builder.createPayload();
         body.setToken(token);

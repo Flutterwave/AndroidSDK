@@ -2,6 +2,8 @@ package com.flutterwave.raveandroid;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by hamzafetuga on 05/07/2017.
  */
@@ -14,7 +16,7 @@ public class Payload
 
     private String cardBIN;
 
-    public Payload(String meta, String narration,
+    public Payload(List<Meta> meta, String narration,
                    String expirymonth, String PBFPubKey, String IP, String lastname,
                    String firstname, String currency, String country, String amount,
                    String email, String expiryyear, String cvv, String device_fingerprint,
@@ -38,7 +40,7 @@ public class Payload
     }
 
 
-    public Payload(String meta, String narration, String IP, String accountnumber, String accountbank,
+    public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
                    String email, String device_fingerprint, String txRef, String PBFPubKey) {
         this.meta = meta;
@@ -67,13 +69,11 @@ public class Payload
 
     String token;
 
-
-
-    public String getMeta() {
+    public List<Meta> getMeta() {
         return meta;
     }
 
-    public void setMeta(String meta) {
+    public void setMeta(List<Meta> meta) {
         this.meta = meta;
     }
 
@@ -110,7 +110,7 @@ public class Payload
     @SerializedName("suggested_auth")
     private String suggestedAuth;
 
-    private String meta;
+    private List<Meta> meta;
 
     public String getBillingzip() {
         return billingzip;

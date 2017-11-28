@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid;
 
+import java.util.List;
+
 public class PayloadBuilder {
     private String expirymonth;
     private String pbfPubKey;
@@ -16,7 +18,7 @@ public class PayloadBuilder {
     private String cardno;
 
     private String txRef;
-    private String meta;
+    private String meta = "";
 
     public PayloadBuilder setCustomer_phone(String customer_phone) {
         this.customer_phone = customer_phone;
@@ -115,7 +117,9 @@ public class PayloadBuilder {
     }
 
     public Payload createPayload() {
-        return new Payload(meta, narration, expirymonth,
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+
+        return new Payload(metaObj, narration, expirymonth,
                 pbfPubKey, ip, lastname,
                 firstname, currency, country,
                 amount, email, expiryyear,
@@ -124,7 +128,8 @@ public class PayloadBuilder {
     }
 
     public Payload createBankPayload() {
-        Payload payload = new Payload(meta, narration, ip, accountnumber, accountbank, lastname,
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        Payload payload = new Payload(metaObj, narration, ip, accountnumber, accountbank, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
         return payload;

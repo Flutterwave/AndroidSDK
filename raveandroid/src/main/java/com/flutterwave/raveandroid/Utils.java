@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -104,6 +105,25 @@ public class Utils {
         Gson gson = new Gson();
         Type type = new TypeToken<Payload>() {}.getType();
         return gson.toJson(body, type);
+    }
+
+    public static List<Meta> pojofyMetaString(String meta) {
+        try {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Meta>>() {
+            }.getType();
+            return gson.fromJson(meta, type);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String stringifyMeta(List<Meta> meta) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<Meta>>() {}.getType();
+        return gson.toJson(meta, type);
     }
 
     public static String getEncryptedData(String unEncryptedString, String secret) {

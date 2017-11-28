@@ -4,14 +4,20 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayManager;
 import com.flutterwave.raveandroid.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat cardSwitch;
     SwitchCompat accountSwitch;
     SwitchCompat isLiveSwitch;
+    List<Meta> meta = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
         secretKeyEt.setText(RaveConstants.PRIVATE_KEY);
+
+        meta.add(new Meta("test key 1", "test value 1"));
+        meta.add(new Meta("test key 2", "test value 2"));
 
         startPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptAccountPayments(accountSwitch.isChecked())
                     .acceptCardPayments(cardSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
+                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
 
@@ -140,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
 
             String message = data.getStringExtra("response");
+            Log.d("rave response", message);
 
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                 Toast.makeText(this, "SUCCESS " + message, Toast.LENGTH_SHORT).show();

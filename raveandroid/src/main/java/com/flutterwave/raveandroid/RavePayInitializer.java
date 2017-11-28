@@ -2,6 +2,8 @@ package com.flutterwave.raveandroid;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 /**
  * Created by hamzafetuga on 21/07/2017.
  */
@@ -18,6 +20,7 @@ public class RavePayInitializer {
     String country;
     String fName;
     String lName;
+    String meta;
     boolean withCard = true;
     boolean withAccount = true;
     int theme;
@@ -29,7 +32,7 @@ public class RavePayInitializer {
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, int theme,
-                              boolean staging, boolean allowSaveCard) {
+                              boolean staging, boolean allowSaveCard, String meta) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -45,9 +48,18 @@ public class RavePayInitializer {
         this.theme = theme;
         this.staging = staging;
         this.allowSaveCard = allowSaveCard;
+        this.meta = meta;
     }
 
     public RavePayInitializer() {
+    }
+
+    public String getMeta() {
+        return meta;
+    }
+
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 
     public boolean isAllowSaveCard() {

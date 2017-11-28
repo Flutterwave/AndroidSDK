@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_REQUEST_CODE;
@@ -20,6 +24,7 @@ public class RavePayManager {
     private String country = "NG";
     private String fName = "";
     private String lName = "";
+    private String meta = "";
     private Activity activity;
     boolean withCard = true;
     boolean withAccount = true;
@@ -53,6 +58,11 @@ public class RavePayManager {
 
     public RavePayManager acceptAccountPayments(boolean withAccount) {
         this.withAccount = withAccount;
+        return this;
+    }
+
+    public RavePayManager setMeta(List<Meta> meta) {
+        this.meta = Utils.stringifyMeta(meta);
         return this;
     }
 
@@ -111,6 +121,7 @@ public class RavePayManager {
 
     public void initialize() {
         if (activity != null) {
+
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             activity.startActivityForResult(intent, RAVE_REQUEST_CODE) ;
@@ -121,6 +132,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, theme, staging, allowSaveCard);
+        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, theme, staging, allowSaveCard, meta);
     }
 }
