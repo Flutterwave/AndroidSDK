@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -59,18 +60,15 @@ public class Utils {
                     status.contains("success") &&
                     amount.equalsIgnoreCase(txAmount) &&
                     currency.equalsIgnoreCase(txCurrency)) {
+                Log.d("RAVE TX V", "true");
                 return true;
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
+            Log.d("RAVE TX V", "false");
             return false;
         }
-
-
-//        if (unNullify(status).equalsIgnoreCase("success") &&
-//                )
-
 
         return false;
     }

@@ -189,6 +189,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         String email = emailEt.getText().toString();
         String phone = phoneEt.getText().toString();
 
+        ravePayInitializer.setAmount(Double.parseDouble(amount));
+
         if (phone.length() < 1) {
             valid = false;
             phoneTil.setError("Enter a valid number");
@@ -209,9 +211,18 @@ public class AccountFragment extends Fragment implements AccountContract.View {
             accountNo = "0000000000";
         }
 
-        if (amount.length() == 0) {
+        try {
+            double amnt = Double.parseDouble(amount);
+
+            if (amnt <= 0) {
+                valid = false;
+                showToast("Enter a valid amount");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             valid = false;
-            showToast("Amount is required");
+            showToast("Enter a valid amount");
         }
 
         if (selectedBank == null) {
@@ -224,7 +235,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
 
             //make request
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(amount)
+            builder.setAmount(ravePayInitializer.getAmount() + "")
                     .setEmail(email)
                     .setCountry("NG").setCurrency("NGN")
                     .setPBFPubKey(ravePayInitializer.getPublicKey())

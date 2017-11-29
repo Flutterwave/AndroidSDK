@@ -151,7 +151,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
 
             String message = data.getStringExtra("response");
-            Log.d("rave response", message);
+
+            if (message != null) {
+                Log.d("rave response", message);
+            }
 
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                 Toast.makeText(this, "SUCCESS " + message, Toast.LENGTH_SHORT).show();
