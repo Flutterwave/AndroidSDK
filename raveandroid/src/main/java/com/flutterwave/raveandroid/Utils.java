@@ -58,7 +58,7 @@ public class Utils {
 
             if (chargeResponse.equalsIgnoreCase("00") &&
                     status.contains("success") &&
-                    amount.equalsIgnoreCase(txAmount) &&
+                    Double.parseDouble(amount) == Double.parseDouble(txAmount) &&
                     currency.equalsIgnoreCase(txCurrency)) {
                 Log.d("RAVE TX V", "true");
                 return true;
