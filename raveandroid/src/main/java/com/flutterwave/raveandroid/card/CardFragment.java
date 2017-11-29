@@ -317,6 +317,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
 
         if (valid) {
+
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
+
             if (saveCardSwitch.isChecked()) {
                 int cardLen = cardNoStripped.length();
                 cardFirst6 = cardNoStripped.substring(0, 6);
@@ -329,7 +332,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             String txRef = ravePayInitializer.getTxRef();
             Log.d("txRef", txRef);
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(amount).setCardno(cardNoStripped)
+            builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(cardNoStripped)
                 .setCountry(ravePayInitializer.getCountry()).setCurrency(ravePayInitializer.getCurrency())
                 .setCvv(cvv).setEmail(email).setFirstname(ravePayInitializer.getfName())
                 .setLastname(ravePayInitializer.getlName()).setIP(Utils.getDeviceImei(getActivity())).setTxRef(ravePayInitializer.getTxRef())

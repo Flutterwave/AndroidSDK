@@ -189,8 +189,6 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         String email = emailEt.getText().toString();
         String phone = phoneEt.getText().toString();
 
-        ravePayInitializer.setAmount(Double.parseDouble(amount));
-
         if (phone.length() < 1) {
             valid = false;
             phoneTil.setError("Enter a valid number");
@@ -232,6 +230,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
 
         if (valid) {
             String txRef = ravePayInitializer.getTxRef();
+
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
 
             //make request
             PayloadBuilder builder = new PayloadBuilder();
