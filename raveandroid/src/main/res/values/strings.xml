@@ -8,7 +8,7 @@
     <string name="grant_permission">Grant permission</string>
     <string name="permission_required_image">permission_required_image</string>
     <string name="title_activity_entry">EntryActivity</string>
-    <string name="account_number">Account Number</string>
+    <string name="account_number">Account number</string>
     <string name="bank">Bank</string>
     <string name="email_address">Email address</string>
     <string name="phone_number">Phone number</string>
@@ -31,5 +31,6 @@
     <string name="email">Email</string>
     <string name="enter_your_billing_zip_code">Enter your billing zip code</string>
     <string name="billing_zip_code">Billing zip code</string>
+    <string name="date_of_birth">Date of Birth</string>
 
 </resources>
