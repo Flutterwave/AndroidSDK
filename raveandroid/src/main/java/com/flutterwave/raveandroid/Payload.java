@@ -63,6 +63,18 @@ public class Payload
         return token;
     }
 
+    public String getPasscode() {
+        return passcode;
+    }
+
+    public void setPasscode(String passcode) {
+        this.passcode = passcode;
+    }
+
+    private String passcode;
+
+
+
     public void setToken(String token) {
         this.token = token;
     }
