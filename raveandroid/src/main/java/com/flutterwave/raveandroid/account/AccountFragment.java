@@ -1,7 +1,9 @@
 package com.flutterwave.raveandroid.account;
 
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -38,6 +41,8 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +53,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements AccountContract.View {
+public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener {
 
 
     TextInputEditText accountNumberEt;
@@ -75,6 +80,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
     private TextInputLayout otpTil;
     private LinearLayout otpLayout;
     private RavePayInitializer ravePayInitializer;
+    private EditText dateOfBirthEt;
+    Calendar calendar = Calendar.getInstance();
 
     public AccountFragment() {
         // Required empty public constructor
@@ -107,6 +114,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         payButton = (Button) v.findViewById(R.id.rave_payButton);
         webView = (WebView) v.findViewById(R.id.rave_webview);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
+        dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
 
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -136,6 +144,14 @@ public class AccountFragment extends Fragment implements AccountContract.View {
             @Override
             public void onClick(View v) {
                 validateDetails();
+            }
+        });
+
+        dateOfBirthEt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -181,6 +197,8 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         emailTil.setErrorEnabled(false);
         phoneTil.setError(null);
         phoneTil.setErrorEnabled(false);
+        bankEt.setError(null);
+        dateOfBirthEt.setError(null);
 
         boolean valid = true;
 
@@ -188,6 +206,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         String amount = amountEt.getText().toString();
         String email = emailEt.getText().toString();
         String phone = phoneEt.getText().toString();
+        String dob = dateOfBirthEt.getText().toString();
 
         if (phone.length() < 1) {
             valid = false;
@@ -227,6 +246,18 @@ public class AccountFragment extends Fragment implements AccountContract.View {
             valid = false;
             bankEt.setError("Select a bank");
         }
+        else {
+            //for Zenith Bank
+            if (selectedBank.getBankcode().equals("057")){
+                if (dob.length() != 8) {
+                    valid = false;
+                    dateOfBirthEt.setError("Enter a valid date of birth");
+                }
+                else {
+                    dob = dob.replace("/", "");
+                }
+            }
+        }
 
         if (valid) {
             String txRef = ravePayInitializer.getTxRef();
@@ -246,6 +277,7 @@ public class AccountFragment extends Fragment implements AccountContract.View {
                     .setAccountnumber(accountNo);
 
             Payload body = builder.createBankPayload();
+            body.setPasscode(dob);
             body.setPhonenumber(phone);
             body.setPBFSecKey(ravePayInitializer.getSecretKey());
             body.setSECKEY(ravePayInitializer.getSecretKey());
@@ -280,12 +312,20 @@ public class AccountFragment extends Fragment implements AccountContract.View {
             @Override
             public void onBankSelected(Bank b) {
                 bottomSheetDialog.dismiss();
+                bankEt.setError(null);
                 bankEt.setText(b.getBankname());
                 selectedBank = b;
                 if (selectedBank.isInternetbanking()) {
                     accountNumberTil.setVisibility(View.GONE);
                 } else {
                     accountNumberTil.setVisibility(View.VISIBLE);
+                }
+
+                if (selectedBank.getBankcode().equals("057")) {
+                    dateOfBirthEt.setVisibility(View.VISIBLE);
+                }
+                else {
+                    dateOfBirthEt.setVisibility(View.GONE);
                 }
             }
         });
@@ -434,6 +474,34 @@ public class AccountFragment extends Fragment implements AccountContract.View {
     @Override
     public void showFetchFeeFailed(String s) {
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String formattedDay;
+        String formattedYear;
+        String formattedMonth;
+
+        dateOfBirthEt.setError(null);
+
+        if (String.valueOf(dayOfMonth).length() != 2) {
+               formattedDay = "0" + dayOfMonth;
+        }
+        else {
+            formattedDay = dayOfMonth + "";
+        }
+
+        if (String.valueOf(month).length() != 2) {
+               formattedMonth = "0" + (month + 1);
+        }
+        else {
+            formattedMonth = (month + 1) + "";
+        }
+
+        formattedYear = String.valueOf(year).substring(2, 4);
+
+        dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + formattedYear);
     }
 
     // Manages the behavior when URLs are loaded
