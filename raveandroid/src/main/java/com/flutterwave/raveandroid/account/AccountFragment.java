@@ -249,7 +249,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         else {
             //for Zenith Bank
             if (selectedBank.getBankcode().equals("057")){
-                if (dob.length() != 8) {
+                if (dob.length() != 10) {
                     valid = false;
                     dateOfBirthEt.setError("Enter a valid date of birth");
                 }
@@ -480,7 +480,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String formattedDay;
-        String formattedYear;
         String formattedMonth;
 
         dateOfBirthEt.setError(null);
@@ -499,9 +498,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             formattedMonth = (month + 1) + "";
         }
 
-        formattedYear = String.valueOf(year).substring(2, 4);
 
-        dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + formattedYear);
+        dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + year);
     }
 
     // Manages the behavior when URLs are loaded
