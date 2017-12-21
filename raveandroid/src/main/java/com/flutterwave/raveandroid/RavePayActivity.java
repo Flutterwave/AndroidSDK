@@ -83,7 +83,7 @@ public class RavePayActivity extends AppCompatActivity {
         secretKey = ravePayInitializer.getSecretKey();
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         pager = (ViewPager) findViewById(R.id.pager);
-        permissionsRequiredLayout = (RelativeLayout) findViewById(R.id.permission_required_layout);
+        permissionsRequiredLayout = (RelativeLayout) findViewById(R.id.rave_permission_required_layout);
         mainContent = findViewById(R.id.main_content);
         requestPermsBtn = (Button) findViewById(R.id.requestPermsBtn);
 
