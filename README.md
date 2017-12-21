@@ -24,7 +24,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     compile 'com.github.Flutterwave:rave-android:1.0.10'
+	     compile 'com.github.Flutterwave:rave-android:1.0.11'
 	}
 **Step 3.** Add the required permission
 
