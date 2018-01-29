@@ -365,14 +365,16 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     public boolean closeBottomSheetsIfOpen() {
         boolean showing = false;
-        if (bottomSheetBehaviorOTP.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
+        if (bottomSheetDialog != null) {
+            if (bottomSheetBehaviorOTP.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                showing = true;
+                bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
 
-        if (bottomSheetBehaviorInternetBanking.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorInternetBanking.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (bottomSheetBehaviorInternetBanking.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                showing = true;
+                bottomSheetBehaviorInternetBanking.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
         }
         return showing;
     }
