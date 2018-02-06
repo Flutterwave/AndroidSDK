@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.account;
 
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.card.CardContract;
 import com.flutterwave.raveandroid.data.Bank;
 
 import java.util.List;
@@ -48,6 +49,10 @@ public interface AccountContract {
         void validateAccountCharge(String flwRef, String otp, String publicKey);
 
         void fetchFee(Payload body, boolean internetbanking);
+
+        void onAttachView(AccountContract.View view);
+
+        void onDetachView();
     }
 
 }

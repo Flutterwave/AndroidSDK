@@ -80,6 +80,10 @@ public interface CardContract {
         void fetchFee(Payload payload, int reason);
 
         void checkForSavedCards(String email);
+
+        void onAttachView(CardContract.View view);
+
+        void onDetachView();
     }
 
 }

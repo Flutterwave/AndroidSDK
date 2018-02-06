@@ -39,6 +39,7 @@ import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
 
@@ -476,6 +477,24 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void showFetchFeeFailed(String s) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter = new AccountPresenter(getActivity(), this);
+        }
+        assert presenter != null;
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
     }
 
     @SuppressLint("SetTextI18n")

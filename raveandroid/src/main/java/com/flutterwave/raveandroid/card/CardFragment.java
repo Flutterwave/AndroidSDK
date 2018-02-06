@@ -243,6 +243,24 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter = new CardPresenter(getActivity(), this);
+        }
+        assert presenter != null;
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
+    @Override
     public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
 
         dismissDialog();

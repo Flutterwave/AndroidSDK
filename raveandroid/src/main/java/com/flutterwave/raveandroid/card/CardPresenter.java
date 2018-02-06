@@ -10,6 +10,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.account.NullAccountView;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.CardDetsToSave;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -38,7 +39,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         this.context = context;
         this.mView = mView;
     }
-
 
     @Override
     public void chargeCard(final Payload payload) {
@@ -385,8 +385,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
     }
 
-
-
     @Override
     public void chargeToken(Payload payload) {
 
@@ -422,4 +420,13 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     }
 
+    @Override
+    public void onDetachView() {
+        this.mView = new NullCardView();
+    }
+
+    @Override
+    public void onAttachView(CardContract.View view) {
+        this.mView = view;
+    }
 }

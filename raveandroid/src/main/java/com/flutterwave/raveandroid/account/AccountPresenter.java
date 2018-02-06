@@ -205,4 +205,14 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             }
         });
     }
+
+    @Override
+    public void onAttachView(AccountContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullAccountView();
+    }
 }
