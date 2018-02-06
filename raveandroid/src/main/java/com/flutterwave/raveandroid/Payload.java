@@ -37,6 +37,8 @@ public class Payload
         this.device_fingerprint = device_fingerprint;
         this.cardno = cardno;
         this.txRef = txRef;
+
+        meta.add(new Meta("sdk", "android"));
     }
 
 
@@ -57,6 +59,8 @@ public class Payload
         this.device_fingerprint = device_fingerprint;
         this.txRef = txRef;
         this.PBFPubKey = PBFPubKey;
+
+        meta.add(new Meta("sdk", "android"));
     }
 
     public String getToken() {
