@@ -24,7 +24,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     compile 'com.github.Flutterwave:rave-android:1.0.12'
+	     compile 'com.github.Flutterwave:rave-android:1.0.13'
 	}
 **Step 3.** Add the required permission
 
@@ -119,6 +119,7 @@ You can apply a new look by changing the color of certain parts of the UI to hig
     </style>
 
 ##  Help
+* Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtMjU2MjkyNDM5MTcxLWFlOWNlYmE5MTIxNjAwYzc5MDVjZjNhYTJjNTA0ZTQyNDJlMDhhZjJkN2QwZGJmNWMyODhlYjMwNGUyZDQxNTE) for support
 * Find a bug? [Open an issue](https://github.com/Flutterwave/rave-android/issues)
 * Want to contribute? [Check out contributing guidelines]() and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
 
