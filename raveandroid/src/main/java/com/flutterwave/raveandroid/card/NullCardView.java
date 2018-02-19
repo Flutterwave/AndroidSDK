@@ -6,6 +6,7 @@ import android.view.View;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
@@ -127,6 +128,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
+
+    }
+
+    @Override
+    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
 
     }
 }

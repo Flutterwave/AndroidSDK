@@ -10,7 +10,6 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.account.NullAccountView;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.CardDetsToSave;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -225,16 +224,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
 
-                RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
-                boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
-                mView.showFullProgressIndicator(false);
-
-                if (wasTxSuccessful) {
-                    mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
-                }
-                else {
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
+                mView.showProgressIndicator(false);
+                mView.onRequerySuccessful(response, responseAsJSONString, flwRef);
             }
 
             @Override
@@ -243,6 +234,20 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
+    }
+
+    @Override
+    public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
+        mView.showProgressIndicator(true);
+        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+        mView.showFullProgressIndicator(false);
+
+        if (wasTxSuccessful) {
+            mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
+        }
+        else {
+            mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
+        }
     }
 
     @Override

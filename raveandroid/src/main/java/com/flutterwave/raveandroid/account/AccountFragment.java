@@ -42,6 +42,7 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.Calendar;
 import java.util.List;
@@ -452,6 +453,10 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         showToast(message);
     }
 
+    @Override
+    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
+        presenter.verifyRequeryResponseStatus(response, responseAsJSONString);
+    }
 
     @Override
     public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {

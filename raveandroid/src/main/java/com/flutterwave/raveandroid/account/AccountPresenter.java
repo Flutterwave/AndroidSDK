@@ -184,18 +184,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-
-                RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
-                boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
-
                 mView.showProgressIndicator(false);
-
-                if (wasTxSuccessful) {
-                    mView.onPaymentSuccessful(response.getStatus(), responseAsJSONString);
-                }
-                else {
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
+                mView.onRequerySuccessful(response, responseAsJSONString);
             }
 
             @Override
@@ -204,6 +194,22 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
+    }
+
+    @Override
+    public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString) {
+        mView.showProgressIndicator(true);
+        RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
+        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+
+        mView.showProgressIndicator(false);
+
+        if (wasTxSuccessful) {
+            mView.onPaymentSuccessful(response.getStatus(), responseAsJSONString);
+        }
+        else {
+            mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
+        }
     }
 
     @Override

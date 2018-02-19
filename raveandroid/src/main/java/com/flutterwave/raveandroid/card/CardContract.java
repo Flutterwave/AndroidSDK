@@ -2,8 +2,10 @@ package com.flutterwave.raveandroid.card;
 
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
@@ -56,6 +58,8 @@ public interface CardContract {
         void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
 
         void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
+
+        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
     }
 
     interface UserActionsListener {
@@ -84,6 +88,8 @@ public interface CardContract {
         void onAttachView(CardContract.View view);
 
         void onDetachView();
+
+        void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
     }
 
 }

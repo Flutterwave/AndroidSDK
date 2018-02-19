@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.account;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.card.CardContract;
 import com.flutterwave.raveandroid.data.Bank;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
@@ -39,6 +40,8 @@ public interface AccountContract {
         void displayFee(String charge_amount, Payload payload, boolean internetbanking);
 
         void showFetchFeeFailed(String s);
+
+        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
     }
 
     interface UserActionsListener {
@@ -53,6 +56,8 @@ public interface AccountContract {
         void onAttachView(AccountContract.View view);
 
         void onDetachView();
+
+        void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString);
     }
 
 }

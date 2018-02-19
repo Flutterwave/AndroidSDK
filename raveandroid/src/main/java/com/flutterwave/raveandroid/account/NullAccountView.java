@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.data.Bank;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
@@ -80,6 +81,11 @@ public class NullAccountView extends Fragment implements AccountContract.View {
 
     @Override
     public void showFetchFeeFailed(String s) {
+
+    }
+
+    @Override
+    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
 
     }
 }

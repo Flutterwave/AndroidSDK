@@ -43,6 +43,7 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -525,6 +526,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         webView.loadUrl(authUrlCrude);
         bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_EXPANDED);
 
+    }
+
+    @Override
+    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
+        presenter.verifyRequeryResponse(response, responseAsJSONString, ravePayInitializer, flwRef);
     }
 
     /**
