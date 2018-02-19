@@ -63,9 +63,9 @@ public interface CardContract {
     }
 
     interface UserActionsListener {
-        void chargeCard(Payload payload);
+        void chargeCard(Payload payload, String secretKey);
 
-        void chargeCardWithSuggestedAuthModel(Payload payload, String pin, String authModel);
+        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String secretKey);
 
         void validateCardCharge(String flwRef, String otp, String PBFPubKey);
 

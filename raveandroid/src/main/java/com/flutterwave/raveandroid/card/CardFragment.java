@@ -442,7 +442,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     pinTil.setError("Enter a valid pin");
                 }
                 else {
-                    presenter.chargeCardWithSuggestedAuthModel(payload, pin, PIN);
+                    presenter.chargeCardWithSuggestedAuthModel(payload, pin, PIN, ravePayInitializer.getSecretKey());
                 }
             }
         });
@@ -705,7 +705,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 dialog.dismiss();
 
                 if (why == RaveConstants.MANUAL_CARD_CHARGE) {
-                    presenter.chargeCard(payload);
+                    presenter.chargeCard(payload, ravePayInitializer.getSecretKey());
                 }
                 else if (why == RaveConstants.TOKEN_CHARGE) {
                     presenter.chargeToken(payload);
@@ -775,7 +775,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 }
                 else {
                     dialog.dismiss();
-                    presenter.chargeCardWithSuggestedAuthModel(payload, zip, AVS_VBVSECURECODE);
+                    presenter.chargeCardWithSuggestedAuthModel(payload, zip, AVS_VBVSECURECODE, ravePayInitializer.getSecretKey());
                 }
             }
         });

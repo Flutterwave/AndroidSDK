@@ -7,7 +7,6 @@ import android.util.Log;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -40,10 +39,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCard(final Payload payload) {
+    public void chargeCard(final Payload payload, String secretKey) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -102,8 +101,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
     }
 
+
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel) {
+    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String secretKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
@@ -115,7 +115,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setSuggestedAuth(authModel);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, RavePayActivity.getSecretKey()).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -219,6 +219,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setSECKEY(SECKEY);
 
         mView.showFullProgressIndicator(true);
+        mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
