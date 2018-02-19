@@ -197,9 +197,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
     @Override
-    public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString) {
+    public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         mView.showProgressIndicator(true);
-        RavePayInitializer ravePayInitializer = ((RavePayActivity) context).getRavePayInitializer();
         boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
 
         mView.showProgressIndicator(false);

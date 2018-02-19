@@ -455,7 +455,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
-        presenter.verifyRequeryResponseStatus(response, responseAsJSONString);
+        presenter.verifyRequeryResponseStatus(response, responseAsJSONString, ravePayInitializer);
     }
 
     @Override

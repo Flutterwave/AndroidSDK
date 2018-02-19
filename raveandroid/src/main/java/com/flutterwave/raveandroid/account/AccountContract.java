@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.account;
 
 
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.card.CardContract;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -57,7 +57,7 @@ public interface AccountContract {
 
         void onDetachView();
 
-        void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString);
+        void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
     }
 
 }
