@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +39,10 @@ public class Payload
         this.cardno = cardno;
         this.txRef = txRef;
 
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
         meta.add(new Meta("sdk", "android"));
     }
 
@@ -59,6 +64,10 @@ public class Payload
         this.device_fingerprint = device_fingerprint;
         this.txRef = txRef;
         this.PBFPubKey = PBFPubKey;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
 
         meta.add(new Meta("sdk", "android"));
     }
