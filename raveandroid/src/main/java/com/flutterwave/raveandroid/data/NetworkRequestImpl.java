@@ -12,6 +12,9 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -170,11 +173,22 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
                 if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body());
+                        if (jsonObject.has("status")) {
+                            jsonObject.put("status", "Transaction successfully fetched");
+                            jsonResponse = jsonObject.toString();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     Gson gson = new Gson();
                     Type type = new TypeToken<RequeryResponse>() {}.getType();
-                    RequeryResponse requeryResponse = gson.fromJson(response.body(), type);
-                    callback.onSuccess(requeryResponse, response.body());
+                    RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(requeryResponse, jsonResponse);
                 }
                 else {
                     try {
