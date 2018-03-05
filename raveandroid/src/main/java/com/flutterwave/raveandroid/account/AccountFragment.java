@@ -341,6 +341,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void showProgressIndicator(boolean active) {
+
+        if (getActivity().isFinishing()) { return; }
+
         if (progessDialog == null) {
             progessDialog = new ProgressDialog(getActivity());
             progessDialog.setMessage("Please wait...");
