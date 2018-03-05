@@ -398,6 +398,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
+    @Override
     public void onChargeAccountFailed(String message, String responseAsJSONString) {
         showToast(message);
         //// TODO: 25/07/2017 ask Rd

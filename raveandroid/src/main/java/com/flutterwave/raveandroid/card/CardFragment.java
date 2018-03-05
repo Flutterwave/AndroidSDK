@@ -415,6 +415,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     /**
      *  Called when a pin suggested auth model is required.
      *  It shows a dialog that receives the pin and sends the payment payload
