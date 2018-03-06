@@ -834,7 +834,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     private class ExpiryWatcher implements TextWatcher {
 
+        private final Calendar calendar;
         private String lastInput = "";
+
+        public ExpiryWatcher() {
+            calendar = Calendar.getInstance();
+        }
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -850,7 +855,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         public void afterTextChanged(Editable editable) {
             String input = editable.toString();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/yy");
-            Calendar calendar = Calendar.getInstance();
 
             try {
                 calendar.setTime(simpleDateFormat.parse(input));
