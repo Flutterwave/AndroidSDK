@@ -16,6 +16,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.text.util.Linkify.TransformFilter;
 import android.util.Log;
@@ -45,6 +47,9 @@ import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -161,29 +166,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
         });
 
-        cardExpiryTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ExpirationPickerBuilder epb = new ExpirationPickerBuilder()
-                        .setFragmentManager(getActivity().getSupportFragmentManager())
-                        .setStyleResId(R.style.BetterPickersDialogFragment)
-                        .setMinYear(2000);
-                epb.show();
-
-                epb.addExpirationPickerDialogHandler(new ExpirationPickerDialogFragment.ExpirationPickerDialogHandler() {
-                    @Override
-                    public void onDialogExpirationSet(int reference, int year, int monthOfYear) {
-                        String month = String.valueOf(monthOfYear);
-                        if (month.length() != 2) {
-                            month = "0" + month;
-                        }
-
-                        String year_str = String.valueOf(year).substring(2, 4);
-                        cardExpiryTv.setText(month + "/" + year_str);
-                    }
-                });
-            }
-        });
+        cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
 
 
         payButton.setOnClickListener(this);
@@ -848,6 +831,65 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
             Log.d("URLS", url);
 
+        }
+    }
+
+    private class ExpiryWatcher implements TextWatcher {
+
+        private final Calendar calendar;
+        private final SimpleDateFormat simpleDateFormat;
+        private String lastInput = "";
+
+        public ExpiryWatcher() {
+            calendar = Calendar.getInstance();
+            simpleDateFormat = new SimpleDateFormat("MM/yy");
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String input = editable.toString();
+
+            try {
+                calendar.setTime(simpleDateFormat.parse(input));
+            } catch (ParseException e) {
+                if (editable.length() == 2 && !lastInput.endsWith("/")) {
+                    int month = Integer.parseInt(input);
+                    if (month <= 12) {
+                        cardExpiryTv.setText(cardExpiryTv.getText().toString() + "/");
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    } else {
+                        cardExpiryTv.setText("12");
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    }
+                } else if (editable.length() == 2 && lastInput.endsWith("/")) {
+                    int month = Integer.parseInt(input);
+                    if (month <= 12) {
+                        cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0,1));
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    } else {
+                        cardExpiryTv.setText("12");
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    }
+                } else if (editable.length() == 1) {
+                    int month = Integer.parseInt(input);
+                    if (month > 1) {
+                        cardExpiryTv.setText("0" + cardExpiryTv.getText().toString()  + "/");
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    }
+                }
+
+                lastInput = cardExpiryTv.getText().toString();
+            }
         }
     }
 
