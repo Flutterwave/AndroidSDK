@@ -33,8 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codetroopers.betterpickers.expirationpicker.ExpirationPickerBuilder;
-import com.codetroopers.betterpickers.expirationpicker.ExpirationPickerDialogFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
