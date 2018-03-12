@@ -78,12 +78,20 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     else {
                         String authModelUsed = response.getData().getAuthModelUsed();
 
-                        if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)) {
-                            String authUrlCrude = response.getData().getAuthurl();
-                            String flwRef = response.getData().getFlwRef();
+                        if (authModelUsed != null) {
 
-                            mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
+                            if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)) {
+                                String authUrlCrude = response.getData().getAuthurl();
+                                String flwRef = response.getData().getFlwRef();
 
+                                mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
+                            }
+                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP)) {
+                                String flwRef = response.getData().getFlwRef();
+                                String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                                chargeResponseMessage = chargeResponseMessage == null ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                                mView.showOTPLayout(flwRef, chargeResponseMessage);
+                            }
                         }
                     }
                 }
@@ -142,7 +150,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     else if (chargeResponseCode.equalsIgnoreCase("02")) {
                         String authModelUsed = response.getData().getAuthModelUsed();
                         if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
-                            mView.showOTPLayout(response.getData().getFlwRef());
+                            String flwRef = response.getData().getFlwRef();
+                            String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                            mView.showOTPLayout(flwRef, chargeResponseMessage);
                         }
                         else if (authModelUsed.equalsIgnoreCase(RaveConstants.AVS_VBVSECURECODE)){
                             String flwRef = response.getData().getFlwRef();

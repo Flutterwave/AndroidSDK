@@ -14,6 +14,7 @@ public class RaveConstants {
     public static String STAGING_URL = "http://flw-pms-dev.eu-west-1.elasticbeanstalk.com";
     public static String LIVE_URL = "https://rave-api.herokuapp.com";
     public static String VBV = "VBVSECURECODE";
+    public static String GTB_OTP = "GTB_OTP";
     public static String PIN = "PIN";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String RAVEPAY = "ravepay";

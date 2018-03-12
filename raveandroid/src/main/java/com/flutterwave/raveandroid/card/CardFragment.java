@@ -94,6 +94,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     View v;
     Button savedCardBtn;
     String cardFirst6;
+    TextView otpInstructionsTv;
     String cardLast4;
     boolean shouldISaveThisCard = false;
 
@@ -126,6 +127,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         webView = (WebView) v.findViewById(R.id.rave_webview);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
+        otpInstructionsTv = (TextView) v.findViewById(R.id.otp_instructions_tv);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -456,11 +458,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     /**
      * If an OTP is required, this method shows the dialog that receives it
      * @param flwRef
+     * @param chargeResponseMessage
      */
     @Override
-    public void showOTPLayout(String flwRef) {
+    public void showOTPLayout(String flwRef, String chargeResponseMessage) {
         this.flwRef = flwRef;
         dismissDialog();
+        otpInstructionsTv.setText(chargeResponseMessage);
         bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

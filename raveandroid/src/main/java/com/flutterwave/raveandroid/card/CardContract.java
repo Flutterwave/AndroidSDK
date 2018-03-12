@@ -23,7 +23,7 @@ public interface CardContract {
 
         void showToast(String message);
 
-        void showOTPLayout(String flwRef);
+        void showOTPLayout(String flwRef, String chargeResponseMessage);
 
         void onValidateSuccessful(String message, String responseAsString);
 

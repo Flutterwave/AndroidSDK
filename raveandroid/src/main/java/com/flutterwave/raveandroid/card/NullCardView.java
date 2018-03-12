@@ -42,7 +42,7 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void showOTPLayout(String flwRef) {
+    public void showOTPLayout(String flwRef, String chargeResponseMessage) {
 
     }
 
