@@ -26,13 +26,14 @@ The minimum supported SDK version is 15
     dependencies {
 	     compile 'com.github.Flutterwave:rave-android:1.0.16'
 	}
+
 **Step 3.** Add the required permission
 
-Add the `READ_PHONE_PERMISSION` permission to your android manifest
+Add the `READ_PHONE_PERMISSION` and `INTERNET` permissions to your android manifest
 
      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
      <uses-permission android:name="android.Manifest.permission.READ_PHONE_STATE" />
-
+     <uses-permission android:name="android.permission.INTERNET" />
 
 > **REQUIRED PERMISSION**
 > This library requires the **READ_PHONE_PERMISSION** to get the build number for fraud detection and flagging as recommended here https://developer.android.com/training/articles/user-data-ids.html#i_abuse_detection_detecting_high_value_stolen_credentials
