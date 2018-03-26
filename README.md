@@ -65,8 +65,8 @@ Set the public key, private key and other required parameters. The `RavePayManag
                         .withTheme(styleId)
                         .initialize();
 * `setAmount()` - This is the amount to be charged from card/account. `double` - `[Required]`. If `amount` is not specified, the user is presented with a field in the UI to enter the amount. However if specified, the amount field is hidden
-* `setCountry()` - This is the route country for the transaction with respect to the currency. `String` - `[Required]`
-* `setCurrency` - This is the specified currency to charge the card in. `String` - `[Required]`
+* `setCountry()` - This is the route country for the transaction with respect to the currency. `String` - `[Required]`. You can find a list of supported countries and currencies [here](https://flutterwavedevelopers.readme.io/docs/multicurrency-payments)
+* `setCurrency` - This is the specified currency to charge the card in. `String` - `[Required]`.
 * `setEmail()` - This is the email address of the customer. `String` - `[Required]`
 * `setfName()` - This is the first name of the card holder or the customer. `String` - `[Required]`
 * `setlName()` - This is the last name of the card holder or the customer. `String` - `[Required]`
