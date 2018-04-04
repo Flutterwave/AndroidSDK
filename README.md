@@ -108,6 +108,25 @@ In the calling activity, override the `onActivityResult` method to receive the p
     }
 The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed.
 
+### ProGuard
+If you are using ProGuard, you need to add these rules
+
+	
+	-keep class com.flutterwave.** { *; }
+	
+	#Retrofit
+	# Retain generic type information for use by reflection by converters and adapters.
+	-keepattributes Signature
+	# Retain service method parameters.
+	-keepclassmembernames,allowobfuscation interface * {
+	    @retrofit2.http.* <methods>;
+	}
+	# Ignore annotation used for build tooling.
+	-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+	-dontwarn com.squareup.picasso.**
+	-dontwarn okhttp3.internal.platform.**
+	-dontwarn javax.annotation.**
+
 ###  3. Customize the look
 You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors
 
