@@ -68,8 +68,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         if (suggested_auth.equals(RaveConstants.PIN)) {
                             mView.onPinAuthModelSuggested(payload);
                         }
-                        else if (suggested_auth.equals(AVS_VBVSECURECODE)) {
+                        else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
                             mView.onAVS_VBVSECURECODEModelSuggested(payload);
+                        }
+                        else if (suggested_auth.equalsIgnoreCase(RaveConstants.NOAUTH_INTERNATIONAL)) {
+                            mView.onNoAuthInternationalSuggested(payload);
                         }
                         else {
                             mView.onPaymentError("Unknown auth model");
@@ -109,6 +112,75 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
     }
 
+    @Override
+    public void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode, String country, String state, String authModel, String secretKey) {
+
+        payload.setSuggestedAuth(authModel);
+        payload.setBillingaddress(address);
+        payload.setBillingcity(city);
+        payload.setBillingzip(zipCode);
+        payload.setBillingcountry(country);
+        payload.setBillingstate(state);
+
+        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
+
+//        Log.d("encrypted", encryptedCardRequestBody);
+
+        ChargeRequestBody body = new ChargeRequestBody();
+        body.setAlg("3DES-24");
+        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setClient(encryptedCardRequestBody);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+            @Override
+            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+
+                mView.showProgressIndicator(false);
+
+                if (response.getData() != null && response.getData().getChargeResponseCode() != null) {
+                    String chargeResponseCode = response.getData().getChargeResponseCode();
+
+                    if (chargeResponseCode.equalsIgnoreCase("00")) {
+//                        mView.showToast("Payment successful");
+                        mView.onChargeCardSuccessful(response);
+                    }
+                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                        String authModelUsed = response.getData().getAuthModelUsed();
+                        if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
+                            String flwRef = response.getData().getFlwRef();
+                            String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                            mView.showOTPLayout(flwRef, chargeResponseMessage);
+                        }
+                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)){
+                            String flwRef = response.getData().getFlwRef();
+                            mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
+                        }
+                        else {
+                            mView.onPaymentError("Unknown Auth Model");
+                        }
+                    }
+                    else {
+                        mView.onPaymentError("Unknown charge response code");
+                    }
+                }
+                else {
+                    mView.onPaymentError("Invalid charge response code");
+                }
+
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onPaymentError(message);
+            }
+        });
+
+    }
 
     @Override
     public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String secretKey) {

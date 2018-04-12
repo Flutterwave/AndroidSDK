@@ -227,6 +227,84 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onNoAuthInternationalSuggested(final Payload payload) {
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        View v = inflater.inflate( R.layout.avsvbv_layout, null, false);
+
+        final TextInputEditText addressEt = (TextInputEditText) v.findViewById(R.id.rave_billAddressEt);
+        final TextInputEditText stateEt = (TextInputEditText) v.findViewById(R.id.rave_billStateEt);
+        final TextInputEditText cityEt = (TextInputEditText) v.findViewById(R.id.rave_billCityEt);
+        final TextInputEditText zipCodeEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
+        final TextInputEditText countryEt = (TextInputEditText) v.findViewById(R.id.rave_countryEt);
+        final TextInputLayout addressTil = (TextInputLayout) v.findViewById(R.id.rave_billAddressTil);
+        final TextInputLayout stateTil = (TextInputLayout) v.findViewById(R.id.rave_billStateTil);
+        final TextInputLayout cityTil = (TextInputLayout) v.findViewById(R.id.rave_billCityTil);
+        final TextInputLayout zipCodeTil = (TextInputLayout) v.findViewById(R.id.rave_zipTil);
+        final TextInputLayout countryTil = (TextInputLayout) v.findViewById(R.id.rave_countryTil);
+
+        Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
+
+        zipBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean valid = true;
+
+                String address = addressEt.getText().toString();
+                String state = stateEt.getText().toString();
+                String city = cityEt.getText().toString();
+                String zipCode = zipCodeEt.getText().toString();
+                String country = countryEt.getText().toString();
+
+                addressTil.setError(null);
+                stateTil.setError(null);
+                cityTil.setError(null);
+                zipCodeTil.setError(null);
+                countryTil.setError(null);
+
+                if (address.length() == 0) {
+                    valid = false;
+                    addressTil.setError("Enter a valid address");
+                }
+
+                if (state.length() == 0) {
+                    valid = false;
+                    stateTil.setError("Enter a valid state");
+                }
+
+                if (city.length() == 0) {
+                    valid = false;
+                    cityTil.setError("Enter a valid city");
+                }
+
+                if (zipCode.length() == 0) {
+                    valid = false;
+                    zipCodeTil.setError("Enter a valid zip code");
+                }
+
+                if (country.length() == 0) {
+                    valid = false;
+                    countryTil.setError("Enter a valid country");
+                }
+
+                if (valid) {
+                    bottomSheetDialog.dismiss();
+                    presenter.chargeCardWithAVSModel(payload, address, city, zipCode, country, state,
+                            RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getSecretKey());
+                }
+
+            }
+        });
+
+
+        bottomSheetDialog.setContentView(v);
+        bottomSheetDialog.show();
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (presenter != null) {
@@ -745,25 +823,68 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View v = inflater.inflate(R.layout.avsvbv_layout, null, false);
 
+
+        final TextInputEditText addressEt = (TextInputEditText) v.findViewById(R.id.rave_billAddressEt);
+        final TextInputEditText stateEt = (TextInputEditText) v.findViewById(R.id.rave_billStateEt);
+        final TextInputEditText cityEt = (TextInputEditText) v.findViewById(R.id.rave_billCityEt);
+        final TextInputEditText zipCodeEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
+        final TextInputEditText countryEt = (TextInputEditText) v.findViewById(R.id.rave_countryEt);
+        final TextInputEditText addressTil = (TextInputEditText) v.findViewById(R.id.rave_billAddressTil);
+        final TextInputEditText stateTil = (TextInputEditText) v.findViewById(R.id.rave_billStateTil);
+        final TextInputEditText cityTil = (TextInputEditText) v.findViewById(R.id.rave_billCityTil);
+        final TextInputEditText zipCodeTil = (TextInputEditText) v.findViewById(R.id.rave_zipTil);
+        final TextInputEditText countryTil = (TextInputEditText) v.findViewById(R.id.rave_countryTil);
+
         Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
-        final TextInputEditText zipEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
-        final TextInputLayout zipTil = (TextInputLayout) v.findViewById(R.id.rave_zipTil);
 
         zipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String zip = zipEt.getText().toString();
+                boolean valid = true;
 
-                zipTil.setError(null);
-                zipTil.setErrorEnabled(false);
+                String address = addressEt.getText().toString();
+                String state = stateEt.getText().toString();
+                String city = cityEt.getText().toString();
+                String zipCode = zipCodeEt.getText().toString();
+                String country = countryEt.getText().toString();
 
-                if (zip.length() == 0) {
-                    zipTil.setError("Enter a valid pin");
+                addressTil.setError(null);
+                stateTil.setError(null);
+                cityTil.setError(null);
+                zipCodeTil.setError(null);
+                countryTil.setError(null);
+
+                if (address.length() == 0) {
+                    valid = false;
+                    addressTil.setError("Enter a valid address");
                 }
-                else {
+
+                if (state.length() == 0) {
+                    valid = false;
+                    stateTil.setError("Enter a valid state");
+                }
+
+                if (city.length() == 0) {
+                    valid = false;
+                    cityTil.setError("Enter a valid city");
+                }
+
+                if (zipCode.length() == 0) {
+                    valid = false;
+                    zipCodeTil.setError("Enter a valid zip code");
+                }
+
+                if (country.length() == 0) {
+                    valid = false;
+                    countryTil.setError("Enter a valid country");
+                }
+
+                if (valid) {
                     dialog.dismiss();
-                    presenter.chargeCardWithSuggestedAuthModel(payload, zip, AVS_VBVSECURECODE, ravePayInitializer.getSecretKey());
+                    presenter.chargeCardWithAVSModel(payload, address, city, zipCode, country, state,
+                            AVS_VBVSECURECODE, ravePayInitializer.getSecretKey());
                 }
+
             }
         });
 

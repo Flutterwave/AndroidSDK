@@ -60,6 +60,8 @@ public interface CardContract {
         void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
+
+        void onNoAuthInternationalSuggested(Payload payload);
     }
 
     interface UserActionsListener {
@@ -90,6 +92,9 @@ public interface CardContract {
         void onDetachView();
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
+
+        void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
+                                    String country, String state, String avsVbvsecurecode, String secretKey);
     }
 
 }

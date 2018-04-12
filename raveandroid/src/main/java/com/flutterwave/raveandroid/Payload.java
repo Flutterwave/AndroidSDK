@@ -47,6 +47,75 @@ public class Payload
     }
 
 
+    public String getBillingcity() {
+        return billingcity;
+    }
+
+    public void setBillingcity(String billingcity) {
+        this.billingcity = billingcity;
+    }
+
+    public String getBillingaddress() {
+        return billingaddress;
+    }
+
+    public void setBillingaddress(String billingaddress) {
+        this.billingaddress = billingaddress;
+    }
+
+    public String getBillingstate() {
+        return billingstate;
+    }
+
+    public void setBillingstate(String billingstate) {
+        this.billingstate = billingstate;
+    }
+
+    public String getBillingcountry() {
+        return billingcountry;
+    }
+
+    public void setBillingcountry(String billingcountry) {
+        this.billingcountry = billingcountry;
+    }
+
+    private String billingcity;
+    private String billingaddress;
+    private String billingstate;
+    private String billingcountry;
+
+    public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
+                   String lastname, String firstname, String currency, String country, String amount,
+                   String email, String device_fingerprint, String txRef, String PBFPubKey,
+                   String billingaddress, String billingcity, String billingstate, String billingzip, String billingcountry) {
+        this.meta = meta;
+        this.narration = narration;
+        this.IP = IP;
+        this.accountnumber = accountnumber;
+        this.accountbank = accountbank;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.txRef = txRef;
+        this.PBFPubKey = PBFPubKey;
+        this.billingaddress = billingaddress;
+        this.billingstate = billingstate;
+        this.billingcity = billingcity;
+        this.billingcountry = billingcountry;
+        this.billingzip = billingzip;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+    }
+
+
     public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
                    String email, String device_fingerprint, String txRef, String PBFPubKey) {
@@ -115,6 +184,8 @@ public class Payload
     }
 
     private String pin;
+
+    private String redirect_url = "https://rave-webhook.herokuapp.com/receivepayment";
 
     public String getPBFSecKey() {
         return PBFSecKey;

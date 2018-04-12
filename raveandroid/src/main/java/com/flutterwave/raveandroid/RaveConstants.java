@@ -17,6 +17,7 @@ public class RaveConstants {
     public static String GTB_OTP = "GTB_OTP";
     public static String PIN = "PIN";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
+    public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";
     public static String RAVE_PARAMS = "raveparams";
     public static int RAVE_REQUEST_CODE = 4199;
