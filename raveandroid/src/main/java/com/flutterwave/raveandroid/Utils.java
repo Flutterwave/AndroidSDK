@@ -56,9 +56,9 @@ public class Utils {
             JSONObject flwMetaJsonObject = jsonData.getJSONObject("flwMeta");
             String chargeResponse = flwMetaJsonObject.getString("chargeResponse");
 
-            if (chargeResponse.equalsIgnoreCase("00") &&
+            if (areAmountsSame(amount, txAmount) &&
+                    chargeResponse.equalsIgnoreCase("00") &&
                     status.contains("success") &&
-                    areAmountsSame(amount, txAmount) &&
                     currency.equalsIgnoreCase(txCurrency)) {
                 Log.d("RAVE TX V", "true");
                 return true;
