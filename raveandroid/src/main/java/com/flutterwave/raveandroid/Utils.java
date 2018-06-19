@@ -58,7 +58,7 @@ public class Utils {
 
             if (chargeResponse.equalsIgnoreCase("00") &&
                     status.contains("success") &&
-                    Double.parseDouble(amount) == Double.parseDouble(txAmount) &&
+                    areAmountsSame(amount, txAmount) &&
                     currency.equalsIgnoreCase(txCurrency)) {
                 Log.d("RAVE TX V", "true");
                 return true;
@@ -71,6 +71,13 @@ public class Utils {
         }
 
         return false;
+    }
+
+    private static Boolean areAmountsSame(String amount1, String amount2) {
+        Double number1 = Double.parseDouble(amount1);
+        Double number2 = Double.parseDouble(amount2);
+
+        return Math.abs(number1 - number2) < 0.0001;
     }
 
     public static String unNullify(String text) {
