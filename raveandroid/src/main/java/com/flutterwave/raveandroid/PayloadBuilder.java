@@ -16,6 +16,7 @@ public class PayloadBuilder {
     private String cvv;
     private String device_fingerprint;
     private String cardno;
+    private String payment_plan;
 
     private String txRef;
     private String meta = "";
@@ -101,6 +102,11 @@ public class PayloadBuilder {
         return this;
     }
 
+    public PayloadBuilder setPaymentPlan(String payment_plan) {
+        this.payment_plan = payment_plan;
+        return this;
+    }
+
     public PayloadBuilder setDevice_fingerprint(String device_fingerprint) {
         this.device_fingerprint = device_fingerprint;
         return this;
@@ -119,12 +125,18 @@ public class PayloadBuilder {
     public Payload createPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
 
-        return new Payload(metaObj, narration, expirymonth,
+        Payload payload = new Payload(metaObj, narration, expirymonth,
                 pbfPubKey, ip, lastname,
                 firstname, currency, country,
                 amount, email, expiryyear,
                 cvv, device_fingerprint,
                 cardno, txRef);
+
+        if (payment_plan != null) {
+            payload.setPayment_plan(payment_plan);
+        }
+
+        return payload;
     }
 
     public Payload createBankPayload() {
@@ -132,6 +144,7 @@ public class PayloadBuilder {
         Payload payload = new Payload(metaObj, narration, ip, accountnumber, accountbank, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
+
         return payload;
     }
 

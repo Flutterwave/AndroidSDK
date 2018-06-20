@@ -25,6 +25,7 @@ public class RavePayManager {
     private String fName = "";
     private String lName = "";
     private String meta = "";
+    private String payment_plan;
     private Activity activity;
     boolean withCard = true;
     boolean withAccount = true;
@@ -119,6 +120,11 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager setPaymentPlan(String payment_plan) {
+        this.payment_plan = payment_plan;
+        return this;
+    }
+
     public void initialize() {
         if (activity != null) {
 
@@ -132,6 +138,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, theme, staging, allowSaveCard, meta);
+        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, theme, staging, allowSaveCard, meta, payment_plan);
     }
 }

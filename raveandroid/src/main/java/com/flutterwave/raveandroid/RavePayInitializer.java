@@ -21,6 +21,7 @@ public class RavePayInitializer {
     String fName;
     String lName;
     String meta;
+    String payment_plan;
     boolean withCard = true;
     boolean withAccount = true;
     int theme;
@@ -32,7 +33,7 @@ public class RavePayInitializer {
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, int theme,
-                              boolean staging, boolean allowSaveCard, String meta) {
+                              boolean staging, boolean allowSaveCard, String meta, String payment_plan) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -49,6 +50,7 @@ public class RavePayInitializer {
         this.staging = staging;
         this.allowSaveCard = allowSaveCard;
         this.meta = meta;
+        this.payment_plan = payment_plan;
     }
 
     public RavePayInitializer() {
@@ -182,5 +184,11 @@ public class RavePayInitializer {
         this.lName = lName;
     }
 
+    public String getPayment_plan() {
+        return payment_plan;
+    }
 
+    public void setPayment_plan(String payment_plan) {
+        this.payment_plan = payment_plan;
+    }
 }

@@ -420,6 +420,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 .setMeta(ravePayInitializer.getMeta())
                 .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
 
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
             Payload body = builder.createPayload();
 
             presenter.fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);

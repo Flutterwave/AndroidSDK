@@ -17,6 +17,8 @@ public class Payload
 
     private String cardBIN;
 
+    private String payment_plan;
+
     public Payload(List<Meta> meta, String narration,
                    String expirymonth, String PBFPubKey, String IP, String lastname,
                    String firstname, String currency, String country, String amount,
@@ -155,7 +157,13 @@ public class Payload
 
     private String passcode;
 
+    public String getPayment_plan() {
+        return payment_plan;
+    }
 
+    public void setPayment_plan(String payment_plan) {
+        this.payment_plan = payment_plan;
+    }
 
     public void setToken(String token) {
         this.token = token;
