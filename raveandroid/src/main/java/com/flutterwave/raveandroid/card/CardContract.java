@@ -62,6 +62,8 @@ public interface CardContract {
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
 
         void onNoAuthInternationalSuggested(Payload payload);
+
+        void onNoAuthUsed(String flwRef, String secretKey);
     }
 
     interface UserActionsListener {

@@ -39,7 +39,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCard(final Payload payload, String secretKey) {
+    public void chargeCard(final Payload payload, final String secretKey) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
@@ -94,6 +94,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
                                 chargeResponseMessage = chargeResponseMessage == null ? "Enter your one  time password (OTP)" : chargeResponseMessage;
                                 mView.showOTPLayout(flwRef, chargeResponseMessage);
+                            }
+                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.NOAUTH)) {
+                                String flwRef = response.getData().getFlwRef();
+
+                                mView.onNoAuthUsed(flwRef, secretKey);
                             }
                         }
                     }

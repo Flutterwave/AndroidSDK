@@ -42,6 +42,12 @@ public class ChargeResponse {
         String chargeResponseMessage;
         String authurl;
 
+        public String getRedirectUrl() {
+            return redirectUrl;
+        }
+
+        String redirectUrl;
+
         public String getAuthurl() {
             return authurl;
         }

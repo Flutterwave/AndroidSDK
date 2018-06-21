@@ -27,6 +27,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onNoAuthUsed(String flwRef, String secretKey) {
+
+    }
+
+    @Override
     public void onNoAuthInternationalSuggested(Payload payload) {
 
     }

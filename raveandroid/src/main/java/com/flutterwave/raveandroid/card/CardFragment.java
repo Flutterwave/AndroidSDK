@@ -227,6 +227,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onNoAuthUsed(String flwRef, String secretKey) {
+        presenter.requeryTx(flwRef, secretKey, shouldISaveThisCard);
+    }
+
+    @Override
     public void onNoAuthInternationalSuggested(final Payload payload) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
