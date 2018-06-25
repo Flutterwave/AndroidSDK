@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -39,7 +40,13 @@ public class Utils {
     public static String getDeviceImei(Context c) {
 
         TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        return mTelephonyManager.getDeviceId();
+        String ip = mTelephonyManager.getDeviceId();
+
+        if (ip == null) {
+            ip = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+
+        return ip;
     }
 
     public static boolean wasTxSuccessful(RavePayInitializer ravePayInitializer, String responseAsJSONString){
