@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -571,19 +572,23 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            Log.d("started URLS", url);
             showProgressIndicator(true);
-
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if (url.contains("/complete") || url.contains("submitting_mock_form")) {
-                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
-            }
 
 //            Log.d("URLS", url);
             showProgressIndicator(false);
+
+            Log.d("finished URLS", url);
+            if (url.contains("/complete") || url.contains("submitting_mock_form")) {
+                closeBottomSheetsIfOpen();
+                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
+            }
+
 
         }
     }
