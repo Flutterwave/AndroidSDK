@@ -284,15 +284,36 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             body.setPBFSecKey(ravePayInitializer.getSecretKey());
             body.setSECKEY(ravePayInitializer.getSecretKey());
 
-            if (selectedBank.isInternetbanking()) {
-                body.setIs_internet_banking("1");
-            } else {
-                body.setIs_internet_banking(null);
+//            if (selectedBank.isInternetbanking()) {
+//                body.setIs_internet_banking("1");
+//            } else {
+//                body.setIs_internet_banking(null);
+//            }
+
+            if ((selectedBank.getBankcode().equalsIgnoreCase("058") ||
+                    selectedBank.getBankcode().equalsIgnoreCase("011"))
+                            && (Double.parseDouble(amount) <= 100)) {
+                showGTBankAmountIssue();
+            }
+            else {
+                presenter.fetchFee(body, selectedBank.isInternetbanking());
             }
 
-            presenter.fetchFee(body, selectedBank.isInternetbanking());
-
         }
+    }
+
+    private void showGTBankAmountIssue() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Bank payments made with this bank must be greater than 100 naira. Please select another bank or increase the amount you're paying and try again");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
     }
 
     @Override

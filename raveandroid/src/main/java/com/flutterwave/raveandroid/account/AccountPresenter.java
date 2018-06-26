@@ -79,7 +79,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                  if (response.getData() != null) {
                      String authUrlCrude = response.getData().getAuthurl();
                      String flwRef = response.getData().getFlwRef();
-                     if (internetBanking) {
+                     if (authUrlCrude != null && !authUrlCrude.equalsIgnoreCase("N/A")) {
                          mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
                      }
                      else {
