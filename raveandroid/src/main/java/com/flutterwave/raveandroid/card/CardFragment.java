@@ -168,7 +168,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
 
-
         payButton.setOnClickListener(this);
 
         otpLayout = (LinearLayout) v.findViewById(R.id.rave_OTPButtomSheet);

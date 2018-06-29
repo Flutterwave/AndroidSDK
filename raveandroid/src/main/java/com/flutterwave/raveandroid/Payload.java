@@ -19,6 +19,26 @@ public class Payload
 
     private String payment_plan;
 
+    public String getIs_mpesa() {
+        return is_mpesa;
+    }
+
+    public void setIs_mpesa(String is_mpesa) {
+        this.is_mpesa = is_mpesa;
+    }
+
+    public String getIs_mpesa_lipa() {
+        return is_mpesa_lipa;
+    }
+
+    public void setIs_mpesa_lipa(String is_mpesa_lipa) {
+        this.is_mpesa_lipa = is_mpesa_lipa;
+    }
+
+    private String is_mpesa;
+
+    private String is_mpesa_lipa;
+
     public Payload(List<Meta> meta, String narration,
                    String expirymonth, String PBFPubKey, String IP, String lastname,
                    String firstname, String currency, String country, String amount,
@@ -117,6 +137,39 @@ public class Payload
         meta.add(new Meta("sdk", "android"));
     }
 
+    public Payload(String phonenumber,
+                   List<Meta> meta,
+                   String narration,
+                   String IP,
+                   String lastname,
+                   String firstname,
+                   String currency,
+                   String country,
+                   String amount,
+                   String email,
+                   String device_fingerprint,
+                   String txRef,
+                   String PBFPubKey) {
+        this.meta = meta;
+        this.narration = narration;
+        this.IP = IP;
+        this.phonenumber = phonenumber;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.txRef = txRef;
+        this.PBFPubKey = PBFPubKey;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+    }
 
     public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
@@ -454,6 +507,20 @@ public class Payload
 
     public void setCardBIN(String cardBIN) {
         this.cardBIN = cardBIN;
+    }
+
+    public String is_mobile_money_gh;
+
+    public void setNetwork(String network) {
+        this.network = network;
+    }
+
+    public String network;
+
+
+
+    public void setIs_mobile_money_gh(String is_mobile_money_gh) {
+        this.is_mobile_money_gh = is_mobile_money_gh;
     }
 }
 

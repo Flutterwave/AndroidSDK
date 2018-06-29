@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 
 import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
+import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
+import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 
 import org.parceler.Parcels;
 
@@ -96,6 +98,14 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithAccount()) {
             raveFragments.add(new RaveFragment(new AccountFragment(), "Account"));
+        }
+
+        if (ravePayInitializer.isWithMpesa()) {
+            raveFragments.add(new RaveFragment(new MpesaFragment(), "Mpesa"));
+        }
+
+        if (ravePayInitializer.isWithGHMobileMoney()) {
+            raveFragments.add(new RaveFragment(new GhMobileMoneyFragment(), "MOBILE MONEY"));
         }
 
         mainPagerAdapter.setFragments(raveFragments);

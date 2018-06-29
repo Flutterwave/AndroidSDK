@@ -8,6 +8,16 @@ public class RequeryRequestBody {
 
     String SECKEY;
 
+    public String getTx_Ref() {
+        return tx_ref;
+    }
+
+    public void setTx_Ref(String tx_ref) {
+        this.tx_ref = tx_ref;
+    }
+
+    String tx_ref;
+
     public String getSECKEY() {
         return SECKEY;
     }
