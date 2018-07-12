@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.account;
 
 import android.content.Context;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
@@ -79,7 +80,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                  if (response.getData() != null) {
                      String authUrlCrude = response.getData().getAuthurl();
                      String flwRef = response.getData().getFlwRef();
-                     if (authUrlCrude != null && !authUrlCrude.equalsIgnoreCase("N/A")) {
+                     if (authUrlCrude != null && URLUtil.isValidUrl(authUrlCrude)) {
                          mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
                      }
                      else {

@@ -461,17 +461,23 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void showProgressIndicator(boolean active) {
 
-        if (getActivity().isFinishing()) { return; }
-        if(progessDialog == null) {
-            progessDialog = new ProgressDialog(getActivity());
-            progessDialog.setMessage("Please wait...");
-        }
+        try {
+            if (getActivity().isFinishing()) {
+                return;
+            }
+            if (progessDialog == null) {
+                progessDialog = new ProgressDialog(getActivity());
+                progessDialog.setMessage("Please wait...");
+            }
 
-        if (active && !progessDialog.isShowing()) {
-            progessDialog.show();
+            if (active && !progessDialog.isShowing()) {
+                progessDialog.show();
+            } else {
+                progessDialog.dismiss();
+            }
         }
-        else {
-            progessDialog.dismiss();
+        catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
