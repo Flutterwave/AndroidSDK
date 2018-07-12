@@ -10,6 +10,8 @@ public interface GhMobileMoneyContract {
 
     interface View {
         void showProgressIndicator(boolean active);
+        void showPollingIndicator(boolean active);
+        void onPollingRoundComplete(String flwRef, String txRef, String secretKey);
         void onPaymentError(String message);
         void showToast(String message);
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
@@ -21,5 +23,6 @@ public interface GhMobileMoneyContract {
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void chargeGhMobileMoney(Payload payload, String secretKey);
+        void requeryTxv2(String flwRef, String txRef, String secretKey);
     }
 }

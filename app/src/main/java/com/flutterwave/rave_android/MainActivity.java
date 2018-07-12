@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptCardPayments(cardSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
-                    .setMeta(meta)
+//                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
 

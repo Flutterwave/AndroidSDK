@@ -106,13 +106,14 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         });
     }
 
-    private void requeryTxv2(final String flwRef, final String txRef, final String secretKey) {
+    @Override
+    public void requeryTxv2(final String flwRef, final String txRef, final String secretKey) {
 
         RequeryRequestBodyv2 body = new RequeryRequestBodyv2();
         body.setTxref(txRef);
         body.setSECKEY(secretKey);
 
-        mView.showProgressIndicator(true);
+        mView.showPollingIndicator(true);
 
         new NetworkRequestImpl().requeryTxv2(body, new Callbacks.OnRequeryRequestv2Complete() {
             @Override
@@ -121,13 +122,13 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
                 else if (response.getData().getChargecode().equals("02")){
-                    requeryTxv2(flwRef, txRef, secretKey);
+                    mView.onPollingRoundComplete(flwRef, txRef, secretKey);
                 }
                 else if (response.getData().getChargecode().equals("00")) {
                     requeryTx(flwRef, secretKey);
                 }
                 else {
-                    mView.showProgressIndicator(false);
+                    mView.showPollingIndicator(false);
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 }
             }
@@ -146,6 +147,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         body.setFlw_ref(flwRef);
         body.setSECKEY(SECKEY);
 
+        mView.showPollingIndicator(false);
         mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {

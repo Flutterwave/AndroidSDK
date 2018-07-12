@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -37,7 +36,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     TextInputEditText phoneEt;
     TextInputLayout phoneTil;
     RavePayInitializer ravePayInitializer;
-    private ProgressDialog progessDialog ;
+    private ProgressDialog progressDialog;
+    private ProgressDialog pollingProgressDialog ;
     MpesaPresenter presenter;
 
     public MpesaFragment() {
@@ -77,6 +77,42 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         }
 
         return v;
+    }
+
+    @Override
+    public void onPollingRoundComplete(String flwRef, String txRef, String secretKey) {
+
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            presenter.requeryTxv2(flwRef, txRef, secretKey);
+        }
+
+    }
+
+    @Override
+    public void showPollingIndicator(boolean active) {
+        if (getActivity().isFinishing()) { return; }
+
+        if(pollingProgressDialog == null) {
+            pollingProgressDialog = new ProgressDialog(getActivity());
+            pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
+        }
+
+        if (active && !pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    pollingProgressDialog.dismiss();
+                }
+            });
+
+            pollingProgressDialog.show();
+        }
+        else if (active && pollingProgressDialog.isShowing()) {
+            //pass
+        }
+        else {
+            pollingProgressDialog.dismiss();
+        }
     }
 
     private void clearErrors() {
@@ -154,19 +190,19 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
 
         if (getActivity().isFinishing()) { return; }
 
-        if(progessDialog == null) {
-            progessDialog = new ProgressDialog(getActivity());
-            progessDialog.setMessage("Please wait...");
+        if(progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Please wait...");
         }
 
-        if (active && !progessDialog.isShowing()) {
-            progessDialog.show();
+        if (active && !progressDialog.isShowing()) {
+            progressDialog.show();
         }
-        else if (active && progessDialog.isShowing()) {
+        else if (active && progressDialog.isShowing()) {
             //pass
         }
         else {
-            progessDialog.dismiss();
+            progressDialog.dismiss();
         }
     }
 

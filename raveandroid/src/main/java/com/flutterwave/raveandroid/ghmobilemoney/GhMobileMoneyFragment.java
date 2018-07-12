@@ -38,7 +38,8 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     TextInputEditText phoneEt;
     TextInputLayout phoneTil;
     RavePayInitializer ravePayInitializer;
-    private ProgressDialog progessDialog ;
+    private ProgressDialog progressDialog;
+    private ProgressDialog pollingProgressDialog ;
     GhMobileMoneyPresenter presenter;
     Spinner networkSpinner;
 
@@ -164,16 +165,50 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     public void showProgressIndicator(boolean active) {
 
         if (getActivity().isFinishing()) { return; }
-        if(progessDialog == null) {
-            progessDialog = new ProgressDialog(getActivity());
-            progessDialog.setMessage("Please wait...");
+        if(progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Please wait...");
         }
 
-        if (active && !progessDialog.isShowing()) {
-            progessDialog.show();
+        if (active && !progressDialog.isShowing()) {
+            progressDialog.show();
         }
         else {
-            progessDialog.dismiss();
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showPollingIndicator(boolean active) {
+        if (getActivity().isFinishing()) { return; }
+
+        if(pollingProgressDialog == null) {
+            pollingProgressDialog = new ProgressDialog(getActivity());
+            pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
+        }
+
+        if (active && !pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    pollingProgressDialog.dismiss();
+                }
+            });
+
+            pollingProgressDialog.show();
+        }
+        else if (active && pollingProgressDialog.isShowing()) {
+            //pass
+        }
+        else {
+            pollingProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPollingRoundComplete(String flwRef, String txRef, String secretKey) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            presenter.requeryTxv2(flwRef, txRef, secretKey);
         }
     }
 
