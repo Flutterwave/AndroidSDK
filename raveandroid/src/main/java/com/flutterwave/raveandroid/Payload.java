@@ -44,7 +44,6 @@ public class Payload
                    String firstname, String currency, String country, String amount,
                    String email, String expiryyear, String cvv, String device_fingerprint,
                    String cardno, String txRef) {
-        this.meta = meta;
         this.narration = narration;
         this.expirymonth = expirymonth;
         this.PBFPubKey = PBFPubKey;
@@ -66,6 +65,8 @@ public class Payload
         }
 
         meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
     }
 
 
@@ -110,7 +111,6 @@ public class Payload
                    String lastname, String firstname, String currency, String country, String amount,
                    String email, String device_fingerprint, String txRef, String PBFPubKey,
                    String billingaddress, String billingcity, String billingstate, String billingzip, String billingcountry) {
-        this.meta = meta;
         this.narration = narration;
         this.IP = IP;
         this.accountnumber = accountnumber;
@@ -135,6 +135,8 @@ public class Payload
         }
 
         meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
     }
 
     public Payload(String phonenumber,
@@ -169,6 +171,8 @@ public class Payload
         }
 
         meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
     }
 
     public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
@@ -194,6 +198,8 @@ public class Payload
         }
 
         meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
     }
 
     public String getToken() {
