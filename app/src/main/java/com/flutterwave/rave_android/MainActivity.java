@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     Button startPayBtn;
     SwitchCompat cardSwitch;
     SwitchCompat accountSwitch;
+    SwitchCompat ghMobileMoneySwitch;
     SwitchCompat isLiveSwitch;
+    SwitchCompat isMpesaSwitch;
     List<Meta> meta = new ArrayList<>();
 
     @Override
@@ -43,20 +45,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        emailEt = (EditText) findViewById(R.id.emailEt);
-        amountEt = (EditText) findViewById(R.id.amountEt);
-        publicKeyEt = (EditText) findViewById(R.id.publicKeyEt);
-        secretKeyEt = (EditText) findViewById(R.id.secretKeyEt);
-        txRefEt = (EditText) findViewById(R.id.txRefEt);
-        narrationEt = (EditText) findViewById(R.id.narrationTV);
-        currencyEt = (EditText) findViewById(R.id.currencyEt);
-        countryEt = (EditText) findViewById(R.id.countryEt);
-        fNameEt = (EditText) findViewById(R.id.fNameEt);
-        lNameEt = (EditText) findViewById(R.id.lnameEt);
-        startPayBtn = (Button) findViewById(R.id.startPaymentBtn);
-        cardSwitch = (SwitchCompat) findViewById(R.id.cardPaymentSwitch);
-        accountSwitch = (SwitchCompat) findViewById(R.id.accountPaymentSwitch);
-        isLiveSwitch = (SwitchCompat) findViewById(R.id.isLiveSwitch);
+        emailEt = findViewById(R.id.emailEt);
+        amountEt = findViewById(R.id.amountEt);
+        publicKeyEt = findViewById(R.id.publicKeyEt);
+        secretKeyEt = findViewById(R.id.secretKeyEt);
+        txRefEt = findViewById(R.id.txRefEt);
+        narrationEt = findViewById(R.id.narrationTV);
+        currencyEt = findViewById(R.id.currencyEt);
+        countryEt = findViewById(R.id.countryEt);
+        fNameEt = findViewById(R.id.fNameEt);
+        lNameEt = findViewById(R.id.lnameEt);
+        startPayBtn = findViewById(R.id.startPaymentBtn);
+        cardSwitch = findViewById(R.id.cardPaymentSwitch);
+        accountSwitch = findViewById(R.id.accountPaymentSwitch);
+        isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
+        ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
+        isLiveSwitch = findViewById(R.id.isLiveSwitch);
 
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
         secretKeyEt.setText(RaveConstants.PRIVATE_KEY);
@@ -135,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
                     .setPublicKey(publicKey)
                     .setSecretKey(secretKey)
                     .setTxRef(txRef)
+                    .acceptMpesaPayments(isMpesaSwitch.isChecked())
                     .acceptAccountPayments(accountSwitch.isChecked())
                     .acceptCardPayments(cardSwitch.isChecked())
+                    .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
-                    .setMeta(meta)
+//                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
 

@@ -39,6 +39,16 @@ public class ChargeResponse {
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
+
+        public String getTx_ref() {
+            return txRef;
+        }
+
+        public void setTx_ref(String txRef) {
+            this.txRef = txRef;
+        }
+
+        String txRef;
         String chargeResponseMessage;
         String authurl;
 

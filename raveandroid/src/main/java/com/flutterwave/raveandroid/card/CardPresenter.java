@@ -441,7 +441,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             public void onSuccess(RequeryResponse response, String tokenResponseAsJSONString) {
                 mView.showFullProgressIndicator(false);
                 if (response.getStatus() != null
-                        && response.getStatus().equalsIgnoreCase("success")) {
+                        && response.getStatus().contains("success")) {
 
                     if (response.getData() != null)
                     {

@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.data;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
 import java.util.List;
 
@@ -25,6 +26,11 @@ public class Callbacks {
 
     public interface OnRequeryRequestComplete {
         void onSuccess(RequeryResponse response, String responseAsJSONString);
+        void onError(String message, String responseAsJSONString);
+    }
+
+    public interface OnRequeryRequestv2Complete {
+        void onSuccess(RequeryResponsev2 response, String responseAsJSONString);
         void onError(String message, String responseAsJSONString);
     }
 

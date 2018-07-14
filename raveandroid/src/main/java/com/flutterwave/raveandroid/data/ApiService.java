@@ -34,6 +34,9 @@ public interface ApiService {
     Call<String> requeryTx(@Body RequeryRequestBody body);
 //    Call<RequeryResponse> requeryTx(@Body RequeryRequestBody body);
 
+    @POST("/flwv3-pug/getpaidx/api/v2/verify")
+    Call<String> requeryTx_v2(@Body RequeryRequestBodyv2 body);
+
     @GET("/flwv3-pug/getpaidx/api/flwpbf-banks.js?json=1")
     Call<List<Bank>> getBanks();
 

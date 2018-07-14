@@ -22,8 +22,10 @@ public class RavePayInitializer {
     String lName;
     String meta;
     String payment_plan;
+    boolean withMpesa = false;
     boolean withCard = true;
     boolean withAccount = true;
+    boolean withGHMobileMoney = false;
     int theme;
     boolean allowSaveCard;
     boolean staging = true;
@@ -32,7 +34,7 @@ public class RavePayInitializer {
                               String secretKey, String txRef, String narration,
                               String currency, String country, String fName,
                               String lName, boolean withCard,
-                              boolean withAccount, int theme,
+                              boolean withAccount, boolean withMpesa, boolean withGHMobileMoney, int theme,
                               boolean staging, boolean allowSaveCard, String meta, String payment_plan) {
         this.email = email;
         this.amount = amount;
@@ -45,6 +47,8 @@ public class RavePayInitializer {
         this.fName = fName;
         this.lName = lName;
         this.withAccount = withAccount;
+        this.withGHMobileMoney = withGHMobileMoney;
+        this.withMpesa = withMpesa;
         this.withCard = withCard;
         this.theme = theme;
         this.staging = staging;
@@ -54,6 +58,14 @@ public class RavePayInitializer {
     }
 
     public RavePayInitializer() {
+    }
+
+    public boolean isWithMpesa() {
+        return withMpesa;
+    }
+
+    public void setWithMpesa(boolean withMpesa) {
+        this.withMpesa = withMpesa;
     }
 
     public String getMeta() {
@@ -94,6 +106,14 @@ public class RavePayInitializer {
 
     public void setWithAccount(boolean withAccount) {
         this.withAccount = withAccount;
+    }
+
+    public boolean isWithGHMobileMoney() {
+        return withGHMobileMoney;
+    }
+
+    public void setWithGHMobileMoney(boolean withGHMobileMoney) {
+        this.withGHMobileMoney = withGHMobileMoney;
     }
 
     public boolean isWithCard() {

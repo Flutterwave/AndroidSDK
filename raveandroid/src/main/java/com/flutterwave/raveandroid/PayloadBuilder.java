@@ -17,6 +17,16 @@ public class PayloadBuilder {
     private String device_fingerprint;
     private String cardno;
     private String payment_plan;
+    private String network;
+
+    public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
+        this.is_mobile_money_gh = is_mobile_money_gh;
+        return this;
+    }
+
+    private String is_mobile_money_gh;
+
+    private String phonenumber;
 
     private String txRef;
     private String meta = "";
@@ -74,6 +84,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setCurrency(String currency) {
         this.currency = currency;
+        return this;
+    }
+
+    public PayloadBuilder setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
         return this;
     }
 
@@ -148,6 +163,26 @@ public class PayloadBuilder {
         return payload;
     }
 
+    public Payload createMpesaPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        Payload payload = new Payload(phonenumber, metaObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setPayment_type("mpesa");
+        payload.setIs_mpesa("1");
+        payload.setIs_mpesa_lipa("1");
+        return payload;
+    }
+
+    public Payload createGhMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        Payload payload = new Payload(phonenumber, metaObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_gh("1");
+        payload.setPayment_type("mobilemoneygh");
+        payload.setNetwork(network);
+        return payload;
+    }
+
     public PayloadBuilder setMeta(String meta) {
         this.meta = meta;
         return this;
@@ -158,4 +193,8 @@ public class PayloadBuilder {
         return this;
     }
 
+    public PayloadBuilder setNetwork(String network) {
+        this.network = network;
+        return this;
+    }
 }

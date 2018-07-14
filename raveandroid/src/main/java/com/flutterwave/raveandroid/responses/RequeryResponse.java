@@ -28,6 +28,11 @@ public class RequeryResponse {
 
         CardDets card;
 
+        String status;
+
+        public String getStatus() {
+            return status;
+        }
 
     }
 
