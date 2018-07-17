@@ -188,6 +188,10 @@ public class RavePayActivity extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
+        else {
+            setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
+            super.onBackPressed();
+        }
     }
 
     @Override
