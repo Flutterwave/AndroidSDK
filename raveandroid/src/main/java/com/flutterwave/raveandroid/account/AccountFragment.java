@@ -7,8 +7,6 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -20,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +31,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.flutterwave.raveandroid.FutherVerificationActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -43,6 +42,8 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.OTPFragment;
+import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.WebFragment;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.Calendar;
@@ -58,7 +59,9 @@ import static android.view.View.GONE;
  */
 public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener {
 
-
+    public static final String INTENT_SENDER = "accountFrag";
+    public static final int FOR_INTERNET_BANKING = 111;
+    public static final int FOR_0TP = 222;
     TextInputEditText accountNumberEt;
     TextInputLayout accountNumberTil;
     EditText bankEt;
@@ -285,12 +288,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             body.setPBFSecKey(ravePayInitializer.getSecretKey());
             body.setSECKEY(ravePayInitializer.getSecretKey());
 
-//            if (selectedBank.isInternetbanking()) {
-//                body.setIs_internet_banking("1");
-//            } else {
-//                body.setIs_internet_banking(null);
-//            }
-
             if ((selectedBank.getBankcode().equalsIgnoreCase("058") ||
                     selectedBank.getBankcode().equalsIgnoreCase("011"))
                             && (Double.parseDouble(amount) <= 100)) {
@@ -394,7 +391,25 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void validateAccountCharge(String pbfPubKey, String flwRef) {
         this.flwRef = flwRef;
 
-        bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_EXPANDED);
+        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
+        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"otp");
+        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        startActivityForResult(intent, FOR_0TP);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RavePayActivity.RESULT_SUCCESS){
+            //just to be sure this fragment sent the receiving intent
+            if(requestCode==FOR_0TP){
+                String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
+                presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+            }else if(requestCode==FOR_INTERNET_BANKING){
+                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
+            }
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public boolean closeBottomSheetsIfOpen() {
@@ -416,14 +431,11 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onDisplayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        // Configure the client to use when opening URLs
-        webView.setWebViewClient(new MyBrowser());
-        // Load the initial URL
-        webView.loadUrl(authurl);
-        bottomSheetBehaviorInternetBanking.setState(BottomSheetBehavior.STATE_EXPANDED);
+        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
+        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
+        startActivityForResult(intent,FOR_INTERNET_BANKING);
     }
 
     @Override
@@ -560,43 +572,4 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + year);
     }
 
-    // Manages the behavior when URLs are loaded
-    private class MyBrowser extends WebViewClient {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-
-        @TargetApi(Build.VERSION_CODES.N)
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            view.loadUrl(request.getUrl().toString());
-            return true;
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            Log.d("started URLS", url);
-            showProgressIndicator(true);
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-
-//            Log.d("URLS", url);
-            showProgressIndicator(false);
-
-            Log.d("finished URLS", url);
-            if (url.contains("/complete") || url.contains("submitting_mock_form")) {
-                closeBottomSheetsIfOpen();
-                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
-            }
-
-
-        }
-    }
 }

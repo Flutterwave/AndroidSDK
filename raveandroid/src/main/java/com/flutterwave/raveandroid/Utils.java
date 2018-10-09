@@ -8,6 +8,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -229,5 +230,9 @@ public class Utils {
 
         return spacified;
 
+    }
+
+    public static void toast(Context context,String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 }

@@ -74,6 +74,7 @@
                     android:id="@+id/emailEt"
                     android:layout_marginBottom="10dp"
                     android:inputType="textEmailAddress"
+                    android:text="kassim.bolaji@yahoo.com"
                     />
 
                 <EditText
@@ -84,6 +85,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/amount_to_charge_required"
                     android:id="@+id/amountEt"
+                    android:text="200"
                     />
 
                 <EditText
@@ -122,6 +124,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/narration"
                     android:id="@+id/narrationTV"
+                    android:text="jdjjddj"
                     />
 
                 <EditText
@@ -131,6 +134,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/currency_code_e_g_ngn"
                     android:id="@+id/currencyEt"
+                    android:text="NGN"
                     />
 
                 <EditText
@@ -140,6 +144,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/country_code_e_g_ng"
                     android:id="@+id/countryEt"
+                    android:text="NG"
                     />
 
                 <EditText
@@ -149,6 +154,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/first_name"
                     android:id="@+id/fNameEt"
+                    android:text="BKKK"
                     />
 
                 <EditText
@@ -158,6 +164,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/last_name"
                     android:id="@+id/lnameEt"
+                    android:text="ksksk"
                     />
 
                 <Button
