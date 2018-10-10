@@ -353,6 +353,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void validateAccountCharge(String pbfPubKey, String flwRef) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_0TP);
     }
 
@@ -375,6 +377,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_INTERNET_BANKING);
     }
 

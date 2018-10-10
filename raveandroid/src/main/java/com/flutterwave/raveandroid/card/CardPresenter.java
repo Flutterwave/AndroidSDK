@@ -306,7 +306,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setFlw_ref(flwRef);
         body.setSECKEY(SECKEY);
 
-        mView.showFullProgressIndicator(true);
+
         mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
@@ -319,7 +319,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
             @Override
             public void onError(String message, String responseAsJSONString) {
-                mView.showFullProgressIndicator(false);
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
@@ -329,7 +328,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
         mView.showProgressIndicator(true);
         boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
-        mView.showFullProgressIndicator(false);
 
         if (wasTxSuccessful) {
             mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
@@ -439,7 +437,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String tokenResponseAsJSONString) {
-                mView.showFullProgressIndicator(false);
                 if (response.getStatus() != null
                         && response.getStatus().contains("success")) {
 

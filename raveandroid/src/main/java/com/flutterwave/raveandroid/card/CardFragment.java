@@ -82,11 +82,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     Button payButton;
     private ProgressDialog progessDialog ;
     CardPresenter presenter;
-    LinearLayout otpLayout;
-    BottomSheetBehavior bottomSheetBehaviorOTP;
-    BottomSheetBehavior bottomSheetBehaviorVBV;
     private String flwRef;
-    private FrameLayout vbvLayout;
     RavePayInitializer ravePayInitializer;
     private TextView pcidss_tv;
     private Payload payLoad;
@@ -95,7 +91,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     View v;
     Button savedCardBtn;
     String cardFirst6;
-    TextView otpInstructionsTv;
     String cardLast4;
     boolean shouldISaveThisCard = false;
 
@@ -124,7 +119,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
-        otpInstructionsTv = (TextView) v.findViewById(R.id.otp_instructions_tv);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -149,11 +143,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
 
         payButton.setOnClickListener(this);
-
-        otpLayout = (LinearLayout) v.findViewById(R.id.rave_OTPButtomSheet);
-        vbvLayout = (FrameLayout) v.findViewById(R.id.rave_VBVBottomSheet);
-        bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
-        bottomSheetBehaviorVBV = BottomSheetBehavior.from(vbvLayout);
 
 
         if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
@@ -196,6 +185,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.payLoad = payload;
 
         Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_AVBVV);
     }
 
@@ -221,7 +212,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
 
         dismissDialog();
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), false);
 
@@ -390,6 +380,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onPinAuthModelSuggested(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
         Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"pin");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_PIN);
     }
 
@@ -449,6 +441,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         dismissDialog();
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE,chargeResponseMessage);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_OTP);
     }
 
@@ -488,6 +482,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authUrlCrude);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_INTERNET_BANKING);
 
     }
@@ -532,7 +528,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentFailed(String status, String responseAsJSONString) {
         dismissDialog();
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
@@ -542,27 +537,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
-    /**
-     *  Hides/shows a progress indicator that covers the entire view. It is only used with
-     *  webview (in the bottomsheets)
-     * @param active = status of progress indicator
-     */
-    @Override
-    public void showFullProgressIndicator(boolean active) {
-
-        if (progressContainer == null) {
-            progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
-        }
-
-        if (active) {
-            progressContainer.setVisibility(View.VISIBLE);
-        }
-        else {
-            progressContainer.setVisibility(GONE);
-        }
-
-
-    }
 
     /**
      *
@@ -717,6 +691,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
         this.payLoad = payload;
         Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_AVBVV);
     }
 
@@ -731,6 +707,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_INTERNET_BANKING);
     }
 
