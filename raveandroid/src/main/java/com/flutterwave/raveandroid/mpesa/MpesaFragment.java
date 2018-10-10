@@ -192,6 +192,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
 
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setMessage("Please wait...");
         }
 

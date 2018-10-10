@@ -330,6 +330,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
             if (progessDialog == null) {
                 progessDialog = new ProgressDialog(getActivity());
+                progessDialog.setCanceledOnTouchOutside(false);
                 progessDialog.setMessage("Please wait...");
             }
 
