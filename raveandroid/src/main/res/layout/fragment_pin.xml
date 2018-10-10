@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".otp_pin_avsvbv_webview.PinFragment">
+    tools:context=".PinFragment">
 
     <include layout="@layout/pin_layout"/>
 

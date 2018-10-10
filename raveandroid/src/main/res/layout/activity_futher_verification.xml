@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     android:id="@+id/frame_container"
     android:orientation="vertical"
-    tools:context=".FutherVerificationActivity">
+    tools:context=".VerificationActivity">
 
 </FrameLayout>

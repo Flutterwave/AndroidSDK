@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.otp_pin_avsvbv_webview;
+package com.flutterwave.raveandroid;
 
 
 import android.content.Intent;
@@ -10,11 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.flutterwave.raveandroid.FutherVerificationActivity;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
-import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,13 +94,10 @@ public class AVSVBVFragment extends Fragment {
 
                 if (valid) {
                     goBack();
-                    //presenter.chargeCardWithAVSModel(payload, address, city, zipCode, country, state,
-                      //      RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getSecretKey());
                 }
 
             }
         });
-
         return v;
     }
 
@@ -116,9 +108,6 @@ public class AVSVBVFragment extends Fragment {
         intent.putExtra(EXTRA_ZIPCODE,zipCode);
         intent.putExtra(EXTRA_COUNTRY,country);
         intent.putExtra(EXTRA_STATE,state);
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,getArguments().getString(FutherVerificationActivity.INTENT_SENDER));
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,getArguments().getString(FutherVerificationActivity.ACTIVITY_MOTIVE));
-
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

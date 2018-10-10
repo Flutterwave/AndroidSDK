@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.otp_pin_avsvbv_webview;
+package com.flutterwave.raveandroid;
 
 
 import android.content.Intent;
@@ -10,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.flutterwave.raveandroid.FutherVerificationActivity;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +35,7 @@ public class PinFragment extends Fragment {
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pin = pinEv.getText().toString();
+                pin = pinEv.getText().toString();
 
                 pinTil.setError(null);
                 pinTil.setErrorEnabled(false);
@@ -49,7 +45,6 @@ public class PinFragment extends Fragment {
                 }
                 else {
                     goBack();
-                    //presenter.chargeCardWithSuggestedAuthModel(payload, pin, PIN, ravePayInitializer.getSecretKey());
                 }
             }
         });
@@ -60,9 +55,6 @@ public class PinFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PIN,pin);
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,getArguments().getString(FutherVerificationActivity.INTENT_SENDER));
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,getArguments().getString(FutherVerificationActivity.ACTIVITY_MOTIVE));
-
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

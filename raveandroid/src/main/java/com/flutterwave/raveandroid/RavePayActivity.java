@@ -167,50 +167,11 @@ public class RavePayActivity extends AppCompatActivity {
         }
     }
 
-
-    private void handleBottomSheetsIfNeeded(){
-
-        String currentFrag = mainPagerAdapter.getPageTitle(pager.getCurrentItem()).toString();
-
-        if (currentFrag.equalsIgnoreCase("card")){
-            CardFragment fragment = (CardFragment) mainPagerAdapter.getFragments().get(pager.getCurrentItem()).getFragment();
-
-            if (!fragment.closeBottomSheetsIfOpen()) {
-                setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
-                super.onBackPressed();
-            }
-        }
-        else if (currentFrag.equalsIgnoreCase("account")) {
-            AccountFragment fragment = (AccountFragment) mainPagerAdapter.getFragments().get(pager.getCurrentItem()).getFragment();
-
-            if (!fragment.closeBottomSheetsIfOpen()) {
-                setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
-                super.onBackPressed();
-            }
-        }
-        else {
-            setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
-            super.onBackPressed();
-        }
-    }
-
     @Override
     public void onBackPressed() {
 
-        if (mainPagerAdapter == null) {
-            mainPagerAdapter = (MainPagerAdapter) pager.getAdapter();
-        }
-
-        int size = mainPagerAdapter.getCount();
-
-        if (size > 0) {
-            //get the title of the current fragment
-            handleBottomSheetsIfNeeded();
-        }
-        else {
-            setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
-            super.onBackPressed();
-        }
+        setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
+        super.onBackPressed();
     }
 
 

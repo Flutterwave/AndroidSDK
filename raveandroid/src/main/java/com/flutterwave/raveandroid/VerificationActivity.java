@@ -1,19 +1,13 @@
 package com.flutterwave.raveandroid;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.AVSVBVFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.OTPFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.PinFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.WebFragment;
-
-public class FutherVerificationActivity extends AppCompatActivity {
-    private static final String TAG = FutherVerificationActivity.class.getName();
+public class VerificationActivity extends AppCompatActivity {
+    private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
     public static final String INTENT_SENDER = "sender";
     private Fragment fragment;
@@ -53,9 +47,7 @@ public class FutherVerificationActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.frame_container, fragment).commit();
             }else{
-                Utils.toast(this,"No extra value matching motives");
                 finish();
-                return;
             }
         }
     }

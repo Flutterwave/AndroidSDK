@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.otp_pin_avsvbv_webview;
+package com.flutterwave.raveandroid;
 
 
 import android.annotation.TargetApi;
@@ -15,10 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.flutterwave.raveandroid.FutherVerificationActivity;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,9 +93,6 @@ public class WebFragment extends Fragment {
 
     public void goBack(){
         Intent intent = new Intent();
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,getArguments().getString(FutherVerificationActivity.INTENT_SENDER));
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,getArguments().getString(FutherVerificationActivity.ACTIVITY_MOTIVE));
-
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

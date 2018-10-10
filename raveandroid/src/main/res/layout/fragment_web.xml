@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".otp_pin_avsvbv_webview.WebFragment"
+    tools:context=".WebFragment"
     android:clickable="true"
     android:focusable="true"
     android:id="@+id/rave_internetBankingBottomSheet"

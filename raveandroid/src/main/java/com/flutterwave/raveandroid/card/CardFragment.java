@@ -4,8 +4,6 @@ package com.flutterwave.raveandroid.card;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -24,16 +22,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.FutherVerificationActivity;
+import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -43,10 +39,10 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.AVSVBVFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.OTPFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.PinFragment;
-import com.flutterwave.raveandroid.otp_pin_avsvbv_webview.WebFragment;
+import com.flutterwave.raveandroid.AVSVBVFragment;
+import com.flutterwave.raveandroid.OTPFragment;
+import com.flutterwave.raveandroid.PinFragment;
+import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -58,7 +54,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 
@@ -83,9 +78,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     TextInputLayout cardNoTil;
     TextInputLayout cardExpiryTil;
     TextInputLayout cvvTil;
-    TextInputLayout otpTil;
-    TextInputEditText otpEt;
-    Button otpButton;
     SwitchCompat saveCardSwitch;
     Button payButton;
     private ProgressDialog progessDialog ;
@@ -96,8 +88,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private String flwRef;
     private FrameLayout vbvLayout;
     RavePayInitializer ravePayInitializer;
-    WebView webView;
-    String initialUrl = null;
     private TextView pcidss_tv;
     private Payload payLoad;
     private AlertDialog dialog;
@@ -119,9 +109,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         presenter = new CardPresenter(getActivity(), this);
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_card, container, false);
-        otpTil = (TextInputLayout) v.findViewById(R.id.rave_otpTil);
-        otpEt = (TextInputEditText) v.findViewById(R.id.rave_otpEv);
-        otpButton = (Button) v.findViewById(R.id.rave_otpButton);
         savedCardBtn = (Button) v.findViewById(R.id.rave_savedCardButton);
         amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
         emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
@@ -135,7 +122,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
         cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
         cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
-        webView = (WebView) v.findViewById(R.id.rave_webview);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
         otpInstructionsTv = (TextView) v.findViewById(R.id.otp_instructions_tv);
@@ -150,23 +136,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
         Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
-
-        otpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String otp = otpEt.getText().toString();
-
-                otpTil.setError(null);
-                otpTil.setErrorEnabled(false);
-
-                if (otp.length() < 1) {
-                    otpTil.setError("Enter a valid one time password");
-                }
-                else {
-                    presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-                }
-            }
-        });
 
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
@@ -206,25 +175,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         return v;
     }
 
-    /**
-     * Closes all open bottom sheets and returns true is bottom sheet is showing, else return false
-     * @return
-     */
-    public boolean closeBottomSheetsIfOpen() {
-
-        boolean showing = false;
-        if (bottomSheetBehaviorOTP.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if (bottomSheetBehaviorVBV.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        return showing;
-    }
 
     @Override
     public void onClick(View v) {
@@ -245,9 +195,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onNoAuthInternationalSuggested(final Payload payload) {
         this.payLoad = payload;
 
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         startActivityForResult(intent,FOR_AVBVV);
     }
 
@@ -441,9 +389,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPinAuthModelSuggested(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"pin");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         startActivityForResult(intent,FOR_PIN);
     }
 
@@ -501,9 +447,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showOTPLayout(String flwRef, String chargeResponseMessage) {
         this.flwRef = flwRef;
         dismissDialog();
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"otp");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE,chargeResponseMessage);
         startActivityForResult(intent, FOR_OTP);
     }
@@ -515,8 +459,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onValidateSuccessful(String status, String responseAsJSONString) {
-
-        closeBottomSheetsIfOpen();
 
         presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), shouldISaveThisCard);
 
@@ -544,9 +486,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"web");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authUrlCrude);
         startActivityForResult(intent,FOR_INTERNET_BANKING);
 
@@ -569,7 +509,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
         dismissDialog();
-        closeBottomSheetsIfOpen();
 
         if (shouldISaveThisCard && flwRef != null) {
             presenter.saveThisCard(ravePayInitializer.getEmail(), flwRef, RavePayActivity.getSecretKey());
@@ -708,7 +647,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onTokenRetrievalError(String s) {
-        closeBottomSheetsIfOpen();
         showToast(s);
     }
 
@@ -778,9 +716,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
         this.payLoad = payload;
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         startActivityForResult(intent,FOR_AVBVV);
     }
 
@@ -793,54 +729,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
-        Intent intent = new Intent(getContext(),FutherVerificationActivity.class);
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,"web");
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,INTENT_SENDER);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
         startActivityForResult(intent,FOR_INTERNET_BANKING);
-    }
-
-    // Manages the behavior when URLs are loaded
-    private class MyBrowser extends WebViewClient {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.loadUrl(request.getUrl().toString());
-            }
-            return true;
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            showFullProgressIndicator(true);
-
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            showFullProgressIndicator(false);
-
-            if (initialUrl == null) {
-                initialUrl = url;
-            }
-            else {
-                if (url.contains("/complete") || url.contains("submitting_mock_form")) {
-                    presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), shouldISaveThisCard); // requery transaction when a url with /complete or /submit...
-                    //is hit
-                }
-            }
-            Log.d("URLS", url);
-
-        }
     }
 
     private class ExpiryWatcher implements TextWatcher {

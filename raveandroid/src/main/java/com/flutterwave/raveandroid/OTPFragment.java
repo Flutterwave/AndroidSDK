@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.otp_pin_avsvbv_webview;
+package com.flutterwave.raveandroid;
 
 
 import android.content.Intent;
@@ -11,10 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.flutterwave.raveandroid.FutherVerificationActivity;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,9 +61,6 @@ public class OTPFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
-        intent.putExtra(FutherVerificationActivity.INTENT_SENDER,getArguments().getString(FutherVerificationActivity.INTENT_SENDER));
-        intent.putExtra(FutherVerificationActivity.ACTIVITY_MOTIVE,getArguments().getString(FutherVerificationActivity.ACTIVITY_MOTIVE));
-
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
