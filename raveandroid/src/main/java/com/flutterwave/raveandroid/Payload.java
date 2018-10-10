@@ -17,6 +17,36 @@ public class Payload
 
     private String cardBIN;
 
+    private String remember_device_mobile_key;
+
+    private String remember_device_email;
+
+    public String getRemember_device_mobile_key() {
+        return remember_device_mobile_key;
+    }
+
+    public void setRemember_device_mobile_key(String remember_device_mobile_key) {
+        this.remember_device_mobile_key = remember_device_mobile_key;
+    }
+
+    public String getRemember_device_email() {
+        return remember_device_email;
+    }
+
+    public void setRemember_device_email(String remember_device_email) {
+        this.remember_device_email = remember_device_email;
+    }
+
+    public String getIs_remembered() {
+        return is_remembered;
+    }
+
+    public void setIs_remembered(String is_remembered) {
+        this.is_remembered = is_remembered;
+    }
+
+    private String is_remembered;
+
     private String payment_plan;
 
     public String getIs_mpesa() {
