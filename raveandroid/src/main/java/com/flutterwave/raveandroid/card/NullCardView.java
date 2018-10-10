@@ -81,10 +81,6 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     }
 
-    @Override
-    public void showFullProgressIndicator(boolean active) {
-
-    }
 
     @Override
     public void showSavedCards(List<SavedCard> cards) {

@@ -4,8 +4,6 @@ package com.flutterwave.raveandroid.card;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -24,15 +22,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -42,6 +39,10 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.AVSVBVFragment;
+import com.flutterwave.raveandroid.OTPFragment;
+import com.flutterwave.raveandroid.PinFragment;
+import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -53,7 +54,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 
@@ -63,6 +63,11 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
 public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
 
     private static final String RAVEPAY = "ravepay";
+    public static final String INTENT_SENDER = "cardFrag";
+    public static final int FOR_AVBVV = 333;
+    public static final int FOR_PIN = 444;
+    public static final int FOR_INTERNET_BANKING = 555;
+    public static final int FOR_OTP = 666;
     TextInputEditText amountEt;
     TextInputEditText emailEt;
     TextInputEditText cardNoTv;
@@ -73,28 +78,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     TextInputLayout cardNoTil;
     TextInputLayout cardExpiryTil;
     TextInputLayout cvvTil;
-    TextInputLayout otpTil;
-    TextInputEditText otpEt;
-    Button otpButton;
     SwitchCompat saveCardSwitch;
     Button payButton;
     private ProgressDialog progessDialog ;
     CardPresenter presenter;
-    LinearLayout otpLayout;
-    BottomSheetBehavior bottomSheetBehaviorOTP;
-    BottomSheetBehavior bottomSheetBehaviorVBV;
     private String flwRef;
-    private FrameLayout vbvLayout;
     RavePayInitializer ravePayInitializer;
-    WebView webView;
-    String initialUrl = null;
     private TextView pcidss_tv;
+    private Payload payLoad;
     private AlertDialog dialog;
     FrameLayout progressContainer;
     View v;
     Button savedCardBtn;
     String cardFirst6;
-    TextView otpInstructionsTv;
     String cardLast4;
     boolean shouldISaveThisCard = false;
 
@@ -108,9 +104,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         presenter = new CardPresenter(getActivity(), this);
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_card, container, false);
-        otpTil = (TextInputLayout) v.findViewById(R.id.rave_otpTil);
-        otpEt = (TextInputEditText) v.findViewById(R.id.rave_otpEv);
-        otpButton = (Button) v.findViewById(R.id.rave_otpButton);
         savedCardBtn = (Button) v.findViewById(R.id.rave_savedCardButton);
         amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
         emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
@@ -124,10 +117,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
         cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
         cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
-        webView = (WebView) v.findViewById(R.id.rave_webview);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
-        otpInstructionsTv = (TextView) v.findViewById(R.id.otp_instructions_tv);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -139,23 +130,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
         Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
-
-        otpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String otp = otpEt.getText().toString();
-
-                otpTil.setError(null);
-                otpTil.setErrorEnabled(false);
-
-                if (otp.length() < 1) {
-                    otpTil.setError("Enter a valid one time password");
-                }
-                else {
-                    presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-                }
-            }
-        });
 
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
@@ -169,11 +143,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
 
         payButton.setOnClickListener(this);
-
-        otpLayout = (LinearLayout) v.findViewById(R.id.rave_OTPButtomSheet);
-        vbvLayout = (FrameLayout) v.findViewById(R.id.rave_VBVBottomSheet);
-        bottomSheetBehaviorOTP = BottomSheetBehavior.from(otpLayout);
-        bottomSheetBehaviorVBV = BottomSheetBehavior.from(vbvLayout);
 
 
         if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
@@ -195,25 +164,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         return v;
     }
 
-    /**
-     * Closes all open bottom sheets and returns true is bottom sheet is showing, else return false
-     * @return
-     */
-    public boolean closeBottomSheetsIfOpen() {
-
-        boolean showing = false;
-        if (bottomSheetBehaviorOTP.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if (bottomSheetBehaviorVBV.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            showing = true;
-            bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        return showing;
-    }
 
     @Override
     public void onClick(View v) {
@@ -232,80 +182,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onNoAuthInternationalSuggested(final Payload payload) {
+        this.payLoad = payload;
 
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-        View v = inflater.inflate( R.layout.avsvbv_layout, null, false);
-
-        final TextInputEditText addressEt = (TextInputEditText) v.findViewById(R.id.rave_billAddressEt);
-        final TextInputEditText stateEt = (TextInputEditText) v.findViewById(R.id.rave_billStateEt);
-        final TextInputEditText cityEt = (TextInputEditText) v.findViewById(R.id.rave_billCityEt);
-        final TextInputEditText zipCodeEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
-        final TextInputEditText countryEt = (TextInputEditText) v.findViewById(R.id.rave_countryEt);
-        final TextInputLayout addressTil = (TextInputLayout) v.findViewById(R.id.rave_billAddressTil);
-        final TextInputLayout stateTil = (TextInputLayout) v.findViewById(R.id.rave_billStateTil);
-        final TextInputLayout cityTil = (TextInputLayout) v.findViewById(R.id.rave_billCityTil);
-        final TextInputLayout zipCodeTil = (TextInputLayout) v.findViewById(R.id.rave_zipTil);
-        final TextInputLayout countryTil = (TextInputLayout) v.findViewById(R.id.rave_countryTil);
-
-        Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
-
-        zipBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean valid = true;
-
-                String address = addressEt.getText().toString();
-                String state = stateEt.getText().toString();
-                String city = cityEt.getText().toString();
-                String zipCode = zipCodeEt.getText().toString();
-                String country = countryEt.getText().toString();
-
-                addressTil.setError(null);
-                stateTil.setError(null);
-                cityTil.setError(null);
-                zipCodeTil.setError(null);
-                countryTil.setError(null);
-
-                if (address.length() == 0) {
-                    valid = false;
-                    addressTil.setError("Enter a valid address");
-                }
-
-                if (state.length() == 0) {
-                    valid = false;
-                    stateTil.setError("Enter a valid state");
-                }
-
-                if (city.length() == 0) {
-                    valid = false;
-                    cityTil.setError("Enter a valid city");
-                }
-
-                if (zipCode.length() == 0) {
-                    valid = false;
-                    zipCodeTil.setError("Enter a valid zip code");
-                }
-
-                if (country.length() == 0) {
-                    valid = false;
-                    countryTil.setError("Enter a valid country");
-                }
-
-                if (valid) {
-                    bottomSheetDialog.dismiss();
-                    presenter.chargeCardWithAVSModel(payload, address, city, zipCode, country, state,
-                            RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getSecretKey());
-                }
-
-            }
-        });
-
-
-        bottomSheetDialog.setContentView(v);
-        bottomSheetDialog.show();
-
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent,FOR_AVBVV);
     }
 
     @Override
@@ -330,7 +212,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
 
         dismissDialog();
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), false);
 
@@ -497,35 +378,37 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onPinAuthModelSuggested(final Payload payload) {
+        this.payLoad = payload;   //added so as to get back in onActivityResult
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"pin");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent,FOR_PIN);
+    }
 
-//        bottomSheetDialog = new BottomSheetDialog(getActivity());
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View v = inflater.inflate(R.layout.pin_layout, null, false);
-
-        Button pinBtn = (Button) v.findViewById(R.id.rave_pinButton);
-        final TextInputEditText pinEv = (TextInputEditText) v.findViewById(R.id.rave_pinEv);
-        final TextInputLayout pinTil = (TextInputLayout) v.findViewById(R.id.rave_pinTil);
-
-        pinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pin = pinEv.getText().toString();
-
-                pinTil.setError(null);
-                pinTil.setErrorEnabled(false);
-
-                if (pin.length() != 4) {
-                    pinTil.setError("Enter a valid pin");
-                }
-                else {
-                    presenter.chargeCardWithSuggestedAuthModel(payload, pin, PIN, ravePayInitializer.getSecretKey());
-                }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==RavePayActivity.RESULT_SUCCESS){
+            //just to be sure this fragment sent the receiving intent
+            if(requestCode==FOR_PIN){
+                String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
+                presenter.chargeCardWithSuggestedAuthModel(payLoad, pin, PIN, ravePayInitializer.getSecretKey());
+            }else if(requestCode==FOR_AVBVV){
+                String address=data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
+                String state=data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
+                String city=data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
+                String zipCode=data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
+                String country=data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
+                presenter.chargeCardWithAVSModel(payLoad, address, city, zipCode, country, state,
+                        RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getSecretKey());
+            }else if(requestCode==FOR_INTERNET_BANKING){
+                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(),shouldISaveThisCard);
+            }else if(requestCode==FOR_OTP){
+                String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
+                presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
             }
-        });
-
-        builder.setView(v);
-        dialog = builder.show();
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /**
@@ -556,8 +439,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showOTPLayout(String flwRef, String chargeResponseMessage) {
         this.flwRef = flwRef;
         dismissDialog();
-        otpInstructionsTv.setText(chargeResponseMessage);
-        bottomSheetBehaviorOTP.setState(BottomSheetBehavior.STATE_EXPANDED);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE,chargeResponseMessage);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent, FOR_OTP);
     }
 
     /**
@@ -567,8 +453,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onValidateSuccessful(String status, String responseAsJSONString) {
-
-        closeBottomSheetsIfOpen();
 
         presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), shouldISaveThisCard);
 
@@ -596,14 +480,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        // Configure the client to use when opening URLs
-        webView.setWebViewClient(new MyBrowser());
-        // Load the initial URL
-        webView.loadUrl(authUrlCrude);
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_EXPANDED);
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL,authUrlCrude);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent,FOR_INTERNET_BANKING);
 
     }
 
@@ -624,7 +505,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
         dismissDialog();
-        closeBottomSheetsIfOpen();
 
         if (shouldISaveThisCard && flwRef != null) {
             presenter.saveThisCard(ravePayInitializer.getEmail(), flwRef, RavePayActivity.getSecretKey());
@@ -648,7 +528,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentFailed(String status, String responseAsJSONString) {
         dismissDialog();
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
@@ -658,27 +537,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
-    /**
-     *  Hides/shows a progress indicator that covers the entire view. It is only used with
-     *  webview (in the bottomsheets)
-     * @param active = status of progress indicator
-     */
-    @Override
-    public void showFullProgressIndicator(boolean active) {
-
-        if (progressContainer == null) {
-            progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
-        }
-
-        if (active) {
-            progressContainer.setVisibility(View.VISIBLE);
-        }
-        else {
-            progressContainer.setVisibility(GONE);
-        }
-
-
-    }
 
     /**
      *
@@ -763,7 +621,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onTokenRetrievalError(String s) {
-        closeBottomSheetsIfOpen();
         showToast(s);
     }
 
@@ -832,79 +689,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View v = inflater.inflate(R.layout.avsvbv_layout, null, false);
-
-
-        final TextInputEditText addressEt = (TextInputEditText) v.findViewById(R.id.rave_billAddressEt);
-        final TextInputEditText stateEt = (TextInputEditText) v.findViewById(R.id.rave_billStateEt);
-        final TextInputEditText cityEt = (TextInputEditText) v.findViewById(R.id.rave_billCityEt);
-        final TextInputEditText zipCodeEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
-        final TextInputEditText countryEt = (TextInputEditText) v.findViewById(R.id.rave_countryEt);
-        final TextInputEditText addressTil = (TextInputEditText) v.findViewById(R.id.rave_billAddressTil);
-        final TextInputEditText stateTil = (TextInputEditText) v.findViewById(R.id.rave_billStateTil);
-        final TextInputEditText cityTil = (TextInputEditText) v.findViewById(R.id.rave_billCityTil);
-        final TextInputEditText zipCodeTil = (TextInputEditText) v.findViewById(R.id.rave_zipTil);
-        final TextInputEditText countryTil = (TextInputEditText) v.findViewById(R.id.rave_countryTil);
-
-        Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
-
-        zipBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean valid = true;
-
-                String address = addressEt.getText().toString();
-                String state = stateEt.getText().toString();
-                String city = cityEt.getText().toString();
-                String zipCode = zipCodeEt.getText().toString();
-                String country = countryEt.getText().toString();
-
-                addressTil.setError(null);
-                stateTil.setError(null);
-                cityTil.setError(null);
-                zipCodeTil.setError(null);
-                countryTil.setError(null);
-
-                if (address.length() == 0) {
-                    valid = false;
-                    addressTil.setError("Enter a valid address");
-                }
-
-                if (state.length() == 0) {
-                    valid = false;
-                    stateTil.setError("Enter a valid state");
-                }
-
-                if (city.length() == 0) {
-                    valid = false;
-                    cityTil.setError("Enter a valid city");
-                }
-
-                if (zipCode.length() == 0) {
-                    valid = false;
-                    zipCodeTil.setError("Enter a valid zip code");
-                }
-
-                if (country.length() == 0) {
-                    valid = false;
-                    countryTil.setError("Enter a valid country");
-                }
-
-                if (valid) {
-                    dialog.dismiss();
-                    presenter.chargeCardWithAVSModel(payload, address, city, zipCode, country, state,
-                            AVS_VBVSECURECODE, ravePayInitializer.getSecretKey());
-                }
-
-            }
-        });
-
-        builder.setView(v);
-        dialog = builder.show();
-
+        this.payLoad = payload;
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent,FOR_AVBVV);
     }
 
     /**
@@ -916,59 +705,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
-
-        this.flwRef = flwRef;
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        // Configure the client to use when opening URLs
-        webView.setWebViewClient(new MyBrowser());
-        // Load the initial URL
-        webView.loadUrl(authurl);
-        bottomSheetBehaviorVBV.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-    // Manages the behavior when URLs are loaded
-    private class MyBrowser extends WebViewClient {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.loadUrl(request.getUrl().toString());
-            }
-            return true;
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            showFullProgressIndicator(true);
-
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            showFullProgressIndicator(false);
-
-            if (initialUrl == null) {
-                initialUrl = url;
-            }
-            else {
-                if (url.contains("/complete") || url.contains("submitting_mock_form")) {
-                    presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey(), shouldISaveThisCard); // requery transaction when a url with /complete or /submit...
-                    //is hit
-                }
-            }
-            Log.d("URLS", url);
-
-        }
+        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra("theme",ravePayInitializer.getTheme());
+        startActivityForResult(intent,FOR_INTERNET_BANKING);
     }
 
     private class ExpiryWatcher implements TextWatcher {

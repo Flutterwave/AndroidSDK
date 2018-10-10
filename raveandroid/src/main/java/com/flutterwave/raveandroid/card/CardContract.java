@@ -35,8 +35,6 @@ public interface CardContract {
 
         void onPaymentFailed(String status, String responseAsString);
 
-        void showFullProgressIndicator(boolean active);
-
         void showSavedCards(List<SavedCard> cards);
 
         void onTokenRetrieved(String flwRef, String cardBIN, String token);

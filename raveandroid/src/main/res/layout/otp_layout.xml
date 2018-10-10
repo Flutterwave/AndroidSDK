@@ -33,6 +33,7 @@
         android:textColor="#333333"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
+        android:id="@+id/otpChargeMessage"
         android:layout_marginLeft="30dp"
         android:text="@string/enter_your_one_ntime_password_otp"
         android:gravity="center_vertical|center_horizontal"
