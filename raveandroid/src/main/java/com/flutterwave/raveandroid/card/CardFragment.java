@@ -347,6 +347,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
             if (progessDialog == null) {
                 progessDialog = new ProgressDialog(getActivity());
+                progessDialog.setCanceledOnTouchOutside(false);
                 progessDialog.setMessage("Please wait...");
             }
 

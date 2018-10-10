@@ -167,6 +167,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         if (getActivity().isFinishing()) { return; }
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setMessage("Please wait...");
         }
 
