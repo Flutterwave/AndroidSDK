@@ -50,9 +50,9 @@ public class CreditCardView extends TextInputEditText {
         if (mCCPatterns == null) {
             mCCPatterns = new SparseArray<>();
             // With spaces for credit card masking
-            mCCPatterns.put(R.drawable.visa, Pattern.compile(
+            mCCPatterns.put(R.drawable.visa_logo_new, Pattern.compile(
                     "^4[0-9]{2,12}(?:[0-9]{3})?$"));
-            mCCPatterns.put(R.drawable.mastercard, Pattern.compile(
+            mCCPatterns.put(R.drawable.master_card_logo_svg, Pattern.compile(
                     "^5[1-5][0-9]{1,14}$"));
             mCCPatterns.put(R.drawable.amex, Pattern.compile(
                     "^3[47][0-9]{1,13}$"));
