@@ -245,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.add_vendor_layout, null);
         dialogBuilder.setView(dialogView);
-        final String[] vendorDetails={null,null};
         final EditText vendorReferenceET = (EditText) dialogView.findViewById(R.id.vendorReferecnceET);
         final EditText vendorRatioET = (EditText) dialogView.findViewById(R.id.vendorRatioET);
         Button addVendorBtn = (Button) dialogView.findViewById(R.id.doneDialogBtn);
