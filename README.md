@@ -87,7 +87,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
 | onStagingEnv(boolean) | Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to false  | `boolean` | Not Required
 | allowSaveCardFeature(boolean) | Set to `true` if you want your users to be able to save their cards for later reuse otherwise set to `false` | `boolean` | Required
 | setMeta(`List<Meta>`) | Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects | List<Meta> | Not Required
-|setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Useful for marketplace apps | `List<SubAccount>` | Not Required
+|setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people | `List<SubAccount>` | Not Required
 | withTheme(styleId) | Sets the theme of the UI. | `int` | Not Required
 | setPaymentPlan(payment_plan) | If you want to do recurrent payment, this is the payment plan ID to use for the recurring payment, you can see how to create payment plans [here](https://flutterwavedevelopers.readme.io/v2.0/reference#create-payment-plan) and [here](https://flutterwavedevelopers.readme.io/docs/recurring-billing). This is only available for card payments | `String` | Not Required
 | initialize() | Launch the Rave Payment UI  |  N/A | Required

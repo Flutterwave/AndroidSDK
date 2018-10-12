@@ -273,9 +273,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if(subAccounts.size()!=0){
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+vendorReferenceET.getText().toString());
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+vendorReferenceET.getText().toString()+"("+vendorRatioET.getText().toString()+")");
                 }else{
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+vendorReferenceET.getText().toString());
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+vendorReferenceET.getText().toString()+"("+vendorRatioET.getText().toString()+")");
                 }
                 subAccounts.add(new SubAccount(vendorReferenceET.getText().toString().trim(),vendorRatioET.getText().toString().trim()));
                 alertDialog.dismiss();
