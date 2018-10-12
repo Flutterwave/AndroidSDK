@@ -245,10 +245,10 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.add_vendor_layout, null);
         dialogBuilder.setView(dialogView);
-        final EditText vendorReferenceET = (EditText) dialogView.findViewById(R.id.vendorReferecnceET);
-        final EditText vendorRatioET = (EditText) dialogView.findViewById(R.id.vendorRatioET);
-        Button addVendorBtn = (Button) dialogView.findViewById(R.id.doneDialogBtn);
-        Button cancelDialogBtn = (Button) dialogView.findViewById(R.id.cancelDialogBtn);
+        final EditText vendorReferenceET = dialogView.findViewById(R.id.vendorReferecnceET);
+        final EditText vendorRatioET = dialogView.findViewById(R.id.vendorRatioET);
+        Button addVendorBtn = dialogView.findViewById(R.id.doneDialogBtn);
+        Button cancelDialogBtn = dialogView.findViewById(R.id.cancelDialogBtn);
         final AlertDialog alertDialog = dialogBuilder.create();
         cancelDialogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,11 +260,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Boolean valid = true;
-                if(vendorReferenceET.getText().toString().length()<1){
+                String vendorRef = vendorReferenceET.getText().toString().trim();
+                String vendorRatio = vendorRatioET.getText().toString().trim();
+
+                if(vendorRef.length()<1){
                     vendorReferenceET.setError("Vendor reference is required");
                     valid =  false;
                 }
-                if(vendorRatioET.getText().toString().length()<1){
+                if(vendorRatioET.length()<1){
                     vendorRatioET.setError("Vendor ratio is required");
                     valid =  false;
                 }
@@ -272,11 +275,11 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if(subAccounts.size()!=0){
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+vendorReferenceET.getText().toString()+"("+vendorRatioET.getText().toString()+")");
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+ vendorRef +"("+ vendorRatio+")");
                 }else{
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+vendorReferenceET.getText().toString()+"("+vendorRatioET.getText().toString()+")");
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+ vendorRef +"("+vendorRatio+")");
                 }
-                subAccounts.add(new SubAccount(vendorReferenceET.getText().toString().trim(),vendorRatioET.getText().toString().trim()));
+                subAccounts.add(new SubAccount(vendorRef,vendorRatio));
                 alertDialog.dismiss();
             }
         });
