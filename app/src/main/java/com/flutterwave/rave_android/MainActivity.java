@@ -1,13 +1,18 @@
 package com.flutterwave.rave_android;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Meta;
@@ -15,6 +20,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayManager;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.responses.SubAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +39,18 @@ public class MainActivity extends AppCompatActivity {
     EditText fNameEt;
     EditText lNameEt;
     Button startPayBtn;
+    Button addVendorBtn;
+    Button clearVendorBtn;
     SwitchCompat cardSwitch;
     SwitchCompat accountSwitch;
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
+    SwitchCompat addSubAccountsSwitch;
     List<Meta> meta = new ArrayList<>();
+    List<SubAccount> subAccounts = new ArrayList<>();
+    LinearLayout addSubaccountsLayout;
+    TextView vendorListTXT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +73,16 @@ public class MainActivity extends AppCompatActivity {
         isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
+        addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
+        addVendorBtn = findViewById(R.id.addVendorBtn);
+        clearVendorBtn = findViewById(R.id.clearVendorsBtn);
+        vendorListTXT = findViewById(R.id.refIdsTV);
+        vendorListTXT.setText("Your current vendor refs are: ");
 
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
         secretKeyEt.setText(RaveConstants.PRIVATE_KEY);
+
+        addSubaccountsLayout = findViewById(R.id.addSubAccountsLayout);
 
         meta.add(new Meta("test key 1", "test value 1"));
         meta.add(new Meta("test key 2", "test value 2"));
@@ -75,7 +94,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        addSubAccountsSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if(checked){
+                    addSubaccountsLayout.setVisibility(View.VISIBLE);
+                }else {
+                    clear();
+                }
+            }
+        });
 
+        addVendorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addVendorDialog();
+            }
+        });
+        clearVendorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clear();
+            }
+        });
+    }
+
+    private void clear(){
+        subAccounts.clear();
+        vendorListTXT.setText("Your current vendor refs are: ");
+        addSubaccountsLayout.setVisibility(View.GONE);
+        addSubAccountsSwitch.setChecked(false);
     }
 
     private void validateEntries() {
@@ -144,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptCardPayments(cardSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
+                    .setSubAccounts(subAccounts)
 //                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
@@ -188,6 +237,51 @@ public class MainActivity extends AppCompatActivity {
         countryEt.setError(null);
         fNameEt.setError(null);
         lNameEt.setError(null);
+    }
+
+    private void addVendorDialog(){
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        // ...Irrelevant code for customizing the buttons and title
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_vendor_layout, null);
+        dialogBuilder.setView(dialogView);
+        final String[] vendorDetails={null,null};
+        final EditText vendorReferenceET = (EditText) dialogView.findViewById(R.id.vendorReferecnceET);
+        final EditText vendorRatioET = (EditText) dialogView.findViewById(R.id.vendorRatioET);
+        Button addVendorBtn = (Button) dialogView.findViewById(R.id.doneDialogBtn);
+        Button cancelDialogBtn = (Button) dialogView.findViewById(R.id.cancelDialogBtn);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        cancelDialogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        addVendorBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Boolean valid = true;
+                if(vendorReferenceET.getText().toString().length()<1){
+                    vendorReferenceET.setError("Vendor reference is required");
+                    valid =  false;
+                }
+                if(vendorRatioET.getText().toString().length()<1){
+                    vendorRatioET.setError("Vendor ratio is required");
+                    valid =  false;
+                }
+                if(!valid){
+                    return;
+                }
+                if(subAccounts.size()!=0){
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+vendorReferenceET.getText().toString());
+                }else{
+                    vendorListTXT.setText(vendorListTXT.getText().toString()+vendorReferenceET.getText().toString());
+                }
+                subAccounts.add(new SubAccount(vendorReferenceET.getText().toString().trim(),vendorRatioET.getText().toString().trim()));
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
 }

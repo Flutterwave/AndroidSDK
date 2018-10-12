@@ -242,6 +242,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     .setIP(Utils.getDeviceImei(getActivity())).setTxRef(txRef)
                     .setAccountbank(selectedBank.getBankcode())
                     .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
                     .setAccountnumber(accountNo);
 
             Payload body = builder.createBankPayload();

@@ -8,8 +8,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
+import com.flutterwave.raveandroid.responses.SubAccount;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;
@@ -133,10 +133,31 @@ public class Utils {
         }
     }
 
+
+    public static List<SubAccount> pojofySubaccountString(String subaccount) {
+        try {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<SubAccount>>() {
+            }.getType();
+            return gson.fromJson(subaccount, type);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public static String stringifyMeta(List<Meta> meta) {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Meta>>() {}.getType();
         return gson.toJson(meta, type);
+    }
+
+    public static String stringifySubaccounts(List<SubAccount> subAccounts) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<SubAccount>>() {}.getType();
+        return gson.toJson(subAccounts, type);
     }
 
     public static String getEncryptedData(String unEncryptedString, String secret) {

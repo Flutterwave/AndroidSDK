@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.responses.SubAccount;
+
 import java.util.List;
 
 public class PayloadBuilder {
@@ -30,6 +32,7 @@ public class PayloadBuilder {
 
     private String txRef;
     private String meta = "";
+    private String subAccounts = "";
 
     public PayloadBuilder setCustomer_phone(String customer_phone) {
         this.customer_phone = customer_phone;
@@ -139,8 +142,9 @@ public class PayloadBuilder {
 
     public Payload createPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
 
-        Payload payload = new Payload(metaObj, narration, expirymonth,
+        Payload payload = new Payload(metaObj,subaccountsObj, narration, expirymonth,
                 pbfPubKey, ip, lastname,
                 firstname, currency, country,
                 amount, email, expiryyear,
@@ -156,7 +160,8 @@ public class PayloadBuilder {
 
     public Payload createBankPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        Payload payload = new Payload(metaObj, narration, ip, accountnumber, accountbank, lastname,
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
 
@@ -165,7 +170,8 @@ public class PayloadBuilder {
 
     public Payload createMpesaPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        Payload payload = new Payload(phonenumber, metaObj, narration, ip, lastname,
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj,subaccountsObj, narration, ip, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("mpesa");
         payload.setIs_mpesa("1");
@@ -175,7 +181,8 @@ public class PayloadBuilder {
 
     public Payload createGhMobileMoneyPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        Payload payload = new Payload(phonenumber, metaObj, narration, ip, lastname,
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setIs_mobile_money_gh("1");
         payload.setPayment_type("mobilemoneygh");
@@ -185,6 +192,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setMeta(String meta) {
         this.meta = meta;
+        return this;
+    }
+
+    public PayloadBuilder setSubAccount(String subAccounts) {
+        this.subAccounts = subAccounts;
         return this;
     }
 

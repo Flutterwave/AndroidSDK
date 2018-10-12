@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.responses.SubAccount;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class Payload
 
     private String is_mpesa_lipa;
 
-    public Payload(List<Meta> meta, String narration,
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration,
                    String expirymonth, String PBFPubKey, String IP, String lastname,
                    String firstname, String currency, String country, String amount,
                    String email, String expiryyear, String cvv, String device_fingerprint,
@@ -78,6 +79,7 @@ public class Payload
         this.expirymonth = expirymonth;
         this.PBFPubKey = PBFPubKey;
         this.IP = IP;
+        this.subaccounts = subaccounts;
         this.lastname = lastname;
         this.firstname = firstname;
         this.currency = currency;
@@ -137,7 +139,7 @@ public class Payload
     private String billingstate;
     private String billingcountry;
 
-    public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
                    String email, String device_fingerprint, String txRef, String PBFPubKey,
                    String billingaddress, String billingcity, String billingstate, String billingzip, String billingcountry) {
@@ -159,6 +161,7 @@ public class Payload
         this.billingcity = billingcity;
         this.billingcountry = billingcountry;
         this.billingzip = billingzip;
+        this.subaccounts = subaccounts;
 
         if (meta == null) {
             meta = new ArrayList<>();
@@ -171,6 +174,7 @@ public class Payload
 
     public Payload(String phonenumber,
                    List<Meta> meta,
+                   List<SubAccount> subaccounts,
                    String narration,
                    String IP,
                    String lastname,
@@ -183,6 +187,7 @@ public class Payload
                    String txRef,
                    String PBFPubKey) {
         this.meta = meta;
+        this.subaccounts = subaccounts;
         this.narration = narration;
         this.IP = IP;
         this.phonenumber = phonenumber;
@@ -205,10 +210,11 @@ public class Payload
 
     }
 
-    public Payload(List<Meta> meta, String narration, String IP, String accountnumber, String accountbank,
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
                    String email, String device_fingerprint, String txRef, String PBFPubKey) {
         this.meta = meta;
+        this.subaccounts = subaccounts;
         this.narration = narration;
         this.IP = IP;
         this.accountnumber = accountnumber;
@@ -304,6 +310,8 @@ public class Payload
     private String suggestedAuth;
 
     private List<Meta> meta;
+
+    private List<SubAccount> subaccounts;
 
     public String getBillingzip() {
         return billingzip;

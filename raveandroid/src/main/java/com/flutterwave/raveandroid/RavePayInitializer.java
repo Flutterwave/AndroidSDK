@@ -21,6 +21,7 @@ public class RavePayInitializer {
     String fName;
     String lName;
     String meta;
+    String subAccounts;
     String payment_plan;
     boolean withMpesa = false;
     boolean withCard = true;
@@ -35,7 +36,7 @@ public class RavePayInitializer {
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney, int theme,
-                              boolean staging, boolean allowSaveCard, String meta, String payment_plan) {
+                              boolean staging, boolean allowSaveCard, String meta, String subAccounts, String payment_plan) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -54,6 +55,7 @@ public class RavePayInitializer {
         this.staging = staging;
         this.allowSaveCard = allowSaveCard;
         this.meta = meta;
+        this.subAccounts = subAccounts;
         this.payment_plan = payment_plan;
     }
 
@@ -75,6 +77,10 @@ public class RavePayInitializer {
     public void setMeta(String meta) {
         this.meta = meta;
     }
+
+    public String getSubAccount(){return subAccounts;}
+
+    public void setSubAccount(String subAccounts){this.subAccounts=subAccounts;}
 
     public boolean isAllowSaveCard() {
         return allowSaveCard;

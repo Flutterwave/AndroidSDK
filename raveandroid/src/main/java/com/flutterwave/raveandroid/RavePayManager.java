@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.responses.SubAccount;
+
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
@@ -25,6 +26,7 @@ public class RavePayManager {
     private String fName = "";
     private String lName = "";
     private String meta = "";
+    private String subAccounts = "";
     private String payment_plan;
     private Activity activity;
     boolean withCard = true;
@@ -76,6 +78,11 @@ public class RavePayManager {
 
     public RavePayManager setMeta(List<Meta> meta) {
         this.meta = Utils.stringifyMeta(meta);
+        return this;
+    }
+
+    public RavePayManager setSubAccounts(List<SubAccount> subAccounts){
+        this.subAccounts = Utils.stringifySubaccounts(subAccounts);
         return this;
     }
 
@@ -150,6 +157,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, allowSaveCard, meta, payment_plan);
+        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, allowSaveCard, meta, subAccounts, payment_plan);
     }
 }
