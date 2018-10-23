@@ -326,7 +326,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     @Override
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
-        mView.showProgressIndicator(true);
+
         boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
 
         if (wasTxSuccessful) {
