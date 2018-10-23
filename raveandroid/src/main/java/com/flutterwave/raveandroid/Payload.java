@@ -26,6 +26,8 @@ public class Payload
         return remember_device_mobile_key;
     }
 
+    private String bvn;
+
     public void setRemember_device_mobile_key(String remember_device_mobile_key) {
         this.remember_device_mobile_key = remember_device_mobile_key;
     }
@@ -116,6 +118,14 @@ public class Payload
 
     public void setBillingaddress(String billingaddress) {
         this.billingaddress = billingaddress;
+    }
+
+    public String getBVN() {
+        return bvn;
+    }
+
+    public void setBVN(String bvn){
+        this.bvn = bvn;
     }
 
     public String getBillingstate() {
@@ -212,7 +222,7 @@ public class Payload
 
     public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String txRef, String PBFPubKey) {
+                   String email, String device_fingerprint, String txRef, String PBFPubKey,String bvn) {
         this.meta = meta;
         this.subaccounts = subaccounts;
         this.narration = narration;
@@ -228,6 +238,7 @@ public class Payload
         this.device_fingerprint = device_fingerprint;
         this.txRef = txRef;
         this.PBFPubKey = PBFPubKey;
+        this.bvn = bvn;
 
         if (meta == null) {
             meta = new ArrayList<>();

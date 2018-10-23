@@ -66,12 +66,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private TextInputEditText amountEt;
     private TextInputLayout amountTil;
     private TextInputEditText emailEt;
-    private TextInputLayout emailTil;
+    private TextInputLayout emailTil,rave_bvnTil;
     private TextInputEditText phoneEt;
     private TextInputLayout phoneTil;
     private String flwRef;
     private RavePayInitializer ravePayInitializer;
-    private EditText dateOfBirthEt;
+    private EditText dateOfBirthEt,bvnEt;
     Calendar calendar = Calendar.getInstance();
 
     public AccountFragment() {
@@ -97,11 +97,13 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
         emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
         emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        rave_bvnTil = (TextInputLayout) v.findViewById(R.id.rave_bvnTil);
         accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
         accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
         payButton = (Button) v.findViewById(R.id.rave_payButton);
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
+        bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
 
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -167,6 +169,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         phoneTil.setErrorEnabled(false);
         bankEt.setError(null);
         dateOfBirthEt.setError(null);
+        rave_bvnTil.setError(null);
 
         boolean valid = true;
 
@@ -175,6 +178,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         String email = emailEt.getText().toString();
         String phone = phoneEt.getText().toString();
         String dob = dateOfBirthEt.getText().toString();
+        String bvn = bvnEt.getText().toString().trim();
 
         if (phone.length() < 1) {
             valid = false;
@@ -216,7 +220,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         }
         else {
             //for Zenith Bank
-            if (selectedBank.getBankcode().equals("057")){
+            if (selectedBank.getBankcode().equals("057") || selectedBank.getBankcode().equals("033")){
                 if (dob.length() != 10) {
                     valid = false;
                     dateOfBirthEt.setError("Enter a valid date of birth");
@@ -224,6 +228,13 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                 else {
                     dob = dob.replace("/", "");
                 }
+            }
+        }
+
+        if(selectedBank.getBankcode().equals("033")){
+            if(bvn.length() != 11){
+                rave_bvnTil.setError("Enter a valid BVN");
+                valid = false;
             }
         }
 
@@ -243,7 +254,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     .setAccountbank(selectedBank.getBankcode())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setAccountnumber(accountNo);
+                    .setAccountnumber(accountNo)
+                    .setBVN(bvn);
 
             Payload body = builder.createBankPayload();
             body.setPasscode(dob);
@@ -305,11 +317,16 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     accountNumberTil.setVisibility(View.VISIBLE);
                 }
 
-                if (selectedBank.getBankcode().equals("057")) {
+                if (selectedBank.getBankcode().equals("057")  || selectedBank.getBankcode().equals("033")) {
                     dateOfBirthEt.setVisibility(View.VISIBLE);
                 }
                 else {
                     dateOfBirthEt.setVisibility(View.GONE);
+                }
+                if(selectedBank.getBankcode().equals("033")){
+                    rave_bvnTil.setVisibility(View.VISIBLE);
+                }else{
+                    rave_bvnTil.setVisibility(View.GONE);
                 }
             }
         });
@@ -492,7 +509,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             formattedDay = dayOfMonth + "";
         }
 
-        if (String.valueOf(month).length() != 2) {
+        if (String.valueOf(month + 1).length() != 2) {
                formattedMonth = "0" + (month + 1);
         }
         else {

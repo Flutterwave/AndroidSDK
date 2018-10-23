@@ -20,6 +20,7 @@ public class PayloadBuilder {
     private String cardno;
     private String payment_plan;
     private String network;
+    private String bvn;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -72,6 +73,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setIP(String ip) {
         this.ip = ip;
+        return this;
+    }
+
+    public PayloadBuilder setBVN(String bvn){
+        this.bvn = bvn;
         return this;
     }
 
@@ -162,7 +168,7 @@ public class PayloadBuilder {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
         Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn);
         payload.setPayment_type("account");
 
         return payload;
