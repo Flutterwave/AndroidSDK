@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.28'
+	     compile 'com.github.Flutterwave:rave-android:1.0.28'
 	}
 
 **Step 3.** Add the required permission
@@ -87,7 +87,7 @@ Set the public key, private key and other required parameters. The `RavePayManag
 | onStagingEnv(boolean) | Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to false  | `boolean` | Not Required
 | allowSaveCardFeature(boolean) | Set to `true` if you want your users to be able to save their cards for later reuse otherwise set to `false` | `boolean` | Required
 | setMeta(`List<Meta>`) | Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects | List<Meta> | Not Required
-|setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccount` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
+|setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccout` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
 | withTheme(styleId) | Sets the theme of the UI. | `int` | Not Required
 | setPaymentPlan(payment_plan) | If you want to do recurrent payment, this is the payment plan ID to use for the recurring payment, you can see how to create payment plans [here](https://flutterwavedevelopers.readme.io/v2.0/reference#create-payment-plan) and [here](https://flutterwavedevelopers.readme.io/docs/recurring-billing). This is only available for card payments | `String` | Not Required
 | initialize() | Launch the Rave Payment UI  |  N/A | Required
@@ -121,7 +121,7 @@ The intent's `message` object contains the raw JSON response from the Rave API. 
 ###  3. Customize the look
 You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors
 
-    <style name="DefaultTheme" parent="AppTheme.NoActionBar">
+        <style name="DefaultTheme" parent="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -133,6 +133,14 @@ You can apply a new look by changing the color of certain parts of the UI to hig
         <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
         <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
     </style>
+## Configuring Proguard
+To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
+```
+keepclasseswithmembers public class com.flutterwave.raveandroid.** { *; }
+
+dontwarn com.flutterwave.raveandroid.card.CardFragment
+```
+
 
 ##  Help
 * Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtMjU2MjkyNDM5MTcxLWFlOWNlYmE5MTIxNjAwYzc5MDVjZjNhYTJjNTA0ZTQyNDJlMDhhZjJkN2QwZGJmNWMyODhlYjMwNGUyZDQxNTE) for support
