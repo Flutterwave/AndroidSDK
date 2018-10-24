@@ -137,7 +137,6 @@ You can apply a new look by changing the color of certain parts of the UI to hig
 To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
 ```
 keepclasseswithmembers public class com.flutterwave.raveandroid.** { *; }
-
 dontwarn com.flutterwave.raveandroid.card.CardFragment
 ```
 
