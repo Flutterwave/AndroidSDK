@@ -21,7 +21,7 @@ public interface AccountContract {
 
         void onGetBanksRequestFailed(String message);
 
-        void validateAccountCharge(String pbfPubKey, String flwRef);
+        void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction);
 
         void onDisplayInternetBankingPage(String authurl, String flwRef);
 

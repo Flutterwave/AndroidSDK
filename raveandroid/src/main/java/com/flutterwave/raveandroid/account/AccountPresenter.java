@@ -84,7 +84,16 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                          mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
                      }
                      else {
-                         mView.validateAccountCharge(payload.getPBFPubKey(), flwRef);
+                         if (response.getData().getValidateInstruction() != null) {
+                             mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
+                         }
+                         else if (response.getData().getValidateInstructions() != null &&
+                                 response.getData().getValidateInstructions().getInstruction() != null) {
+                             mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
+                         }
+                         else {
+                             mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, null);
+                         }
                      }
                  }
 

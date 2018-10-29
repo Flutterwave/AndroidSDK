@@ -170,6 +170,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         bankEt.setError(null);
         dateOfBirthEt.setError(null);
         rave_bvnTil.setError(null);
+        rave_bvnTil.setErrorEnabled(false);
 
         boolean valid = true;
 
@@ -369,10 +370,13 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void validateAccountCharge(String pbfPubKey, String flwRef) {
+    public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        if (validateInstruction != null) {
+            intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
+        }
         intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_0TP);
     }

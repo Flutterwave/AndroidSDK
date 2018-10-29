@@ -35,7 +35,7 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void validateAccountCharge(String pbfPubKey, String flwRef) {
+    public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
 
     }
 
