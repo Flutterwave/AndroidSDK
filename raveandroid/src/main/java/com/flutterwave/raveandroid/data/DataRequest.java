@@ -14,6 +14,7 @@ public interface DataRequest {
 
     interface NetworkRequest {
         void chargeCard(ChargeRequestBody chargeRequestBody, Callbacks.OnChargeRequestComplete callback);
+        void chargeGhanaMobileMoneyWallet(ChargeRequestBody chargeRequestBody, Callbacks.OnGhanaChargeRequestComplete callback);
         void validateChargeCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void validateAccountCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void requeryTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);

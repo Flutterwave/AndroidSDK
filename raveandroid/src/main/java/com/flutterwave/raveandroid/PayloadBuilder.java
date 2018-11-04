@@ -21,6 +21,7 @@ public class PayloadBuilder {
     private String payment_plan;
     private String network;
     private String bvn;
+    private String voucher;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -63,6 +64,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setExpirymonth(String expirymonth) {
         this.expirymonth = expirymonth;
+        return this;
+    }
+
+    public PayloadBuilder setVoucher(String voucher) {
+        this.voucher = voucher;
         return this;
     }
 
@@ -192,6 +198,7 @@ public class PayloadBuilder {
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setIs_mobile_money_gh("1");
         payload.setPayment_type("mobilemoneygh");
+        payload.setVoucher(voucher);
         payload.setNetwork(network);
         return payload;
     }

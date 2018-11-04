@@ -8,6 +8,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 import com.google.gson.Gson;
@@ -61,7 +62,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
         createService();
 
-//        Call<ChargeResponse> call = service.charge(body);
         Call<String> call = service.charge(body);
 
         call.enqueue(new Callback<String>() {
@@ -72,6 +72,43 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     Gson gson = new Gson();
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
+                    callback.onSuccess(chargeResponse, response.body());
+                }
+                else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+
+    }
+
+    @Override
+    public void chargeGhanaMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
+
+        createService();
+
+        Call<String> call = service.charge(body);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.isSuccessful()) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<GhChargeResponse>() {}.getType();
+                    GhChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
                 }
                 else {

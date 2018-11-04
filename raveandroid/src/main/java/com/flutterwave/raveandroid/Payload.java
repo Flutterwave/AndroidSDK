@@ -572,7 +572,11 @@ public class Payload
 
     public String network;
 
+    public String voucher;
 
+    public void setVoucher(String voucher) {
+        this.voucher = voucher;
+    }
 
     public void setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
