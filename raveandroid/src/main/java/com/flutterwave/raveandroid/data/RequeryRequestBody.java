@@ -6,25 +6,15 @@ package com.flutterwave.raveandroid.data;
 
 public class RequeryRequestBody {
 
-    String SECKEY;
-
-    public String getTx_Ref() {
-        return tx_ref;
+    public String getPBFPubKey() {
+        return PBFPubKey;
     }
 
-    public void setTx_Ref(String tx_ref) {
-        this.tx_ref = tx_ref;
+    public void setPBFPubKey(String PBFPubKey) {
+        this.PBFPubKey = PBFPubKey;
     }
 
-    String tx_ref;
-
-    public String getSECKEY() {
-        return SECKEY;
-    }
-
-    public void setSECKEY(String SECKEY) {
-        this.SECKEY = SECKEY;
-    }
+    String PBFPubKey;
 
     public String getFlw_ref() {
         return flw_ref;

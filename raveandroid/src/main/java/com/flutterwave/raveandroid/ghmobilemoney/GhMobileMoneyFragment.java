@@ -276,9 +276,9 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String secretKey) {
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTxv2(flwRef, txRef, secretKey);
+            presenter.requeryTx(flwRef, txRef, publicKey);
         }
     }
 
@@ -313,7 +313,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-                presenter.chargeGhMobileMoney(payload, ravePayInitializer.getSecretKey());
+                presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
 
             }

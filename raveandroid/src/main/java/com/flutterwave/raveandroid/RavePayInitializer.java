@@ -13,7 +13,7 @@ public class RavePayInitializer {
     String email;
     double amount;
     String publicKey;
-    String secretKey;
+    String encryptionKey;
     String txRef;
     String narration;
     String currency;
@@ -32,7 +32,7 @@ public class RavePayInitializer {
     boolean staging = true;
 
     public RavePayInitializer(String email, double amount, String publicKey,
-                              String secretKey, String txRef, String narration,
+                              String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney, int theme,
@@ -40,7 +40,7 @@ public class RavePayInitializer {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
-        this.secretKey = secretKey;
+        this.encryptionKey = encryptionKey;
         this.txRef = txRef;
         this.narration = narration;
         this.currency = currency;
@@ -154,12 +154,12 @@ public class RavePayInitializer {
         this.publicKey = publicKey;
     }
 
-    public String getSecretKey() {
-        return secretKey;
+    public String getEncryptionKey() {
+        return encryptionKey;
     }
 
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
+    public void setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
     }
 
     public String getTxRef() {

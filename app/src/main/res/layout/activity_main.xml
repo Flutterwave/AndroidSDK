@@ -155,8 +155,8 @@
                     android:textSize="14sp"
                     android:layout_marginBottom="10dp"
                     android:text=""
-                    android:hint="@string/secret_key"
-                    android:id="@+id/secretKeyEt"
+                    android:hint="@string/encryption_key"
+                    android:id="@+id/encryptionEt"
                     />
 
                 <EditText

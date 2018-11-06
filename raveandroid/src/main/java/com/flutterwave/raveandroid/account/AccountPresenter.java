@@ -58,10 +58,10 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
     @Override
-    public void chargeAccount(final Payload payload, final boolean internetBanking) {
+    public void chargeAccount(final Payload payload, String encryptionKey, final boolean internetBanking) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, payload.getPBFSecKey());
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -184,10 +184,10 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
 
-    public void requeryTx(String flwRef, String SECKEY) {
+    public void requeryTx(String flwRef, String publicKey) {
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
-        body.setSECKEY(SECKEY);
+        body.setPBFPubKey(publicKey);
 
         mView.showProgressIndicator(true);
 

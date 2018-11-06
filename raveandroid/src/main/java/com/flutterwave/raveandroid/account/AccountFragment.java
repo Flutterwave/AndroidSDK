@@ -261,8 +261,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             Payload body = builder.createBankPayload();
             body.setPasscode(dob);
             body.setPhonenumber(phone);
-            body.setPBFSecKey(ravePayInitializer.getSecretKey());
-            body.setSECKEY(ravePayInitializer.getSecretKey());
 
             if ((selectedBank.getBankcode().equalsIgnoreCase("058") ||
                     selectedBank.getBankcode().equalsIgnoreCase("011"))
@@ -388,7 +386,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
             }else if(requestCode==FOR_INTERNET_BANKING){
-                presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
+                presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
         }else{
             super.onActivityResult(requestCode, resultCode, data);
@@ -436,7 +434,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onValidateSuccessful(String flwRef, String responseAsJsonString) {
-        presenter.requeryTx(flwRef, ravePayInitializer.getSecretKey());
+        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
     }
 
     @Override
@@ -463,7 +461,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                presenter.chargeAccount(payload, internetbanking);
+                presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
             }
         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override

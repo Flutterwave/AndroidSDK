@@ -47,7 +47,7 @@ public interface AccountContract {
     interface UserActionsListener {
         void getBanks();
 
-        void chargeAccount(Payload body, boolean internetBanking);
+        void chargeAccount(Payload body, String encryptionKey, boolean internetBanking);
 
         void validateAccountCharge(String flwRef, String otp, String publicKey);
 

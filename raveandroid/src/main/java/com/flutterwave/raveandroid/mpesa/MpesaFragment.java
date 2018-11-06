@@ -80,10 +80,10 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String secretKey) {
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
 
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTxv2(flwRef, txRef, secretKey);
+            presenter.requeryTx(flwRef, txRef, publicKey);
         }
 
     }
@@ -239,7 +239,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
             public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
 
-        presenter.chargeMpesa(payload, ravePayInitializer.getSecretKey());
+        presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
 
 
             }
