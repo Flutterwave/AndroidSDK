@@ -35,12 +35,6 @@ public class RavePayManager {
     boolean withGHMobileMoney = false;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
-    boolean allowSaveCard = true;
-
-    public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
-        this.allowSaveCard = allowSaveCard;
-        return this;
-    }
 
     public RavePayManager onStagingEnv(boolean staging) {
         this.staging = staging;
@@ -157,6 +151,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, allowSaveCard, meta, subAccounts, payment_plan);
+        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, meta, subAccounts, payment_plan);
     }
 }
