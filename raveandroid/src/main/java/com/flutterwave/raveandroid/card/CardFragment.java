@@ -157,10 +157,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             amountEt.setText(String.valueOf(amountToPay));
         }
 
-        if (!ravePayInitializer.isAllowSaveCard()) {
-            saveCardSwitch.setVisibility(GONE);
-        }
-
         return v;
     }
 
