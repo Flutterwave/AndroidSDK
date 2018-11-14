@@ -10,7 +10,8 @@ public class RaveConstants {
 //    public static String PUBLIC_KEY = "";
 //    public static String PRIVATE_KEY = "";
     public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test
-    public static String PRIVATE_KEY = "FLWSECK-bb971402072265fb156e90a3578fe5e6-X"; //test
+//    public static String ENCRYPTION_KEY = "FLWSECK-bb971402072265fb156e90a3578fe5e6-X"; //test
+    public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";
     public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
     public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     public static String VBV = "VBVSECURECODE";

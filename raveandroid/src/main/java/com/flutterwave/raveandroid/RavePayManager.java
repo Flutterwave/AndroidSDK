@@ -18,7 +18,7 @@ public class RavePayManager {
     private String email;
     private double amount = -1;
     private String publicKey;
-    private String secretKey;
+    private String encryptionKey;
     private String txRef;
     private String narration = "";
     private String currency = "NGN";
@@ -110,8 +110,8 @@ public class RavePayManager {
         return this;
     }
 
-    public RavePayManager setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
+    public RavePayManager setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
         return this;
     }
 
@@ -163,6 +163,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, secretKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, allowSaveCard, meta, subAccounts, payment_plan, isPreAuth);
-    }
+        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, meta, subAccounts, payment_plan, isPreAuth);
+       }
 }

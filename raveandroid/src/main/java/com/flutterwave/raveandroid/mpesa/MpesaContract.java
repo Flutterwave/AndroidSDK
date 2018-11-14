@@ -11,7 +11,7 @@ public interface MpesaContract {
     interface View {
         void showProgressIndicator(boolean active);
         void showPollingIndicator(boolean active);
-        void onPollingRoundComplete(String flwRef, String txRef, String secretKey);
+        void onPollingRoundComplete(String flwRef, String txRef, String encryptionKey);
         void onPaymentError(String message);
         void showToast(String message);
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
@@ -22,7 +22,7 @@ public interface MpesaContract {
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
-        void chargeMpesa(Payload payload, String secretKey);
-        void requeryTxv2(String flwRef, String txRef, String secretKey);
+        void chargeMpesa(Payload payload, String encryptionKey);
+        void requeryTx(String flwRef, String txRef, String publicKey);
     }
 }

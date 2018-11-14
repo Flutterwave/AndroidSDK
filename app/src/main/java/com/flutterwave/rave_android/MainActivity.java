@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     EditText emailEt;
     EditText amountEt;
     EditText publicKeyEt;
-    EditText secretKeyEt;
+    EditText encryptionKeyEt;
     EditText txRefEt;
     EditText narrationEt;
     EditText currencyEt;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         emailEt = findViewById(R.id.emailEt);
         amountEt = findViewById(R.id.amountEt);
         publicKeyEt = findViewById(R.id.publicKeyEt);
-        secretKeyEt = findViewById(R.id.secretKeyEt);
+        encryptionKeyEt = findViewById(R.id.encryptionEt);
         txRefEt = findViewById(R.id.txRefEt);
         narrationEt = findViewById(R.id.narrationTV);
         currencyEt = findViewById(R.id.currencyEt);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         vendorListTXT.setText("Your current vendor refs are: ");
 
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
-        secretKeyEt.setText(RaveConstants.PRIVATE_KEY);
+        encryptionKeyEt.setText(RaveConstants.ENCRYPTION_KEY);
 
         addSubaccountsLayout = findViewById(R.id.addSubAccountsLayout);
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         String email = emailEt.getText().toString();
         String amount = amountEt.getText().toString();
         String publicKey = publicKeyEt.getText().toString();
-        String secretKey = secretKeyEt.getText().toString();
+        String encryptionKey = encryptionKeyEt.getText().toString();
         String txRef = txRefEt.getText().toString();
         String narration = narrationEt.getText().toString();
         String currency = currencyEt.getText().toString();
@@ -158,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
             publicKeyEt.setError("A valid public key is required");
         }
 
-        if (secretKey.length() < 1){
+        if (encryptionKey.length() < 1){
             valid = false;
-            secretKeyEt.setError("A valid secret key is required");
+            encryptionKeyEt.setError("A valid encryption key is required");
         }
 
         if (txRef.length() < 1){
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     .setlName(lName)
                     .setNarration(narration)
                     .setPublicKey(publicKey)
-                    .setSecretKey(secretKey)
+                    .setEncryptionKey(encryptionKey)
                     .setTxRef(txRef)
                     .acceptMpesaPayments(isMpesaSwitch.isChecked())
                     .acceptAccountPayments(accountSwitch.isChecked())
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         emailEt.setError(null);
         amountEt.setError(null);
         publicKeyEt.setError(null);
-        secretKeyEt.setError(null);
+        encryptionKeyEt.setError(null);
         txRefEt.setError(null);
         narrationEt.setError(null);
         currencyEt.setError(null);

@@ -20,6 +20,8 @@ public class PayloadBuilder {
     private String cardno;
     private String payment_plan;
     private String network;
+    private String bvn;
+    private String voucher;
     private boolean isPreAuth = false;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
@@ -66,6 +68,11 @@ public class PayloadBuilder {
         return this;
     }
 
+    public PayloadBuilder setVoucher(String voucher) {
+        this.voucher = voucher;
+        return this;
+    }
+
     public PayloadBuilder setPBFPubKey(String pbfPubKey) {
         this.pbfPubKey = pbfPubKey;
         return this;
@@ -73,6 +80,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setIP(String ip) {
         this.ip = ip;
+        return this;
+    }
+
+    public PayloadBuilder setBVN(String bvn){
+        this.bvn = bvn;
         return this;
     }
 
@@ -172,7 +184,7 @@ public class PayloadBuilder {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
         Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn);
         payload.setPayment_type("account");
 
         if(isPreAuth == true) {
@@ -203,6 +215,7 @@ public class PayloadBuilder {
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setIs_mobile_money_gh("1");
         payload.setPayment_type("mobilemoneygh");
+        payload.setVoucher(voucher);
         payload.setNetwork(network);
         if(isPreAuth == true) {
             payload.setCharge_type("preauth");

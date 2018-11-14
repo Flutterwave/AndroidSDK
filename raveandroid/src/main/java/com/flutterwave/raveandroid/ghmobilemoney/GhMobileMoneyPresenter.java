@@ -15,6 +15,7 @@ import com.flutterwave.raveandroid.data.RequeryRequestBodyv2;
 import com.flutterwave.raveandroid.mpesa.MpesaContract;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
@@ -65,9 +66,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     }
 
     @Override
-    public void chargeGhMobileMoney(Payload payload, final String secretKey) {
+    public void chargeGhMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -78,9 +79,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        new NetworkRequestImpl().chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(GhChargeResponse response, String responseAsJSONString) {
 
                 mView.showProgressIndicator(false);
 
@@ -89,7 +90,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                     String flwRef = response.getData().getFlwRef();
                     String txRef = response.getData().getTx_ref();
-                    requeryTxv2(flwRef, txRef, secretKey);
+                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
                     mView.onPaymentError("No response data was returned");
@@ -106,25 +107,26 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     }
 
     @Override
-    public void requeryTxv2(final String flwRef, final String txRef, final String secretKey) {
+    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
 
-        RequeryRequestBodyv2 body = new RequeryRequestBodyv2();
-        body.setTxref(txRef);
-        body.setSECKEY(secretKey);
+        RequeryRequestBody body = new RequeryRequestBody();
+        body.setFlw_ref(flwRef);
+        body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
 
-        new NetworkRequestImpl().requeryTxv2(body, new Callbacks.OnRequeryRequestv2Complete() {
+        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
-            public void onSuccess(RequeryResponsev2 response, String responseAsJSONString) {
+            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
-                else if (response.getData().getChargecode().equals("02")){
-                    mView.onPollingRoundComplete(flwRef, txRef, secretKey);
+                else if (response.getData().getChargeResponseCode().equals("02")){
+                    mView.onPollingRoundComplete(flwRef, txRef, publicKey);
                 }
-                else if (response.getData().getChargecode().equals("00")) {
-                    requeryTx(flwRef, secretKey);
+                else if (response.getData().getChargeResponseCode().equals("00")) {
+                    mView.showPollingIndicator(false);
+                    mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 }
                 else {
                     mView.showProgressIndicator(false);
@@ -135,31 +137,6 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             @Override
             public void onError(String message, String responseAsJSONString) {
                 mView.onPaymentFailed(message, responseAsJSONString);
-            }
-        });
-
-    }
-
-    private void requeryTx(final String flwRef, final String SECKEY) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setSECKEY(SECKEY);
-
-        mView.showPollingIndicator(false);
-        mView.showProgressIndicator(true);
-
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentSuccessful(response.getData().getStatus(), flwRef, responseAsJSONString);
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentSuccessful(message, flwRef, responseAsJSONString);
             }
         });
     }

@@ -30,7 +30,7 @@ public interface ApiService {
     Call<String> validateAccountCharge(@Body ValidateChargeBody body);
 //    Call<ChargeResponse> validateAccountCharge(@Body ValidateChargeBody body);
 
-    @POST("/flwv3-pug/getpaidx/api/verify")
+    @POST("/flwv3-pug/getpaidx/api/verify/mpesa")
     Call<String> requeryTx(@Body RequeryRequestBody body);
 //    Call<RequeryResponse> requeryTx(@Body RequeryRequestBody body);
 

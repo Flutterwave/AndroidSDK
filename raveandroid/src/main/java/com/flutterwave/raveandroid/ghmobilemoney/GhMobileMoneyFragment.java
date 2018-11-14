@@ -9,13 +9,16 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
@@ -42,6 +45,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private ProgressDialog pollingProgressDialog ;
     GhMobileMoneyPresenter presenter;
     Spinner networkSpinner;
+    TextView instructionsTv;
+    TextInputEditText voucherEt;
+    TextInputLayout voucherTil;
+    String validateInstructions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +63,9 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
         phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
         networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
+        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
+        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
+        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
 
         Button payButton = (Button) v.findViewById(R.id.rave_payButton);
 
@@ -80,15 +90,67 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         networkSpinner.setAdapter(adapter);
 
+        final String vodafoneInstruction = getResources().getString(R.string.vodafone_msg);
+        final String[] networks = getResources().getStringArray(R.array.gh_mobile_money_networks);
+        final String mtnValidateInstruction = getResources().getString(R.string.mtn_validate_instructions);
+        final String tigoValidateInstruction = getResources().getString(R.string.tigo_validate_instructions);
+
+        networkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position < networks.length) {
+                    String network = networks[position];
+
+                    if (position == 0) {
+                        showInstructionsAndVoucher(false);
+                        validateInstructions = "Checking transaction status. \nPlease wait";
+                    }
+
+                    if (network.equalsIgnoreCase("mtn")) {
+                        validateInstructions = mtnValidateInstruction;
+                        showInstructionsAndVoucher(false);
+                    }
+                    else if (network.equalsIgnoreCase("tigo")) {
+                        validateInstructions =  tigoValidateInstruction;
+                        showInstructionsAndVoucher(false);
+                    }
+                    else if (network.equalsIgnoreCase("vodafone")) {
+                        validateInstructions = "Checking transaction status. \nPlease wait";
+                        showInstructionsAndVoucher(true);
+                        instructionsTv.setText(Html.fromHtml(vodafoneInstruction));
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                showInstructionsAndVoucher(false);
+            }
+        });
+
         return v;
+    }
+
+    private void showInstructionsAndVoucher(boolean show) {
+
+        if (show) {
+            voucherTil.setVisibility(View.VISIBLE);
+            instructionsTv.setVisibility(View.VISIBLE);
+        }
+        else {
+            voucherTil.setVisibility(View.GONE);
+            instructionsTv.setVisibility(View.GONE);
+        }
     }
 
     private void clearErrors() {
         amountTil.setError(null);
         phoneTil.setError(null);
+        voucherTil.setError(null);
 
         amountTil.setErrorEnabled(false);
         phoneTil.setErrorEnabled(false);
+        voucherTil.setErrorEnabled(false);
 
     }
 
@@ -100,6 +162,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         String amount = amountEt.getText().toString();
         String phone = phoneEt.getText().toString();
+        String voucher = voucherEt.getText().toString();
 
         try {
             double amnt = Double.parseDouble(amount);
@@ -127,6 +190,11 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             showToast("Select a network");
         }
 
+        if (voucherTil.getVisibility() == View.VISIBLE && voucher.length() == 0) {
+            valid = false;
+            voucherTil.setError("Enter a valid voucher code");
+        }
+
         if (valid) {
 
             ravePayInitializer.setAmount(Double.parseDouble(amount));
@@ -145,6 +213,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setNetwork(network)
+                    .setVoucher(voucher)
                     .setPhonenumber(phone)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
@@ -160,8 +229,6 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
 
     }
-
-
 
     @Override
     public void showProgressIndicator(boolean active) {
@@ -187,11 +254,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         if(pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
+            pollingProgressDialog.setCanceledOnTouchOutside(false);
+            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL PAYMENT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -209,9 +277,9 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String secretKey) {
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTxv2(flwRef, txRef, secretKey);
+            presenter.requeryTx(flwRef, txRef, publicKey);
         }
     }
 
@@ -246,7 +314,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-                presenter.chargeGhMobileMoney(payload, ravePayInitializer.getSecretKey());
+                presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
 
             }
@@ -267,6 +335,8 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
+
+        if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) { pollingProgressDialog.dismiss(); }
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {

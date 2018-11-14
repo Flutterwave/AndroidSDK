@@ -23,6 +23,15 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         android:paddingTop="10dp"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            tools:text="@string/vodafone_msg"
+            android:id="@+id/instructionsTv"
+            android:layout_marginBottom="20dp"
+            />
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -34,6 +43,7 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:id="@+id/rave_amountTil"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
@@ -43,7 +53,6 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
                 android:id="@+id/rave_amountTV"
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/rave_card1"
-                android:layout_marginBottom="10dp"
                 />
 
         </android.support.design.widget.TextInputLayout>
@@ -51,7 +60,7 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         <android.support.design.widget.TextInputLayout
             android:id="@+id/rave_phoneTil"
             android:layout_width="match_parent"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
@@ -60,7 +69,23 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rave_card1"
                 android:hint="Phone no"
-                android:inputType="numberDecimal" />
+                android:inputType="phone" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/rave_voucherTil"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/rave_voucherEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rave_card1"
+                android:hint="Voucher"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 

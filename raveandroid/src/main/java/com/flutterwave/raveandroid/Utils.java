@@ -18,11 +18,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -60,9 +70,8 @@ public class Utils {
             JSONObject jsonData = jsonObject.getJSONObject("data");
             String status = jsonData.getString("status");
             String txAmount = jsonData.getString("amount");
-            String txCurrency = jsonData.getString("transaction_currency");
-            JSONObject flwMetaJsonObject = jsonData.getJSONObject("flwMeta");
-            String chargeResponse = flwMetaJsonObject.getString("chargeResponse");
+            String txCurrency = jsonData.getString("currency");
+            String chargeResponse = jsonData.getString("chargeResponseCode");
 
             if (areAmountsSame(amount, txAmount) &&
                     chargeResponse.equalsIgnoreCase("00") &&
@@ -160,14 +169,36 @@ public class Utils {
         return gson.toJson(subAccounts, type);
     }
 
-    public static String getEncryptedData(String unEncryptedString, String secret) {
+    public static byte[] RSAEncrypt(String plaintext){
+        PublicKey key = getKey("baA/RgjURU3I0uqH3iRos3NbE8fT+lP8SDXKymsnfdPrMQAEoMBuXtoaQiJ1i5tuBG9EgSEOH1LAZEaAsvwClw==");
+        byte[] ciphertext = null;
         try {
-            // hash the secret
-            String md5Hash = getMd5(secret);
-            String cleanSecret = secret.replace(TARGET, "");
-            int hashLength = md5Hash.length();
-            String encryptionKey = cleanSecret.substring(0, 12).concat(md5Hash.substring(hashLength - 12, hashLength));
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            ciphertext = cipher.doFinal(plaintext.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ciphertext;
+    }
 
+    public static PublicKey getKey(String key){
+        try{
+            byte[] byteKey = Base64.decode(key.getBytes(Charset.forName("UTF-16")), Base64.DEFAULT);
+            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+
+            return kf.generatePublic(X509publicKey);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static String getEncryptedData(String unEncryptedString, String encryptionKey) {
+        try {
             return encrypt(unEncryptedString, encryptionKey);
         }catch (Exception e){
             e.printStackTrace();

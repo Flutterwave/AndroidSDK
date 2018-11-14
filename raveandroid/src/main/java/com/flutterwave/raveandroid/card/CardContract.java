@@ -61,27 +61,23 @@ public interface CardContract {
 
         void onNoAuthInternationalSuggested(Payload payload);
 
-        void onNoAuthUsed(String flwRef, String secretKey);
+        void onNoAuthUsed(String flwRef, String publicKey);
     }
 
     interface UserActionsListener {
-        void chargeCard(Payload payload, String secretKey);
+        void chargeCard(Payload payload, String encryptionKey);
 
-        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String secretKey);
+        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
 
-        void validateCardCharge(String flwRef, String otp, String PBFPubKey);
+        void validateCardCharge(String flwRef, String otp, String publicKey);
 
-        void requeryTx(String flwRef, String SECKEY, boolean shouldISaveCard);
-
-        void requeryTxForToken(String flwRef, String SECKEY);
+        void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
 
         void savePotentialCardDets(String cardFirst6, String cardLast4);
 
         void onSavedCardsClicked(String email);
 
         void chargeToken(Payload payload);
-
-        void saveThisCard(String email, String flwRef, String secretKey);
 
         void fetchFee(Payload payload, int reason);
 
@@ -94,7 +90,7 @@ public interface CardContract {
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
-                                    String country, String state, String avsVbvsecurecode, String secretKey);
+                                    String country, String state, String avsVbvsecurecode, String encryptionKey);
     }
 
 }

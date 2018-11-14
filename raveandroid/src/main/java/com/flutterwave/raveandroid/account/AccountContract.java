@@ -21,7 +21,7 @@ public interface AccountContract {
 
         void onGetBanksRequestFailed(String message);
 
-        void validateAccountCharge(String pbfPubKey, String flwRef);
+        void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction);
 
         void onDisplayInternetBankingPage(String authurl, String flwRef);
 
@@ -47,7 +47,7 @@ public interface AccountContract {
     interface UserActionsListener {
         void getBanks();
 
-        void chargeAccount(Payload body, boolean internetBanking);
+        void chargeAccount(Payload body, String encryptionKey, boolean internetBanking);
 
         void validateAccountCharge(String flwRef, String otp, String publicKey);
 

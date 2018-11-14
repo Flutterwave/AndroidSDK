@@ -13,7 +13,7 @@ public class RavePayInitializer {
     String email;
     double amount;
     String publicKey;
-    String secretKey;
+    String encryptionKey;
     String txRef;
     String narration;
     String currency;
@@ -28,20 +28,19 @@ public class RavePayInitializer {
     boolean withAccount = true;
     boolean withGHMobileMoney = false;
     int theme;
-    boolean allowSaveCard;
     boolean staging = true;
     boolean isPreAuth = false;
 
     public RavePayInitializer(String email, double amount, String publicKey,
-                              String secretKey, String txRef, String narration,
+                              String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney, int theme,
-                              boolean staging, boolean allowSaveCard, String meta, String subAccounts, String payment_plan, boolean isPreAuth) {
+                              boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
-        this.secretKey = secretKey;
+        this.encryptionKey = encryptionKey;
         this.txRef = txRef;
         this.narration = narration;
         this.currency = currency;
@@ -54,7 +53,6 @@ public class RavePayInitializer {
         this.withCard = withCard;
         this.theme = theme;
         this.staging = staging;
-        this.allowSaveCard = allowSaveCard;
         this.meta = meta;
         this.subAccounts = subAccounts;
         this.payment_plan = payment_plan;
@@ -83,14 +81,6 @@ public class RavePayInitializer {
     public String getSubAccount(){return subAccounts;}
 
     public void setSubAccount(String subAccounts){this.subAccounts=subAccounts;}
-
-    public boolean isAllowSaveCard() {
-        return allowSaveCard;
-    }
-
-    public void setAllowSaveCard(boolean allowSaveCard) {
-        this.allowSaveCard = allowSaveCard;
-    }
 
     public boolean isStaging() {
         return staging;
@@ -156,12 +146,12 @@ public class RavePayInitializer {
         this.publicKey = publicKey;
     }
 
-    public String getSecretKey() {
-        return secretKey;
+    public String getEncryptionKey() {
+        return encryptionKey;
     }
 
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
+    public void setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
     }
 
     public String getTxRef() {

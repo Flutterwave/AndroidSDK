@@ -82,7 +82,6 @@ public class RavePayActivity extends AppCompatActivity {
             BASE_URL = RaveConstants.LIVE_URL;
         }
 
-        secretKey = ravePayInitializer.getSecretKey();
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         pager = (ViewPager) findViewById(R.id.pager);
         permissionsRequiredLayout = (RelativeLayout) findViewById(R.id.rave_permission_required_layout);
@@ -145,10 +144,6 @@ public class RavePayActivity extends AppCompatActivity {
                 permissionsRequiredLayout.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    public static String getSecretKey() {
-        return secretKey;
     }
 
     public RavePayInitializer getRavePayInitializer() {

@@ -4,7 +4,7 @@ package com.flutterwave.raveandroid.responses;
  * Created by hamzafetuga on 18/07/2017.
  */
 
-public class ChargeResponse {
+public class GhChargeResponse {
     String status;
     String message;
     Data data;
@@ -33,33 +33,11 @@ public class ChargeResponse {
         this.data = data;
     }
 
-    public static class AccountValidateInstructions {
-        public String getInstruction() {
-            return instruction;
-        }
-
-        String instruction;
-
-    }
-
-
     public static class Data {
         String suggested_auth;
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
-
-        public AccountValidateInstructions getValidateInstructions() {
-            return validateInstructions;
-        }
-
-        AccountValidateInstructions validateInstructions;
-
-        public String getValidateInstruction() {
-            return validateInstruction;
-        }
-
-        String validateInstruction;
 
         public String getTx_ref() {
             return txRef;

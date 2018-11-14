@@ -22,6 +22,10 @@ public class RequeryResponse {
 
     public static class Data {
 
+        String chargeResponseCode;
+
+        public String getChargeResponseCode() { return chargeResponseCode; }
+
         public CardDets getCard() {
             return card;
         }

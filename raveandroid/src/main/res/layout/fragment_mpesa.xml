@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rave_card1"
                 android:hint="Phone no e.g. 254xxxxxxxxx"
-                android:inputType="numberDecimal" />
+                android:inputType="phone" />
 
         </android.support.design.widget.TextInputLayout>
 

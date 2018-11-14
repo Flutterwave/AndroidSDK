@@ -22,6 +22,8 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
 
+import okhttp3.internal.Util;
+
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
@@ -39,12 +41,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCard(final Payload payload, final String secretKey) {
+    public void chargeCard(final Payload payload, final String encryptionKey) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -98,7 +98,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             else if (authModelUsed.equalsIgnoreCase(RaveConstants.NOAUTH)) {
                                 String flwRef = response.getData().getFlwRef();
 
-                                mView.onNoAuthUsed(flwRef, secretKey);
+                                mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
                             }
                         }
                     }
@@ -118,7 +118,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode, String country, String state, String authModel, String secretKey) {
+    public void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode, String country, String state, String authModel, String encryptionKey) {
 
         payload.setSuggestedAuth(authModel);
         payload.setBillingaddress(address);
@@ -128,7 +128,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setBillingstate(state);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -188,7 +188,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String secretKey) {
+    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
@@ -200,7 +200,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setSuggestedAuth(authModel);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, secretKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
 //        Log.d("encrypted", encryptedCardRequestBody);
 
@@ -300,19 +300,17 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void requeryTx(final String flwRef, final String SECKEY, final boolean shouldISaveCard) {
+    public void requeryTx(final String flwRef, final String publicKey, final boolean shouldISaveCard) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
-        body.setSECKEY(SECKEY);
-
+        body.setPBFPubKey(publicKey);
 
         mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-
                 mView.showProgressIndicator(false);
                 mView.onRequerySuccessful(response, responseAsJSONString, flwRef);
             }
@@ -326,7 +324,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     @Override
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
-        mView.showProgressIndicator(true);
+
         boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
 
         if (wasTxSuccessful) {
@@ -351,26 +349,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showSavedCards(cards);
 
-    }
-
-    @Override
-    public void saveThisCard(String email, String flwRef, String secretKey) {
-        SharedPrefsRequestImpl sharedPrefsRequest = new SharedPrefsRequestImpl(context);
-        CardDetsToSave cardDetsToSave = sharedPrefsRequest.retrieveCardDetsToSave();
-
-        if (cardDetsToSave.getFirst6().length() == 6 && cardDetsToSave.getLast4().length() == 4) {
-            try {
-                //// TODO: 25/07/2017 take to another thread
-                SavedCard card = new SavedCard();
-                card.setFirst6(cardDetsToSave.getFirst6());
-                card.setLast4(cardDetsToSave.getLast4());
-                card.setFlwRef(Utils.encryptRef(secretKey, flwRef));
-                sharedPrefsRequest.saveACard(card, secretKey, email);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -423,57 +401,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         if (cards == null || cards.size() == 0) {
             mView.hideSavedCardsButton();
         }
-    }
-
-    @Override
-    public void requeryTxForToken(final String flwRef, final String SECKEY) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setSECKEY(SECKEY);
-
-        mView.showProgressIndicator(true);
-
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String tokenResponseAsJSONString) {
-                if (response.getStatus() != null
-                        && response.getStatus().contains("success")) {
-
-                    if (response.getData() != null)
-                    {
-                        try {
-                            List<RequeryResponse.Card_tokens> cardTokens = response.getData()
-                                    .getCard()
-                                    .getCard_tokens();
-
-                            String token = cardTokens
-                                    .get(cardTokens.size() - 1)
-                                    .getEmbedtoken();
-
-                            String cardBin = response.getData().getCard().getCardBIN();
-
-                            mView.onTokenRetrieved(flwRef, cardBin, token);
-                        }
-                        catch (NullPointerException e){
-                            e.printStackTrace();
-                            mView.onTokenRetrievalError("An error occurred while retrieving card details");
-                        }
-                    }
-                    else {
-                        mView.onTokenRetrievalError("An error occurred while retrieving card details");
-                    }
-                }
-                else {
-                    mView.onTokenRetrievalError("An error occurred while retrieving card details");
-                }
-            }
-
-            @Override
-            public void onError(String message, String tokenResponseAsJSONString) {
-                mView.onTokenRetrievalError(message);
-            }
-        });
     }
 
     @Override
