@@ -75,7 +75,8 @@ public class Utils {
 
             if (areAmountsSame(amount, txAmount) &&
                     chargeResponse.equalsIgnoreCase("00") &&
-                    status.contains("success") &&
+                    (status.contains("success") |
+                     status.contains("pending-capture")) &&
                     currency.equalsIgnoreCase(txCurrency)) {
                 Log.d("RAVE TX V", "true");
                 return true;

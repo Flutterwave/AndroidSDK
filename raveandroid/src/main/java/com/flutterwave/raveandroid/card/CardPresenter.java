@@ -46,7 +46,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
-        ChargeRequestBody body = new ChargeRequestBody();
+        final ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
         body.setPBFPubKey(payload.getPBFPubKey());
         body.setClient(encryptedCardRequestBody);
