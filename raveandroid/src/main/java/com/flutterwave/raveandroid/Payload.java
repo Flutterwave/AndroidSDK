@@ -22,6 +22,8 @@ public class Payload
 
     private String remember_device_email;
 
+    private String charge_type;
+
     public String getRemember_device_mobile_key() {
         return remember_device_mobile_key;
     }
@@ -258,6 +260,14 @@ public class Payload
 
     public void setPayment_plan(String payment_plan) {
         this.payment_plan = payment_plan;
+    }
+
+    public String getCharge_type() {
+        return charge_type;
+    }
+
+    public void setCharge_type(String charge_type){
+        this.charge_type = charge_type;
     }
 
     public void setToken(String token) {

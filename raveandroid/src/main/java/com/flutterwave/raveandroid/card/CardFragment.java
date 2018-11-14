@@ -304,6 +304,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 .setExpiryyear(expiryDate.substring(3,5)).setExpirymonth(expiryDate.substring(0,2))
                 .setMeta(ravePayInitializer.getMeta())
                 .setSubAccount(ravePayInitializer.getSubAccount())
+                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                 .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
 
             if (ravePayInitializer.getPayment_plan() != null) {

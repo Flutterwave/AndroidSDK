@@ -243,6 +243,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     .setAccountbank(selectedBank.getBankcode())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setAccountnumber(accountNo);
 
             Payload body = builder.createBankPayload();

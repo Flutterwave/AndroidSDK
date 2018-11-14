@@ -20,6 +20,7 @@ public class PayloadBuilder {
     private String cardno;
     private String payment_plan;
     private String network;
+    private boolean isPreAuth = false;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -82,6 +83,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setFirstname(String firstname) {
         this.firstname = firstname;
+        return this;
+    }
+
+    public PayloadBuilder setIsPreAuth(boolean isPreAuth){
+        this.isPreAuth = isPreAuth;
         return this;
     }
 
@@ -155,6 +161,10 @@ public class PayloadBuilder {
             payload.setPayment_plan(payment_plan);
         }
 
+        if(isPreAuth == true) {
+            payload.setCharge_type("preauth");
+        }
+
         return payload;
     }
 
@@ -164,6 +174,10 @@ public class PayloadBuilder {
         Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
+
+        if(isPreAuth == true) {
+            payload.setCharge_type("preauth");
+        }
 
         return payload;
     }
@@ -176,6 +190,9 @@ public class PayloadBuilder {
         payload.setPayment_type("mpesa");
         payload.setIs_mpesa("1");
         payload.setIs_mpesa_lipa("1");
+        if(isPreAuth == true) {
+            payload.setCharge_type("preauth");
+        }
         return payload;
     }
 
@@ -187,6 +204,9 @@ public class PayloadBuilder {
         payload.setIs_mobile_money_gh("1");
         payload.setPayment_type("mobilemoneygh");
         payload.setNetwork(network);
+        if(isPreAuth == true) {
+            payload.setCharge_type("preauth");
+        }
         return payload;
     }
 
