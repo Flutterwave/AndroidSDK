@@ -45,7 +45,7 @@ Add the `READ_PHONE_PERMISSION` and `INTERNET` permissions to your android manif
 ## Usage
 
 ###  1. Create a `RavePayManager` instance
-Set the public key, private key and other required parameters. The `RavePayManager` accepts a mandatory instance of  the calling `Activity`
+Set the public key, encryption key and other required parameters. The `RavePayManager` accepts a mandatory instance of  the calling `Activity`
 
         new RavePayManager(activity).setAmount(amount)
                         .setCountry(country)
