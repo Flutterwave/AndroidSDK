@@ -173,7 +173,7 @@ public class PayloadBuilder {
             payload.setPayment_plan(payment_plan);
         }
 
-        if(isPreAuth == true) {
+        if(isPreAuth) {
             payload.setCharge_type("preauth");
         }
 
@@ -187,10 +187,6 @@ public class PayloadBuilder {
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn);
         payload.setPayment_type("account");
 
-        if(isPreAuth == true) {
-            payload.setCharge_type("preauth");
-        }
-
         return payload;
     }
 
@@ -202,9 +198,6 @@ public class PayloadBuilder {
         payload.setPayment_type("mpesa");
         payload.setIs_mpesa("1");
         payload.setIs_mpesa_lipa("1");
-        if(isPreAuth == true) {
-            payload.setCharge_type("preauth");
-        }
         return payload;
     }
 
@@ -217,9 +210,6 @@ public class PayloadBuilder {
         payload.setPayment_type("mobilemoneygh");
         payload.setVoucher(voucher);
         payload.setNetwork(network);
-        if(isPreAuth == true) {
-            payload.setCharge_type("preauth");
-        }
         return payload;
     }
 
