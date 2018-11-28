@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.31'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.32'
 	}
 
 **Step 3.** Add the required permission
@@ -60,6 +60,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
                         .acceptAccountPayments(boolean)
                         .acceptCardPayments(boolean)
                         .acceptMpesaPayments(boolean)
+                        .acceptAchPayments(boolean)
                         .acceptGHMobileMoneyPayments(boolean)
                         .onStagingEnv(boolean)
                         .allowSaveCardFeature(boolean)
@@ -85,6 +86,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | acceptCardPayments(boolean) | Set to `true` if you want to accept payments via bank accounts, else set to `false` | `boolean` | Not Required |
 | acceptMpesaPayments(boolean) | Set to `true` if you want to accept Mpesa payments, else set to `false` . For this option to work, you should set your country to `KE` and your currency to `KES` | `boolean` | Not Required |
 | acceptGHMobileMoneyPayments(boolean) | Set to `true` if you want to accept Ghana mobile money payments, else set to `false` . For this option to work, you should set your country to `GH` and your currency to `GHS`| `boolean` | Not Required |
+| acceptAchPayments(boolean) | Set to `true` if you want to accept US ACH charges from your customers, else set to `false` . For this option to work, you should set your country to `US` and your currency to `USD`. You also have to set `acceptAccountPayments(true)`| `boolean` | Not Required |
 | onStagingEnv(boolean) | Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to false  | `boolean` | Not Required
 | setMeta(`List<Meta>`) | Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects | List<Meta> | Not Required
 | setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccout` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
