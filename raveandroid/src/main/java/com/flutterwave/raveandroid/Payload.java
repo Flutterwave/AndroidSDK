@@ -18,6 +18,8 @@ public class Payload
 
     private String cardBIN;
 
+    private boolean is_us_bank_charge;
+
     private String remember_device_mobile_key;
 
     private String remember_device_email;
@@ -224,7 +226,7 @@ public class Payload
 
     public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String lastname, String firstname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String txRef, String PBFPubKey,String bvn) {
+                   String email, String device_fingerprint, String txRef, String PBFPubKey, String bvn, boolean is_us_bank_charge) {
         this.meta = meta;
         this.subaccounts = subaccounts;
         this.narration = narration;
@@ -241,6 +243,7 @@ public class Payload
         this.txRef = txRef;
         this.PBFPubKey = PBFPubKey;
         this.bvn = bvn;
+        this.is_us_bank_charge = is_us_bank_charge;
 
         if (meta == null) {
             meta = new ArrayList<>();
@@ -590,6 +593,14 @@ public class Payload
 
     public void setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
+    }
+
+    public boolean isIs_us_bank_charge() {
+        return is_us_bank_charge;
+    }
+
+    public void setIs_us_bank_charge(boolean is_us_bank_charge) {
+        this.is_us_bank_charge = is_us_bank_charge;
     }
 }
 

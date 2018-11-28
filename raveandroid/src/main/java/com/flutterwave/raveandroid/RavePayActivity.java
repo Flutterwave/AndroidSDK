@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.flutterwave.raveandroid.account.AccountFragment;
+import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
@@ -96,7 +97,12 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         if (ravePayInitializer.isWithAccount()) {
-            raveFragments.add(new RaveFragment(new AccountFragment(), "Account"));
+            if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
+                raveFragments.add(new RaveFragment(new AchFragment(), "ACH"));
+            }
+            else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")){
+                raveFragments.add(new RaveFragment(new AccountFragment(), "Account"));
+            }
         }
 
         if (ravePayInitializer.isWithMpesa()) {

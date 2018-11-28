@@ -72,6 +72,9 @@ public class ChargeResponse {
         String txRef;
         String chargeResponseMessage;
         String authurl;
+        String appFee;
+        String currency;
+        String charged_amount;
 
         public String getRedirectUrl() {
             return redirectUrl;
@@ -104,5 +107,28 @@ public class ChargeResponse {
             return suggested_auth;
         }
 
+        public String getAppFee() {
+            return appFee;
+        }
+
+        public void setAppFee(String appFee) {
+            this.appFee = appFee;
+        }
+
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
+
+        public String getChargedAmount() {
+            return charged_amount;
+        }
+
+        public void setChargedAmount(String charged_amount) {
+            this.charged_amount = charged_amount;
+        }
     }
 }

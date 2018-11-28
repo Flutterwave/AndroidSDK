@@ -23,6 +23,7 @@ public class PayloadBuilder {
     private String bvn;
     private String voucher;
     private boolean isPreAuth = false;
+    private boolean is_us_bank_charge = false;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -100,6 +101,11 @@ public class PayloadBuilder {
 
     public PayloadBuilder setIsPreAuth(boolean isPreAuth){
         this.isPreAuth = isPreAuth;
+        return this;
+    }
+
+    public PayloadBuilder setIsUsBankCharge(boolean is_us_bank_charge){
+        this.is_us_bank_charge = is_us_bank_charge;
         return this;
     }
 
@@ -184,7 +190,7 @@ public class PayloadBuilder {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
         Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn);
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn, is_us_bank_charge);
         payload.setPayment_type("account");
 
         return payload;

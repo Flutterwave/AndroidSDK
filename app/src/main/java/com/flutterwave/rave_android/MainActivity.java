@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
+    SwitchCompat accountAchSwitch;
     SwitchCompat addSubAccountsSwitch;
     SwitchCompat isPreAuthSwitch;
     List<Meta> meta = new ArrayList<>();
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         startPayBtn = findViewById(R.id.startPaymentBtn);
         cardSwitch = findViewById(R.id.cardPaymentSwitch);
         accountSwitch = findViewById(R.id.accountPaymentSwitch);
+        accountAchSwitch = findViewById(R.id.accountAchSwitch);
         isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
         isPreAuthSwitch = findViewById(R.id.isPreAuthSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptMpesaPayments(isMpesaSwitch.isChecked())
                     .acceptAccountPayments(accountSwitch.isChecked())
                     .acceptCardPayments(cardSwitch.isChecked())
+                    .acceptAchPayments(accountAchSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)

@@ -22,6 +22,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     Context context;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    String FLW_REF_KEY = "flw_ref_key";
 
     public SharedPrefsRequestImpl(Context context) {
         this.context = context;
@@ -91,5 +92,17 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
                     RaveConstants.RAVEPAY, Context.MODE_PRIVATE);
             editor = sharedPreferences.edit();
         }
+    }
+
+    @Override
+    public void saveFlwRef(String flwRef) {
+        init();
+        editor.putString(FLW_REF_KEY, flwRef).apply();
+    }
+
+    @Override
+    public String fetchFlwRef() {
+        init();
+        return sharedPreferences.getString(FLW_REF_KEY, "");
     }
 }

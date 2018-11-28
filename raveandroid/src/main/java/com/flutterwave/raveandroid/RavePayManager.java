@@ -31,6 +31,7 @@ public class RavePayManager {
     private Activity activity;
     boolean withCard = true;
     boolean withAccount = true;
+    boolean withAch = false;
     boolean withMpesa = false;
     boolean withGHMobileMoney = false;
     private int theme = R.style.DefaultTheme;
@@ -55,6 +56,11 @@ public class RavePayManager {
 
     public RavePayManager(Activity activity) {
         this.activity = activity;
+    }
+
+    public RavePayManager acceptAchPayments(boolean withAch) {
+        this.withAch = withAch;
+        return this;
     }
 
     public RavePayManager acceptCardPayments(boolean withCard) {
@@ -163,6 +169,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, meta, subAccounts, payment_plan, isPreAuth);
+        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, withAch, theme, staging, meta, subAccounts, payment_plan, isPreAuth);
        }
 }

@@ -30,5 +30,7 @@ public interface DataRequest {
         CardDetsToSave retrieveCardDetsToSave();
         void saveACard(SavedCard card, String SECKEY, String email);
         List<SavedCard> getSavedCards(String email);
+        void saveFlwRef(String flwRef);
+        String fetchFlwRef();
     }
 }
