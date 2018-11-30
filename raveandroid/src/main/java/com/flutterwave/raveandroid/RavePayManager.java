@@ -35,6 +35,7 @@ public class RavePayManager {
     boolean withGHMobileMoney = false;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
+    boolean displayFee = true;
 
     public RavePayManager onStagingEnv(boolean staging) {
         this.staging = staging;
@@ -138,6 +139,11 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager shouldDisplaFee(Boolean displayFee){
+        this.displayFee = displayFee;
+        return this;
+    }
+
     public void initialize() {
         if (activity != null) {
 
@@ -151,6 +157,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, meta, subAccounts, payment_plan);
+        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, theme, staging, meta, subAccounts, payment_plan, displayFee);
     }
 }

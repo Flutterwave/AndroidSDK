@@ -52,6 +52,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:text="Should Display Fee"
+                    android:checked="true"
+                    android:id="@+id/isDisplayFeeSwitch"
+                    />
+
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:text="Accept GH Mobile money payments"
                     android:checked="false"
                     android:id="@+id/accountGHMobileMoneySwitch"

@@ -453,24 +453,31 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
+    public void displayFee(final String charge_amount, final Payload payload, final boolean internetbanking) {
+        if(ravePayInitializer.getIsDisplayFee()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    chargeAccount(charge_amount, payload, internetbanking);
+                }
+            }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        } else {
+            chargeAccount(charge_amount, payload, internetbanking);
+        }
+    }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
 
+    private void chargeAccount(String charge_amount, final Payload payload, final boolean internetbanking){
+        presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
     }
 
     @Override

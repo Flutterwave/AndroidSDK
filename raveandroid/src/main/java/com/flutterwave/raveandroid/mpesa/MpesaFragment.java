@@ -231,26 +231,32 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-        dialog.dismiss();
+    public void displayFee(final String charge_amount, final Payload payload) {
+        if(ravePayInitializer.getIsDisplayFee()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
+                    chargeMpesa(charge_amount, payload);
+                }
+            }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+        } else {
+            chargeMpesa(charge_amount, payload);
+        }
+    }
+
+    private void chargeMpesa(String charge_amount, final Payload payload){
         presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
-
-
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
     }
 
     @Override

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
+    SwitchCompat shouldDisplayFeeSwitch;
     SwitchCompat addSubAccountsSwitch;
     List<Meta> meta = new ArrayList<>();
     List<SubAccount> subAccounts = new ArrayList<>();
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
+        shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
         addVendorBtn = findViewById(R.id.addVendorBtn);
         clearVendorBtn = findViewById(R.id.clearVendorsBtn);
@@ -193,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
+                    .shouldDisplaFee(shouldDisplayFeeSwitch.isChecked())
 //                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();

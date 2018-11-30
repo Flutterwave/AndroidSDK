@@ -629,31 +629,38 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param why
      */
     @Override
-    public void displayFee(String charge_amount, final Payload payload, final int why) {
+    public void displayFee(final String charge_amount, final Payload payload, final int why) {
+        if(ravePayInitializer.getIsDisplayFee()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                    chargeCard(charge_amount, payload, why);
 
-                if (why == RaveConstants.MANUAL_CARD_CHARGE) {
-                    presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
                 }
-                else if (why == RaveConstants.TOKEN_CHARGE) {
-                    presenter.chargeToken(payload);
+            }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
                 }
+            });
 
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+            builder.show();
+        }   else {
+            chargeCard(charge_amount, payload, why);
+        }
+    }
 
-        builder.show();
+    private void chargeCard(String charge_amount, final Payload payload, final int why){
+        if (why == RaveConstants.MANUAL_CARD_CHARGE) {
+            presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
+        }
+        else if (why == RaveConstants.TOKEN_CHARGE) {
+            presenter.chargeToken(payload);
+        }
     }
 
     /**
