@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
-                    .shouldDisplaFee(shouldDisplayFeeSwitch.isChecked())
+                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked())
 //                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();

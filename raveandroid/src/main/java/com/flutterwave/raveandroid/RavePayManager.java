@@ -139,7 +139,7 @@ public class RavePayManager {
         return this;
     }
 
-    public RavePayManager shouldDisplaFee(Boolean displayFee){
+    public RavePayManager shouldDisplayFee(Boolean displayFee){
         this.displayFee = displayFee;
         return this;
     }
