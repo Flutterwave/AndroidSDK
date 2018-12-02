@@ -306,26 +306,33 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+    public void displayFee(final String charge_amount, final Payload payload) {
+        if(ravePayInitializer.getIsDisplayFee()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-                presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
+                    chargeGhMobileMoney(charge_amount, payload);
 
+                }
+            }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+            builder.show();
+        } else {
+            chargeGhMobileMoney(charge_amount, payload);
+        }
+    }
 
-        builder.show();
+    private void chargeGhMobileMoney(String charge_amount, final Payload payload){
+        presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
     }
 
     @Override
