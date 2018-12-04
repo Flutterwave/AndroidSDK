@@ -100,6 +100,9 @@ In the calling activity, override the `onActivityResult` method to receive the p
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*
+        We advise you to do a further verification of transaction's details on your server to be sure everything checks out before providing service or goods.
+        */
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
             String message = data.getStringExtra("response");
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
