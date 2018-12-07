@@ -122,6 +122,10 @@ In the calling activity, override the `onActivityResult` method to receive the p
     }
 The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed.
 
+> **PLEASE NOTE**
+>  We advise you to do a further verification of transaction's details on your server to be
+ sure everything checks out before providing service or goods.
+
 ###  3. Customize the look
 You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors
 
