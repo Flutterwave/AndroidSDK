@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
+    SwitchCompat shouldDisplayFeeSwitch;
     SwitchCompat addSubAccountsSwitch;
     SwitchCompat isPreAuthSwitch;
     List<Meta> meta = new ArrayList<>();
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
         isPreAuthSwitch = findViewById(R.id.isPreAuthSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
+        shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
         addVendorBtn = findViewById(R.id.addVendorBtn);
@@ -199,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
                     .isPreAuth(isPreAuthSwitch.isChecked())
+                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked())
 //                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();

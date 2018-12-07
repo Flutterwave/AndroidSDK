@@ -225,7 +225,11 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
             Payload body = builder.createGhMobileMoneyPayload();
 
-            presenter.fetchFee(body);
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body);
+            } else {
+                presenter.chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
         }
 
     }

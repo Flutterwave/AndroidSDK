@@ -309,7 +309,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
             Payload body = builder.createPayload();
 
-            presenter.fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+            } else {
+                presenter.chargeCard(body, ravePayInitializer.getEncryptionKey());
+            }
 
         }
     }

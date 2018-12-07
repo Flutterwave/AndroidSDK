@@ -38,6 +38,7 @@ public class RavePayManager {
     boolean staging = true;
     boolean allowSaveCard = true;
     boolean isPreAuth =  false;
+    boolean displayFee = true;
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -156,6 +157,11 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager shouldDisplayFee(Boolean displayFee){
+        this.displayFee = displayFee;
+        return this;
+    }
+
     public void initialize() {
         if (activity != null) {
 
@@ -169,6 +175,6 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
-        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, withAch, theme, staging, meta, subAccounts, payment_plan, isPreAuth);
+        return new RavePayInitializer(email, amount, publicKey, encryptionKey, txRef, narration, currency, country, fName, lName, withCard, withAccount, withMpesa, withGHMobileMoney, withAch, theme, staging, meta, subAccounts, payment_plan, isPreAuth, displayFee);
        }
 }
