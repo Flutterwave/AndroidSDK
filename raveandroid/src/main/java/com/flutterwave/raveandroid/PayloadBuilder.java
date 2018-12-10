@@ -30,7 +30,13 @@ public class PayloadBuilder {
         return this;
     }
 
+    public PayloadBuilder setIs_mobile_money_ug(String is_mobile_money_ug) {
+        this.is_mobile_money_ug = is_mobile_money_ug;
+        return this;
+    }
+
     private String is_mobile_money_gh;
+    private String is_mobile_money_ug;
 
     private String phonenumber;
 
@@ -215,6 +221,17 @@ public class PayloadBuilder {
         payload.setIs_mobile_money_gh("1");
         payload.setPayment_type("mobilemoneygh");
         payload.setVoucher(voucher);
+        payload.setNetwork(network);
+        return payload;
+    }
+
+    public Payload createUgMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_ug("1");
+        payload.setPayment_type("mobilemoneyuganda");
         payload.setNetwork(network);
         return payload;
     }

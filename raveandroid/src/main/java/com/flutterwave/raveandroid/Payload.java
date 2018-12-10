@@ -579,6 +579,8 @@ public class Payload
 
     public String is_mobile_money_gh;
 
+    public String is_mobile_money_ug;
+
     public void setNetwork(String network) {
         this.network = network;
     }
@@ -593,6 +595,10 @@ public class Payload
 
     public void setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
+    }
+
+    public void setIs_mobile_money_ug(String is_mobile_money_ug) {
+        this.is_mobile_money_ug = is_mobile_money_ug;
     }
 
     public boolean isIs_us_bank_charge() {
