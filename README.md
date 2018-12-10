@@ -62,7 +62,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
                         .acceptMpesaPayments(boolean)
                         .acceptAchPayments(boolean)
                         .acceptGHMobileMoneyPayments(boolean)
-			.acceptUgMobileMoneyPayments(boolean)
+			    .acceptUgMobileMoneyPayments(boolean)
                         .onStagingEnv(boolean)
                         .allowSaveCardFeature(boolean)
                         .setMeta(List<Meta>)
