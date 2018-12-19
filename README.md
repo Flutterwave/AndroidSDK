@@ -94,7 +94,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | setIsPreAuth(boolean) | Set to `true` to preauthorise the transaction amount. [Learn more about preauthourization](https://developer.flutterwave.com/v2.0/reference#introduction-1). | `int` | Not Required
 | withTheme(styleId) | Sets the theme of the UI. | `int` | Not Required
 | setPaymentPlan(payment_plan) | If you want to do recurrent payment, this is the payment plan ID to use for the recurring payment, you can see how to create payment plans [here](https://flutterwavedevelopers.readme.io/v2.0/reference#create-payment-plan) and [here](https://flutterwavedevelopers.readme.io/docs/recurring-billing). This is only available for card payments | `String` | Not Required
-| shouldDisplayFee(boolean) | Sets to `false` to not display a dialog for confirming total amount(including charge fee) that rave will charge. | `boolean` | Not Required
+| shouldDisplayFee(boolean) | Set to `false` to not display a dialog for confirming total amount(including charge fee) that Rave will charge. By default this is set to `true` | `boolean` | Not Required
 | initialize() | Launch the Rave Payment UI  |  N/A | Required
 
 ###  2. Handle the response
