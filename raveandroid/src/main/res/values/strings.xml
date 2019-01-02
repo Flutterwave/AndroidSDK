@@ -70,6 +70,12 @@
         ]]>
     </string>
 
+    <string name="ugx_validate_instructions">
+        <![CDATA[
+        <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
+        ]]>
+    </string>
+
 
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>
