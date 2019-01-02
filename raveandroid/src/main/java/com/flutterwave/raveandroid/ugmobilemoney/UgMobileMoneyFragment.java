@@ -164,7 +164,11 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
             Payload body = builder.createUgMobileMoneyPayload();
 
-            presenter.fetchFee(body);
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body);
+            } else {
+                presenter.chargeUgMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
         }
 
     }
