@@ -312,7 +312,7 @@ public class Payload
 
     private String pin;
 
-    private String redirect_url = "https://rave-webhook.herokuapp.com/receivepayment";
+    private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
 
     public String getPBFSecKey() {
         return PBFSecKey;
