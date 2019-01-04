@@ -32,6 +32,7 @@ public class RavePayInitializer {
     int theme;
     boolean staging = true;
     boolean isPreAuth = false;
+    boolean displayFee = true;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
@@ -53,7 +54,6 @@ public class RavePayInitializer {
         this.lName = lName;
         this.withAccount = withAccount;
         this.withGHMobileMoney = withGHMobileMoney;
-        this.withUgMobileMoney = withUgMobileMoney;
         this.withMpesa = withMpesa;
         this.withCard = withCard;
         this.withAch = withAch;
@@ -229,4 +229,11 @@ public class RavePayInitializer {
     public void setPreAuth( Boolean isPreAuth){ this.isPreAuth = isPreAuth; }
 
     public boolean getIsPreAuth() { return  isPreAuth; }
+
+    public boolean getIsDisplayFee() {
+        return displayFee;
+    }
+    public void setIsDisplayFee() {
+        this.displayFee = displayFee;
+    }
 }

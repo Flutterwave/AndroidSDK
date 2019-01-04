@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -14,8 +13,6 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-
-import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 
 
 public class AchPresenter implements AchContract.UserActionsListener {
@@ -112,11 +109,11 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         Payload body = builder.createBankPayload();
 
-        chargeAccount(body, ravePayInitializer.getEncryptionKey());
+        chargeAccount(body, ravePayInitializer.getEncryptionKey(), ravePayInitializer.getIsDisplayFee());
     }
 
     @Override
-    public void chargeAccount(Payload payload, String encryptionKey) {
+    public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
         String requestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String accountRequestBody = Utils.getEncryptedData(requestBodyAsString, encryptionKey);
@@ -143,8 +140,12 @@ public class AchPresenter implements AchContract.UserActionsListener {
                         String currency = response.getData().getCurrency();
                         sharedMgr.saveFlwRef(flwRef);
 
-                        mView.showFee(authUrl, flwRef, chargedAmount, currency);
-//                        mView.showWebView(authUrl, flwRef);
+                        if (isDisplayFee) {
+                            mView.showFee(authUrl, flwRef, chargedAmount, currency);
+                        }
+                        else {
+                            mView.showWebView(authUrl, flwRef);
+                        }
                     }
                     else {
                         mView.onPaymentError("No authUrl was returned");

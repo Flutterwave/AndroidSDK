@@ -33,7 +33,7 @@ public interface AchContract {
 
         void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
 
-        void chargeAccount(Payload payload, String encryptionKey);
+        void chargeAccount(Payload payload, String encryptionKey, boolean isDisplayFee);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 

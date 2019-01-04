@@ -180,7 +180,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
 
             Payload body = builder.createMpesaPayload();
 
-            presenter.fetchFee(body);
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body);
+            } else {
+                presenter.chargeMpesa(body, ravePayInitializer.getEncryptionKey());
+            }
         }
 
     }

@@ -269,7 +269,11 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                 showGTBankAmountIssue();
             }
             else {
-                presenter.fetchFee(body, selectedBank.isInternetbanking());
+                if(ravePayInitializer.getIsDisplayFee()){
+                    presenter.fetchFee(body, selectedBank.isInternetbanking());
+                } else {
+                    presenter.chargeAccount(body, ravePayInitializer.getEncryptionKey(), selectedBank.isInternetbanking());
+                }
             }
 
         }
