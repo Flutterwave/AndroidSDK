@@ -85,7 +85,7 @@ public class WebFragment extends Fragment {
             showProgressIndicator(false);
 
             Log.d("finished URLS", url);
-            if (url.contains("/complete") || url.contains("submitting_mock_form")) {
+            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
                 goBack();
             }
         }
