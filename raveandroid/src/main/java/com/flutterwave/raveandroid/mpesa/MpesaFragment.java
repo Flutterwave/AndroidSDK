@@ -169,7 +169,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(phone)
+                    .setPhoneNumber(phone)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));

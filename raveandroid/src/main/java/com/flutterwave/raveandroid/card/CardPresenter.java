@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.card;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.flutterwave.raveandroid.RaveConstants;
@@ -10,19 +11,23 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
-import com.flutterwave.raveandroid.data.CardDetsToSave;
+import com.flutterwave.raveandroid.data.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.SaveCardRequestBody;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.SendOtpRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
+import com.flutterwave.raveandroid.responses.SendRaveOtpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.internal.Util;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
@@ -34,10 +39,22 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
 public class CardPresenter implements CardContract.UserActionsListener {
     private Context context;
     private CardContract.View mView;
+    private boolean cardSaveInProgress = false;
+    SharedPrefsRequestImpl sharedManager;
+
+    public boolean isCardSaveInProgress() {
+        return cardSaveInProgress;
+    }
+
+    public void setCardSaveInProgress(boolean cardSaveInProgress) {
+        this.cardSaveInProgress = cardSaveInProgress;
+    }
+
 
     public CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
         this.mView = mView;
+        sharedManager = new SharedPrefsRequestImpl(context);
     }
 
     @Override
@@ -67,18 +84,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                         if (suggested_auth.equals(RaveConstants.PIN)) {
                             mView.onPinAuthModelSuggested(payload);
-                        }
-                        else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
+                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
                             mView.onAVS_VBVSECURECODEModelSuggested(payload);
-                        }
-                        else if (suggested_auth.equalsIgnoreCase(RaveConstants.NOAUTH_INTERNATIONAL)) {
+                        } else if (suggested_auth.equalsIgnoreCase(RaveConstants.NOAUTH_INTERNATIONAL)) {
                             mView.onNoAuthInternationalSuggested(payload);
-                        }
-                        else {
+                        } else {
                             mView.onPaymentError("Unknown auth model");
                         }
-                    }
-                    else {
+                    } else {
                         String authModelUsed = response.getData().getAuthModelUsed();
 
                         if (authModelUsed != null) {
@@ -88,22 +101,19 @@ public class CardPresenter implements CardContract.UserActionsListener {
                                 String flwRef = response.getData().getFlwRef();
 
                                 mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
-                            }
-                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP)) {
+                            } else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP)) {
                                 String flwRef = response.getData().getFlwRef();
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                                chargeResponseMessage = chargeResponseMessage == null ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                                chargeResponseMessage = chargeResponseMessage == null ? "Enter your one time password (OTP)" : chargeResponseMessage;
                                 mView.showOTPLayout(flwRef, chargeResponseMessage);
-                            }
-                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.NOAUTH)) {
+                            } else if (authModelUsed.equalsIgnoreCase(RaveConstants.NOAUTH)) {
                                 String flwRef = response.getData().getFlwRef();
 
                                 mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError("No response data was returned");
                 }
 
@@ -113,6 +123,78 @@ public class CardPresenter implements CardContract.UserActionsListener {
             public void onError(String message, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
+            }
+        });
+    }
+
+    @Override
+    public void chargeSavedCard(Payload payload, String encryptionKey) {
+
+
+        if (payload.getOtp() == null || payload.getOtp() == "") {
+            sendRaveOTP(payload);
+        } else {
+            // Charge saved card
+            String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
+            String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+
+            final ChargeRequestBody body = new ChargeRequestBody();
+            body.setAlg("3DES-24");
+            body.setPBFPubKey(payload.getPBFPubKey());
+            body.setClient(encryptedCardRequestBody);
+
+            mView.showProgressIndicator(true);
+
+            new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+                @Override
+                public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+
+                    mView.showProgressIndicator(false);
+
+                    if (response.getData() != null) {
+                        Log.d("Saved card charge",responseAsJSONString);
+                        mView.onChargeCardSuccessful(response);
+
+                    } else {
+                        mView.onPaymentError("No response data was returned");
+                    }
+
+                }
+
+                @Override
+                public void onError(String message, String responseAsJSONString) {
+                    mView.showProgressIndicator(false);
+                    mView.onPaymentError(message);
+                }
+            });
+        }
+
+
+    }
+
+    @Override
+    public void sendRaveOTP(final Payload payload) {
+        SendOtpRequestBody body = new SendOtpRequestBody();
+        body.setDevice_key(payload.getPhonenumber());
+        body.setPublic_key(payload.getPBFPubKey());
+        body.setCard_hash(payload.getCard_hash());
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().sendRaveOtp(body, new Callbacks.OnSendRaveOTPRequestComplete() {
+            @Override
+            public void onSuccess(SendRaveOtpResponse response, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                String authInstruction = "Enter the one time password (OTP) sent to " +
+                Utils.obfuscatePhoneNumber(payload
+                        .getPhonenumber());
+                mView.showOTPLayoutForSavedCard(payload, authInstruction);
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onSendRaveOtpFailed(message, responseAsJSONString);
             }
         });
     }
@@ -151,28 +233,23 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
 //                        mView.showToast("Payment successful");
                         mView.onChargeCardSuccessful(response);
-                    }
-                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
                         String authModelUsed = response.getData().getAuthModelUsed();
                         if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
                             String flwRef = response.getData().getFlwRef();
                             String chargeResponseMessage = response.getData().getChargeResponseMessage();
                             chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
                             mView.showOTPLayout(flwRef, chargeResponseMessage);
-                        }
-                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)){
+                        } else if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)) {
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        }
-                        else {
+                        } else {
                             mView.onPaymentError("Unknown Auth Model");
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError("Unknown charge response code");
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError("Invalid charge response code");
                 }
 
@@ -187,13 +264,13 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     }
 
+
     @Override
     public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
-        }
-        else if (authModel.equalsIgnoreCase(PIN)){
+        } else if (authModel.equalsIgnoreCase(PIN)) {
             payload.setPin(zipOrPin);
         }
 
@@ -223,28 +300,23 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
 //                        mView.showToast("Payment successful");
                         mView.onChargeCardSuccessful(response);
-                    }
-                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
                         String authModelUsed = response.getData().getAuthModelUsed();
                         if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
                             String flwRef = response.getData().getFlwRef();
                             String chargeResponseMessage = response.getData().getChargeResponseMessage();
                             chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
                             mView.showOTPLayout(flwRef, chargeResponseMessage);
-                        }
-                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.AVS_VBVSECURECODE)){
+                        } else if (authModelUsed.equalsIgnoreCase(RaveConstants.AVS_VBVSECURECODE)) {
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        }
-                        else {
+                        } else {
                             mView.onPaymentError("Unknown Auth Model");
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError("Unknown charge response code");
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError("Invalid charge response code");
                 }
 
@@ -280,12 +352,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                     if (status.equalsIgnoreCase("success")) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
-                    }
-                    else {
+                    } else {
                         mView.onValidateError(message);
                     }
-                }
-                else {
+                } else {
                     mView.onValidateCardChargeFailed(flwRef, responseAsJSONString);
                 }
             }
@@ -300,7 +370,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void requeryTx(final String flwRef, final String publicKey, final boolean shouldISaveCard) {
+    public void requeryTx(final String flwRef, final String publicKey) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
@@ -322,6 +392,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
     }
 
+
     @Override
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
 
@@ -329,27 +400,77 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         if (wasTxSuccessful) {
             mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
-        }
-        else {
+        } else {
             mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
         }
     }
 
     @Override
-    public void savePotentialCardDets(String cardFirst6, String cardLast4) {
-        new SharedPrefsRequestImpl(context).saveCardDetsToSave(new CardDetsToSave(cardFirst6, cardLast4));
+    public void saveCardToRave(String phoneNumber, String email, String FlwRef, String publicKey, String deviceFingerprint, final String verifyResponse) {
+        SaveCardRequestBody body = new SaveCardRequestBody();
+        body.setDevice(deviceFingerprint);
+        body.setDevice_email(email);
+        body.setDevice_key(phoneNumber);
+        body.setProcessor_reference(FlwRef);
+        body.setPublic_key(publicKey);
+
+        mView.showProgressIndicator(true);
+
+        new NetworkRequestImpl().saveCardToRave(body, new Callbacks.OnSaveCardRequestComplete() {
+            @Override
+            public void onSuccess(SaveCardResponse response, String responseAsJSONString) {
+                mView.onCardSaveSuccessful(response, verifyResponse);
+            }
+
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.onCardSaveFailed(message, verifyResponse);
+            }
+        });
     }
 
     @Override
-    public void onSavedCardsClicked(String email) {
+    public void lookupSavedCards(String publicKey, String phoneNumber, final String verifyResponseAsJSONString) {
+        LookupSavedCardsRequestBody body = new LookupSavedCardsRequestBody();
+        body.setDevice_key(phoneNumber);
+        body.setPublic_key(publicKey);
 
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
 
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+        new NetworkRequestImpl().lookupSavedCards(body, new Callbacks.OnLookupSavedCardsRequestComplete() {
+            @Override
+            public void onSuccess(LookupSavedCardsResponse response, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onLookupSavedCardsSuccessful(response, responseAsJSONString, verifyResponseAsJSONString);
+            }
 
-        mView.showSavedCards(cards);
+            @Override
+            public void onError(String message, String responseAsJSONString) {
+                mView.showProgressIndicator(false);
+                mView.onLookupSavedCardsFailed(message, responseAsJSONString, verifyResponseAsJSONString);
+            }
+        });
+    }
+
+    @Override
+    public void saveCardToSharedPreferences(LookupSavedCardsResponse response) {
+        String phoneNumber = response.getData()[0].getMobile_number();
+        List<SavedCard> cards = new ArrayList<>();
+
+        for (LookupSavedCardsResponse.Data d : response.getData()) {
+            SavedCard card = new SavedCard();
+            card.setEmail(d.getEmail());
+            card.setCardHash(d.getCard_hash());
+            card.setCard_brand(d.getCard().getCard_brand());
+            card.setMasked_pan(d.getCard().getMasked_pan());
+
+            cards.add(card);
+        }
+
+        sharedManager.saveCardToSharedPreference(cards, phoneNumber);
+
 
     }
+
 
     @Override
     public void fetchFee(final Payload payload, final int reason) {
@@ -359,10 +480,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setCurrency(payload.getCurrency());
         body.setPBFPubKey(payload.getPBFPubKey());
 
-        if (payload.getCardno() == null || payload.getCardno().length() == 0) {
+        if (payload.getCardno() == null || payload.getCardno().length() == 0 || payload.getCardBIN() != null) {
             body.setCard6(payload.getCardBIN());
-        }
-        else  {
+        } else {
             body.setCard6(payload.getCardno().substring(0, 6));
         }
 
@@ -375,12 +495,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload, reason);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
                 }
-             }
+            }
 
             @Override
             public void onError(String message) {
@@ -393,14 +512,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void checkForSavedCards(String email) {
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
+    public void retrieveSavedCardsFromMemory(String phoneNumber) {
+        List<SavedCard> cards = sharedManager.getSavedCards(phoneNumber);
 
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+        mView.setSavedCards(cards);
+    }
 
-        if (cards == null || cards.size() == 0) {
-            mView.hideSavedCardsButton();
-        }
+    @Override
+    public void retrievePhoneNumberFromMemory() {
+        String phoneNumber = sharedManager.fetchPhoneNumber();
+        mView.setPhoneNumber(phoneNumber);
     }
 
     @Override
@@ -424,11 +545,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                 if (responseAsJSONString.contains("token not found")) {
                     mView.onPaymentError("Token not found");
-                }
-                else if (responseAsJSONString.contains("expired")) {
+                } else if (responseAsJSONString.contains("expired")) {
                     mView.onPaymentError("Token expired");
-                }
-                else {
+                } else {
                     mView.onPaymentError(message);
                 }
 
@@ -440,7 +559,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     @Override
     public void onDetachView() {
-        this.mView = new NullCardView();
+        if (!this.cardSaveInProgress)
+            this.mView = new NullCardView();
     }
 
     @Override

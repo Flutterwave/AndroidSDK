@@ -5,6 +5,7 @@ package com.flutterwave.raveandroid;
  */
 
 public class RaveConstants {
+    public static final int SAVED_CARD_CHARGE = 5699;
     public static int PERMISSIONS_REQUEST_READ_PHONE_STATE = 419;
 
 //    public static String PUBLIC_KEY = "";

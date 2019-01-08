@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.SubAccount;
 
 import java.util.List;
@@ -22,38 +23,112 @@ public class PayloadBuilder {
     private String network;
     private String bvn;
     private String voucher;
-    private boolean isPreAuth = false;
-    private boolean is_us_bank_charge = false;
-
-    public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
-        this.is_mobile_money_gh = is_mobile_money_gh;
-        return this;
-    }
-
-    public PayloadBuilder setIs_mobile_money_ug(String is_mobile_money_ug) {
-        this.is_mobile_money_ug = is_mobile_money_ug;
-        return this;
-    }
-
+    private String otp;
     private String is_mobile_money_gh;
     private String is_mobile_money_ug;
-
-    private String phonenumber;
-
+    private String phoneNumber;
     private String txRef;
     private String meta = "";
     private String subAccounts = "";
-
-    public PayloadBuilder setCustomer_phone(String customer_phone) {
-        this.customer_phone = customer_phone;
-        return this;
-    }
-
-    private String customer_phone;
     private String narration;
     private String pin;
     private String accountbank;
     private String accountnumber;
+    private boolean isPreAuth = false;
+    private boolean is_us_bank_charge = false;
+    private boolean is_saved_card_charge = false;
+    private SavedCard savedCard;
+
+    public Payload createPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+
+        Payload payload = new Payload(metaObj,subaccountsObj, narration, expirymonth,
+                pbfPubKey, ip, lastname,
+                firstname, currency, country,
+                amount, email, expiryyear,
+                cvv, device_fingerprint,
+                cardno, txRef);
+
+        if (payment_plan != null) {
+            payload.setPayment_plan(payment_plan);
+        }
+
+        if(isPreAuth) {
+            payload.setCharge_type("preauth");
+        }
+
+        return payload;
+    }
+
+    public Payload createSavedCardChargePayload(){
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+
+        Payload payload = new Payload(metaObj,subaccountsObj, narration,
+                pbfPubKey, ip, lastname,
+                firstname, currency, country,
+                amount, email, device_fingerprint,
+                txRef,is_saved_card_charge, phoneNumber);
+
+        if (payment_plan != null) {
+            payload.setPayment_plan(payment_plan);
+        }
+
+        if(isPreAuth) {
+            payload.setCharge_type("preauth");
+        }
+
+        payload.setCardBIN(savedCard.getMasked_pan().substring(0,6));
+        payload.setCard_hash(savedCard.getCardHash());
+        payload.setDevice_key(phoneNumber);
+        return payload;
+
+    }
+
+    public Payload createBankPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn, is_us_bank_charge);
+        payload.setPayment_type("account");
+
+        return payload;
+    }
+
+    public Payload createMpesaPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phoneNumber, metaObj,subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setPayment_type("mpesa");
+        payload.setIs_mpesa("1");
+        payload.setIs_mpesa_lipa("1");
+        return payload;
+    }
+
+    public Payload createGhMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phoneNumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_gh("1");
+        payload.setPayment_type("mobilemoneygh");
+        payload.setVoucher(voucher);
+        payload.setNetwork(network);
+        return payload;
+    }
+
+    public Payload createUgMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phoneNumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_ug("1");
+        payload.setPayment_type("mobilemoneyuganda");
+        payload.setNetwork(network);
+        return payload;
+    }
 
     public PayloadBuilder setAccountnumber(String accountnumber) {
         this.accountnumber = accountnumber;
@@ -120,8 +195,8 @@ public class PayloadBuilder {
         return this;
     }
 
-    public PayloadBuilder setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public PayloadBuilder setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
         return this;
     }
 
@@ -170,72 +245,6 @@ public class PayloadBuilder {
         return this;
     }
 
-    public Payload createPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-
-        Payload payload = new Payload(metaObj,subaccountsObj, narration, expirymonth,
-                pbfPubKey, ip, lastname,
-                firstname, currency, country,
-                amount, email, expiryyear,
-                cvv, device_fingerprint,
-                cardno, txRef);
-
-        if (payment_plan != null) {
-            payload.setPayment_plan(payment_plan);
-        }
-
-        if(isPreAuth) {
-            payload.setCharge_type("preauth");
-        }
-
-        return payload;
-    }
-
-    public Payload createBankPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(metaObj, subaccountsObj,narration, ip, accountnumber, accountbank, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey,bvn, is_us_bank_charge);
-        payload.setPayment_type("account");
-
-        return payload;
-    }
-
-    public Payload createMpesaPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj,subaccountsObj, narration, ip, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
-        payload.setPayment_type("mpesa");
-        payload.setIs_mpesa("1");
-        payload.setIs_mpesa_lipa("1");
-        return payload;
-    }
-
-    public Payload createGhMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
-        payload.setIs_mobile_money_gh("1");
-        payload.setPayment_type("mobilemoneygh");
-        payload.setVoucher(voucher);
-        payload.setNetwork(network);
-        return payload;
-    }
-
-    public Payload createUgMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
-        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
-                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
-        payload.setIs_mobile_money_ug("1");
-        payload.setPayment_type("mobilemoneyuganda");
-        payload.setNetwork(network);
-        return payload;
-    }
-
     public PayloadBuilder setMeta(String meta) {
         this.meta = meta;
         return this;
@@ -254,5 +263,42 @@ public class PayloadBuilder {
     public PayloadBuilder setNetwork(String network) {
         this.network = network;
         return this;
+    }
+
+    public PayloadBuilder setSavedCard(SavedCard savedCard) {
+        this.savedCard = savedCard;
+        return this;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public PayloadBuilder setOtp(String otp) {
+        this.otp = otp;
+        return this;
+    }
+
+    public boolean isIs_saved_card_charge() {
+        return is_saved_card_charge;
+    }
+
+    public PayloadBuilder setIs_saved_card_charge(boolean is_saved_card_charge) {
+        this.is_saved_card_charge = is_saved_card_charge;
+        return this;
+    }
+
+    public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
+        this.is_mobile_money_gh = is_mobile_money_gh;
+        return this;
+    }
+
+    public PayloadBuilder setIs_mobile_money_ug(String is_mobile_money_ug) {
+        this.is_mobile_money_ug = is_mobile_money_ug;
+        return this;
+    }
+
+    public SavedCard getSavedCard() {
+        return savedCard;
     }
 }

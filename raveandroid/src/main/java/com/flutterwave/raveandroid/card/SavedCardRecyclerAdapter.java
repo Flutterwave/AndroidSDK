@@ -5,11 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 
@@ -34,7 +34,7 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View v = inflater.inflate(R.layout.select_bank_list_item, parent, false);
+        View v = inflater.inflate(R.layout.card_preview_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -55,19 +55,34 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView itemTv;
+        private TextView cardTypeTv;
+        private TextView maskedPanTv;
+        private ImageView cardBrandIv;
         SavedCard card;
 
 
         ViewHolder(View v) {
             super(v);
-            itemTv = (TextView) v.findViewById(R.id.bankNameTv);
+            cardTypeTv = (TextView) v.findViewById(R.id.card_type_tv);
+            maskedPanTv = (TextView) v.findViewById(R.id.masked_pan_tv);
+            cardBrandIv = (ImageView) v.findViewById(R.id.rave_card_brand_imageview);
+
             v.setOnClickListener(this);
         }
 
         public void bind(SavedCard card) {
             this.card = card;
-            itemTv.setText(Utils.spacifyCardNumber(Utils.obfuscateCardNumber(card.getFirst6(), card.getLast4())));
+            cardTypeTv.setText("YOUR " + card.getCard_brand());
+            maskedPanTv.setText(card.getMasked_pan());
+            if (card.getCard_brand().equalsIgnoreCase("mastercard")) {cardBrandIv
+                    .setImageResource(R.drawable.master_card_logo_svg);}
+            else if (card.getCard_brand().equalsIgnoreCase("visa")){
+                cardBrandIv.setImageResource(R.drawable.visa_logo_new);
+            } else if(card.getCard_brand().equalsIgnoreCase("verve")){
+                cardBrandIv.setImageResource(R.drawable.verve);
+            } else if(card.getCard_brand().equalsIgnoreCase("amex")){
+                cardBrandIv.setImageResource(R.drawable.amex);
+            }
         }
 
 

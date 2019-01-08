@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Pick a card"
+        android:text="Please select a card"
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_marginBottom="5dp"
@@ -21,6 +21,18 @@
         android:layout_width="match_parent"
         android:id="@+id/rave_recycler"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/use_a_new_card"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#0000EE"
+        android:gravity="center_horizontal|center_vertical"
+        android:id="@+id/rave_use_new_card_tv"
+        />
 
 
 </LinearLayout>

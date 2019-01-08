@@ -17,20 +17,31 @@ public interface DataRequest {
         void chargeGhanaMobileMoneyWallet(ChargeRequestBody chargeRequestBody, Callbacks.OnGhanaChargeRequestComplete callback);
         void validateChargeCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void validateAccountCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
+
+        void sendRaveOtp(SendOtpRequestBody requestBody,
+                         Callbacks.OnSendRaveOTPRequestComplete callback);
+
         void requeryTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);
         void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, Callbacks.OnRequeryRequestv2Complete callback);
         void getBanks(Callbacks.OnGetBanksRequestComplete callback);
         void chargeAccount(ChargeRequestBody accountRequestBody, Callbacks.OnChargeRequestComplete callback);
         void chargeToken(Payload payload, Callbacks.OnChargeRequestComplete callback);
         void getFee(FeeCheckRequestBody body, Callbacks.OnGetFeeRequestComplete callback);
+        void saveCardToRave(SaveCardRequestBody saveCardRequestBody, Callbacks
+                .OnSaveCardRequestComplete callback);
+        public void lookupSavedCards(LookupSavedCardsRequestBody requestBody,
+                                     final Callbacks.OnLookupSavedCardsRequestComplete callback);
     }
 
     interface SharedPrefsRequest {
-        void saveCardDetsToSave(CardDetsToSave cardDetsToSave);
-        CardDetsToSave retrieveCardDetsToSave();
-        void saveACard(SavedCard card, String SECKEY, String email);
-        List<SavedCard> getSavedCards(String email);
+
+        void saveCardToSharedPreference(List<SavedCard> card, String email);
+        List<SavedCard> getSavedCards(String phoneNumber);
         void saveFlwRef(String flwRef);
         String fetchFlwRef();
+
+        void savePhoneNumber(String phoneNumber);
+
+        String fetchPhoneNumber();
     }
 }

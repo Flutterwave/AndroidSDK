@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:padding="20dp"
@@ -21,7 +22,6 @@
                 android:id="@+id/rave_topLay"
                 android:paddingTop="10dp"
                 android:orientation="vertical">
-
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -57,98 +57,165 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:id="@+id/rave_cardNoTil"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="wrap_content">
-
-                    <com.flutterwave.raveandroid.card.CreditCardView
-                        android:hint="@string/card_number"
+                <LinearLayout android:id="@+id/saved_cards_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                    <include
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rave_cardNoTv"
-                        android:layout_gravity="center"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rave_cvvExpLay"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="0dip"
-                        android:id="@+id/rave_cardExpiryTil"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/expiration"
-                            android:paddingRight="50dp"
-                            android:paddingEnd="50dp"
-                            android:id="@+id/rave_cardExpiryTv"
-                            android:inputType="number"
-                            android:maxLength="5"
-                            android:layout_below="@+id/rave_card1"
-                            android:layout_marginBottom="10dp"
-                            />
-
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="0dip"
-                        android:id="@+id/rave_cvvTil"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/cvc_cvv2"
-                            android:inputType="numberPassword"
-                            android:maxLength="4"
-                            android:id="@+id/rave_cvvTv"
-                            android:imeOptions="actionDone"
-                            android:layout_below="@+id/rave_card1"
-                            android:layout_marginBottom="10dp"
-                            />
-
-                    </android.support.design.widget.TextInputLayout>
-
+                        layout="@layout/pick_saved_card_layout"/>
                 </LinearLayout>
 
-                <android.support.v7.widget.SwitchCompat
+
+                <LinearLayout android:id="@+id/rave_new_card_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/save_card"
-                    android:id="@+id/rave_saveCardSwitch"
-                    />
+                    android:orientation="vertical">
 
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/pay"
-                    style="?PayButtonStyle"
-                    android:id="@+id/rave_payButton"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginLeft="10dp"
-                    />
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/rave_cardNoTil"
+                        android:layout_marginBottom="10dp"
+                        android:layout_height="wrap_content">
+
+                        <com.flutterwave.raveandroid.card.CreditCardView
+                            android:hint="@string/card_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rave_cardNoTv"
+                            android:layout_gravity="center"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rave_cvvExpLay"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="0dip"
+                            android:id="@+id/rave_cardExpiryTil"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_weight="1">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/expiration"
+                                android:paddingRight="50dp"
+                                android:paddingEnd="50dp"
+                                android:id="@+id/rave_cardExpiryTv"
+                                android:inputType="number"
+                                android:maxLength="5"
+                                android:layout_below="@+id/rave_card1"
+                                android:layout_marginBottom="10dp"
+                                />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="0dip"
+                            android:id="@+id/rave_cvvTil"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight="1">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/cvc_cvv2"
+                                android:inputType="numberPassword"
+                                android:maxLength="4"
+                                android:id="@+id/rave_cvvTv"
+                                android:imeOptions="actionDone"
+                                android:layout_below="@+id/rave_card1"
+                                android:layout_marginBottom="10dp"
+                                />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:text="@string/save_card"
+                        android:id="@+id/rave_saveCardSwitch"
+                        />
+
+                    <LinearLayout android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:id="@+id/rave_layout_for_saving_card">
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:id="@+id/save_card_phoneNoTil"
+                            android:layout_marginBottom="10dp"
+                            android:layout_height="wrap_content">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:hint="@string/phone_number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="phone"
+                                android:id="@+id/save_card_phoneNoTV"
+                                android:layout_gravity="center"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:id="@+id/save_card_emailTil"
+                            android:layout_marginBottom="10dp"
+                            android:layout_height="wrap_content">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:hint="@string/email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/save_card_emailTv"
+                                android:layout_gravity="center"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pay"
+                        style="?PayButtonStyle"
+                        android:id="@+id/rave_payButton"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="@string/use_a_saved_card"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="#0000EE"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:id="@+id/rave_use_saved_card_tv"
+                        />
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -157,17 +224,6 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="20dp"
-                    />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/choose_saved_card"
-                    android:id="@+id/rave_savedCardButton"
-                    style="?SavedCardButtonStyle"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="35dp"
-                    android:layout_marginLeft="10dp"
                     />
 
                 <TextView
@@ -192,7 +248,6 @@
                     android:drawableStart="@drawable/ic_lock_outline_black_24dp"
                     android:layout_gravity="center"
                     android:text="@string/pci_dss_compliant"/>
-
 
             </LinearLayout>
 

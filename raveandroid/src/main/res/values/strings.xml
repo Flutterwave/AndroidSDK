@@ -19,7 +19,7 @@
     <string name="enter">ENTER</string>
     <string name="choose_saved_card">CHOOSE SAVED CARD</string>
     <string name="pay">PAY</string>
-    <string name="save_card">Save card</string>
+    <string name="save_card">Remember this card</string>
     <string name="otp">OTP</string>
     <string name="enter_your_one_ntime_password_otp">Enter your one  time password (OTP)</string>
     <string name="card_number">Card Number</string>
@@ -30,6 +30,8 @@
     <string name="expiration">Expiration</string>
     <string name="email">Email</string>
     <string name="enter_your_billing_address_details">Enter your billing address details</string>
+    <string name="use_a_new_card"><u>Use another card</u></string>
+    <string name="use_a_saved_card"><u>Use a saved card</u></string>
     <string name="billing_zip_code">Zip code e.g. 928302</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="bvn">BVN</string>

@@ -18,6 +18,8 @@ import android.widget.TextView;
 public class OTPFragment extends Fragment {
     public static final String EXTRA_OTP = "extraOTP";
     public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
+    public static final String IS_SAVED_CARD_CHARGE = "is_saved_card_charge";
+    private Boolean isSavedCardCharge = false;
     String otp;
     Button otpButton;
 
@@ -38,6 +40,10 @@ public class OTPFragment extends Fragment {
         TextView chargeMessage = (TextView) v.findViewById(R.id.otpChargeMessage);
         if(getArguments().containsKey(EXTRA_CHARGE_MESSAGE)){
             chargeMessage.setText(getArguments().getString(EXTRA_CHARGE_MESSAGE));
+        }
+
+        if(getArguments().containsKey(IS_SAVED_CARD_CHARGE)){
+            isSavedCardCharge = getArguments().getBoolean(IS_SAVED_CARD_CHARGE);
         }
         otpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +67,8 @@ public class OTPFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
+        //inform onActivityResult of if this is a saved card charge and how to handle.
+        intent.putExtra(IS_SAVED_CARD_CHARGE,isSavedCardCharge);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

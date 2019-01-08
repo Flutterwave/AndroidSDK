@@ -6,7 +6,9 @@ import android.view.View;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
 
 import java.util.List;
 
@@ -28,6 +30,41 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onNoAuthUsed(String flwRef, String secretKey) {
+
+    }
+
+    @Override
+    public void onCardSaveFailed(String message, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString) {
+
+    }
+
+    @Override
+    public void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString) {
+
+    }
+
+    @Override
+    public void setSavedCards(List<SavedCard> savedCards) {
+
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+
+    }
+
+    @Override
+    public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
+
+    }
+
+    @Override
+    public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
 
     }
 
@@ -82,10 +119,6 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
 
-    @Override
-    public void showSavedCards(List<SavedCard> cards) {
-
-    }
 
     @Override
     public void onTokenRetrieved(String flwRef, String cardBIN, String token) {
@@ -104,11 +137,6 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void showFetchFeeFailed(String s) {
-
-    }
-
-    @Override
-    public void hideSavedCardsButton() {
 
     }
 
@@ -139,6 +167,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
+
+    }
+
+    @Override
+    public void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString) {
 
     }
 }

@@ -12,6 +12,10 @@ import java.util.List;
 
 public class Payload
 {
+
+
+    private String card_hash;
+
     public String getCardBIN() {
         return cardBIN;
     }
@@ -19,21 +23,31 @@ public class Payload
     private String cardBIN;
 
     private boolean is_us_bank_charge;
+    private boolean is_saved_card_charge;
 
-    private String remember_device_mobile_key;
+    private String device_key;
+    private String otp;
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
 
     private String remember_device_email;
 
     private String charge_type;
 
-    public String getRemember_device_mobile_key() {
-        return remember_device_mobile_key;
+    public String getDevice_key() {
+        return device_key;
     }
 
     private String bvn;
 
-    public void setRemember_device_mobile_key(String remember_device_mobile_key) {
-        this.remember_device_mobile_key = remember_device_mobile_key;
+    public void setDevice_key(String device_key) {
+        this.device_key = device_key;
     }
 
     public String getRemember_device_email() {
@@ -75,6 +89,35 @@ public class Payload
     private String is_mpesa;
 
     private String is_mpesa_lipa;
+
+    // Constructor for saved card charge
+    public Payload(List<Meta> meta,
+                   List<SubAccount> subaccounts, String narration, String PBFPubKey, String IP,
+                   String lastname, String firstname, String currency, String country, String amount,
+                   String email, String device_fingerprint, String txRef, Boolean
+                           is_saved_card_charge,String phonenumber) {
+        this.narration = narration;
+        this.PBFPubKey = PBFPubKey;
+        this.IP = IP;
+        this.subaccounts = subaccounts;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.txRef = txRef;
+        this.is_saved_card_charge=is_saved_card_charge;
+        this.phonenumber=phonenumber;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+    }
 
     public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration,
                    String expirymonth, String PBFPubKey, String IP, String lastname,
@@ -607,6 +650,14 @@ public class Payload
 
     public void setIs_us_bank_charge(boolean is_us_bank_charge) {
         this.is_us_bank_charge = is_us_bank_charge;
+    }
+
+    public void setCard_hash(String card_hash) {
+        this.card_hash = card_hash;
+    }
+
+    public String getCard_hash() {
+        return card_hash;
     }
 }
 

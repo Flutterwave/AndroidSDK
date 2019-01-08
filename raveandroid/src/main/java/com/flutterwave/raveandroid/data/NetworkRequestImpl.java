@@ -9,8 +9,11 @@ import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
+import com.flutterwave.raveandroid.responses.SendRaveOtpResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -248,6 +251,114 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
+    public void saveCardToRave(SaveCardRequestBody saveCardRequestBody, final Callbacks.OnSaveCardRequestComplete callback) {
+
+        createService();
+
+        Call<String> call = service.saveCardToRave(saveCardRequestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<SaveCardResponse>() {}.getType();
+                    SaveCardResponse saveCardResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(saveCardResponse, jsonResponse);
+                }
+                else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
+    public void lookupSavedCards(LookupSavedCardsRequestBody requestBody,
+                                 final Callbacks.OnLookupSavedCardsRequestComplete callback){
+        createService();
+
+        Call<String> call = service.lookupSavedCards(requestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<LookupSavedCardsResponse>() {}.getType();
+                    LookupSavedCardsResponse lookupSavedCardsResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(lookupSavedCardsResponse, jsonResponse);
+                }
+                else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
+    public void sendRaveOtp(SendOtpRequestBody requestBody,
+                            final Callbacks.OnSendRaveOTPRequestComplete callback){
+        createService();
+
+        Call<String> call = service.sendRaveOtp(requestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<SendRaveOtpResponse>() {}.getType();
+                    SendRaveOtpResponse sendRaveOtpResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(sendRaveOtpResponse, jsonResponse);
+                }
+                else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
     public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
         createService();
@@ -442,6 +553,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             }
         });
     }
+
+
 
     private void createService() {
 

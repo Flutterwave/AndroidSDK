@@ -214,7 +214,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setNetwork(network)
                     .setVoucher(voucher)
-                    .setPhonenumber(phone)
+                    .setPhoneNumber(phone)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));

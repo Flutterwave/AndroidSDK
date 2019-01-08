@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.RaveConstants;
-import com.flutterwave.raveandroid.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,6 +18,8 @@ import java.util.List;
 
 public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
+    private static final String SAVED_CARDS_PREFIX = "SAVED_CARDS";
+    private static final String PHONE_NUMBER = "phone_number";
     Context context;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -28,56 +29,56 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         this.context = context;
     }
 
-    @Override
-    public void saveCardDetsToSave(CardDetsToSave cardDetsToSave) {
-        init();
-        editor.putString("first6", cardDetsToSave.getFirst6());
-        editor.putString("last4", cardDetsToSave.getLast4());
-        editor.apply();
-    }
+//    @Override
+//    public void saveCardDetsToSave(CardDetsToSave cardDetsToSave) {
+//        init();
+//        editor.putString("email", cardDetsToSave.getEmail());
+//        editor.putString("last4", cardDetsToSave.getLast4());
+//        editor.apply();
+//    }
+//
+//    @Override
+//    public CardDetsToSave retrieveCardDetsToSave() {
+//        init();
+//        return new CardDetsToSave(sharedPreferences.getString("email", ""), sharedPreferences.getString("last4", ""));
+//    }
 
     @Override
-    public CardDetsToSave retrieveCardDetsToSave() {
-        init();
-        return new CardDetsToSave(sharedPreferences.getString("first6", ""), sharedPreferences.getString("last4", ""));
-    }
+    public void saveCardToSharedPreference(List<SavedCard> cardsToSave, String phoneNumber) {
 
-    @Override
-    public void saveACard(SavedCard card, String SECKEY, String email) {
+        savePhoneNumber(phoneNumber);
 
-        List<SavedCard> savedCards = getSavedCards(email);
+        List<SavedCard> savedCards = getSavedCards(phoneNumber);
 
         for (SavedCard s : savedCards) {
-            if ((s.getFirst6() + s.getLast4())
-                    .equalsIgnoreCase(card.getFirst6() + card.getLast4())){
-                savedCards.remove(s);
-                break;
+            for (SavedCard c : cardsToSave){
+                if (s.getCardHash().equalsIgnoreCase(c.getCardHash())){
+                    savedCards.remove(s);
+                    break;
+                }
             }
         }
 
-        card.setToken(Utils.encryptRef(SECKEY, card.getFlwRef())); //encrypt Ref
-        savedCards.add(card);
+        savedCards.addAll(cardsToSave);
 
         init();
         Gson gson = new Gson();
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
-        String json = gson.toJson(savedCards, type);
+        String savedCardsJson = gson.toJson(savedCards, type);
 
-        Log.d("cards", json);
-
-        editor.putString("SAVED_CARDS" +  email, json).apply();
+        editor.putString(SAVED_CARDS_PREFIX +  phoneNumber, savedCardsJson).apply();
     }
 
     @Override
-    public List<SavedCard> getSavedCards(String email) {
+    public List<SavedCard> getSavedCards(String phoneNumber) {
         init();
-        String json = sharedPreferences.getString("SAVED_CARDS" + email, "[]");
+        String savedCardsJson = sharedPreferences.getString(SAVED_CARDS_PREFIX + phoneNumber, "[]");
 
         try {
             Gson gson = new Gson();
             Type type = new TypeToken<List<SavedCard>>() {
             }.getType();
-            return gson.fromJson(json, type);
+            return gson.fromJson(savedCardsJson, type);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -104,5 +105,17 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     public String fetchFlwRef() {
         init();
         return sharedPreferences.getString(FLW_REF_KEY, "");
+    }
+
+    @Override
+    public void savePhoneNumber(String phoneNumber){
+        init();
+        editor.putString(PHONE_NUMBER,phoneNumber).apply();
+    }
+
+    @Override
+    public String fetchPhoneNumber() {
+        init();
+        return sharedPreferences.getString(PHONE_NUMBER, "");
     }
 }

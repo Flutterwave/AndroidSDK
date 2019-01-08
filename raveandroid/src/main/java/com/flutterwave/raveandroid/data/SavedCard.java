@@ -6,53 +6,41 @@ package com.flutterwave.raveandroid.data;
 
 public class SavedCard {
 
-    String token;
-    String first6;
-    String last4;
+    String cardHash;
+    String email;
+    String masked_pan;
+    String card_brand;
 
-    public String getFlwRef() {
-        return flwRef;
+    public String getMasked_pan() {
+        return masked_pan;
+    }
+    public void setMasked_pan(String masked_pan) {
+        this.masked_pan = masked_pan;
     }
 
-    public void setFlwRef(String flwRef) {
-        this.flwRef = flwRef;
+    public String getCard_brand() {
+        return card_brand;
+    }
+    public void setCard_brand(String card_brand) {
+        this.card_brand = card_brand;
     }
 
-    String flwRef;
 
-    public String getToken() {
-        return token;
+    public String getCardHash() {
+        return cardHash;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setCardHash(String cardHash) {
+        this.cardHash = cardHash;
     }
 
-    public String getFirst6() {
-        return first6;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFirst6(String first6) {
-        this.first6 = first6;
+    public void setEmail(String email) {
+        this.email = email;
     }
-
-    public String getLast4() {
-        return last4;
-    }
-
-    public void setLast4(String last4) {
-        this.last4 = last4;
-    }
-
-    public String getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
-    }
-
-    String cardType;
 
 
 }
