@@ -230,14 +230,16 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     dob = dob.replace("/", "");
                 }
             }
-        }
 
-        if(selectedBank.getBankcode().equals("033")){
-            if(bvn.length() != 11){
-                rave_bvnTil.setError("Enter a valid BVN");
-                valid = false;
+            if(selectedBank.getBankcode().equals("033")){
+                if(bvn.length() != 11){
+                    rave_bvnTil.setError("Enter a valid BVN");
+                    valid = false;
+                }
             }
         }
+
+
 
         if (valid) {
             String txRef = ravePayInitializer.getTxRef();
