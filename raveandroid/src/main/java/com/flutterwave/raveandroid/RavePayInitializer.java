@@ -54,6 +54,7 @@ public class RavePayInitializer {
         this.lName = lName;
         this.withAccount = withAccount;
         this.withGHMobileMoney = withGHMobileMoney;
+        this.withUgMobileMoney = withUgMobileMoney;
         this.withMpesa = withMpesa;
         this.withCard = withCard;
         this.withAch = withAch;
