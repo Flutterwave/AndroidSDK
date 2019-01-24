@@ -13,7 +13,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
 import android.text.util.Linkify.TransformFilter;
 import android.util.Log;
@@ -136,6 +139,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
         useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
         savedCardsLayout = (LinearLayout) v.findViewById(R.id.saved_cards_layout);
+
+        String s = useASavedCardTv.getText().toString();
+        Spannable spannable = new SpannableString(s);
+        spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
+        useASavedCardTv.setText(spannable);
+
+        s = useAnotherCardTv.getText().toString();
+        spannable = new SpannableString(s);
+        spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
+        useAnotherCardTv.setText(spannable);
 
         presenter = new CardPresenter(getActivity(), this);
         checkForSavedCards();
