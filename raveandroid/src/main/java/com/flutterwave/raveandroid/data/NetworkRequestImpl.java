@@ -6,6 +6,7 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
+import com.flutterwave.raveandroid.responses.CardChargeValidatedResponse;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
@@ -132,7 +133,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
-    public void validateChargeCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
+    public void validateChargeCard(ValidateChargeBody body, final Callbacks.OnValidateCardChargeRequestComplete callback) {
 
         createService();
 
@@ -143,8 +144,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     Gson gson = new Gson();
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
-                    ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
+                    Type type = new TypeToken<CardChargeValidatedResponse>() {}.getType();
+                    CardChargeValidatedResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
                 }
                 else {
@@ -168,7 +169,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
-    public void validateAccountCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
+    public void validateAccountCard(ValidateChargeBody body, final Callbacks.OnValidateAccountChargeRequestComplete callback) {
 
         createService();
 

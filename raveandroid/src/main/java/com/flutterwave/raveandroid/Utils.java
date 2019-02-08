@@ -27,6 +27,8 @@ import java.security.PublicKey;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -283,5 +285,11 @@ public class Utils {
 
         return spacified;
 
+    }
+
+    public static boolean isMasterCard(String cardNo){
+        Pattern pattern = Pattern.compile("^5[1-5][0-9]{1,14}$");
+        Matcher m = pattern.matcher(cardNo);
+        return m.find();
     }
 }

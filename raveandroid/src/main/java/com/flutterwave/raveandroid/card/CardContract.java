@@ -69,7 +69,7 @@ public interface CardContract {
 
         void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
 
-        void validateCardCharge(String flwRef, String otp, String publicKey);
+        void validateCardCharge(String flwRef, String otp, String publicKey, Payload payload, String encryptionKey);
 
         void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
 

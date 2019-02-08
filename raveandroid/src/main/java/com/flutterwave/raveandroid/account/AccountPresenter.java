@@ -7,7 +7,6 @@ import android.webkit.URLUtil;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RaveConstants;
-import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -117,7 +116,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        new NetworkRequestImpl().validateAccountCard(body, new Callbacks.OnValidateAccountChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);

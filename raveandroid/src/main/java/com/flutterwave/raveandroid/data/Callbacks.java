@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.data;
 
 
+import com.flutterwave.raveandroid.responses.CardChargeValidatedResponse;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
@@ -25,10 +26,16 @@ public class Callbacks {
         void onError(String message, String responseAsJSONString);
     }
 
-    public interface OnValidateChargeCardRequestComplete {
+    public interface OnValidateAccountChargeRequestComplete {
         void onSuccess(ChargeResponse response, String responseAsJSONString);
         void onError(String message, String responseAsJSONString);
     }
+
+    public interface OnValidateCardChargeRequestComplete {
+        void onSuccess(CardChargeValidatedResponse response, String responseAsJSONString);
+        void onError(String message, String responseAsJSONString);
+    }
+
 
     public interface OnRequeryRequestComplete {
         void onSuccess(RequeryResponse response, String responseAsJSONString);

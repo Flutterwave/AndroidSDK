@@ -16,13 +16,12 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
+import com.flutterwave.raveandroid.responses.CardChargeValidatedResponse;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.List;
-
-import okhttp3.internal.Util;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
@@ -260,7 +259,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void validateCardCharge(final String flwRef, String otp, String PBFPubKey) {
+    public void validateCardCharge(final String flwRef, String otp, String PBFPubKey, final Payload payload, final String encryptionKey) {
 
         ValidateChargeBody body = new ValidateChargeBody();
         body.setPBFPubKey(PBFPubKey);
@@ -269,20 +268,25 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        new NetworkRequestImpl().validateChargeCard(body, new Callbacks.OnValidateCardChargeRequestComplete() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(CardChargeValidatedResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
 
                 if (response.getStatus() != null) {
-                    String status = response.getStatus();
-                    String message = response.getMessage();
+                    String status = response.getData().getTx().getStatus();
+                    String message = response.getData().getData().getResponsemessage();
 
                     if (status.equalsIgnoreCase("success")) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
                     }
                     else {
-                        mView.onValidateError(message);
+                        if(Utils.isMasterCard(payload.getCardno()) & !response.getData().getData().getResponsemessage().toLowerCase().contains("insufficient")){
+                            payload.setretry_charge(payload.getTxRef());
+                            chargeCard(payload, encryptionKey);
+                        } else {
+                            mView.onValidateError(message);
+                        }
                     }
                 }
                 else {

@@ -26,6 +26,8 @@ public class Payload
 
     private String charge_type;
 
+    private String retry_charge;
+
     public String getRemember_device_mobile_key() {
         return remember_device_mobile_key;
     }
@@ -42,6 +44,14 @@ public class Payload
 
     public void setRemember_device_email(String remember_device_email) {
         this.remember_device_email = remember_device_email;
+    }
+
+    public String getretry_charge(){
+        return retry_charge;
+    }
+
+    public void setretry_charge(String retry_charge){
+        this.retry_charge = retry_charge;
     }
 
     public String getIs_remembered() {

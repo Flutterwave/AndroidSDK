@@ -307,12 +307,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
             }
 
-            Payload body = builder.createPayload();
+            payLoad = builder.createPayload();
 
             if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+                presenter.fetchFee(payLoad, RaveConstants.MANUAL_CARD_CHARGE);
             } else {
-                presenter.chargeCard(body, ravePayInitializer.getEncryptionKey());
+                presenter.chargeCard(payLoad, ravePayInitializer.getEncryptionKey());
             }
 
         }
@@ -407,7 +407,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(),shouldISaveThisCard);
             }else if(requestCode==FOR_OTP){
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
-                presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+                presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey(), payLoad, ravePayInitializer.getEncryptionKey());
             }
         }else {
             super.onActivityResult(requestCode, resultCode, data);
