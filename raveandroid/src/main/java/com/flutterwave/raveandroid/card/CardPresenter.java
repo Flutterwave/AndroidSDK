@@ -281,7 +281,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         mView.onValidateSuccessful(status, responseAsJSONString);
                     }
                     else {
-                        if(Utils.isMasterCard(payload.getCardno()) & !response.getData().getData().getResponsemessage().toLowerCase().contains("insufficient")){
+                        if(Utils.isMasterCard(payload.getCardno()) & !message.toLowerCase().contains("insufficient")){
                             payload.setretry_charge(payload.getTxRef());
                             chargeCard(payload, encryptionKey);
                         } else {
