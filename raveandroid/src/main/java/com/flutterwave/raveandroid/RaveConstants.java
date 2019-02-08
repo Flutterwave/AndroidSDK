@@ -22,6 +22,7 @@ public class RaveConstants {
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";
     public static String RAVE_PARAMS = "raveparams";
+    public static String RAVE_3DS_CALLBACK = "https://rave-webhook.herokuapp.com/receivepayment";
     public static int RAVE_REQUEST_CODE = 4199;
     public static int MANUAL_CARD_CHARGE = 403;
     public static int TOKEN_CHARGE = 24;
