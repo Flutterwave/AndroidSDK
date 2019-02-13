@@ -535,7 +535,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
             if (!savedCards.isEmpty()) {
                 mView.setHasSavedCards(true);
-                mView.showSavedCardsLayout();
             }
     }
 

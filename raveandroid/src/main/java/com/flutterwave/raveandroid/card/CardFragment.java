@@ -9,14 +9,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
-import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
 import android.text.util.Linkify.TransformFilter;
 import android.util.Log;
@@ -32,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.SavedCardsFragment;
-import com.flutterwave.raveandroid.VerificationActivity;
+import com.flutterwave.raveandroid.MultipurposeActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -40,7 +35,6 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.AVSVBVFragment;
 import com.flutterwave.raveandroid.OTPFragment;
@@ -77,7 +71,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public static final int FOR_INTERNET_BANKING = 555;
     public static final int FOR_OTP = 666;
     private static final int FOR_SAVED_CARDS = 777;
-    TextView useASavedCardTv;
+    private static final String STATE_PRESENTER_SAVEDCARDS = "presenter_saved_cards";
+    Button useASavedCardButton;
     TextView useAnotherCardTv;
     TextInputEditText amountEt;
     TextInputEditText emailEt;
@@ -100,19 +95,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private AlertDialog dialog;
     FrameLayout progressContainer;
     View v;
-    SavedCardRecyclerAdapter adapter;
 
     boolean shouldISaveThisCard = false;
-    Boolean hasSavedCards=false;
+    Boolean hasSavedCards = false;
     private LinearLayout saveNewCardLayout;
-    private LinearLayout savedCardsLayout;
-    private LinearLayout newCardLayout;
     private EditText saveCardEmailEt;
     private EditText saveCardPhoneNoEt;
     private String emailForSavingCard;
     private String phoneNumber;
-
-
 
 
     public CardFragment() {
@@ -123,6 +113,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         presenter = new CardPresenter(getActivity(), this);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS)) {
+                Type savedCardsListType = new TypeToken<List<SavedCard>>() {
+                }.getType();
+                presenter.savedCards = (new Gson()).fromJson(savedInstanceState.getString
+                                (STATE_PRESENTER_SAVEDCARDS),
+                        savedCardsListType);
+            }
+        }
+
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         // Inflate the layout for this fragment
@@ -145,64 +145,29 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
         progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
         useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
-        useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
-        savedCardsLayout = (LinearLayout) v.findViewById(R.id.saved_cards_layout);
-        savedCardsLayout.setVisibility(GONE);
-
-        newCardLayout = (LinearLayout) v.findViewById(R.id.rave_new_card_layout);
-
-
-        String s = useASavedCardTv.getText().toString();
-        Spannable spannable = new SpannableString(s);
-        spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
-        useASavedCardTv.setText(spannable);
-
-        useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
-
-        s = useAnotherCardTv.getText().toString();
-        spannable = new SpannableString(s);
-        spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
-        useAnotherCardTv.setText(spannable);
-
-        useAnotherCardTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideSavedCardsLayout();
-            }
-        });
+        useASavedCardButton = (Button) v.findViewById(R.id.rave_use_saved_card_button);
+        useASavedCardButton.setVisibility(GONE);
 
         presenter.checkForSavedCardsInMemory(ravePayInitializer.getPublicKey());
 
-        adapter = new SavedCardRecyclerAdapter();
-        adapter.set(presenter.getSavedCards());
-        adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {
-            @Override
-            public void onCardSelected(SavedCard savedCard) {
-                chargeSavedCard(savedCard);
-            }
-        });
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-//        updateSavedCards();
-
-        useASavedCardTv.setVisibility(GONE);
-        useASavedCardTv.setOnClickListener(new View.OnClickListener() {
+        useASavedCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!hasSavedCards){
+                if (!hasSavedCards) {
                     showToast("You have no saved Cards");
+                } else {
+                    if (presenter.savedCards == null) presenter.checkForSavedCardsInMemory
+                            (ravePayInitializer.getPublicKey());
+                    showSavedCardsLayout(presenter.savedCards);
                 }
-                else showSavedCardsLayout();
             }
         });
 
         // Check for saved cards on server
-        if (ravePayInitializer.getPhoneNumber().length()>0){
+        if (ravePayInitializer.getPhoneNumber().length() > 0) {
             presenter.lookupSavedCards(ravePayInitializer.getPublicKey(),
-                    ravePayInitializer.getPhoneNumber(),"");
+                    ravePayInitializer.getPhoneNumber(), "");
         }
-
 
         saveCardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -238,7 +203,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             saveCardEmailEt.setText(ravePayInitializer.getEmail());
         }
 
-        if (ravePayInitializer.getPhoneNumber().length()>0){
+        if (ravePayInitializer.getPhoneNumber().length() > 0) {
             saveCardPhoneNoEt.setText(ravePayInitializer.getPhoneNumber());
         }
         double amountToPay = ravePayInitializer.getAmount();
@@ -313,9 +278,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
 
-
-
-
     @Override
     public void onClick(View v) {
 
@@ -334,8 +296,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onNoAuthInternationalSuggested(final Payload payload) {
         this.payLoad = payload;
 
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
     }
@@ -542,8 +504,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPinAuthModelSuggested(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "pin");
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "pin");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_PIN);
     }
@@ -567,22 +529,31 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             } else if (requestCode == FOR_OTP) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
-                if(data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE,false)){
+                if (data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
                     payLoad.setOtp(otp);
                     presenter.chargeSavedCard(payLoad, ravePayInitializer.getEncryptionKey());
-                }else presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-//            } else if (requestCode == FOR_SAVED_CARDS){
-//                if (data.hasExtra(SavedCardsFragment.EXTRA_SAVED_CARDS)){
-//                    SavedCard savedCardToCharge = new Gson().fromJson(
-//                            data.getStringExtra(SavedCardsFragment.EXTRA_SAVED_CARDS),
-//                            SavedCard.class);
-//                    showToast("Charging card "+ savedCardToCharge.getMasked_pan());
-//                    chargeSavedCard(savedCardToCharge);
-//                }
+                } else presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+            } else if (requestCode == FOR_SAVED_CARDS) {
+                if (data.hasExtra(SavedCardsFragment.EXTRA_SAVED_CARDS)) {
+                    SavedCard savedCardToCharge = new Gson().fromJson(
+                            data.getStringExtra(SavedCardsFragment.EXTRA_SAVED_CARDS),
+                            SavedCard.class);
+                    chargeSavedCard(savedCardToCharge);
+                }
+                presenter.checkForSavedCardsInMemory(ravePayInitializer.getPublicKey());
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Type savedCardsListType = new TypeToken<List<SavedCard>>() {
+        }.getType();
+        outState.putString(STATE_PRESENTER_SAVEDCARDS,
+                (new Gson()).toJson(presenter.savedCards, savedCardsListType));
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -607,28 +578,29 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     /**
      * If an OTP is required, this method shows the dialog that receives it
-     *  @param flwRef
+     *
+     * @param flwRef
      * @param chargeResponseMessage
      */
     @Override
     public void showOTPLayout(String flwRef, String chargeResponseMessage) {
         this.flwRef = flwRef;
         dismissDialog();
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, chargeResponseMessage);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "otp");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_OTP);
     }
 
     @Override
     public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
-        this.payLoad=payload;
+        this.payLoad = payload;
         dismissDialog();
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, authInstruction);
-        intent.putExtra(OTPFragment.IS_SAVED_CARD_CHARGE,true);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
+        intent.putExtra(OTPFragment.IS_SAVED_CARD_CHARGE, true);
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "otp");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_OTP);
     }
@@ -645,30 +617,20 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
-        useASavedCardTv.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        Type savedCardsListType = new TypeToken<List<SavedCard>>() {}.getType();
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
+        Type savedCardsListType = new TypeToken<List<SavedCard>>() {
+        }.getType();
         intent.putExtra(SavedCardsFragment.EXTRA_SAVED_CARDS,
-                        (new Gson()).toJson(savedCardsList,savedCardsListType));
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
+                (new Gson()).toJson(savedCardsList, savedCardsListType));
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
         startActivityForResult(intent, FOR_SAVED_CARDS);
-    }
-
-    @Override
-    public void showSavedCardsLayout() {
-        useASavedCardTv.setVisibility(View.VISIBLE);
-        savedCardsLayout.setVisibility(View.VISIBLE);
-        newCardLayout.setVisibility(View.GONE);
-    }
-
-    private void hideSavedCardsLayout() {
-        savedCardsLayout.setVisibility(GONE);
-        newCardLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void setHasSavedCards(boolean b) {
         hasSavedCards = b;
+        if (b) useASavedCardButton.setVisibility(View.VISIBLE);
+        else useASavedCardButton.setVisibility(GONE);
     }
 
     /**
@@ -706,9 +668,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_INTERNET_BANKING);
 
@@ -754,9 +716,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 ravePayInitializer.getPublicKey());
 
         presenter.setCardSaveInProgress(false);
-//        Log.d("Saved savedCards", responseAsJSONString);
 
-        if (!verifyResponseAsJSONString.equalsIgnoreCase("")){
+        if (!verifyResponseAsJSONString.equalsIgnoreCase("")) {
             // If this is a lookup after successful charge
             Intent intent = new Intent();
             intent.putExtra("response", verifyResponseAsJSONString);
@@ -765,15 +726,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
                 getActivity().finish();
             }
-        } else {// if this is an independent lookup
-            useASavedCardTv.setVisibility(View.VISIBLE);
-            updateSavedCards();
         }
-    }
-
-    private void updateSavedCards() {
-        adapter.set(presenter.getSavedCards());
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -786,7 +739,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
                 getActivity().finish();
             }
-        } else updateSavedCards();
+        }
     }
 
     /**
@@ -905,7 +858,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
                 } else if (why == RaveConstants.TOKEN_CHARGE) {
                     presenter.chargeToken(payload);
-                } else if (why == RaveConstants.SAVED_CARD_CHARGE){
+                } else if (why == RaveConstants.SAVED_CARD_CHARGE) {
                     presenter.chargeSavedCard(payload, ravePayInitializer.getEncryptionKey());
                 }
 
@@ -948,8 +901,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
         this.payLoad = payload;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
     }
@@ -963,9 +916,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_INTERNET_BANKING);
     }

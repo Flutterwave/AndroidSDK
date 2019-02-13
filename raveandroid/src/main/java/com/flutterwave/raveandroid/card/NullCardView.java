@@ -74,11 +74,6 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void showSavedCardsLayout() {
-
-    }
-
-    @Override
     public void setHasSavedCards(boolean b) {
 
     }

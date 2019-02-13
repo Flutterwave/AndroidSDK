@@ -16,18 +16,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.AVSVBVFragment;
-import com.flutterwave.raveandroid.OTPFragment;
-import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.VerificationActivity;
+import com.flutterwave.raveandroid.MultipurposeActivity;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-
-import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -119,9 +113,9 @@ public class AchFragment extends Fragment implements AchContract.View {
     @Override
     public void showWebView(String authUrl, String flwRef) {
 
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Intent intent = new Intent(getContext(), MultipurposeActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE,"web");
         intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_ACH);
     }

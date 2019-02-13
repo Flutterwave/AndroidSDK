@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -72,6 +73,7 @@ public class SavedCardsFragment extends Fragment {
             savedCards= new Gson().fromJson(savedCardsJson, savedCardsListType);
         }
 
+        if (savedCards==null) savedCards = new ArrayList<>();
         SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
         adapter.set(savedCards);
         adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {

@@ -79,7 +79,7 @@ public interface CardContract {
 
         void showSavedCardsLayout(List<SavedCard> savedCardsList);
 
-        void showSavedCardsLayout();
+//        void showSavedCardsLayout();
 
 
         void setHasSavedCards(boolean b);

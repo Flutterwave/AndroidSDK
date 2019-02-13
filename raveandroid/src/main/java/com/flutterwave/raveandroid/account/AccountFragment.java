@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -27,7 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.VerificationActivity;
+import com.flutterwave.raveandroid.MultipurposeActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
@@ -377,8 +376,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        Intent intent = new Intent(getContext(),MultipurposeActivity.class);
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE,"otp");
         if (validateInstruction != null) {
             intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
         }
@@ -403,9 +402,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onDisplayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
+        Intent intent = new Intent(getContext(),MultipurposeActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
+        intent.putExtra(MultipurposeActivity.ACTIVITY_MOTIVE,"web");
         intent.putExtra("theme",ravePayInitializer.getTheme());
         startActivityForResult(intent,FOR_INTERNET_BANKING);
     }

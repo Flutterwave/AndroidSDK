@@ -10,7 +10,7 @@
             android:name=".RavePayActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".VerificationActivity"
+        <activity android:name=".MultipurposeActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 

@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-public class VerificationActivity extends AppCompatActivity {
-    private static final String TAG = VerificationActivity.class.getName();
+public class MultipurposeActivity extends AppCompatActivity {
+    private static final String TAG = MultipurposeActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
     public static final String INTENT_SENDER = "sender";
     private Fragment fragment;
