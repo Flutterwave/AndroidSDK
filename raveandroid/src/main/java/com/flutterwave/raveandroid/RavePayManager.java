@@ -25,6 +25,7 @@ public class RavePayManager {
     private String country = "NG";
     private String fName = "";
     private String lName = "";
+    private String phoneNumber = "";
     private String meta = "";
     private String subAccounts = "";
     private String payment_plan;
@@ -39,6 +40,7 @@ public class RavePayManager {
     boolean staging = true;
     boolean allowSaveCard = true;
     boolean isPreAuth =  false;
+
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -157,6 +159,11 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
     public RavePayManager setPaymentPlan(String payment_plan) {
         this.payment_plan = payment_plan;
         return this;
@@ -179,6 +186,8 @@ public class RavePayManager {
                 currency, country, fName, lName, withCard, withAccount, withMpesa,
                 withGHMobileMoney, withUgMobileMoney, withAch, theme, staging, meta, subAccounts,
                 payment_plan,
-                isPreAuth);
+                isPreAuth, phoneNumber);
        }
+
+
 }

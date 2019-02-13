@@ -41,6 +41,10 @@ public class VerificationActivity extends AppCompatActivity {
                         fragment = new AVSVBVFragment();
                         fragment.setArguments(getIntent().getExtras());
                         break;
+                    case SavedCardsFragment.SAVED_CARD_MOTIVE:
+                        fragment = new SavedCardsFragment();
+                        fragment.setArguments(getIntent().getExtras());
+                        break;
                     default:
                         Log.e(TAG,"No extra value matching motives");
                 }

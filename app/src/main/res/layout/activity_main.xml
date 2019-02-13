@@ -249,6 +249,15 @@
                     android:id="@+id/lnameEt"
                     />
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/phone_number"
+                    android:id="@+id/phoneNumberEt"
+                    />
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_gravity="center_horizontal"

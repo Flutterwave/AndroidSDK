@@ -49,11 +49,6 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void setSavedCards(List<SavedCard> savedCards) {
-
-    }
-
-    @Override
     public void setPhoneNumber(String phoneNumber) {
 
     }
@@ -65,6 +60,26 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return null;
+    }
+
+    @Override
+    public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
+
+    }
+
+    @Override
+    public void showSavedCardsLayout() {
+
+    }
+
+    @Override
+    public void setHasSavedCards(boolean b) {
 
     }
 

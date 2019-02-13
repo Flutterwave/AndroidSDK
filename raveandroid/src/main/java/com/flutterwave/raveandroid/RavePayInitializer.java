@@ -10,6 +10,7 @@ import java.util.List;
 
 @Parcel
 public class RavePayInitializer {
+    String phoneNumber = "";
     String email;
     double amount;
     String publicKey;
@@ -41,7 +42,8 @@ public class RavePayInitializer {
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
                               boolean withUgMobileMoney,
                               boolean withAch, int theme,
-                              boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth) {
+                              boolean staging, String meta, String subAccounts, String payment_plan,
+                              boolean isPreAuth, String phoneNumber) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -64,6 +66,7 @@ public class RavePayInitializer {
         this.subAccounts = subAccounts;
         this.payment_plan = payment_plan;
         this.isPreAuth = isPreAuth;
+        this.phoneNumber = phoneNumber;
     }
 
     public RavePayInitializer() {
@@ -210,6 +213,16 @@ public class RavePayInitializer {
     public void setfName(String fName) {
         this.fName = fName;
     }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
 
     public String getlName() {
         return lName;

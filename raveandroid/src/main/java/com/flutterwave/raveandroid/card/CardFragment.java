@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flutterwave.raveandroid.SavedCardsFragment;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -49,10 +50,12 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.SaveCardResponse;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -73,8 +76,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public static final int FOR_PIN = 444;
     public static final int FOR_INTERNET_BANKING = 555;
     public static final int FOR_OTP = 666;
-    TextView useAnotherCardTv;
+    private static final int FOR_SAVED_CARDS = 777;
     TextView useASavedCardTv;
+    TextView useAnotherCardTv;
     TextInputEditText amountEt;
     TextInputEditText emailEt;
     TextInputEditText cardNoTv;
@@ -96,8 +100,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private AlertDialog dialog;
     FrameLayout progressContainer;
     View v;
+    SavedCardRecyclerAdapter adapter;
 
     boolean shouldISaveThisCard = false;
+    Boolean hasSavedCards=false;
     private LinearLayout saveNewCardLayout;
     private LinearLayout savedCardsLayout;
     private LinearLayout newCardLayout;
@@ -106,7 +112,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private String emailForSavingCard;
     private String phoneNumber;
 
-    List<SavedCard> savedCards;
+
+
 
     public CardFragment() {
         // Required empty public constructor
@@ -115,6 +122,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        presenter = new CardPresenter(getActivity(), this);
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_card, container, false);
@@ -128,7 +137,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         saveCardPhoneNoEt = (EditText) v.findViewById(R.id.save_card_phoneNoTV);
         saveCardEmailEt = (EditText) v.findViewById(R.id.save_card_emailTv);
         saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
-        newCardLayout = (LinearLayout) v.findViewById(R.id.rave_new_card_layout);
         amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
         emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
         cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
@@ -139,20 +147,22 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
         useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
         savedCardsLayout = (LinearLayout) v.findViewById(R.id.saved_cards_layout);
+        savedCardsLayout.setVisibility(GONE);
+
+        newCardLayout = (LinearLayout) v.findViewById(R.id.rave_new_card_layout);
+
 
         String s = useASavedCardTv.getText().toString();
         Spannable spannable = new SpannableString(s);
         spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
         useASavedCardTv.setText(spannable);
 
+        useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
+
         s = useAnotherCardTv.getText().toString();
         spannable = new SpannableString(s);
         spannable.setSpan(new UnderlineSpan(),0,s.length(),0);
         useAnotherCardTv.setText(spannable);
-
-        presenter = new CardPresenter(getActivity(), this);
-        checkForSavedCards();
-
 
         useAnotherCardTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,16 +171,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
         });
 
-        useASavedCardTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (savedCards.isEmpty()) showToast("You have no saved Cards");
-                else showSavedCardsLayout();
-            }
-        });
+        presenter.checkForSavedCardsInMemory(ravePayInitializer.getPublicKey());
 
-        SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
-        adapter.set(savedCards);
+        adapter = new SavedCardRecyclerAdapter();
+        adapter.set(presenter.getSavedCards());
         adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {
             @Override
             public void onCardSelected(SavedCard savedCard) {
@@ -180,9 +184,25 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+//        updateSavedCards();
 
+        useASavedCardTv.setVisibility(GONE);
+        useASavedCardTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!hasSavedCards){
+                    showToast("You have no saved Cards");
+                }
+                else showSavedCardsLayout();
+            }
+        });
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+        // Check for saved cards on server
+        if (ravePayInitializer.getPhoneNumber().length()>0){
+            presenter.lookupSavedCards(ravePayInitializer.getPublicKey(),
+                    ravePayInitializer.getPhoneNumber(),"");
+        }
+
 
         saveCardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -218,6 +238,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             saveCardEmailEt.setText(ravePayInitializer.getEmail());
         }
 
+        if (ravePayInitializer.getPhoneNumber().length()>0){
+            saveCardPhoneNoEt.setText(ravePayInitializer.getPhoneNumber());
+        }
         double amountToPay = ravePayInitializer.getAmount();
 
         if (amountToPay > 0) {
@@ -227,6 +250,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         return v;
     }
+
 
     private void chargeSavedCard(SavedCard savedCard) {
         clearErrors();
@@ -288,32 +312,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
-    private void checkForSavedCards() {
-        if (savedCards == null) {
-            savedCards = new ArrayList<>();
-        }
 
-        if (presenter == null) {
-            presenter = new CardPresenter(getActivity(), this);
-        }
 
-        presenter.retrievePhoneNumberFromMemory();
-        presenter.retrieveSavedCardsFromMemory(phoneNumber);
-
-        if (!savedCards.isEmpty()) {
-            showSavedCardsLayout();
-        }
-    }
-
-    private void showSavedCardsLayout() {
-        newCardLayout.setVisibility(View.GONE);
-        savedCardsLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void hideSavedCardsLayout() {
-        newCardLayout.setVisibility(View.VISIBLE);
-        savedCardsLayout.setVisibility(View.GONE);
-    }
 
 
     @Override
@@ -412,7 +412,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         if (shouldISaveThisCard && phoneNumber.length() < 1) {
             valid = false;
-            saveCardPhoneNoEt.setError("Enter a valid email");
+            saveCardPhoneNoEt.setError("Enter a Phone Number");
         }
 
         if (cvv.length() < 3) {
@@ -571,6 +571,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     payLoad.setOtp(otp);
                     presenter.chargeSavedCard(payLoad, ravePayInitializer.getEncryptionKey());
                 }else presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+//            } else if (requestCode == FOR_SAVED_CARDS){
+//                if (data.hasExtra(SavedCardsFragment.EXTRA_SAVED_CARDS)){
+//                    SavedCard savedCardToCharge = new Gson().fromJson(
+//                            data.getStringExtra(SavedCardsFragment.EXTRA_SAVED_CARDS),
+//                            SavedCard.class);
+//                    showToast("Charging card "+ savedCardToCharge.getMasked_pan());
+//                    chargeSavedCard(savedCardToCharge);
+//                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -628,6 +636,39 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
         showToast(message);
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
+        useASavedCardTv.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        Type savedCardsListType = new TypeToken<List<SavedCard>>() {}.getType();
+        intent.putExtra(SavedCardsFragment.EXTRA_SAVED_CARDS,
+                        (new Gson()).toJson(savedCardsList,savedCardsListType));
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
+        startActivityForResult(intent, FOR_SAVED_CARDS);
+    }
+
+    @Override
+    public void showSavedCardsLayout() {
+        useASavedCardTv.setVisibility(View.VISIBLE);
+        savedCardsLayout.setVisibility(View.VISIBLE);
+        newCardLayout.setVisibility(View.GONE);
+    }
+
+    private void hideSavedCardsLayout() {
+        savedCardsLayout.setVisibility(GONE);
+        newCardLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setHasSavedCards(boolean b) {
+        hasSavedCards = b;
     }
 
     /**
@@ -707,19 +748,32 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString) {
         //Save details to phone
-        presenter.saveCardToSharedPreferences(response);
-
+        presenter.saveCardToSharedPreferences(response, ravePayInitializer.getPublicKey());
+        // Save details in app memory
+        presenter.retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(),
+                ravePayInitializer.getPublicKey());
 
         presenter.setCardSaveInProgress(false);
-        Log.d("Saved savedCards", responseAsJSONString);
+//        Log.d("Saved savedCards", responseAsJSONString);
 
-        Intent intent = new Intent();
-        intent.putExtra("response", verifyResponseAsJSONString);
+        if (!verifyResponseAsJSONString.equalsIgnoreCase("")){
+            // If this is a lookup after successful charge
+            Intent intent = new Intent();
+            intent.putExtra("response", verifyResponseAsJSONString);
 
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
+            if (getActivity() != null) {
+                getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+                getActivity().finish();
+            }
+        } else {// if this is an independent lookup
+            useASavedCardTv.setVisibility(View.VISIBLE);
+            updateSavedCards();
         }
+    }
+
+    private void updateSavedCards() {
+        adapter.set(presenter.getSavedCards());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -727,10 +781,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         Intent intent = new Intent();
         intent.putExtra("response", verifyResponseAsJSONString);
 
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
+        if (!verifyResponseAsJSONString.equalsIgnoreCase("")) {
+            if (getActivity() != null) {
+                getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+                getActivity().finish();
+            }
+        } else updateSavedCards();
     }
 
     /**
@@ -974,10 +1030,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
-    @Override
-    public void setSavedCards(List<SavedCard> savedCards) {
-        this.savedCards = savedCards;
-    }
 
     @Override
     public void setPhoneNumber(String phoneNumber) {

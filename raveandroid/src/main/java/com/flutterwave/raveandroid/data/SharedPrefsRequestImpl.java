@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.flutterwave.raveandroid.RaveConstants;
 import com.google.gson.Gson;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
-    private static final String SAVED_CARDS_PREFIX = "SAVED_CARDS";
+    private static final String SAVED_CARDS_PREFIX = "EXTRA_SAVED_CARDS";
     private static final String PHONE_NUMBER = "phone_number";
     Context context;
     SharedPreferences sharedPreferences;
@@ -29,36 +28,22 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         this.context = context;
     }
 
-//    @Override
-//    public void saveCardDetsToSave(CardDetsToSave cardDetsToSave) {
-//        init();
-//        editor.putString("email", cardDetsToSave.getEmail());
-//        editor.putString("last4", cardDetsToSave.getLast4());
-//        editor.apply();
-//    }
-//
-//    @Override
-//    public CardDetsToSave retrieveCardDetsToSave() {
-//        init();
-//        return new CardDetsToSave(sharedPreferences.getString("email", ""), sharedPreferences.getString("last4", ""));
-//    }
-
     @Override
-    public void saveCardToSharedPreference(List<SavedCard> cardsToSave, String phoneNumber) {
+    public void saveCardToSharedPreference(List<SavedCard> cardsToSave, String phoneNumber, String publicKey) {
 
         savePhoneNumber(phoneNumber);
 
-        List<SavedCard> savedCards = getSavedCards(phoneNumber);
-
+        List<SavedCard> savedCards = getSavedCards(phoneNumber, publicKey);
+        List<SavedCard> repeatedCards=new ArrayList<>();
         for (SavedCard s : savedCards) {
             for (SavedCard c : cardsToSave){
                 if (s.getCardHash().equalsIgnoreCase(c.getCardHash())){
-                    savedCards.remove(s);
+                    repeatedCards.add(s);
                     break;
                 }
             }
         }
-
+        savedCards.removeAll(repeatedCards);
         savedCards.addAll(cardsToSave);
 
         init();
@@ -66,18 +51,18 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
         String savedCardsJson = gson.toJson(savedCards, type);
 
-        editor.putString(SAVED_CARDS_PREFIX +  phoneNumber, savedCardsJson).apply();
+        editor.putString(SAVED_CARDS_PREFIX +  phoneNumber + publicKey, savedCardsJson).apply();
     }
 
     @Override
-    public List<SavedCard> getSavedCards(String phoneNumber) {
+    public List<SavedCard> getSavedCards(String phoneNumber, String publicKey) {
         init();
-        String savedCardsJson = sharedPreferences.getString(SAVED_CARDS_PREFIX + phoneNumber, "[]");
+        String savedCardsJson = sharedPreferences.getString(
+                SAVED_CARDS_PREFIX + phoneNumber + publicKey, "[]");
 
         try {
             Gson gson = new Gson();
-            Type type = new TypeToken<List<SavedCard>>() {
-            }.getType();
+            Type type = new TypeToken<List<SavedCard>>() {}.getType();
             return gson.fromJson(savedCardsJson, type);
         }
         catch (Exception e) {

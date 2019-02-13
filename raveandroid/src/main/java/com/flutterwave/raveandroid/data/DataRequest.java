@@ -35,8 +35,8 @@ public interface DataRequest {
 
     interface SharedPrefsRequest {
 
-        void saveCardToSharedPreference(List<SavedCard> card, String email);
-        List<SavedCard> getSavedCards(String phoneNumber);
+        void saveCardToSharedPreference(List<SavedCard> card, String email, String publicKey);
+        List<SavedCard> getSavedCards(String phoneNumber, String publicKey);
         void saveFlwRef(String flwRef);
         String fetchFlwRef();
 

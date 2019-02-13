@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.card;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 
 import com.flutterwave.raveandroid.RaveConstants;
@@ -41,6 +40,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     private CardContract.View mView;
     private boolean cardSaveInProgress = false;
     SharedPrefsRequestImpl sharedManager;
+    List<SavedCard> savedCards;
 
     public boolean isCardSaveInProgress() {
         return cardSaveInProgress;
@@ -430,7 +430,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void lookupSavedCards(String publicKey, String phoneNumber, final String verifyResponseAsJSONString) {
+    public void lookupSavedCards(String publicKey,
+                                 String phoneNumber,
+                                 final String verifyResponseAsJSONString
+                                 ) {
         LookupSavedCardsRequestBody body = new LookupSavedCardsRequestBody();
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
@@ -440,6 +443,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             @Override
             public void onSuccess(LookupSavedCardsResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
+                mView.setHasSavedCards(true);
                 mView.onLookupSavedCardsSuccessful(response, responseAsJSONString, verifyResponseAsJSONString);
             }
 
@@ -452,7 +456,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void saveCardToSharedPreferences(LookupSavedCardsResponse response) {
+    public void saveCardToSharedPreferences(LookupSavedCardsResponse response, String publicKey) {
         String phoneNumber = response.getData()[0].getMobile_number();
         List<SavedCard> cards = new ArrayList<>();
 
@@ -466,9 +470,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             cards.add(card);
         }
 
-        sharedManager.saveCardToSharedPreference(cards, phoneNumber);
-
-
+        sharedManager.saveCardToSharedPreference(cards, phoneNumber, publicKey);
     }
 
 
@@ -512,16 +514,34 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void retrieveSavedCardsFromMemory(String phoneNumber) {
-        List<SavedCard> cards = sharedManager.getSavedCards(phoneNumber);
-
-        mView.setSavedCards(cards);
+    public void retrieveSavedCardsFromMemory(String phoneNumber, String publicKey) {
+        savedCards = sharedManager.getSavedCards(phoneNumber, publicKey);
     }
 
     @Override
     public void retrievePhoneNumberFromMemory() {
         String phoneNumber = sharedManager.fetchPhoneNumber();
         mView.setPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public void checkForSavedCardsInMemory(String publicKey) {
+            if (savedCards == null) {
+                savedCards = new ArrayList<>();
+            }
+
+            retrievePhoneNumberFromMemory();
+            retrieveSavedCardsFromMemory(mView.getPhoneNumber(), publicKey);
+
+            if (!savedCards.isEmpty()) {
+                mView.setHasSavedCards(true);
+                mView.showSavedCardsLayout();
+            }
+    }
+
+    @Override
+    public List<SavedCard> getSavedCards() {
+        return savedCards;
     }
 
     @Override

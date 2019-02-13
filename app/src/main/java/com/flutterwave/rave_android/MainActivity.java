@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     EditText countryEt;
     EditText fNameEt;
     EditText lNameEt;
+    EditText phoneNumberEt;
     Button startPayBtn;
     Button addVendorBtn;
     Button clearVendorBtn;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         countryEt = findViewById(R.id.countryEt);
         fNameEt = findViewById(R.id.fNameEt);
         lNameEt = findViewById(R.id.lnameEt);
+        phoneNumberEt = findViewById(R.id.phoneNumberEt);
         startPayBtn = findViewById(R.id.startPaymentBtn);
         cardSwitch = findViewById(R.id.cardPaymentSwitch);
         accountSwitch = findViewById(R.id.accountPaymentSwitch);
@@ -123,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 clear();
             }
         });
+
+
     }
 
     private void clear(){
@@ -144,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         String country = countryEt.getText().toString();
         String fName = fNameEt.getText().toString();
         String lName = lNameEt.getText().toString();
+        String phoneNumber = phoneNumberEt.getText().toString();
 
         boolean valid = true;
 
@@ -182,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             countryEt.setError("A valid country code is required");
         }
 
+
         if (valid) {
             new RavePayManager(this).setAmount(Double.parseDouble(amount))
                     .setCountry(country)
@@ -189,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     .setEmail(email)
                     .setfName(fName)
                     .setlName(lName)
+                    .setPhoneNumber(phoneNumber)
                     .setNarration(narration)
                     .setPublicKey(publicKey)
                     .setEncryptionKey(encryptionKey)

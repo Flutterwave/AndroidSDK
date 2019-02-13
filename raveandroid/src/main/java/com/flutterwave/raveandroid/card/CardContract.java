@@ -69,14 +69,20 @@ public interface CardContract {
 
         void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString);
 
-
-        void setSavedCards(List<SavedCard> savedCards);
-
         void setPhoneNumber(String phoneNumber);
 
         void showOTPLayoutForSavedCard(Payload payload, String authInstruction);
 
         void onSendRaveOtpFailed(String message, String responseAsJSONString);
+
+        String getPhoneNumber();
+
+        void showSavedCardsLayout(List<SavedCard> savedCardsList);
+
+        void showSavedCardsLayout();
+
+
+        void setHasSavedCards(boolean b);
     }
 
     interface UserActionsListener {
@@ -94,7 +100,7 @@ public interface CardContract {
 
         void fetchFee(Payload payload, int reason);
 
-        void retrieveSavedCardsFromMemory(String email);
+        void retrieveSavedCardsFromMemory(String email, String publicKey);
 
         void onAttachView(CardContract.View view);
 
@@ -109,11 +115,15 @@ public interface CardContract {
 
         void lookupSavedCards(String publicKey, String phoneNumber, String verifyResponseAsJSONString);
 
-        void saveCardToSharedPreferences(LookupSavedCardsResponse response);
+        void saveCardToSharedPreferences(LookupSavedCardsResponse response, String publicKey);
 
         void chargeSavedCard(Payload payload, String encryptionKey);
 
         void retrievePhoneNumberFromMemory();
+
+        void checkForSavedCardsInMemory(String publicKey);
+
+        List<SavedCard> getSavedCards();
     }
 
 }
