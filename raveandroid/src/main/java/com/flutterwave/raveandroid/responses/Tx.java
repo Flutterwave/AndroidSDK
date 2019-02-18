@@ -7,7 +7,7 @@ public class Tx {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("txRef")
     @Expose
     private String txRef;
@@ -25,25 +25,25 @@ public class Tx {
     private String deviceFingerprint;
     @SerializedName("settlement_token")
     @Expose
-    private Object settlementToken;
+    private String settlementToken;
     @SerializedName("cycle")
     @Expose
     private String cycle;
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private int amount;
     @SerializedName("charged_amount")
     @Expose
-    private Integer chargedAmount;
+    private int chargedAmount;
     @SerializedName("appfee")
     @Expose
-    private Double appfee;
+    private double appfee;
     @SerializedName("merchantfee")
     @Expose
-    private Integer merchantfee;
+    private int merchantfee;
     @SerializedName("merchantbearsfee")
     @Expose
-    private Integer merchantbearsfee;
+    private int merchantbearsfee;
     @SerializedName("chargeResponseCode")
     @Expose
     private String chargeResponseCode;
@@ -82,19 +82,19 @@ public class Tx {
     private String vbvrespcode;
     @SerializedName("acctvalrespmsg")
     @Expose
-    private Object acctvalrespmsg;
+    private String acctvalrespmsg;
     @SerializedName("acctvalrespcode")
     @Expose
-    private Object acctvalrespcode;
+    private String acctvalrespcode;
     @SerializedName("paymentType")
     @Expose
     private String paymentType;
     @SerializedName("paymentPlan")
     @Expose
-    private Object paymentPlan;
+    private String paymentPlan;
     @SerializedName("paymentPage")
     @Expose
-    private Object paymentPage;
+    private String paymentPage;
     @SerializedName("paymentId")
     @Expose
     private String paymentId;
@@ -106,7 +106,7 @@ public class Tx {
     private String chargeType;
     @SerializedName("is_live")
     @Expose
-    private Integer isLive;
+    private int isLive;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -115,19 +115,19 @@ public class Tx {
     private String updatedAt;
     @SerializedName("deletedAt")
     @Expose
-    private Object deletedAt;
+    private String deletedAt;
     @SerializedName("customerId")
     @Expose
-    private Integer customerId;
+    private int customerId;
     @SerializedName("AccountId")
     @Expose
-    private Integer accountId;
+    private int accountId;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -171,11 +171,11 @@ public class Tx {
         this.deviceFingerprint = deviceFingerprint;
     }
 
-    public Object getSettlementToken() {
+    public String getSettlementToken() {
         return settlementToken;
     }
 
-    public void setSettlementToken(Object settlementToken) {
+    public void setSettlementToken(String settlementToken) {
         this.settlementToken = settlementToken;
     }
 
@@ -187,43 +187,43 @@ public class Tx {
         this.cycle = cycle;
     }
 
-    public Integer getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public Integer getChargedAmount() {
+    public int getChargedAmount() {
         return chargedAmount;
     }
 
-    public void setChargedAmount(Integer chargedAmount) {
+    public void setChargedAmount(int chargedAmount) {
         this.chargedAmount = chargedAmount;
     }
 
-    public Double getAppfee() {
+    public double getAppfee() {
         return appfee;
     }
 
-    public void setAppfee(Double appfee) {
+    public void setAppfee(double appfee) {
         this.appfee = appfee;
     }
 
-    public Integer getMerchantfee() {
+    public int getMerchantfee() {
         return merchantfee;
     }
 
-    public void setMerchantfee(Integer merchantfee) {
+    public void setMerchantfee(int merchantfee) {
         this.merchantfee = merchantfee;
     }
 
-    public Integer getMerchantbearsfee() {
+    public int getMerchantbearsfee() {
         return merchantbearsfee;
     }
 
-    public void setMerchantbearsfee(Integer merchantbearsfee) {
+    public void setMerchantbearsfee(int merchantbearsfee) {
         this.merchantbearsfee = merchantbearsfee;
     }
 
@@ -323,19 +323,19 @@ public class Tx {
         this.vbvrespcode = vbvrespcode;
     }
 
-    public Object getAcctvalrespmsg() {
+    public String getAcctvalrespmsg() {
         return acctvalrespmsg;
     }
 
-    public void setAcctvalrespmsg(Object acctvalrespmsg) {
+    public void setAcctvalrespmsg(String acctvalrespmsg) {
         this.acctvalrespmsg = acctvalrespmsg;
     }
 
-    public Object getAcctvalrespcode() {
+    public String getAcctvalrespcode() {
         return acctvalrespcode;
     }
 
-    public void setAcctvalrespcode(Object acctvalrespcode) {
+    public void setAcctvalrespcode(String acctvalrespcode) {
         this.acctvalrespcode = acctvalrespcode;
     }
 
@@ -347,19 +347,19 @@ public class Tx {
         this.paymentType = paymentType;
     }
 
-    public Object getPaymentPlan() {
+    public String getPaymentPlan() {
         return paymentPlan;
     }
 
-    public void setPaymentPlan(Object paymentPlan) {
+    public void setPaymentPlan(String paymentPlan) {
         this.paymentPlan = paymentPlan;
     }
 
-    public Object getPaymentPage() {
+    public String getPaymentPage() {
         return paymentPage;
     }
 
-    public void setPaymentPage(Object paymentPage) {
+    public void setPaymentPage(String paymentPage) {
         this.paymentPage = paymentPage;
     }
 
@@ -387,11 +387,11 @@ public class Tx {
         this.chargeType = chargeType;
     }
 
-    public Integer getIsLive() {
+    public int getIsLive() {
         return isLive;
     }
 
-    public void setIsLive(Integer isLive) {
+    public void setIsLive(int isLive) {
         this.isLive = isLive;
     }
 
@@ -411,27 +411,27 @@ public class Tx {
         this.updatedAt = updatedAt;
     }
 
-    public Object getDeletedAt() {
+    public String getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Object deletedAt) {
+    public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
     }
 
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
-    public Integer getAccountId() {
+    public int getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
 
