@@ -124,7 +124,7 @@ In the calling activity, override the `onActivityResult` method to receive the p
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed.
+The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed. Typical success response can be found [here](https://gist.github.com/BolajisBrain/305ef5a6df7744694d9c35787580a2d2) and failed response [here](https://gist.github.com/BolajisBrain/afa972cbca782bbb942984ddec9f5262).
 
 > **PLEASE NOTE**
 >  We advise you to do a further verification of transaction's details on your server to be
