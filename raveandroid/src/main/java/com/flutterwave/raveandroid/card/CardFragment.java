@@ -43,6 +43,7 @@ import com.flutterwave.raveandroid.AVSVBVFragment;
 import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -177,8 +178,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onNoAuthInternationalSuggested(final Payload payload) {
-        this.payLoad = payload;
+    public void onNoAuthInternationalSuggested() {
 
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
@@ -380,8 +380,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param payload = Contains card payment details
      */
     @Override
-    public void onPinAuthModelSuggested(final Payload payload) {
-        this.payLoad = payload;   //added so as to get back in onActivityResult
+    public void onPinAuthModelSuggested() {
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"pin");
         intent.putExtra("theme",ravePayInitializer.getTheme());
@@ -394,14 +393,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             //just to be sure this fragment sent the receiving intent
             if(requestCode==FOR_PIN){
                 String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
-                presenter.chargeCardWithSuggestedAuthModel(payLoad, pin, PIN, ravePayInitializer.getEncryptionKey());
+                presenter.chargeCardWithSuggestedAuthModel(pin, PIN, ravePayInitializer.getEncryptionKey());
             }else if(requestCode==FOR_AVBVV){
                 String address=data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
                 String state=data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
                 String city=data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
                 String zipCode=data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
                 String country=data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
-                presenter.chargeCardWithAVSModel(payLoad, address, city, zipCode, country, state,
+                presenter.chargeCardWithAVSModel(address, city, zipCode, country, state,
                         RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getEncryptionKey());
             }else if(requestCode==FOR_INTERNET_BANKING){
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(),shouldISaveThisCard);
@@ -691,8 +690,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
-        this.payLoad = payload;
+    public void onAVS_VBVSECURECODEModelSuggested() {
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"avsvbv");
         intent.putExtra("theme",ravePayInitializer.getTheme());

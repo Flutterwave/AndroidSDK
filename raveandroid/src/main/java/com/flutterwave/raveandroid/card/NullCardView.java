@@ -32,7 +32,7 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onNoAuthInternationalSuggested(Payload payload) {
+    public void onNoAuthInternationalSuggested() {
 
     }
 
@@ -42,7 +42,7 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onPinAuthModelSuggested(Payload payload) {
+    public void onPinAuthModelSuggested() {
 
     }
 
@@ -123,7 +123,7 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onAVS_VBVSECURECODEModelSuggested(Payload payload) {
+    public void onAVS_VBVSECURECODEModelSuggested() {
 
     }
 

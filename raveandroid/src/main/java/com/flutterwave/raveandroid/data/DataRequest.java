@@ -27,6 +27,8 @@ public interface DataRequest {
 
     interface SharedPrefsRequest {
         void saveCardDetsToSave(CardDetsToSave cardDetsToSave);
+        void saveTempPayLoad(Payload payload);
+        Payload getTempPayload();
         CardDetsToSave retrieveCardDetsToSave();
         void saveACard(SavedCard card, String SECKEY, String email);
         List<SavedCard> getSavedCards(String email);

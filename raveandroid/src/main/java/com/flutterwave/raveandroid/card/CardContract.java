@@ -19,7 +19,7 @@ public interface CardContract {
         void showProgressIndicator(boolean active);
         void onPaymentError(String message);
 
-        void onPinAuthModelSuggested(Payload payload);
+        void onPinAuthModelSuggested();
 
         void showToast(String message);
 
@@ -51,7 +51,7 @@ public interface CardContract {
 
         void onChargeCardSuccessful(ChargeResponse response);
 
-        void onAVS_VBVSECURECODEModelSuggested(Payload payload);
+        void onAVS_VBVSECURECODEModelSuggested();
 
         void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
 
@@ -59,7 +59,7 @@ public interface CardContract {
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
 
-        void onNoAuthInternationalSuggested(Payload payload);
+        void onNoAuthInternationalSuggested();
 
         void onNoAuthUsed(String flwRef, String publicKey);
     }
@@ -67,7 +67,7 @@ public interface CardContract {
     interface UserActionsListener {
         void chargeCard(Payload payload, String encryptionKey);
 
-        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
+        void chargeCardWithSuggestedAuthModel(String zipOrPin, String authModel, String encryptionKey);
 
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
@@ -89,7 +89,7 @@ public interface CardContract {
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
-        void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
+        void chargeCardWithAVSModel(String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
     }
 

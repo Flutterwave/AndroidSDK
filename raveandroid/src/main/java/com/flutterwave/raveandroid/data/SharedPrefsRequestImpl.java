@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.Utils;
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String FLW_REF_KEY = "flw_ref_key";
+    String PAYLOAD_KEY = "payload_key";
 
     public SharedPrefsRequestImpl(Context context) {
         this.context = context;
@@ -34,6 +36,20 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         editor.putString("first6", cardDetsToSave.getFirst6());
         editor.putString("last4", cardDetsToSave.getLast4());
         editor.apply();
+    }
+
+    @Override
+    public void saveTempPayLoad(Payload payload) {
+        init();
+        editor.putString(PAYLOAD_KEY, Utils.convertToJson(payload));
+        editor.apply();
+    }
+
+    @Override
+    public Payload getTempPayload(){
+        init();
+        String payloadJSON = sharedPreferences.getString(PAYLOAD_KEY, "");
+        return Utils.convertFromJson(payloadJSON, Payload.class);
     }
 
     @Override

@@ -34,10 +34,12 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
 public class CardPresenter implements CardContract.UserActionsListener {
     private Context context;
     private CardContract.View mView;
+    SharedPrefsRequestImpl sharedMgr;
 
     public CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
         this.mView = mView;
+        sharedMgr = new SharedPrefsRequestImpl(context);
     }
 
     @Override
@@ -66,13 +68,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
 
                         if (suggested_auth.equals(RaveConstants.PIN)) {
-                            mView.onPinAuthModelSuggested(payload);
+                            sharedMgr.saveTempPayLoad(payload);
+                            mView.onPinAuthModelSuggested();
                         }
                         else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
-                            mView.onAVS_VBVSECURECODEModelSuggested(payload);
+                            sharedMgr.saveTempPayLoad(payload);
+                            mView.onAVS_VBVSECURECODEModelSuggested();
                         }
                         else if (suggested_auth.equalsIgnoreCase(RaveConstants.NOAUTH_INTERNATIONAL)) {
-                            mView.onNoAuthInternationalSuggested(payload);
+                            sharedMgr.saveTempPayLoad(payload);
+                            mView.onNoAuthInternationalSuggested();
                         }
                         else {
                             mView.onPaymentError("Unknown auth model");
@@ -118,8 +123,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode, String country, String state, String authModel, String encryptionKey) {
-
+    public void chargeCardWithAVSModel(String address, String city, String zipCode, String country, String state, String authModel, String encryptionKey) {
+        Payload payload = sharedMgr.getTempPayload();
         payload.setSuggestedAuth(authModel);
         payload.setBillingaddress(address);
         payload.setBillingcity(city);
@@ -188,8 +193,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
-
+    public void chargeCardWithSuggestedAuthModel(String zipOrPin, String authModel, String encryptionKey) {
+        Payload payload = sharedMgr.getTempPayload();
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
         }

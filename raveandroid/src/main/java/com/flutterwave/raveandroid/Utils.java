@@ -108,6 +108,26 @@ public class Utils {
 
     }
 
+    public static <T> T convertFromJson(String json, Class<T> classOfT){
+        try {
+            return new Gson().fromJson(json, (Type) classOfT);
+        } catch (Exception e) {
+            Log.d("fetched error", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static <T> String convertToJson(T object){
+        try {
+            return new Gson().toJson(object);
+        } catch (Exception e) {
+            Log.d("fetched error", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static void hide_keyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
