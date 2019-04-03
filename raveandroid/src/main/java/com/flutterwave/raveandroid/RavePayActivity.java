@@ -79,6 +79,9 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isStaging()) {
             BASE_URL = RaveConstants.STAGING_URL;
+            if(ravePayInitializer.getShowStagingLabel()){
+                findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
+            }
         }
         else {
             BASE_URL = RaveConstants.LIVE_URL;
