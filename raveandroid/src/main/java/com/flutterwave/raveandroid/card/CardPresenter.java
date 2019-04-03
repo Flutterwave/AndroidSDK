@@ -89,7 +89,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                                 mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
                             }
-                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP) ||  authModelUsed.equalsIgnoreCase(RaveConstants.ACCESS_OTP)) {
+                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP)
+                                    ||  authModelUsed.equalsIgnoreCase(RaveConstants.ACCESS_OTP)
+                                    || authModelUsed.toLowerCase().contains("otp")) {
                                 String flwRef = response.getData().getFlwRef();
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
                                 chargeResponseMessage = chargeResponseMessage == null ? "Enter your one  time password (OTP)" : chargeResponseMessage;
