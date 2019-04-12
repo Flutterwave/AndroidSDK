@@ -283,6 +283,13 @@ public class Utils {
 
     }
 
+    /**
+     * Checks that a number is valid according to the Luhn algorithm
+     * https://en.wikipedia.org/wiki/Luhn_algorithm
+     *
+     * @param number to be checked
+     * @return true if valid
+     */
     public static boolean isValidLuhnNumber(String number) {
 
         try {// Verify that string contains only numbers
