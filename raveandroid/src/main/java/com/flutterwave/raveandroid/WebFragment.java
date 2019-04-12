@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.UrlQuerySanitizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,10 +20,6 @@ import android.webkit.WebViewClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Set;
 
@@ -104,17 +99,17 @@ public class WebFragment extends Fragment {
                 // Get flutterwave ref
                 Uri uri = Uri.parse(url);
                 Set<String> args = uri.getQueryParameterNames();
-                if(args.contains("response")){
+                if (args.contains("response")) {
                     String response = uri.getQueryParameter("response");
                     try {
-                        JsonElement respElement = new Gson().fromJson(response,JsonElement.class);
+                        JsonElement respElement = new Gson().fromJson(response, JsonElement.class);
                         JsonObject responseJSONObject = respElement.getAsJsonObject();
 
                         flwRef = responseJSONObject.get("flwRef").getAsString();
-                    } catch(com.google.gson.JsonSyntaxException|java.lang.IllegalStateException ex) {
-                        Log.d(LOG_TAG,"Invalid JSON syntax for response returned");
+                    } catch (com.google.gson.JsonSyntaxException | java.lang.IllegalStateException ex) {
+                        Log.d(LOG_TAG, "Invalid JSON syntax for response returned");
                     }
-                }else Log.d(LOG_TAG,"Callback does not contain \"response\" field");
+                } else Log.d(LOG_TAG, "Callback does not contain \"response\" field");
 
                 goBack();
             }
