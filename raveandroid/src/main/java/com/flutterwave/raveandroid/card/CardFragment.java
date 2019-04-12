@@ -404,6 +404,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 presenter.chargeCardWithAVSModel(payLoad, address, city, zipCode, country, state,
                         RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getEncryptionKey());
             }else if(requestCode==FOR_INTERNET_BANKING){
+                flwRef = data.getStringExtra(WebFragment.EXTRA_FLW_REF);
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(),shouldISaveThisCard);
             }else if(requestCode==FOR_OTP){
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);

@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.net.UrlQuerySanitizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,13 +18,26 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Set;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class WebFragment extends Fragment {
     public static final String EXTRA_WEB = "extraWEB";
     public static final String EXTRA_AUTH_URL = "authUrl";
+    public static final String EXTRA_FLW_REF = "flwref";
+    private static final String LOG_TAG = "WebFragment";
     String authurl;
+    String flwRef;
     WebView webView;
     ProgressDialog progessDialog;
 
@@ -86,13 +101,29 @@ public class WebFragment extends Fragment {
 
             Log.d("finished URLS", url);
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+                // Get flutterwave ref
+                Uri uri = Uri.parse(url);
+                Set<String> args = uri.getQueryParameterNames();
+                if(args.contains("response")){
+                    String response = uri.getQueryParameter("response");
+                    try {
+                        JsonElement respElement = new Gson().fromJson(response,JsonElement.class);
+                        JsonObject responseJSONObject = respElement.getAsJsonObject();
+
+                        flwRef = responseJSONObject.get("flwRef").getAsString();
+                    } catch(com.google.gson.JsonSyntaxException|java.lang.IllegalStateException ex) {
+                        Log.d(LOG_TAG,"Invalid JSON syntax for response returned");
+                    }
+                }else Log.d(LOG_TAG,"Callback does not contain \"response\" field");
+
                 goBack();
             }
         }
     }
 
-    public void goBack(){
+    public void goBack() {
         Intent intent = new Intent();
+        intent.putExtra(EXTRA_FLW_REF, flwRef);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
@@ -118,8 +149,7 @@ public class WebFragment extends Fragment {
             } else {
                 progessDialog.dismiss();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
