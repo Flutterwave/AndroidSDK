@@ -701,6 +701,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
+        this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
