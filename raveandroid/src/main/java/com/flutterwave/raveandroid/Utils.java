@@ -60,7 +60,7 @@ public class Utils {
         return ip;
     }
 
-    public static boolean wasTxSuccessful(RavePayInitializer ravePayInitializer, String responseAsJSONString){
+    public static boolean wasTxSuccessful(RavePayInitializer ravePayInitializer, String responseAsJSONString) {
 
         String amount = ravePayInitializer.getAmount() + "";
         String currency = ravePayInitializer.getCurrency();
@@ -76,13 +76,12 @@ public class Utils {
             if (areAmountsSame(amount, txAmount) &&
                     chargeResponse.equalsIgnoreCase("00") &&
                     (status.contains("success") |
-                     status.contains("pending-capture")) &&
+                            status.contains("pending-capture")) &&
                     currency.equalsIgnoreCase(txCurrency)) {
                 Log.d("RAVE TX V", "true");
                 return true;
             }
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             Log.d("RAVE TX V", "false");
             return false;
@@ -126,7 +125,8 @@ public class Utils {
     public static String convertChargeRequestPayloadToJson(Payload body) {
 
         Gson gson = new Gson();
-        Type type = new TypeToken<Payload>() {}.getType();
+        Type type = new TypeToken<Payload>() {
+        }.getType();
         return gson.toJson(body, type);
     }
 
@@ -136,8 +136,7 @@ public class Utils {
             Type type = new TypeToken<List<Meta>>() {
             }.getType();
             return gson.fromJson(meta, type);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -150,8 +149,7 @@ public class Utils {
             Type type = new TypeToken<List<SubAccount>>() {
             }.getType();
             return gson.fromJson(subaccount, type);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -160,17 +158,19 @@ public class Utils {
 
     public static String stringifyMeta(List<Meta> meta) {
         Gson gson = new Gson();
-        Type type = new TypeToken<List<Meta>>() {}.getType();
+        Type type = new TypeToken<List<Meta>>() {
+        }.getType();
         return gson.toJson(meta, type);
     }
 
     public static String stringifySubaccounts(List<SubAccount> subAccounts) {
         Gson gson = new Gson();
-        Type type = new TypeToken<List<SubAccount>>() {}.getType();
+        Type type = new TypeToken<List<SubAccount>>() {
+        }.getType();
         return gson.toJson(subAccounts, type);
     }
 
-    public static byte[] RSAEncrypt(String plaintext){
+    public static byte[] RSAEncrypt(String plaintext) {
         PublicKey key = getKey("baA/RgjURU3I0uqH3iRos3NbE8fT+lP8SDXKymsnfdPrMQAEoMBuXtoaQiJ1i5tuBG9EgSEOH1LAZEaAsvwClw==");
         byte[] ciphertext = null;
         try {
@@ -183,15 +183,14 @@ public class Utils {
         return ciphertext;
     }
 
-    public static PublicKey getKey(String key){
-        try{
+    public static PublicKey getKey(String key) {
+        try {
             byte[] byteKey = Base64.decode(key.getBytes(Charset.forName("UTF-16")), Base64.DEFAULT);
             X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             return kf.generatePublic(X509publicKey);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -201,7 +200,7 @@ public class Utils {
     public static String getEncryptedData(String unEncryptedString, String encryptionKey) {
         try {
             return encrypt(unEncryptedString, encryptionKey);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -210,7 +209,7 @@ public class Utils {
     public static String encryptRef(String key, String ref) {
         try {
             return AESCrypt.encrypt(key, ref);
-        }catch (GeneralSecurityException e){
+        } catch (GeneralSecurityException e) {
             return null;
         }
     }
@@ -218,7 +217,7 @@ public class Utils {
     public static String decryptRef(String key, String encryptedRef) {
         try {
             return AESCrypt.decrypt(key, encryptedRef);
-        }catch (GeneralSecurityException e){
+        } catch (GeneralSecurityException e) {
             return null;
         }
     }
@@ -250,8 +249,7 @@ public class Utils {
         int cardNoLength = first6.length() + last4.length();
         if (cardNoLength < 10) {
             return first6 + last4;
-        }
-        else {
+        } else {
 
             int othersLength = 6;
 
@@ -270,8 +268,8 @@ public class Utils {
 
         int len = cardNo.length();
 
-        int nChunks = len/4;
-        int rem = len%4;
+        int nChunks = len / 4;
+        int rem = len % 4;
 
 
         for (int i = 0; i < nChunks; i++) {
@@ -283,5 +281,44 @@ public class Utils {
 
         return spacified;
 
+    }
+
+    /**
+     * Checks that a number is valid according to the Luhn algorithm
+     * https://en.wikipedia.org/wiki/Luhn_algorithm
+     *
+     * @param number to be checked
+     * @return true if valid
+     */
+    public static boolean isValidLuhnNumber(String number) {
+
+        try {// Verify that string contains only numbers
+            Long parsed = Long.parseLong(number);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        String reversedNumber = new StringBuffer(number).reverse().toString();
+        char reversedCharArray[] = reversedNumber.toCharArray();
+        int luhnSum = 0;
+
+        // Double the value of every second digit from the right
+        for (int index = 1; index < number.length(); index += 2) {
+            int doubleResult = Character.getNumericValue(reversedCharArray[index]) * 2;
+            if (doubleResult > 9) {// If result has double digits, sum digits
+                doubleResult = 1 + (doubleResult - 10);
+            }
+
+            reversedCharArray[index] = Character.forDigit(doubleResult, 10);
+        }
+
+        // Sum all digits
+        for (int index = 0; index < number.length(); index++) {
+            luhnSum += Character.getNumericValue(reversedCharArray[index]);
+        }
+
+        // For valiid Luhn number, sum result should be a multiple of 10
+        return luhnSum % 10 == 0;
     }
 }
