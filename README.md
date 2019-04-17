@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.35'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.36'
 	}
 
 **Step 3.** Add the required permission
@@ -64,7 +64,6 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
                         .acceptGHMobileMoneyPayments(boolean)
 			    .acceptUgMobileMoneyPayments(boolean)
                         .onStagingEnv(boolean)
-                        .allowSaveCardFeature(boolean)
                         .setMeta(List<Meta>)
                         .withTheme(styleId)
                         .isPreAuth(boolean)
