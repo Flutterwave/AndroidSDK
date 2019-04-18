@@ -40,6 +40,7 @@ public class RavePayManager {
     boolean staging = true;
     boolean allowSaveCard = true;
     boolean isPreAuth =  false;
+    boolean showStagingLabel = true;
 
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
@@ -103,6 +104,11 @@ public class RavePayManager {
 
     public RavePayManager setSubAccounts(List<SubAccount> subAccounts){
         this.subAccounts = Utils.stringifySubaccounts(subAccounts);
+        return this;
+    }
+
+    public RavePayManager showStagingLabel(Boolean showStagingLabel){
+        this.showStagingLabel = showStagingLabel;
         return this;
     }
 
@@ -186,7 +192,7 @@ public class RavePayManager {
                 currency, country, fName, lName, withCard, withAccount, withMpesa,
                 withGHMobileMoney, withUgMobileMoney, withAch, theme, staging, meta, subAccounts,
                 payment_plan,
-                isPreAuth, phoneNumber);
+                isPreAuth,phoneNumber, showStagingLabel);
        }
 
 

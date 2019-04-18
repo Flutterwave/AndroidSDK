@@ -5,10 +5,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -35,6 +40,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.AVSVBVFragment;
 import com.flutterwave.raveandroid.OTPFragment;
@@ -389,17 +395,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         String cardNoStripped = cardNo.replaceAll("\\s", "");
 
-        if (cardNoStripped.length() < 12) {
+        if (cardNoStripped.length() < 12 | !Utils.isValidLuhnNumber(cardNoStripped)) {
             valid = false;
             cardNoTil.setError("Enter a valid credit card number");
-        } else {
-            try {
-                Long parsed = Long.parseLong(cardNoStripped);
-            } catch (Exception e) {
-                e.printStackTrace();
-                valid = false;
-                cardNoTil.setError("Enter a valid credit card number");
-            }
         }
 
         if (valid) {
@@ -912,7 +910,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * that loads the authURL
      *
      * @param authurl = URL to display in webview
-     * @param flwRef  = reference of the payment transaction
+     * @param flwRef = reference of the payment transaction
      */
     @Override
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
