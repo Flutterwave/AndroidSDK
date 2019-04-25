@@ -169,7 +169,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
         });
 
-        // Check for saved cards on server
+        // Check for saved cards on Rave server
         if (ravePayInitializer.getPhoneNumber().length() > 0) {
             presenter.lookupSavedCards(ravePayInitializer.getPublicKey(),
                     ravePayInitializer.getPhoneNumber(), "");
