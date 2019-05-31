@@ -43,7 +43,7 @@ public class RavePayInitializer {
                               boolean withUgMobileMoney,
                               boolean withAch, int theme,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
-                              boolean showStagingLabel) {
+                              boolean showStagingLabel, boolean displayFee) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -67,6 +67,7 @@ public class RavePayInitializer {
         this.payment_plan = payment_plan;
         this.isPreAuth = isPreAuth;
         this.showStagingLabel = showStagingLabel;
+        this.displayFee = displayFee;
     }
 
     public RavePayInitializer() {
