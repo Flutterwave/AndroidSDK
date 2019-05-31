@@ -62,6 +62,8 @@
         <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
     </style>
 
+
+
     <style name="otpHeaderStyle2">
         <item name="android:background">#5d4037</item>
     </style>
