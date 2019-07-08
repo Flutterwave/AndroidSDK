@@ -1,10 +1,18 @@
 package com.flutterwave.raveandroid.ghmobilemoney;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -26,6 +34,15 @@ import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActionsListener {
     private Context context;
     private GhMobileMoneyContract.View mView;
+    Spinner networkSpinner;
+    TextView instructionsTv;
+    TextInputEditText voucherEt;
+    TextInputLayout voucherTil;
+    TextInputEditText amountEt;
+    TextInputLayout amountTil;
+    TextInputEditText phoneEt;
+    TextInputLayout phoneTil;
+    Button payButton;
 
     public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
@@ -139,6 +156,76 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
+    }
+
+    @Override
+    public void validate(View v) {
+
+        final Boolean valid [] = new Boolean[1];
+        valid[0] = true;
+        final Context context = v.getContext();
+        Utils.hide_keyboard((Activity) v.getContext());
+
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
+        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
+        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
+        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
+
+
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors();
+                final String amount = amountEt.getText().toString();
+                final String phone = phoneEt.getText().toString();
+                final String voucher = voucherEt.getText().toString();
+
+                try {
+                    double amnt = Double.parseDouble(amount);
+
+                    if (amnt <= 0) {
+                        valid[0] = false;
+                        amountTil.setError("Enter a valid amount");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    valid[0] = false;
+                    amountTil.setError("Enter a valid amount");
+                }
+
+                if (phone.length() < 1) {
+                    valid[0] = false;
+                    phoneTil.setError("Enter a valid number");
+                }
+
+                String network = networkSpinner.getSelectedItem().toString();
+
+                if (networkSpinner.getSelectedItemPosition() == 0) {
+                    valid[0] = false;
+                    mView.showToast("Select a network");
+                }
+
+                if (voucherTil.getVisibility() == View.VISIBLE && voucher.length() == 0) {
+                    valid[0] = false;
+                    voucherTil.setError("Enter a valid voucher code");
+                }
+
+                mView.onValidate(valid[0]);
+            }
+        });
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        voucherTil.setError(null);
+
     }
 }
 

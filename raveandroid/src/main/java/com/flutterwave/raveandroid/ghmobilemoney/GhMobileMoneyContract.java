@@ -18,11 +18,13 @@ public interface GhMobileMoneyContract {
         void displayFee(String charge_amount, Payload payload);
         void showFetchFeeFailed(String s);
         void onPaymentFailed(String message, String responseAsJSONString);
+        void onValidate(Boolean valid);
     }
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void chargeGhMobileMoney(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
+        void validate(android.view.View v);
     }
 }

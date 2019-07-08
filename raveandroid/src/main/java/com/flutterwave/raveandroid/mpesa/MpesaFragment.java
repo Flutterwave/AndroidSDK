@@ -30,7 +30,7 @@ import static android.view.View.GONE;
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View {
 
-    View v;
+    View fragment;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -39,6 +39,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
     MpesaPresenter presenter;
+    static int rave_phoneEtInt;
 
     public MpesaFragment() {
         // Required empty public constructor
@@ -50,24 +51,19 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_mpesa, container, false);
+        fragment = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
         presenter = new MpesaPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        rave_phoneEtInt = fragment.findViewById(R.id.rave_amountTV).getId();
+
+        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validate();
-            }
-        });
 
         double amountToPay = ravePayInitializer.getAmount();
 
@@ -76,7 +72,13 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
             amountEt.setText(String.valueOf(amountToPay));
         }
 
-        return v;
+        return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        presenter.validate(fragment);
+        super.onResume();
     }
 
     @Override
@@ -114,82 +116,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
             pollingProgressDialog.dismiss();
         }
     }
-
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
-    }
-
-    private void validate() {
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-        String phone = phoneEt.getText().toString();
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (phone.length() < 1) {
-            valid = false;
-            phoneTil.setError("Enter a valid number");
-        }
-
-        if (valid) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCountry(ravePayInitializer.getCountry())
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(phone)
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createMpesaPayload();
-
-            if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body);
-            } else {
-                presenter.chargeMpesa(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
-
-    }
-
-
 
     @Override
     public void showProgressIndicator(boolean active) {
@@ -271,5 +197,51 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onValidate(Boolean valid) {
+
+            if(valid){
+
+                String amount = amountEt.getText().toString();
+                String phone = phoneEt.getText().toString();
+
+                ravePayInitializer.setAmount(Double.parseDouble(amount));
+
+                String txRef = ravePayInitializer.getTxRef();
+                Log.d("txRef", txRef);
+                PayloadBuilder builder = new PayloadBuilder();
+                builder.setAmount(ravePayInitializer.getAmount() + "")
+                        .setCountry(ravePayInitializer.getCountry())
+                        .setCurrency(ravePayInitializer.getCurrency())
+                        .setEmail(ravePayInitializer.getEmail())
+                        .setFirstname(ravePayInitializer.getfName())
+                        .setLastname(ravePayInitializer.getlName())
+                        .setIP(Utils.getDeviceImei(getActivity()))
+                        .setTxRef(ravePayInitializer.getTxRef())
+                        .setMeta(ravePayInitializer.getMeta())
+                        .setSubAccount(ravePayInitializer.getSubAccount())
+                        .setPhonenumber(phone)
+                        .setPBFPubKey(ravePayInitializer.getPublicKey())
+                        .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                        .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
+
+                if (ravePayInitializer.getPayment_plan() != null) {
+                    builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+                }
+
+                Payload body = builder.createMpesaPayload();
+
+                if(ravePayInitializer.getIsDisplayFee()){
+                    presenter.fetchFee(body);
+                } else {
+                    presenter.chargeMpesa(body, ravePayInitializer.getEncryptionKey());
+                }
+            }
+            else{
+                    Log.d("okh", "not valid");
+
+            }
     }
 }

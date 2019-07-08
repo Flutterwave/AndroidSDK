@@ -62,6 +62,8 @@ public interface CardContract {
         void onNoAuthInternationalSuggested(Payload payload);
 
         void onNoAuthUsed(String flwRef, String publicKey);
+
+        void onValidate(Boolean valid);
     }
 
     interface UserActionsListener {
@@ -91,6 +93,8 @@ public interface CardContract {
 
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
+
+        void validate(android.view.View v);
     }
 
 }

@@ -35,7 +35,7 @@ import static android.view.View.GONE;
  */
 public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View {
 
-    View v;
+    View fragment;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -49,34 +49,35 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     TextInputEditText voucherEt;
     TextInputLayout voucherTil;
     String validateInstructions;
+    String network;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
+        fragment = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
         presenter = new GhMobileMoneyPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
-        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
-        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
-        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
+        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
+        networkSpinner = (Spinner) fragment.findViewById(R.id.rave_networkSpinner);
+        voucherEt = (TextInputEditText) fragment.findViewById(R.id.rave_voucherEt);
+        voucherTil = (TextInputLayout) fragment.findViewById(R.id.rave_voucherTil);
+        instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validate();
-            }
-        });
+//        payButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View fragment) {
+//                validate();
+//            }
+//        });
 
         double amountToPay = ravePayInitializer.getAmount();
 
@@ -99,7 +100,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position < networks.length) {
-                    String network = networks[position];
+                     network = networks[position];
 
                     if (position == 0) {
                         showInstructionsAndVoucher(false);
@@ -128,7 +129,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             }
         });
 
-        return v;
+        return fragment;
     }
 
     private void showInstructionsAndVoucher(boolean show) {
@@ -143,95 +144,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-        voucherTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-        voucherTil.setErrorEnabled(false);
-
-    }
-
-    private void validate() {
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-        String phone = phoneEt.getText().toString();
-        String voucher = voucherEt.getText().toString();
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (phone.length() < 1) {
-            valid = false;
-            phoneTil.setError("Enter a valid number");
-        }
-
-        String network = networkSpinner.getSelectedItem().toString();
-
-        if (networkSpinner.getSelectedItemPosition() == 0) {
-            valid = false;
-            showToast("Select a network");
-        }
-
-        if (voucherTil.getVisibility() == View.VISIBLE && voucher.length() == 0) {
-            valid = false;
-            voucherTil.setError("Enter a valid voucher code");
-        }
-
-        if (valid) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCountry(ravePayInitializer.getCountry())
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork(network)
-                    .setVoucher(voucher)
-                    .setPhonenumber(phone)
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createGhMobileMoneyPayload();
-
-            if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body);
-            } else {
-                presenter.chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
-
+    @Override
+    public void onResume() {
+        presenter.validate(fragment);
+        super.onResume();
     }
 
     @Override
@@ -346,6 +262,51 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onValidate(Boolean valid) {
+
+        if (valid) {
+
+            String amount = amountEt.getText().toString();
+            String phone = phoneEt.getText().toString();
+            String voucher = voucherEt.getText().toString();
+
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
+
+            String txRef = ravePayInitializer.getTxRef();
+            Log.d("txRef", txRef);
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(getActivity()))
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setNetwork(network)
+                    .setVoucher(voucher)
+                    .setPhonenumber(phone)
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
+
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
+            Payload body = builder.createGhMobileMoneyPayload();
+
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body);
+            } else {
+                presenter.chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
         }
     }
 }

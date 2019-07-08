@@ -14,10 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +33,7 @@ import static android.view.View.GONE;
  */
 public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View {
 
-    View v;
+    View fragment;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -54,25 +51,19 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
+        fragment = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
         presenter = new UgMobileMoneyPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
+        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
+        instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validate();
-            }
-        });
 
         double amountToPay = ravePayInitializer.getAmount();
 
@@ -83,7 +74,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
-        return v;
+        return fragment;
     }
 
     private void showInstructionsAndVoucher(boolean show) {
@@ -96,81 +87,10 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         }
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
-    }
-
-    private void validate() {
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-        String phone = phoneEt.getText().toString();
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (phone.length() < 1) {
-            valid = false;
-            phoneTil.setError("Enter a valid number");
-        }
-
-
-        if (valid) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-//                    .setCountry(ravePayInitializer.getCountry())
-                    .setCountry("NG") //Country has to be set to NG for UGX payments (as at 10/12/2018)
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork("UGX")
-                    .setPhonenumber(phone)
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createUgMobileMoneyPayload();
-
-            if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body);
-            } else {
-                presenter.chargeUgMobileMoney(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
-
+    @Override
+    public void onResume() {
+        presenter.validate(fragment);
+        super.onResume();
     }
 
     @Override
@@ -286,6 +206,51 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onValidate(Boolean valid) {
+
+        String amount = amountEt.getText().toString();
+        String phone = phoneEt.getText().toString();
+
+        if (valid) {
+
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
+
+            String txRef = ravePayInitializer.getTxRef();
+            Log.d("txRef", txRef);
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+//                    .setCountry(ravePayInitializer.getCountry())
+                    .setCountry("NG") //Country has to be set to NG for UGX payments (as at 10/12/2018)
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(getActivity()))
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setNetwork("UGX")
+                    .setPhonenumber(phone)
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
+
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
+            Payload body = builder.createUgMobileMoneyPayload();
+
+            if(ravePayInitializer.getIsDisplayFee()){
+                presenter.fetchFee(body);
+            } else {
+                presenter.chargeUgMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
+        }
+
     }
 }
 

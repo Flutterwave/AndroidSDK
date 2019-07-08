@@ -1,9 +1,16 @@
 package com.flutterwave.raveandroid.card;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 
+import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
@@ -34,6 +41,17 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
 public class CardPresenter implements CardContract.UserActionsListener {
     private Context context;
     private CardContract.View mView;
+    TextInputEditText amountEt;
+    TextInputEditText emailEt;
+    TextInputEditText cardNoTv;
+    TextInputEditText cardExpiryTv;
+    TextInputEditText cvvTv;
+    TextInputLayout amountTil;
+    TextInputLayout emailTil;
+    TextInputLayout cardNoTil;
+    TextInputLayout cardExpiryTil;
+    TextInputLayout cvvTil;
+    Button payButton;
 
     public CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
@@ -188,6 +206,95 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
 
     }
+
+    @Override
+    public void validate(View v) {
+
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
+        cardNoTv = (TextInputEditText) v.findViewById(R.id.rave_cardNoTv);
+        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.rave_cardExpiryTv);
+        cvvTv = (TextInputEditText) v.findViewById(R.id.rave_cvvTv);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
+        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
+        cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
+
+        final Boolean valid [] = new Boolean[1];
+        valid[0] = true;
+        final Context context = v.getContext();
+        Utils.hide_keyboard((Activity) v.getContext());
+
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors();
+
+
+                final String amount = amountEt.getText().toString();
+                final String email = emailEt.getText().toString();
+                final String cvv = cvvTv.getText().toString();
+                final String expiryDate = cardExpiryTv.getText().toString();
+                final String cardNo = cardNoTv.getText().toString();
+                final String cardNoStripped = cardNo.replaceAll("\\s", "");
+
+                try {
+                    double amnt = Double.parseDouble(amount);
+
+                    if (amnt <= 0) {
+                        valid[0] = false;
+                        amountTil.setError("Enter a valid amount");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    valid[0] = false;
+                    amountTil.setError("Enter a valid amount");
+                }
+
+                if (!Utils.isEmailValid(email)) {
+                    valid[0] = false;
+                    emailTil.setError("Enter a valid email");
+                }
+
+                if (cvv.length() < 3) {
+                    valid[0] = false;
+                    cvvTil.setError("Enter a valid cvv");
+                }
+
+                if (expiryDate.length() != 5) {
+                    cardExpiryTil.setError("Enter a valid expiry date");
+                    valid[0] = false;
+                }
+
+
+                if (cardNoStripped.length() < 12 | !Utils.isValidLuhnNumber(cardNoStripped)) {
+                    valid[0] = false;
+                    cardNoTil.setError("Enter a valid credit card number");
+                }
+                mView.onValidate(valid[0]);
+            }
+
+        });
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        emailTil.setError(null);
+        cvvTil.setError(null);
+        cardExpiryTil.setError(null);
+        cardNoTil.setError(null);
+
+        amountTil.setErrorEnabled(false);
+        emailTil.setErrorEnabled(false);
+        cvvTil.setErrorEnabled(false);
+        cardExpiryTil.setErrorEnabled(false);
+        cardNoTil.setErrorEnabled(false);
+
+    }
+
 
     @Override
     public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {

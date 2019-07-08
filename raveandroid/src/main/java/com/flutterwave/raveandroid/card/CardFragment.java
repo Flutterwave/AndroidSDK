@@ -5,14 +5,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,10 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +31,6 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.AVSVBVFragment;
 import com.flutterwave.raveandroid.OTPFragment;
@@ -88,7 +81,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private Payload payLoad;
     private AlertDialog dialog;
     FrameLayout progressContainer;
-    View v;
+    View fragment;
     Button savedCardBtn;
     String cardFirst6;
     String cardLast4;
@@ -103,22 +96,22 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                              Bundle savedInstanceState) {
         presenter = new CardPresenter(getActivity(), this);
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_card, container, false);
-        savedCardBtn = (Button) v.findViewById(R.id.rave_savedCardButton);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
-        cardNoTv = (TextInputEditText) v.findViewById(R.id.rave_cardNoTv);
-        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.rave_cardExpiryTv);
-        cvvTv = (TextInputEditText) v.findViewById(R.id.rave_cvvTv);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
-        cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
-        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
-        cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
-        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
-        progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
+        fragment = inflater.inflate(R.layout.fragment_card, container, false);
+        savedCardBtn = (Button) fragment.findViewById(R.id.rave_savedCardButton);
+        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
+        emailEt = (TextInputEditText) fragment.findViewById(R.id.rave_emailTv);
+        cardNoTv = (TextInputEditText) fragment.findViewById(R.id.rave_cardNoTv);
+        cardExpiryTv = (TextInputEditText) fragment.findViewById(R.id.rave_cardExpiryTv);
+        cvvTv = (TextInputEditText) fragment.findViewById(R.id.rave_cvvTv);
+        payButton = (Button) fragment.findViewById(R.id.rave_payButton);
+        saveCardSwitch = (SwitchCompat) fragment.findViewById(R.id.rave_saveCardSwitch);
+        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
+        emailTil = (TextInputLayout) fragment.findViewById(R.id.rave_emailTil);
+        cardNoTil = (TextInputLayout) fragment.findViewById(R.id.rave_cardNoTil);
+        cardExpiryTil = (TextInputLayout) fragment.findViewById(R.id.rave_cardExpiryTil);
+        cvvTil = (TextInputLayout) fragment.findViewById(R.id.rave_cvvTil);
+        pcidss_tv = (TextView) fragment.findViewById(R.id.rave_pcidss_compliant_tv);
+        progressContainer = (FrameLayout) fragment.findViewById(R.id.rave_progressContainer);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -157,7 +150,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             amountEt.setText(String.valueOf(amountToPay));
         }
 
-        return v;
+        return fragment;
     }
 
 
@@ -165,9 +158,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onClick(View v) {
 
         int i = v.getId();
-        if (i == R.id.rave_payButton) {
-            validateDetails();
-        }
 
     }
 
@@ -177,96 +167,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onNoAuthInternationalSuggested(final Payload payload) {
-        this.payLoad = payload;
-
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_AVBVV);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (presenter != null) {
-            presenter = new CardPresenter(getActivity(), this);
-        }
-        assert presenter != null;
-        presenter.onAttachView(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (presenter != null) {
-            presenter.onDetachView();
-        }
-    }
-
-    @Override
-    public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
-
-        dismissDialog();
-
-        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(), false);
-
-    }
-
-    /**
-     * Validate card details and get the fee if available
-     */
-    private void validateDetails() {
-
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-        String email = emailEt.getText().toString();
-        String cvv = cvvTv.getText().toString();
-        String expiryDate = cardExpiryTv.getText().toString();
-        String cardNo = cardNoTv.getText().toString();
-
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (!Utils.isEmailValid(email)) {
-            valid = false;
-            emailTil.setError("Enter a valid email");
-        }
-
-        if (cvv.length() < 3) {
-            valid = false;
-            cvvTil.setError("Enter a valid cvv");
-        }
-
-        if (expiryDate.length() != 5) {
-            cardExpiryTil.setError("Enter a valid expiry date");
-            valid = false;
-        }
-
-        String cardNoStripped = cardNo.replaceAll("\\s", "");
-
-        if (cardNoStripped.length() < 12 | !Utils.isValidLuhnNumber(cardNoStripped)) {
-            valid = false;
-            cardNoTil.setError("Enter a valid credit card number");
-        }
+    public void onValidate(Boolean valid) {
 
         if (valid) {
 
+            String amount = amountEt.getText().toString();
+            String email = emailEt.getText().toString();
+            String cvv = cvvTv.getText().toString();
+            String expiryDate = cardExpiryTv.getText().toString();
+            String cardNo = cardNoTv.getText().toString();
+
+            String cardNoStripped = cardNo.replaceAll("\\s", "");
             ravePayInitializer.setAmount(Double.parseDouble(amount));
 
             if (saveCardSwitch.isChecked()) {
@@ -306,23 +217,52 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
+    @Override
+    public void onNoAuthInternationalSuggested(final Payload payload) {
+        this.payLoad = payload;
+
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
+        intent.putExtra("theme", ravePayInitializer.getTheme());
+        startActivityForResult(intent, FOR_AVBVV);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.validate(fragment);
+            presenter = new CardPresenter(getActivity(), this);
+        }
+        assert presenter != null;
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
+
+        dismissDialog();
+
+        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(), false);
+
+    }
+
+    /**
+     * Validate card details and get the fee if available
+     */
+
     /**
      * Remove all errors from the input fields
      */
-    private void clearErrors() {
-        amountTil.setError(null);
-        emailTil.setError(null);
-        cvvTil.setError(null);
-        cardExpiryTil.setError(null);
-        cardNoTil.setError(null);
 
-        amountTil.setErrorEnabled(false);
-        emailTil.setErrorEnabled(false);
-        cvvTil.setErrorEnabled(false);
-        cardExpiryTil.setErrorEnabled(false);
-        cardNoTil.setErrorEnabled(false);
-
-    }
 
     /**
      * Show/Hide a progress dialog (general purpose)
@@ -548,8 +488,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 //        if (cards.size() > 0) {
 //            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
 //            LayoutInflater inflater = LayoutInflater.from(getActivity());
-//            View v = inflater.inflate(R.layout.pick_saved_card_layout, null, false);
-//            RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
+//            View fragment = inflater.inflate(R.layout.pick_saved_card_layout, null, false);
+//            RecyclerView recyclerView = (RecyclerView) fragment.findViewById(R.id.rave_recycler);
 //
 //            SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
 //            adapter.set(cards);
@@ -567,7 +507,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 //
 //            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 //            recyclerView.setAdapter(adapter);
-//            bottomSheetDialog.setContentView(v);
+//            bottomSheetDialog.setContentView(fragment);
 //            bottomSheetDialog.show();
 //        }
 //        else {

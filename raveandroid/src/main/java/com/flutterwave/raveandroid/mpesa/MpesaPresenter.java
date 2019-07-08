@@ -1,10 +1,18 @@
 package com.flutterwave.raveandroid.mpesa;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -26,6 +34,11 @@ import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 public class MpesaPresenter implements MpesaContract.UserActionsListener {
     private Context context;
     private MpesaContract.View mView;
+    TextInputEditText amountEt;
+    TextInputLayout amountTil;
+    TextInputEditText phoneEt;
+    TextInputLayout phoneTil;
+    Button payButton;
 
     public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
@@ -107,6 +120,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
 
+
     @Override
     public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
 
@@ -140,5 +154,67 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
+    }
+
+    @Override
+    public void validate(View v) {
+
+        final Boolean valid [] = new Boolean[1];
+        valid[0] = true;
+        final Context context = v.getContext();
+        Utils.hide_keyboard((Activity) v.getContext());
+        EditText rave_amountTil = (TextInputEditText) v.findViewById(R.id.rave_amountTil);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors(context);
+
+                valid[0] = true;
+
+                String amount = amountEt.getText().toString();
+                String phone = phoneEt.getText().toString();
+
+                try {
+                    double amnt = Double.parseDouble(amount);
+
+                    if (amnt <= 0) {
+                        valid[0] = false;
+                        amountTil.setError("Enter a valid amount");
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    valid[0] = false;
+                    amountTil.setError("Enter a valid amount");
+                }
+
+                if (phone.length() < 1) {
+                    valid[0] = false;
+                    phoneTil.setError("Enter a valid number");
+                }
+                mView.onValidate(valid[0]);
+
+            }
+        });
+
+
+
+    }
+
+
+    private void clearErrors(Context context) {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+
+        amountTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+
     }
 }

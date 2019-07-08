@@ -32,6 +32,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onValidate(Boolean valid) {
+
+    }
+
+    @Override
     public void onNoAuthInternationalSuggested(Payload payload) {
 
     }
