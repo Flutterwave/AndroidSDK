@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private String flwRef;
     private RavePayInitializer ravePayInitializer;
     private EditText dateOfBirthEt,bvnEt;
+    View fragment;
     Calendar calendar = Calendar.getInstance();
 
     public AccountFragment() {
@@ -88,22 +90,22 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_account, container, false);
+        fragment = inflater.inflate(R.layout.fragment_account, container, false);
 
-        bankEt = (EditText) v.findViewById(R.id.rave_bankEditText);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
-        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
-        rave_bvnTil = (TextInputLayout) v.findViewById(R.id.rave_bvnTil);
-        accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
-        accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
-        dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
-        bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
+        bankEt = (EditText) fragment.findViewById(R.id.rave_bankEditText);
+        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
+        emailEt = (TextInputEditText) fragment.findViewById(R.id.rave_emailEt);
+        emailTil = (TextInputLayout) fragment.findViewById(R.id.rave_emailTil);
+        rave_bvnTil = (TextInputLayout) fragment.findViewById(R.id.rave_bvnTil);
+        accountNumberEt = (TextInputEditText) fragment.findViewById(R.id.rave_accountNumberEt);
+        accountNumberTil = (TextInputLayout) fragment.findViewById(R.id.rave_accountNumberTil);
+        payButton = (Button) fragment.findViewById(R.id.rave_payButton);
+        pcidss_tv = (TextView) fragment.findViewById(R.id.rave_pcidss_compliant_tv);
+        dateOfBirthEt = (EditText) fragment.findViewById(R.id.rave_dobEditText);
+        bvnEt = (EditText) fragment.findViewById(R.id.rave_bvnEt);
 
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -114,7 +116,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
         Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
 
-        FrameLayout internetBankingLayout = (FrameLayout) v.findViewById(R.id.rave_internetBankingBottomSheet);
+        FrameLayout internetBankingLayout = (FrameLayout) fragment.findViewById(R.id.rave_internetBankingBottomSheet);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -154,131 +156,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         }
 
 
-        return v;
+        return fragment;
     }
 
     private void validateDetails() {
-        bankEt.setError(null);
+
         Utils.hide_keyboard(getActivity());
 
-        accountNumberTil.setError(null);
-        accountNumberTil.setErrorEnabled(false);
-        emailTil.setError(null);
-        emailTil.setErrorEnabled(false);
-        phoneTil.setError(null);
-        phoneTil.setErrorEnabled(false);
-        bankEt.setError(null);
-        dateOfBirthEt.setError(null);
-        rave_bvnTil.setError(null);
-        rave_bvnTil.setErrorEnabled(false);
+
 
         boolean valid = true;
 
-        String accountNo = accountNumberEt.getText().toString();
-        String amount = amountEt.getText().toString();
-        String email = emailEt.getText().toString();
-        String phone = phoneEt.getText().toString();
-        String dob = dateOfBirthEt.getText().toString();
-        String bvn = bvnEt.getText().toString().trim();
 
-        if (phone.length() < 1) {
-            valid = false;
-            phoneTil.setError("Enter a valid number");
-        }
-
-        if (!Utils.isEmailValid(email)) {
-            valid = false;
-            emailTil.setError("Enter a valid email");
-        }
-
-
-        if (accountNumberTil.getVisibility() == View.VISIBLE) {
-            if (accountNo.length() != 10) {
-                valid = false;
-                accountNumberTil.setError("Enter a valid account number");
-            }
-        } else {
-            accountNo = "0000000000";
-        }
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                showToast("Enter a valid amount");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            showToast("Enter a valid amount");
-        }
-
-        if (selectedBank == null) {
-            valid = false;
-            bankEt.setError("Select a bank");
-        }
-        else {
-            //for Zenith Bank
-            if (selectedBank.getBankcode().equals("057") || selectedBank.getBankcode().equals("033")){
-                if (dob.length() != 10) {
-                    valid = false;
-                    dateOfBirthEt.setError("Enter a valid date of birth");
-                }
-                else {
-                    dob = dob.replace("/", "");
-                }
-            }
-
-            if(selectedBank.getBankcode().equals("033")){
-                if(bvn.length() != 11){
-                    rave_bvnTil.setError("Enter a valid BVN");
-                    valid = false;
-                }
-            }
-        }
-
-
-
-        if (valid) {
-            String txRef = ravePayInitializer.getTxRef();
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            //make request
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setEmail(email)
-                    .setCountry("NG").setCurrency("NGN")
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()))
-                    .setIP(Utils.getDeviceImei(getActivity())).setTxRef(txRef)
-                    .setAccountbank(selectedBank.getBankcode())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setAccountnumber(accountNo)
-                    .setBVN(bvn)
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth());
-
-            Payload body = builder.createBankPayload();
-            body.setPasscode(dob);
-            body.setPhonenumber(phone);
-
-            if ((selectedBank.getBankcode().equalsIgnoreCase("058") ||
-                    selectedBank.getBankcode().equalsIgnoreCase("011"))
-                            && (Double.parseDouble(amount) <= 100)) {
-                showGTBankAmountIssue();
-            }
-            else {
-                if(ravePayInitializer.getIsDisplayFee()){
-                    presenter.fetchFee(body, selectedBank.isInternetbanking());
-                } else {
-                    presenter.chargeAccount(body, ravePayInitializer.getEncryptionKey(), selectedBank.isInternetbanking());
-                }
-            }
-
-        }
     }
 
     private void showGTBankAmountIssue() {
@@ -459,6 +348,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         presenter.verifyRequeryResponseStatus(response, responseAsJSONString, ravePayInitializer);
     }
 
+
     @Override
     public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
 
@@ -489,6 +379,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void onResume() {
         super.onResume();
         if (presenter != null) {
+            presenter.validate(fragment);
             presenter = new AccountPresenter(getActivity(), this);
         }
         assert presenter != null;
@@ -527,6 +418,61 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
 
         dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + year);
+    }
+
+    @Override
+    public void onValidate(Boolean valid) {
+
+
+        if (valid) {
+            Log.d("okh", "valid");
+            String accountNo = accountNumberEt.getText().toString();
+            String amount = amountEt.getText().toString();
+            String email = emailEt.getText().toString();
+            String phone = phoneEt.getText().toString();
+            String dob = dateOfBirthEt.getText().toString();
+            String bvn = bvnEt.getText().toString().trim();
+
+            String txRef = ravePayInitializer.getTxRef();
+
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
+
+            //make request
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setEmail(email)
+                    .setCountry("NG").setCurrency("NGN")
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()))
+                    .setIP(Utils.getDeviceImei(getActivity())).setTxRef(txRef)
+                    .setAccountbank(selectedBank.getBankcode())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setAccountnumber(accountNo)
+                    .setBVN(bvn)
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth());
+
+            Payload body = builder.createBankPayload();
+            body.setPasscode(dob);
+            body.setPhonenumber(phone);
+
+            if ((selectedBank.getBankcode().equalsIgnoreCase("058") ||
+                    selectedBank.getBankcode().equalsIgnoreCase("011"))
+                    && (Double.parseDouble(amount) <= 100)) {
+                showGTBankAmountIssue();
+            }
+            else {
+                if(ravePayInitializer.getIsDisplayFee()){
+                    presenter.fetchFee(body, selectedBank.isInternetbanking());
+                } else {
+                    presenter.chargeAccount(body, ravePayInitializer.getEncryptionKey(), selectedBank.isInternetbanking());
+                }
+            }
+
+        }
+        else{
+            Log.d("okh", "not valid");
+        }
     }
 
 }

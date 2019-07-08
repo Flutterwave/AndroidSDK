@@ -1,11 +1,18 @@
 package com.flutterwave.raveandroid.account;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -30,6 +37,18 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
     Context context;
     AccountContract.View mView;
+    private TextInputEditText amountEt;
+    private TextInputLayout amountTil;
+    private TextInputEditText emailEt;
+    private TextInputLayout emailTil,rave_bvnTil;
+    private TextInputEditText phoneEt;
+    private TextInputLayout phoneTil;
+    TextInputEditText accountNumberEt;
+    TextInputLayout accountNumberTil;
+    private EditText dateOfBirthEt,bvnEt;
+    EditText bankEt;
+    Button payButton;
+    Bank selectedBank;
 
     public AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
@@ -219,6 +238,95 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         else {
             mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
         }
+    }
+
+    @Override
+    public void validate(View v) {
+
+        final Boolean valid [] = new Boolean[1];
+        valid[0] = true;
+        final Context context = v.getContext();
+        Utils.hide_keyboard((Activity) v.getContext());
+
+        bankEt = (EditText) v.findViewById(R.id.rave_bankEditText);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
+        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        rave_bvnTil = (TextInputLayout) v.findViewById(R.id.rave_bvnTil);
+        dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
+        accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
+        accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
+
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors();
+
+                String accountNo = accountNumberEt.getText().toString();
+                String amount = amountEt.getText().toString();
+                String email = emailEt.getText().toString();
+                String phone = phoneEt.getText().toString();
+
+
+                if (phone.length() < 1) {
+                    valid[0] = false;
+                    phoneTil.setError("Enter a valid number");
+                }
+
+                if (!Utils.isEmailValid(email)) {
+                    valid[0] = false;
+                    emailTil.setError("Enter a valid email");
+                }
+
+
+                if (accountNumberTil.getVisibility() == View.VISIBLE) {
+                    if (accountNo.length() != 10) {
+                        valid[0] = false;
+                        accountNumberTil.setError("Enter a valid account number");
+                    }
+                } else {
+                    accountNo = "0000000000";
+                }
+
+                try {
+                    double amnt = Double.parseDouble(amount);
+
+                    if (amnt <= 0) {
+                        valid[0] = false;
+                        mView.showToast("Enter a valid amount");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    valid[0] = false;
+                    mView.showToast("Enter a valid amount");
+                }
+
+                mView.onValidate(valid[0]);
+            }
+
+        });
+
+
+    }
+
+    private void clearErrors(){
+        bankEt.setError(null);
+        accountNumberTil.setError(null);
+        accountNumberTil.setErrorEnabled(false);
+        emailTil.setError(null);
+        emailTil.setErrorEnabled(false);
+        phoneTil.setError(null);
+        phoneTil.setErrorEnabled(false);
+        bankEt.setError(null);
+        dateOfBirthEt.setError(null);
+        rave_bvnTil.setError(null);
+        rave_bvnTil.setErrorEnabled(false);
     }
 
     @Override

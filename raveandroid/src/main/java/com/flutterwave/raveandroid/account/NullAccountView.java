@@ -88,4 +88,9 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
 
     }
+
+    @Override
+    public void onValidate(Boolean valid) {
+
+    }
 }

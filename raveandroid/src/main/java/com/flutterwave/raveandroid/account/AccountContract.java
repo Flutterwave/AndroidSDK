@@ -42,6 +42,8 @@ public interface AccountContract {
         void showFetchFeeFailed(String s);
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
+
+        void onValidate(Boolean valid);
     }
 
     interface UserActionsListener {
@@ -58,6 +60,8 @@ public interface AccountContract {
         void onDetachView();
 
         void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
+
+        void validate(android.view.View v);
     }
 
 }
