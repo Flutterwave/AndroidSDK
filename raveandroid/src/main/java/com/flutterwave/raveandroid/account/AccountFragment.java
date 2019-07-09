@@ -40,7 +40,9 @@ import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -129,7 +131,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.validate(AccountFragment.this.v);
+                clearErrors();
+                sendDataToPresenter();
             }
         });
 
@@ -171,6 +174,43 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         builder.show();
 
     }
+
+    private void clearErrors(){
+        bankEt.setError(null);
+        accountNumberTil.setError(null);
+        accountNumberTil.setErrorEnabled(false);
+        emailTil.setError(null);
+        emailTil.setErrorEnabled(false);
+        phoneTil.setError(null);
+        phoneTil.setErrorEnabled(false);
+        bankEt.setError(null);
+        dateOfBirthEt.setError(null);
+        rave_bvnTil.setError(null);
+        rave_bvnTil.setErrorEnabled(false);
+    }
+
+    private void sendDataToPresenter() {
+
+        List<String> accountList = Arrays.asList(accountNumberTil.getId()+"", accountNumberEt.getText().toString());
+        List<String> emailList = Arrays.asList(emailTil.getId()+"", emailEt.getText().toString());
+        List<String> phoneList = Arrays.asList(phoneTil.getId()+"", phoneEt.getText().toString());
+        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
+
+        if (accountNumberTil.getVisibility() == View.VISIBLE) {
+            if (accountNumberEt.getText().toString().length() != 10) {
+                accountList = Arrays.asList(accountNumberTil.getId()+"", "");
+            }
+         }
+
+        HashMap<String, List<String>> dataHashMap = new HashMap<>();
+        dataHashMap.put("account", accountList);
+        dataHashMap.put("email", emailList);
+        dataHashMap.put("phone", phoneList);
+        dataHashMap.put("amount", amountList);
+
+        presenter.validate(dataHashMap);
+    }
+
 
     @Override
     public void showToast(String message) {
@@ -460,6 +500,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         else{
             Log.d("okh", "not valid");
         }
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message) {
+        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
+        amountView.setError(message);
     }
 
 }

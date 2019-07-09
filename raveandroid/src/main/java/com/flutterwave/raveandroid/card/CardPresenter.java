@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.internal.Util;
@@ -208,84 +209,59 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void validate(View v) {
+    public void validate(HashMap<String, List<String>> dataHashMap) {
 
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
-        cardNoTv = (TextInputEditText) v.findViewById(R.id.rave_cardNoTv);
-        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.rave_cardExpiryTv);
-        cvvTv = (TextInputEditText) v.findViewById(R.id.rave_cvvTv);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
-        cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
-        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
-        cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
+       Boolean valid = true;
 
-        final Boolean valid [] = new Boolean[1];
-        valid[0] = true;
-        final Context context = v.getContext();
-        Utils.hide_keyboard((Activity) v.getContext());
+        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
+        String amount = dataHashMap.get("amount").get(1);
 
-                clearErrors();
+        int emailID = Integer.valueOf(dataHashMap.get("email").get(0));
+        String email = dataHashMap.get("email").get(1);
 
+        int cvvID = Integer.valueOf(dataHashMap.get("cvv").get(0));
+        String cvv = dataHashMap.get("cvv").get(1);
 
-                final String amount = amountEt.getText().toString();
-                final String email = emailEt.getText().toString();
-                final String cvv = cvvTv.getText().toString();
-                final String expiryDate = cardExpiryTv.getText().toString();
-                final String cardNo = cardNoTv.getText().toString();
-                final String cardNoStripped = cardNo.replaceAll("\\s", "");
+        int cardExpiryID = Integer.valueOf(dataHashMap.get("cardExpiry").get(0));
+        String cardExpiry = dataHashMap.get("cardExpiry").get(1);
 
-                try {
+        int cardNoStrippedID = Integer.valueOf(dataHashMap.get("cardNoStripped").get(0));
+        String cardNoStripped = dataHashMap.get("cardNoStripped").get(1);
+
+        try{
                     double amnt = Double.parseDouble(amount);
 
                     if (amnt <= 0) {
-                        valid[0] = false;
-                        amountTil.setError("Enter a valid amount");
+                        valid = false;
+                        mView.showFieldError(amountID, "Enter a valid amount");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid[0] = false;
-                    amountTil.setError("Enter a valid amount");
+                    valid = false;
+                    mView.showFieldError(amountID, "Enter a valid amount");
                 }
 
                 if (!Utils.isEmailValid(email)) {
-                    valid[0] = false;
-                    emailTil.setError("Enter a valid email");
+                    valid = false;
+                    mView.showFieldError(emailID, "Enter a valid email");
                 }
 
                 if (cvv.length() < 3) {
-                    valid[0] = false;
-                    cvvTil.setError("Enter a valid cvv");
+                    valid = false;
+                    mView.showFieldError(cvvID, "Enter a valid cvv");
                 }
 
-                if (expiryDate.length() != 5) {
-                    cardExpiryTil.setError("Enter a valid expiry date");
-                    valid[0] = false;
+                if (cardExpiry.length() != 5) {
+                    mView.showFieldError(cardExpiryID, "Enter a valid expiry date");
+                    valid = false;
                 }
 
 
                 if (cardNoStripped.length() < 12 | !Utils.isValidLuhnNumber(cardNoStripped)) {
-                    valid[0] = false;
-                    cardNoTil.setError("Enter a valid credit card number");
+                    valid = false;
+                    mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number");
                 }
-                mView.onValidate(valid[0]);
-
-    }
-
-    private void clearErrors() {
-        amountTil.setError(null);
-        emailTil.setError(null);
-        cvvTil.setError(null);
-        cardExpiryTil.setError(null);
-        cardNoTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        emailTil.setErrorEnabled(false);
-        cvvTil.setErrorEnabled(false);
-        cardExpiryTil.setErrorEnabled(false);
-        cardNoTil.setErrorEnabled(false);
+                mView.onValidate(valid);
 
     }
 

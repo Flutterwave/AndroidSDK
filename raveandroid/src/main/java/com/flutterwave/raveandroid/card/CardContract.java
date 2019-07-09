@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,6 +65,8 @@ public interface CardContract {
         void onNoAuthUsed(String flwRef, String publicKey);
 
         void onValidate(Boolean valid);
+
+        void showFieldError(int viewID, String message);
     }
 
     interface UserActionsListener {
@@ -94,7 +97,7 @@ public interface CardContract {
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
 
-        void validate(android.view.View v);
+        void validate(HashMap<String, List<String>> dataHashMap);
     }
 
 }

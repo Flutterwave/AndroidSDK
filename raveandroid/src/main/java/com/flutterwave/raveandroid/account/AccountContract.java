@@ -6,6 +6,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -44,6 +45,8 @@ public interface AccountContract {
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
 
         void onValidate(Boolean valid);
+
+        void showFieldError(int viewID, String message);
     }
 
     interface UserActionsListener {
@@ -61,7 +64,7 @@ public interface AccountContract {
 
         void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
 
-        void validate(android.view.View v);
+        void validate(HashMap<String, List<String>> dataHashMap);
     }
 
 }

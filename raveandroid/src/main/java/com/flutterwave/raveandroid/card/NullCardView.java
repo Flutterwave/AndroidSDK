@@ -37,6 +37,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void showFieldError(int viewID, String message) {
+
+    }
+
+    @Override
     public void onNoAuthInternationalSuggested(Payload payload) {
 
     }

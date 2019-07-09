@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -241,69 +242,55 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
     @Override
-    public void validate(View v) {
+    public void validate(HashMap<String, List<String>> dataHashMap) {
 
-        final Boolean valid [] = new Boolean[1];
-        valid[0] = true;
-        final Context context = v.getContext();
-        Utils.hide_keyboard((Activity) v.getContext());
+        Boolean valid = true;
 
-        bankEt = (EditText) v.findViewById(R.id.rave_bankEditText);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
-        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
-        rave_bvnTil = (TextInputLayout) v.findViewById(R.id.rave_bvnTil);
-        dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
-        accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
-        accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
 
-                clearErrors();
+        int accountID = Integer.valueOf(dataHashMap.get("account").get(0));
+        String account = dataHashMap.get("account").get(1);
 
-                String accountNo = accountNumberEt.getText().toString();
-                String amount = amountEt.getText().toString();
-                String email = emailEt.getText().toString();
-                String phone = phoneEt.getText().toString();
+        int emailID = Integer.valueOf(dataHashMap.get("email").get(0));
+        String email = dataHashMap.get("email").get(1);
 
+        int phoneID = Integer.valueOf(dataHashMap.get("phone").get(0));
+        String phone = dataHashMap.get("phone").get(1);
+
+        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
+        String amount = dataHashMap.get("amount").get(1);
 
                 if (phone.length() < 1) {
-                    valid[0] = false;
-                    phoneTil.setError("Enter a valid number");
+                    valid = false;
+                    mView.showFieldError(phoneID, "Enter a valid number");
                 }
 
                 if (!Utils.isEmailValid(email)) {
-                    valid[0] = false;
-                    emailTil.setError("Enter a valid email");
+                    valid = false;
+                    mView.showFieldError(emailID, "Enter a valid email");
                 }
 
 
-                if (accountNumberTil.getVisibility() == View.VISIBLE) {
-                    if (accountNo.length() != 10) {
-                        valid[0] = false;
-                        accountNumberTil.setError("Enter a valid account number");
-                    }
+                if (account.isEmpty()) {
+                        valid = false;
+                        mView.showFieldError(accountID, "Enter a valid account number");
                 } else {
-                    accountNo = "0000000000";
+                    account = "0000000000";
                 }
 
                 try {
                     double amnt = Double.parseDouble(amount);
 
                     if (amnt <= 0) {
-                        valid[0] = false;
+                        valid = false;
                         mView.showToast("Enter a valid amount");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid[0] = false;
+                    valid = false;
                     mView.showToast("Enter a valid amount");
                 }
 
-                mView.onValidate(valid[0]);
+                mView.onValidate(valid);
 
     }
 

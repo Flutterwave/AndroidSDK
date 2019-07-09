@@ -93,4 +93,9 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     public void onValidate(Boolean valid) {
 
     }
+
+    @Override
+    public void showFieldError(int viewID, String message) {
+
+    }
 }

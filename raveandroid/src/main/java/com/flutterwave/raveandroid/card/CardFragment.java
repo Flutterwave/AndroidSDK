@@ -41,7 +41,9 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -159,8 +161,42 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         int i = v.getId();
         if (i == R.id.rave_payButton) {
-            presenter.validate(this.v);
+            clearErrors();
+            sendDataToPresenter();
         }
+    }
+
+    private void sendDataToPresenter() {
+
+        final String cardNo = cardNoTv.getText().toString();
+        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
+        List<String> emailList = Arrays.asList(emailTil.getId()+"", emailEt.getText().toString());
+        List<String> cvvList = Arrays.asList(cvvTil.getId()+"", cvvTv.getText().toString());
+        List<String> cardExpiryList = Arrays.asList(cardExpiryTil.getId()+"", cardExpiryTv.getText().toString());
+        List<String> cardNoStripped = Arrays.asList(cardNoTil.getId()+"", cardNo.replaceAll("\\s", ""));
+
+
+        HashMap<String, List<String>> dataHashMap = new HashMap<>();
+        dataHashMap.put("amount", amountList);
+        dataHashMap.put("email", emailList);
+        dataHashMap.put("cvv", cvvList);
+        dataHashMap.put("cardExpiry", cardExpiryList);
+        dataHashMap.put("cardNoStripped", cardNoStripped);
+
+        presenter.validate(dataHashMap);
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        emailTil.setError(null);
+        cvvTil.setError(null);
+        cardExpiryTil.setError(null);
+        cardNoTil.setError(null);
+        amountTil.setErrorEnabled(false);
+        emailTil.setErrorEnabled(false);
+        cvvTil.setErrorEnabled(false);
+        cardExpiryTil.setErrorEnabled(false);
+        cardNoTil.setErrorEnabled(false);
     }
 
     @Override
@@ -217,6 +253,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             }
 
         }
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message) {
+        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
+        amountView.setError(message);
     }
 
     @Override
