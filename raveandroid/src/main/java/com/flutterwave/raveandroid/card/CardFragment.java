@@ -158,7 +158,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onClick(View v) {
 
         int i = v.getId();
-
+        if (i == R.id.rave_payButton) {
+            presenter.validate(fragment);
+        }
     }
 
     @Override
@@ -231,7 +233,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-            presenter.validate(fragment);
             presenter = new CardPresenter(getActivity(), this);
         }
         assert presenter != null;

@@ -227,10 +227,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         final Context context = v.getContext();
         Utils.hide_keyboard((Activity) v.getContext());
 
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 clearErrors();
 
 
@@ -275,9 +271,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     cardNoTil.setError("Enter a valid credit card number");
                 }
                 mView.onValidate(valid[0]);
-            }
 
-        });
     }
 
     private void clearErrors() {

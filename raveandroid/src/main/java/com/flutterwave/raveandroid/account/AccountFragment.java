@@ -130,7 +130,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateDetails();
+                presenter.validate(fragment);
             }
         });
 
@@ -157,17 +157,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
 
         return fragment;
-    }
-
-    private void validateDetails() {
-
-        Utils.hide_keyboard(getActivity());
-
-
-
-        boolean valid = true;
-
-
     }
 
     private void showGTBankAmountIssue() {
@@ -379,7 +368,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-            presenter.validate(fragment);
             presenter = new AccountPresenter(getActivity(), this);
         }
         assert presenter != null;

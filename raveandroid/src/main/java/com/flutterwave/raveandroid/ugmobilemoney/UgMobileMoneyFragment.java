@@ -61,7 +61,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
 
         Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-
+        presenter.validate(fragment);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
 
@@ -85,12 +85,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         else {
             instructionsTv.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onResume() {
-        presenter.validate(fragment);
-        super.onResume();
     }
 
     @Override

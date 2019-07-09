@@ -262,10 +262,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         payButton = (Button) v.findViewById(R.id.rave_payButton);
         bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
 
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 clearErrors();
 
                 String accountNo = accountNumberEt.getText().toString();
@@ -308,10 +304,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 }
 
                 mView.onValidate(valid[0]);
-            }
-
-        });
-
 
     }
 

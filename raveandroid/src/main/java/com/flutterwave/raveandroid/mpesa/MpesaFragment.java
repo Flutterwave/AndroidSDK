@@ -62,7 +62,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         rave_phoneEtInt = fragment.findViewById(R.id.rave_amountTV).getId();
 
         Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-
+        presenter.validate(fragment);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         double amountToPay = ravePayInitializer.getAmount();
@@ -73,12 +73,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         }
 
         return fragment;
-    }
-
-    @Override
-    public void onResume() {
-        presenter.validate(fragment);
-        super.onResume();
     }
 
     @Override

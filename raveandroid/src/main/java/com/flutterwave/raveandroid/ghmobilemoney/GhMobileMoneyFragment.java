@@ -69,7 +69,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
 
         Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-
+        presenter.validate(fragment);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
 //        payButton.setOnClickListener(new View.OnClickListener() {
@@ -144,11 +144,6 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
-    @Override
-    public void onResume() {
-        presenter.validate(fragment);
-        super.onResume();
-    }
 
     @Override
     public void showProgressIndicator(boolean active) {
