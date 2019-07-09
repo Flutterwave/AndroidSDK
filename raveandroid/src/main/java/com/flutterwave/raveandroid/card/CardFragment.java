@@ -39,10 +39,11 @@ import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -108,31 +109,29 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
-        savedCardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
-            }
-        });
-
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
+
+        savedCardBtn.setOnClickListener(this);
 
         payButton.setOnClickListener(this);
 
+        getFieldValues();
 
-        if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
+        return v;
+    }
+
+    private void getFieldValues() {
+        Boolean isEmailValidated = new EmailValidator().check(ravePayInitializer.getEmail());
+        if (isEmailValidated) {
             emailTil.setVisibility(GONE);
             emailEt.setText(ravePayInitializer.getEmail());
         }
 
-        double amountToPay = ravePayInitializer.getAmount();
-
-        if (amountToPay > 0) {
+        Boolean isAmountValidated = new AmountValidator().check(String.valueOf(ravePayInitializer.getAmount()));
+        if (isAmountValidated) {
             amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(amountToPay));
+            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
         }
-
-        return v;
     }
 
     private void initializeViews() {
@@ -161,11 +160,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         int i = v.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
-            sendDataToPresenter();
+            formValidate();
+        }
+        else if (i == R.id.rave_savedCardButton){
+            presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
         }
     }
 
-    private void sendDataToPresenter() {
+    private void formValidate() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
@@ -197,53 +199,22 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onValidate(Boolean valid) {
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        if (valid) {
+            String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
+            CheckSaveCard(cardNoStripped);
 
-            String amount = amountEt.getText().toString();
-            String email = emailEt.getText().toString();
-            String cvv = cvvTv.getText().toString();
-            String expiryDate = cardExpiryTv.getText().toString();
-            String cardNo = cardNoTv.getText().toString();
+            presenter.processTransaction(dataHashMap, ravePayInitializer, getActivity());
 
-            String cardNoStripped = cardNo.replaceAll("\\s", "");
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
+    }
 
-            if (saveCardSwitch.isChecked()) {
-                int cardLen = cardNoStripped.length();
-                cardFirst6 = cardNoStripped.substring(0, 6);
-                cardLast4 = cardNoStripped.substring(cardLen - 4, cardLen);
-                shouldISaveThisCard = true;
-                presenter.savePotentialCardDets(cardFirst6, cardLast4);
-            }
-
-            //make request
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(cardNoStripped)
-                    .setCountry(ravePayInitializer.getCountry()).setCurrency(ravePayInitializer.getCurrency())
-                    .setCvv(cvv).setEmail(email).setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName()).setIP(Utils.getDeviceImei(getActivity())).setTxRef(ravePayInitializer.getTxRef())
-                    .setExpiryyear(expiryDate.substring(3, 5)).setExpirymonth(expiryDate.substring(0, 2))
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createPayload();
-
-            if (ravePayInitializer.getIsDisplayFee()) {
-                presenter.fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
-            } else {
-                presenter.chargeCard(body, ravePayInitializer.getEncryptionKey());
-            }
-
+    private void CheckSaveCard(String cardNoStripped) {
+        if (saveCardSwitch.isChecked()) {
+            int cardLen = cardNoStripped.length();
+            cardFirst6 = cardNoStripped.substring(0, 6);
+            cardLast4 = cardNoStripped.substring(cardLen - 4, cardLen);
+            shouldISaveThisCard = true;
+            presenter.savePotentialCardDets(cardFirst6, cardLast4);
         }
     }
 

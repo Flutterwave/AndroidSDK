@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -266,12 +267,53 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     valid = false;  mView.showFieldError(cardExpiryID, "Enter a valid expiry date", cardExpiryViewType);
                 }
 
-                Boolean isCardNoStrippedValidator = new CardNoStrippedValidator().check(cardExpiry);
+                Boolean isCardNoStrippedValidator = new CardNoStrippedValidator().check(cardNoStripped);
                 if (!isCardNoStrippedValidator) {
-                    valid = false; mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number", cardExpiryViewType);
+                    valid = false; mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number", cardNoStrippedViewType);
                 }
-                mView.onValidate(valid);
 
+                if (valid) {
+                    mView.onValidationSuccessful(dataHashMap);
+                }
+
+    }
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+
+        String amount = dataHashMap.get("amount").getData();
+        String email = dataHashMap.get("email").getData();
+        String cvv = dataHashMap.get("cvv").getData();
+        String cardExpiry = dataHashMap.get("cardExpiry").getData();
+        String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
+
+        String txRef = ravePayInitializer.getTxRef();
+        Log.d("txRef", txRef);
+
+        ravePayInitializer.setAmount(Double.parseDouble(amount));
+
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(cardNoStripped)
+                .setCountry(ravePayInitializer.getCountry()).setCurrency(ravePayInitializer.getCurrency())
+                .setCvv(cvv).setEmail(email).setFirstname(ravePayInitializer.getfName())
+                .setLastname(ravePayInitializer.getlName()).setIP(Utils.getDeviceImei(activity)).setTxRef(ravePayInitializer.getTxRef())
+                .setExpiryyear(cardExpiry.substring(3, 5)).setExpirymonth(cardExpiry.substring(0, 2))
+                .setMeta(ravePayInitializer.getMeta())
+                .setSubAccount(ravePayInitializer.getSubAccount())
+                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(activity));
+
+        if (ravePayInitializer.getPayment_plan() != null) {
+            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+        }
+
+        Payload body = builder.createPayload();
+
+        if (ravePayInitializer.getIsDisplayFee()) {
+            fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+        } else {
+            chargeCard(body, ravePayInitializer.getEncryptionKey());
+        }
     }
 
 

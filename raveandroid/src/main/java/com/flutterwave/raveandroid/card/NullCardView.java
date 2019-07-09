@@ -4,10 +4,12 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,12 +34,12 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onValidate(Boolean valid) {
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
     }
 
     @Override
-    public void showFieldError(int viewID, String message) {
+    public void showFieldError(int viewID, String message, Class<?> viewtype) {
 
     }
 
