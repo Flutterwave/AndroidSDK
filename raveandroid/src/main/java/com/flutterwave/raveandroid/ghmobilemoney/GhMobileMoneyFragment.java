@@ -35,7 +35,7 @@ import static android.view.View.GONE;
  */
 public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View {
 
-    View fragment;
+    View v;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -55,26 +55,26 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        fragment = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
+        // Inflate the layout for this v
+        v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
         presenter = new GhMobileMoneyPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
-        networkSpinner = (Spinner) fragment.findViewById(R.id.rave_networkSpinner);
-        voucherEt = (TextInputEditText) fragment.findViewById(R.id.rave_voucherEt);
-        voucherTil = (TextInputLayout) fragment.findViewById(R.id.rave_voucherTil);
-        instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
+        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
+        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
+        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
 
-        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-        presenter.validate(fragment);
+        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        presenter.validate(v);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
 //        payButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View fragment) {
+//            public void onClick(View v) {
 //                validate();
 //            }
 //        });
@@ -129,7 +129,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             }
         });
 
-        return fragment;
+        return v;
     }
 
     private void showInstructionsAndVoucher(boolean show) {

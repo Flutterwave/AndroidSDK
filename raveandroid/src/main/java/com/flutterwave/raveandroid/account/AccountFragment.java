@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -73,7 +72,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private String flwRef;
     private RavePayInitializer ravePayInitializer;
     private EditText dateOfBirthEt,bvnEt;
-    View fragment;
+    View v;
     Calendar calendar = Calendar.getInstance();
 
     public AccountFragment() {
@@ -89,23 +88,23 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        fragment = inflater.inflate(R.layout.fragment_account, container, false);
+        // Inflate the layout for this v
+        v = inflater.inflate(R.layout.fragment_account, container, false);
 
-        bankEt = (EditText) fragment.findViewById(R.id.rave_bankEditText);
-        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
-        emailEt = (TextInputEditText) fragment.findViewById(R.id.rave_emailEt);
-        emailTil = (TextInputLayout) fragment.findViewById(R.id.rave_emailTil);
-        rave_bvnTil = (TextInputLayout) fragment.findViewById(R.id.rave_bvnTil);
-        accountNumberEt = (TextInputEditText) fragment.findViewById(R.id.rave_accountNumberEt);
-        accountNumberTil = (TextInputLayout) fragment.findViewById(R.id.rave_accountNumberTil);
-        payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-        pcidss_tv = (TextView) fragment.findViewById(R.id.rave_pcidss_compliant_tv);
-        dateOfBirthEt = (EditText) fragment.findViewById(R.id.rave_dobEditText);
-        bvnEt = (EditText) fragment.findViewById(R.id.rave_bvnEt);
+        bankEt = (EditText) v.findViewById(R.id.rave_bankEditText);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailEt);
+        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
+        rave_bvnTil = (TextInputLayout) v.findViewById(R.id.rave_bvnTil);
+        accountNumberEt = (TextInputEditText) v.findViewById(R.id.rave_accountNumberEt);
+        accountNumberTil = (TextInputLayout) v.findViewById(R.id.rave_accountNumberTil);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
+        dateOfBirthEt = (EditText) v.findViewById(R.id.rave_dobEditText);
+        bvnEt = (EditText) v.findViewById(R.id.rave_bvnEt);
 
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             public final String transformUrl(final Matcher match, String url) {
@@ -116,7 +115,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
         Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
 
-        FrameLayout internetBankingLayout = (FrameLayout) fragment.findViewById(R.id.rave_internetBankingBottomSheet);
+        FrameLayout internetBankingLayout = (FrameLayout) v.findViewById(R.id.rave_internetBankingBottomSheet);
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
@@ -130,7 +129,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.validate(fragment);
+                presenter.validate(AccountFragment.this.v);
             }
         });
 
@@ -156,7 +155,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         }
 
 
-        return fragment;
+        return v;
     }
 
     private void showGTBankAmountIssue() {

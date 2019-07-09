@@ -33,7 +33,7 @@ import static android.view.View.GONE;
  */
 public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View {
 
-    View fragment;
+    View v;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -50,18 +50,18 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        fragment = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
+        // Inflate the layout for this v
+        v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
         presenter = new UgMobileMoneyPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
-        instructionsTv = (TextView) fragment.findViewById(R.id.instructionsTv);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
 
-        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-        presenter.validate(fragment);
+        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        presenter.validate(v);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
 
@@ -74,7 +74,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
-        return fragment;
+        return v;
     }
 
     private void showInstructionsAndVoucher(boolean show) {

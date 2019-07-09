@@ -30,7 +30,7 @@ import static android.view.View.GONE;
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View {
 
-    View fragment;
+    View v;
     TextInputEditText amountEt;
     TextInputLayout amountTil;
     TextInputEditText phoneEt;
@@ -50,19 +50,19 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        fragment = inflater.inflate(R.layout.fragment_mpesa, container, false);
+        // Inflate the layout for this v
+        v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
         presenter = new MpesaPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) fragment.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) fragment.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) fragment.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) fragment.findViewById(R.id.rave_phoneTil);
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
+        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
 
-        rave_phoneEtInt = fragment.findViewById(R.id.rave_amountTV).getId();
+        rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
 
-        Button payButton = (Button) fragment.findViewById(R.id.rave_payButton);
-        presenter.validate(fragment);
+        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        presenter.validate(v);
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         double amountToPay = ravePayInitializer.getAmount();
@@ -72,7 +72,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
             amountEt.setText(String.valueOf(amountToPay));
         }
 
-        return fragment;
+        return v;
     }
 
     @Override
