@@ -23,3 +23,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepclasseswithmembers public class com.flutterwave.raveandroid.** { *; }
+-dontwarn com.flutterwave.raveandroid.card.CardFragment
