@@ -11,7 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.text.util.Linkify.TransformFilter;
 import android.util.Log;
@@ -97,34 +99,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         presenter = new CardPresenter(getActivity(), this);
+
         // Inflate the layout for this v
         v = inflater.inflate(R.layout.fragment_card, container, false);
-        savedCardBtn = (Button) v.findViewById(R.id.rave_savedCardButton);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        emailEt = (TextInputEditText) v.findViewById(R.id.rave_emailTv);
-        cardNoTv = (TextInputEditText) v.findViewById(R.id.rave_cardNoTv);
-        cardExpiryTv = (TextInputEditText) v.findViewById(R.id.rave_cardExpiryTv);
-        cvvTv = (TextInputEditText) v.findViewById(R.id.rave_cvvTv);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        emailTil = (TextInputLayout) v.findViewById(R.id.rave_emailTil);
-        cardNoTil = (TextInputLayout) v.findViewById(R.id.rave_cardNoTil);
-        cardExpiryTil = (TextInputLayout) v.findViewById(R.id.rave_cardExpiryTil);
-        cvvTil = (TextInputLayout) v.findViewById(R.id.rave_cvvTil);
-        pcidss_tv = (TextView) v.findViewById(R.id.rave_pcidss_compliant_tv);
-        progressContainer = (FrameLayout) v.findViewById(R.id.rave_progressContainer);
+
+        initializeViews();
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
-        TransformFilter filter = new TransformFilter() {
-            public final String transformUrl(final Matcher match, String url) {
-                return "";
-            }
-        };
-
-        Pattern pattern = Pattern.compile("()PCI-DSS COMPLIANT");
-        Linkify.addLinks(pcidss_tv, pattern, "https://www.pcisecuritystandards.org/pci_security/", null, filter);
+        pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
@@ -153,6 +136,25 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
 
         return v;
+    }
+
+    private void initializeViews() {
+        progressContainer =  v.findViewById(R.id.rave_progressContainer);
+        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
+        saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
+        cardExpiryTil =  v.findViewById(R.id.rave_cardExpiryTil);
+        savedCardBtn =  v.findViewById(R.id.rave_savedCardButton);
+        cardExpiryTv =  v.findViewById(R.id.rave_cardExpiryTv);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        cardNoTil =  v.findViewById(R.id.rave_cardNoTil);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        emailTil =  v.findViewById(R.id.rave_emailTil);
+        cardNoTv =  v.findViewById(R.id.rave_cardNoTv);
+        amountEt =  v.findViewById(R.id.rave_amountTV);
+        emailEt =  v.findViewById(R.id.rave_emailTv);
+        cvvTil =  v.findViewById(R.id.rave_cvvTil);
+        cvvTv =  v.findViewById(R.id.rave_cvvTv);
+
     }
 
 
@@ -257,7 +259,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void showFieldError(int viewID, String message) {
-        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
+        TextInputLayout amountView  =  v.findViewById(viewID);
         amountView.setError(message);
     }
 

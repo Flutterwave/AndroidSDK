@@ -13,7 +13,7 @@
     <string name="email_address">Email address</string>
     <string name="phone_number">Phone number</string>
     <string name="amount">Amount</string>
-    <string name="pci_dss_compliant">PCI-DSS COMPLIANT</string>
+    <string name="pci_dss_compliant"><a href="https://www.pcisecuritystandards.org/pci_security/">PCI-DSS COMPLIANT</a></string>
     <string name="pin">PIN</string>
     <string name="cancel">CANCEL</string>
     <string name="enter">ENTER</string>
