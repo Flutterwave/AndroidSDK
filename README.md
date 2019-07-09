@@ -36,7 +36,6 @@ The minimum supported SDK version is 15
 Add the `READ_PHONE_PERMISSION` and `INTERNET` permissions to your android manifest
 
      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-     <uses-permission android:name="android.Manifest.permission.READ_PHONE_STATE" />
      <uses-permission android:name="android.permission.INTERNET" />
 
 > **REQUIRED PERMISSION**
