@@ -3,14 +3,14 @@ package com.flutterwave.raveandroid;
 public class ViewObject {
 
     int viewId;
+    String data;
+    Class<?> viewType;
 
     public ViewObject(int viewId, String data, Class<?> viewType) {
         this.viewId = viewId;
         this.data = data;
         this.viewType = viewType;
     }
-
-    String data;
 
     public int getViewId() {
         return viewId;
@@ -36,8 +36,6 @@ public class ViewObject {
     public void setViewType(Class<?> viewType) {
         this.viewType = viewType;
     }
-
-    Class<?> viewType;
 
 
 }

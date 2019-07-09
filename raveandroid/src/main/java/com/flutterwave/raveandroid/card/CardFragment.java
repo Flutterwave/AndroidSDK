@@ -11,33 +11,32 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import android.text.util.Linkify.TransformFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.VerificationActivity;
+import com.flutterwave.raveandroid.AVSVBVFragment;
+import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.data.SavedCard;
-import com.flutterwave.raveandroid.AVSVBVFragment;
-import com.flutterwave.raveandroid.OTPFragment;
-import com.flutterwave.raveandroid.PinFragment;
+import com.flutterwave.raveandroid.VerificationActivity;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -47,8 +46,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
@@ -170,20 +167,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     private void sendDataToPresenter() {
 
-        final String cardNo = cardNoTv.getText().toString();
-        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
-        List<String> emailList = Arrays.asList(emailTil.getId()+"", emailEt.getText().toString());
-        List<String> cvvList = Arrays.asList(cvvTil.getId()+"", cvvTv.getText().toString());
-        List<String> cardExpiryList = Arrays.asList(cardExpiryTil.getId()+"", cardExpiryTv.getText().toString());
-        List<String> cardNoStripped = Arrays.asList(cardNoTil.getId()+"", cardNo.replaceAll("\\s", ""));
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-
-        HashMap<String, List<String>> dataHashMap = new HashMap<>();
-        dataHashMap.put("amount", amountList);
-        dataHashMap.put("email", emailList);
-        dataHashMap.put("cvv", cvvList);
-        dataHashMap.put("cardExpiry", cardExpiryList);
-        dataHashMap.put("cardNoStripped", cardNoStripped);
+        dataHashMap.put("amount", new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("email", new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("cvv", new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("cardExpiry", new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("cardNoStripped", new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString().replaceAll("\\s", ""), TextInputLayout.class));
 
         presenter.validate(dataHashMap);
     }
@@ -258,9 +248,18 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void showFieldError(int viewID, String message) {
-        TextInputLayout amountView  =  v.findViewById(viewID);
-        amountView.setError(message);
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class){
+            TextInputLayout view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+        else if (viewType == EditText.class){
+            EditText view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+
+
     }
 
     @Override

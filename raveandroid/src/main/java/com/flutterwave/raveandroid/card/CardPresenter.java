@@ -16,6 +16,7 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.CardDetsToSave;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -26,6 +27,11 @@ import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.CardExpiryValidator;
+import com.flutterwave.raveandroid.validators.CardNoStrippedValidator;
+import com.flutterwave.raveandroid.validators.CvvValidator;
+import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -209,57 +215,60 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void validate(HashMap<String, List<String>> dataHashMap) {
+    public void validate(HashMap<String, ViewObject> dataHashMap) {
 
        Boolean valid = true;
 
-        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
-        String amount = dataHashMap.get("amount").get(1);
+        int amountID = dataHashMap.get("amount").getViewId();
+        String amount = dataHashMap.get("amount").getData();
+        Class amountViewType = dataHashMap.get("amount").getViewType();
 
-        int emailID = Integer.valueOf(dataHashMap.get("email").get(0));
-        String email = dataHashMap.get("email").get(1);
+        int emailID = dataHashMap.get("email").getViewId();
+        String email = dataHashMap.get("email").getData();
+        Class emailViewType = dataHashMap.get("email").getViewType();
 
-        int cvvID = Integer.valueOf(dataHashMap.get("cvv").get(0));
-        String cvv = dataHashMap.get("cvv").get(1);
+        int cvvID = dataHashMap.get("cvv").getViewId();
+        String cvv = dataHashMap.get("cvv").getData();
+        Class cvvViewType = dataHashMap.get("cvv").getViewType();
 
-        int cardExpiryID = Integer.valueOf(dataHashMap.get("cardExpiry").get(0));
-        String cardExpiry = dataHashMap.get("cardExpiry").get(1);
+        int cardExpiryID = dataHashMap.get("cardExpiry").getViewId();
+        String cardExpiry = dataHashMap.get("cardExpiry").getData();
+        Class cardExpiryViewType = dataHashMap.get("cardExpiry").getViewType();
 
-        int cardNoStrippedID = Integer.valueOf(dataHashMap.get("cardNoStripped").get(0));
-        String cardNoStripped = dataHashMap.get("cardNoStripped").get(1);
+        int cardNoStrippedID = dataHashMap.get("cardNoStripped").getViewId();
+        String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
+        Class cardNoStrippedViewType = dataHashMap.get("cardNoStripped").getViewType();
 
         try{
-                    double amnt = Double.parseDouble(amount);
 
-                    if (amnt <= 0) {
-                        valid = false;
-                        mView.showFieldError(amountID, "Enter a valid amount");
+              Boolean isAmountValidated = new AmountValidator().check(amount);
+                 if (!isAmountValidated) {
+                        valid = false; mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid = false;
-                    mView.showFieldError(amountID, "Enter a valid amount");
+                    valid = false; mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                 }
 
-                if (!Utils.isEmailValid(email)) {
-                    valid = false;
-                    mView.showFieldError(emailID, "Enter a valid email");
+                Boolean isEmailValidated = new EmailValidator().check(email);
+                if (!isEmailValidated) {
+                    valid = false; mView.showFieldError(emailID, "Enter a valid email", emailViewType);
                 }
 
-                if (cvv.length() < 3) {
-                    valid = false;
-                    mView.showFieldError(cvvID, "Enter a valid cvv");
+                Boolean isCVVValidated = new CvvValidator().check(cvv);
+                if (!isCVVValidated) {
+                    valid = false; mView.showFieldError(cvvID, "Enter a valid cvv", cvvViewType);
                 }
 
-                if (cardExpiry.length() != 5) {
-                    mView.showFieldError(cardExpiryID, "Enter a valid expiry date");
-                    valid = false;
+                Boolean isCardExpiryValidated = new CardExpiryValidator().check(cardExpiry);
+
+                if (!isCardExpiryValidated) {
+                    valid = false;  mView.showFieldError(cardExpiryID, "Enter a valid expiry date", cardExpiryViewType);
                 }
 
-
-                if (cardNoStripped.length() < 12 | !Utils.isValidLuhnNumber(cardNoStripped)) {
-                    valid = false;
-                    mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number");
+                Boolean isCardNoStrippedValidator = new CardNoStrippedValidator().check(cardExpiry);
+                if (!isCardNoStrippedValidator) {
+                    valid = false; mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number", cardExpiryViewType);
                 }
                 mView.onValidate(valid);
 

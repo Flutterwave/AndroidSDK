@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.card;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -66,7 +67,7 @@ public interface CardContract {
 
         void onValidate(Boolean valid);
 
-        void showFieldError(int viewID, String message);
+        void showFieldError(int viewID, String message, Class<?> viewtype);
     }
 
     interface UserActionsListener {
@@ -97,7 +98,7 @@ public interface CardContract {
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
 
-        void validate(HashMap<String, List<String>> dataHashMap);
+        void validate(HashMap<String, ViewObject> dataHashMap);
     }
 
 }
