@@ -24,12 +24,14 @@ public interface MpesaContract {
         void showFetchFeeFailed(String s);
         void onPaymentFailed(String message, String responseAsJSONString);
         void onValidate(Boolean valid);
+        void showAmountError(String message);
+        void showPhoneError(String message);
     }
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void chargeMpesa(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
-        void validate(android.view.View v);
+        void validate(String amount, String Phone);
     }
 }

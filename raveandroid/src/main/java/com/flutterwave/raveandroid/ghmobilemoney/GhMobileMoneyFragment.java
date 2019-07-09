@@ -28,6 +28,11 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import static android.view.View.GONE;
 
 /**
@@ -69,22 +74,24 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
 
         Button payButton = (Button) v.findViewById(R.id.rave_payButton);
-        presenter.validate(v);
+
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-//        payButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                validate();
-//            }
-//        });
-
         double amountToPay = ravePayInitializer.getAmount();
 
         if (amountToPay > 0) {
             amountTil.setVisibility(GONE);
             amountEt.setText(String.valueOf(amountToPay));
         }
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearErrors();
+                sendDataToPresenter();
+            }
+        });
+
+
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
@@ -130,6 +137,24 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         });
 
         return v;
+    }
+
+    private void sendDataToPresenter() {
+        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
+        List<String> phoneList = Arrays.asList(phoneTil.getId()+"", phoneEt.getText().toString());
+        List<String> voucherList = Arrays.asList(voucherTil.getId()+"", voucherEt.getText().toString());
+        List<String> networkList = Arrays.asList(networkSpinner.getId()+"", networkSpinner.getSelectedItemPosition()+"");
+        if (voucherTil.getVisibility() == View.VISIBLE && voucherEt.getText().toString().length() == 0){
+            voucherList = Arrays.asList(voucherTil.getId()+"", "");
+        }
+
+        HashMap<String, List<String>> dataHashMap = new HashMap<>();
+        dataHashMap.put("amount", amountList);
+        dataHashMap.put("phone", phoneList);
+        dataHashMap.put("voucher", voucherList);
+        dataHashMap.put("network", networkList);
+
+        presenter.validate(dataHashMap);
     }
 
     private void showInstructionsAndVoucher(boolean show) {
@@ -220,6 +245,13 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        voucherTil.setError(null);
+
+    }
+
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -263,6 +295,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onValidate(Boolean valid) {
 
+        Log.d("okh", valid.toString());
         if (valid) {
 
             String amount = amountEt.getText().toString();
@@ -303,6 +336,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                 presenter.chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
             }
         }
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message) {
+        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
+        amountView.setError(message);
     }
 }
 

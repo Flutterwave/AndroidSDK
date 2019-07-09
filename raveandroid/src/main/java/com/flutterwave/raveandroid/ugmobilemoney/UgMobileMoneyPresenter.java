@@ -26,6 +26,9 @@ import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by Jeremiah on 10/12/2018.
  */
@@ -153,55 +156,37 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void validate(View v) {
+    public void validate(HashMap<String, List<String>> dataHashMap) {
 
-        final Boolean valid [] = new Boolean[1];
-        valid[0] = true;
-        final Context context = v.getContext();
-        Utils.hide_keyboard((Activity) v.getContext());
+         Boolean valid = true;
 
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
+        String amount = dataHashMap.get("amount").get(1);
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearErrors();
-                final String amount = amountEt.getText().toString();
-                final String phone = phoneEt.getText().toString();
+        int phoneID = Integer.valueOf(dataHashMap.get("phone").get(0));
+        String phone = dataHashMap.get("phone").get(1);
+
                 try {
                     double amnt = Double.parseDouble(amount);
 
-                    if (amnt <= 0) {
-                        valid[0] = false;
-                        amountTil.setError("Enter a valid amount");
-                    }
-                } catch (Exception e) {
+                        if (amnt <= 0) {
+                        valid = false;
+                        mView.showFieldError(amountID, "Enter a valid amount");
+                            }
+                    } catch (Exception e) {
                     e.printStackTrace();
-                    valid[0] = false;
-                    amountTil.setError("Enter a valid amount");
-                }
+                    valid = false;
+                    mView.showFieldError(amountID, "Enter a valid amount");
+                 }
 
-                if (phone.length() < 1) {
-                    valid[0] = false;
-                    phoneTil.setError("Enter a valid number");
+                 if (phone.length() < 1) {
+                        valid = false;
+                        mView.showFieldError(phoneID, "Enter a valid number");
                 }
-                mView.onValidate(valid[0]);
-            }
-        });
+                mView.onValidate(valid);
+
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
-    }
 }
 
 

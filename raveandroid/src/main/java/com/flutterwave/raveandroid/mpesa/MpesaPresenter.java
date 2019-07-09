@@ -157,64 +157,32 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
     @Override
-    public void validate(View v) {
+    public void validate(String amount, String phone) {
 
-        final Boolean valid [] = new Boolean[1];
-        valid[0] = true;
-        final Context context = v.getContext();
-        Utils.hide_keyboard((Activity) v.getContext());
-        EditText rave_amountTil = (TextInputEditText) v.findViewById(R.id.rave_amountTil);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearErrors(context);
-
-                valid[0] = true;
-
-                String amount = amountEt.getText().toString();
-                String phone = phoneEt.getText().toString();
+         Boolean valid = true;
 
                 try {
                     double amnt = Double.parseDouble(amount);
 
                     if (amnt <= 0) {
-                        valid[0] = false;
-                        amountTil.setError("Enter a valid amount");
+                        valid = false;
+                        mView.showAmountError("Enter a valid amount");
                     }
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    valid[0] = false;
-                    amountTil.setError("Enter a valid amount");
+                    valid = false;
+                    mView.showAmountError("Enter a valid amount");
                 }
 
                 if (phone.length() < 1) {
-                    valid[0] = false;
-                    phoneTil.setError("Enter a valid number");
+                    valid = false;
+                    mView.showPhoneError("Enter a valid number");
                 }
-                mView.onValidate(valid[0]);
-
-            }
-        });
-
+                mView.onValidate(valid);
 
 
     }
 
 
-    private void clearErrors(Context context) {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
-    }
 }

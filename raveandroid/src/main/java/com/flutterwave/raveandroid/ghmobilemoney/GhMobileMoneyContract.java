@@ -2,6 +2,9 @@ package com.flutterwave.raveandroid.ghmobilemoney;
 
 import com.flutterwave.raveandroid.Payload;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by hfetuga on 28/06/2018.
  */
@@ -19,12 +22,13 @@ public interface GhMobileMoneyContract {
         void showFetchFeeFailed(String s);
         void onPaymentFailed(String message, String responseAsJSONString);
         void onValidate(Boolean valid);
+        void showFieldError(int viewID, String message);
     }
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void chargeGhMobileMoney(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
-        void validate(android.view.View v);
+        void validate(HashMap<String, List<String>> dataHashMap);
     }
 }

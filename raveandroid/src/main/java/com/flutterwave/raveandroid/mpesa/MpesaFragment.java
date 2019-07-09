@@ -39,7 +39,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
     MpesaPresenter presenter;
-    static int rave_phoneEtInt;
+    int rave_phoneEtInt;
+    int amountID;
 
     public MpesaFragment() {
         // Required empty public constructor
@@ -59,10 +60,23 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
         phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
 
+        amountID = amountTil.getId();
         rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
 
+
         Button payButton = (Button) v.findViewById(R.id.rave_payButton);
-        presenter.validate(v);
+        int viewID = v.getId();
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors();
+                final String amount = amountEt.getText().toString();
+                final String phone = phoneEt.getText().toString();
+                Utils.hide_keyboard(getActivity());
+                presenter.validate(amount, phone);
+            }
+        });
+
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         double amountToPay = ravePayInitializer.getAmount();
@@ -237,5 +251,25 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
                     Log.d("okh", "not valid");
 
             }
+    }
+
+    @Override
+    public void showAmountError(String message) {
+            TextInputLayout amountView  = (TextInputLayout) v.findViewById(amountID);
+            amountView.setError(message);
+    }
+
+    @Override
+    public void showPhoneError(String message) {
+            phoneTil.setError(message);
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+
+        amountTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+
     }
 }

@@ -27,6 +27,9 @@ import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by hfetuga on 28/06/2018.
  */
@@ -159,74 +162,56 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     }
 
     @Override
-    public void validate(View v) {
+    public void validate(HashMap<String, List<String>> dataHashMap) {
 
-        final Boolean valid [] = new Boolean[1];
-        valid[0] = true;
-        final Context context = v.getContext();
-        Utils.hide_keyboard((Activity) v.getContext());
+        Boolean valid = true;
 
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
-        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
-        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
-        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
+        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
+        String amount = dataHashMap.get("amount").get(1);
 
+        int phoneID = Integer.valueOf(dataHashMap.get("phone").get(0));
+        String phone = dataHashMap.get("phone").get(1);
 
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        int voucherID = Integer.valueOf(dataHashMap.get("voucher").get(0));
+        String voucher = dataHashMap.get("voucher").get(1);
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearErrors();
-                final String amount = amountEt.getText().toString();
-                final String phone = phoneEt.getText().toString();
-                final String voucher = voucherEt.getText().toString();
+        int networkID = Integer.valueOf(dataHashMap.get("network").get(0));
+        int network = Integer.valueOf(dataHashMap.get("network").get(1));
+
 
                 try {
                     double amnt = Double.parseDouble(amount);
 
                     if (amnt <= 0) {
-                        valid[0] = false;
-                        amountTil.setError("Enter a valid amount");
+                        valid = false;
+                        mView.showFieldError(amountID, "Enter a valid amount");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid[0] = false;
-                    amountTil.setError("Enter a valid amount");
+                    valid = false;
+                    mView.showFieldError(amountID, "Enter a valid amount");
                 }
 
                 if (phone.length() < 1) {
-                    valid[0] = false;
-                    phoneTil.setError("Enter a valid number");
+                    valid = false;
+                    mView.showFieldError(phoneID, "Enter a valid number");
                 }
 
-                String network = networkSpinner.getSelectedItem().toString();
-
-                if (networkSpinner.getSelectedItemPosition() == 0) {
-                    valid[0] = false;
+                if (network == 0) {
+                    valid = false;
                     mView.showToast("Select a network");
                 }
 
-                if (voucherTil.getVisibility() == View.VISIBLE && voucher.length() == 0) {
-                    valid[0] = false;
-                    voucherTil.setError("Enter a valid voucher code");
+                if (!voucher.isEmpty()) {
+                    valid = false;
+                    mView.showFieldError(voucherID, "Enter a valid voucher code");
                 }
 
-                mView.onValidate(valid[0]);
-            }
-        });
-    }
-
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-        voucherTil.setError(null);
+                mView.onValidate(valid);
 
     }
+
+
 }
 
 

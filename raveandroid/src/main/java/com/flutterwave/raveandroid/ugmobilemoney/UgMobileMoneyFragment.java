@@ -26,6 +26,10 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import static android.view.View.GONE;
 
 /**
@@ -61,9 +65,8 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
 
         Button payButton = (Button) v.findViewById(R.id.rave_payButton);
-        presenter.validate(v);
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         double amountToPay = ravePayInitializer.getAmount();
 
@@ -71,6 +74,14 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             amountTil.setVisibility(GONE);
             amountEt.setText(String.valueOf(amountToPay));
         }
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearErrors();
+                sendDataToPresenter();
+            }
+        });
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
@@ -85,6 +96,25 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         else {
             instructionsTv.setVisibility(View.GONE);
         }
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        amountTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+
+    }
+
+    private void sendDataToPresenter() {
+        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
+        List<String> phoneList = Arrays.asList(phoneTil.getId()+"", phoneEt.getText().toString());
+
+        HashMap<String, List<String>> dataHashMap = new HashMap<>();
+        dataHashMap.put("amount", amountList);
+        dataHashMap.put("phone", phoneList);
+
+        presenter.validate(dataHashMap);
     }
 
     @Override
@@ -245,6 +275,12 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             }
         }
 
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message) {
+        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
+        amountView.setError(message);
     }
 }
 
