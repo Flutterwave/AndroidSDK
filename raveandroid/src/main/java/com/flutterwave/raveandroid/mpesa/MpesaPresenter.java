@@ -12,9 +12,12 @@ import android.widget.EditText;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -24,6 +27,8 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+
+import java.util.HashMap;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 
@@ -157,31 +162,72 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
     @Override
-    public void validate(String amount, String phone) {
+    public void validate(HashMap<String, ViewObject> dataHashMap) {
 
          Boolean valid = true;
 
-                try {
-                    double amnt = Double.parseDouble(amount);
+        int amountID = dataHashMap.get("amount").getViewId();
+        String amount = dataHashMap.get("amount").getData();
+        Class amountViewType = dataHashMap.get("amount").getViewType();
 
-                    if (amnt <= 0) {
+        int phoneID = dataHashMap.get("phone").getViewId();
+        String phone = dataHashMap.get("phone").getData();
+        Class phoneViewType = dataHashMap.get("phone").getViewType();
+
+                try {
+
+                    if (Double.parseDouble(amount) <= 0) {
                         valid = false;
-                        mView.showAmountError("Enter a valid amount");
+                        mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                     }
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showAmountError("Enter a valid amount");
+                    mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                 }
 
                 if (phone.length() < 1) {
                     valid = false;
-                    mView.showPhoneError("Enter a valid number");
+                    mView.showFieldError(phoneID, "Enter a valid number", phoneViewType);
                 }
-                mView.onValidate(valid);
 
+                if (valid) {
+                    mView.onValidationSuccessful(dataHashMap);
+                }
 
+    }
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(ravePayInitializer.getAmount() + "")
+                .setCountry(ravePayInitializer.getCountry())
+                .setCurrency(ravePayInitializer.getCurrency())
+                .setEmail(ravePayInitializer.getEmail())
+                .setFirstname(ravePayInitializer.getfName())
+                .setLastname(ravePayInitializer.getlName())
+                .setIP(Utils.getDeviceImei(activity))
+                .setTxRef(ravePayInitializer.getTxRef())
+                .setMeta(ravePayInitializer.getMeta())
+                .setSubAccount(ravePayInitializer.getSubAccount())
+                .setPhonenumber(dataHashMap.get(activity.getResources().getString(R.string.fieldAmount)).getData())
+                .setPBFPubKey(ravePayInitializer.getPublicKey())
+                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                .setDevice_fingerprint(Utils.getDeviceImei(activity));
+
+        if (ravePayInitializer.getPayment_plan() != null) {
+            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+        }
+
+        Payload body = builder.createMpesaPayload();
+
+        if(ravePayInitializer.getIsDisplayFee()){
+            fetchFee(body);
+        } else {
+            chargeMpesa(body, ravePayInitializer.getEncryptionKey());
+        }
     }
 
 
