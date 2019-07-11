@@ -230,7 +230,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             view.setError(message);
         }
 
-
     }
 
     @Override

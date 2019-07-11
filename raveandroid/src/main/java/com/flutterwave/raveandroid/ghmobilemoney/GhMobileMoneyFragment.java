@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +28,8 @@ import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     TextView instructionsTv;
     TextInputEditText voucherEt;
     TextInputLayout voucherTil;
+    Button payButton;
     String validateInstructions;
     String network;
 
@@ -60,54 +62,39 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this v
         v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
-        presenter = new GhMobileMoneyPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
-        networkSpinner = (Spinner) v.findViewById(R.id.rave_networkSpinner);
-        voucherEt = (TextInputEditText) v.findViewById(R.id.rave_voucherEt);
-        voucherTil = (TextInputLayout) v.findViewById(R.id.rave_voucherTil);
-        instructionsTv = (TextView) v.findViewById(R.id.instructionsTv);
+        initilaizeViews();
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
-
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        double amountToPay = ravePayInitializer.getAmount();
-
-        if (amountToPay > 0) {
+        if (ravePayInitializer.getAmount() > 0) {
             amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(amountToPay));
+            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
         }
 
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clearErrors();
-                sendDataToPresenter();
+                formValidate();
             }
         });
 
+        setUpNetworks();
 
+        return v;
+    }
 
+    private void setUpNetworks() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         networkSpinner.setAdapter(adapter);
 
-        final String vodafoneInstruction = getResources().getString(R.string.vodafone_msg);
-        final String[] networks = getResources().getStringArray(R.array.gh_mobile_money_networks);
-        final String mtnValidateInstruction = getResources().getString(R.string.mtn_validate_instructions);
-        final String tigoValidateInstruction = getResources().getString(R.string.tigo_validate_instructions);
-
         networkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position < networks.length) {
-                     network = networks[position];
+                if (position < getResources().getStringArray(R.array.gh_mobile_money_networks).length) {
+                     network = getResources().getStringArray(R.array.gh_mobile_money_networks)[position];
 
                     if (position == 0) {
                         showInstructionsAndVoucher(false);
@@ -115,17 +102,17 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                     }
 
                     if (network.equalsIgnoreCase("mtn")) {
-                        validateInstructions = mtnValidateInstruction;
+                        validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase("tigo")) {
-                        validateInstructions =  tigoValidateInstruction;
+                        validateInstructions =  getResources().getString(R.string.tigo_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase("vodafone")) {
                         validateInstructions = "Checking transaction status. \nPlease wait";
                         showInstructionsAndVoucher(true);
-                        instructionsTv.setText(Html.fromHtml(vodafoneInstruction));
+                        instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
                     }
                 }
             }
@@ -135,24 +122,36 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                 showInstructionsAndVoucher(false);
             }
         });
-
-        return v;
     }
 
-    private void sendDataToPresenter() {
-        List<String> amountList = Arrays.asList(amountTil.getId()+"", amountEt.getText().toString());
-        List<String> phoneList = Arrays.asList(phoneTil.getId()+"", phoneEt.getText().toString());
-        List<String> voucherList = Arrays.asList(voucherTil.getId()+"", voucherEt.getText().toString());
-        List<String> networkList = Arrays.asList(networkSpinner.getId()+"", networkSpinner.getSelectedItemPosition()+"");
-        if (voucherTil.getVisibility() == View.VISIBLE && voucherEt.getText().toString().length() == 0){
-            voucherList = Arrays.asList(voucherTil.getId()+"", "");
-        }
+    private void initilaizeViews() {
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+        presenter = new GhMobileMoneyPresenter(getActivity(), this);
+        networkSpinner =  v.findViewById(R.id.rave_networkSpinner);
+        instructionsTv =  v.findViewById(R.id.instructionsTv);
+        voucherTil =  v.findViewById(R.id.rave_voucherTil);
+        voucherEt =  v.findViewById(R.id.rave_voucherEt);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        phoneTil =  v.findViewById(R.id.rave_phoneTil);
+        amountEt =  v.findViewById(R.id.rave_amountTV);
+        phoneEt =  v.findViewById(R.id.rave_phoneEt);
+    }
 
-        HashMap<String, List<String>> dataHashMap = new HashMap<>();
-        dataHashMap.put("amount", amountList);
-        dataHashMap.put("phone", phoneList);
-        dataHashMap.put("voucher", voucherList);
-        dataHashMap.put("network", networkList);
+    private void formValidate() {
+
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+
+        dataHashMap.put("amount", new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("phone", new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("voucher", new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put("network", new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+
+        if (voucherTil.getVisibility() == View.VISIBLE && voucherEt.getText().toString().length() == 0){
+            dataHashMap.put("network", new ViewObject(networkSpinner.getId(), "", Spinner.class));
+        }else{
+            dataHashMap.put("network", new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+        }
 
         presenter.validate(dataHashMap);
     }
@@ -249,7 +248,6 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         amountTil.setError(null);
         phoneTil.setError(null);
         voucherTil.setError(null);
-
     }
 
     @Override
@@ -293,55 +291,28 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void onValidate(Boolean valid) {
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        Log.d("okh", valid.toString());
-        if (valid) {
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get("amount").getData()));
 
-            String amount = amountEt.getText().toString();
-            String phone = phoneEt.getText().toString();
-            String voucher = voucherEt.getText().toString();
+            presenter.processTransaction(dataHashMap, ravePayInitializer, getActivity());
 
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
 
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCountry(ravePayInitializer.getCountry())
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork(network)
-                    .setVoucher(voucher)
-                    .setPhonenumber(phone)
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createGhMobileMoneyPayload();
-
-            if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body);
-            } else {
-                presenter.chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
     }
 
     @Override
-    public void showFieldError(int viewID, String message) {
-        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
-        amountView.setError(message);
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class){
+            TextInputLayout view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+        else if (viewType == EditText.class){
+            EditText view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+
     }
+
 }
 

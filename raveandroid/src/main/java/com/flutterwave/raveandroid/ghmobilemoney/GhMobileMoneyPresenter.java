@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -161,40 +164,75 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         });
     }
 
+
     @Override
-    public void validate(HashMap<String, List<String>> dataHashMap) {
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(ravePayInitializer.getAmount() + "")
+                .setCountry(ravePayInitializer.getCountry())
+                .setCurrency(ravePayInitializer.getCurrency())
+                .setEmail(ravePayInitializer.getEmail())
+                .setFirstname(ravePayInitializer.getfName())
+                .setLastname(ravePayInitializer.getlName())
+                .setIP(Utils.getDeviceImei(activity))
+                .setTxRef(ravePayInitializer.getTxRef())
+                .setMeta(ravePayInitializer.getMeta())
+                .setSubAccount(ravePayInitializer.getSubAccount())
+                .setNetwork(dataHashMap.get("network").getData())
+                .setVoucher(dataHashMap.get("voucher").getData())
+                .setPhonenumber(dataHashMap.get("phone").getData())
+                .setPBFPubKey(ravePayInitializer.getPublicKey())
+                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                .setDevice_fingerprint(Utils.getDeviceImei(activity));
+
+        if (ravePayInitializer.getPayment_plan() != null) {
+            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+        }
+
+        Payload body = builder.createGhMobileMoneyPayload();
+
+        if(ravePayInitializer.getIsDisplayFee()){
+            fetchFee(body);
+        } else {
+            chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+        }
+    }
+
+    @Override
+    public void validate(HashMap<String, ViewObject> dataHashMap) {
 
         Boolean valid = true;
 
-        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
-        String amount = dataHashMap.get("amount").get(1);
+        int amountID = dataHashMap.get("amount").getViewId();
+        String amount = dataHashMap.get("amount").getData();
+        Class amountViewType = dataHashMap.get("amount").getViewType();
 
-        int phoneID = Integer.valueOf(dataHashMap.get("phone").get(0));
-        String phone = dataHashMap.get("phone").get(1);
+        int phoneID = dataHashMap.get("phone").getViewId();
+        String phone = dataHashMap.get("phone").getData();
+        Class phoneViewType = dataHashMap.get("phone").getViewType();
 
-        int voucherID = Integer.valueOf(dataHashMap.get("voucher").get(0));
-        String voucher = dataHashMap.get("voucher").get(1);
+        int voucherID = dataHashMap.get("voucher").getViewId();
+        String voucher = dataHashMap.get("voucher").getData();
+        Class voucherViewType = dataHashMap.get("voucher").getViewType();
 
-        int networkID = Integer.valueOf(dataHashMap.get("network").get(0));
-        int network = Integer.valueOf(dataHashMap.get("network").get(1));
-
+        int network = Integer.valueOf(dataHashMap.get("network").getData());
 
                 try {
-                    double amnt = Double.parseDouble(amount);
 
-                    if (amnt <= 0) {
+                    if (Double.parseDouble(amount) <= 0) {
                         valid = false;
-                        mView.showFieldError(amountID, "Enter a valid amount");
+                        mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showFieldError(amountID, "Enter a valid amount");
+                    mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
                 }
 
                 if (phone.length() < 1) {
                     valid = false;
-                    mView.showFieldError(phoneID, "Enter a valid number");
+                    mView.showFieldError(phoneID, "Enter a valid number", phoneViewType);
                 }
 
                 if (network == 0) {
@@ -204,10 +242,12 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, "Enter a valid voucher code");
+                    mView.showFieldError(voucherID, "Enter a valid voucher code", voucherViewType);
                 }
 
-                mView.onValidate(valid);
+                if (valid) {
+                    mView.onValidationSuccessful(dataHashMap);
+                }
 
     }
 
