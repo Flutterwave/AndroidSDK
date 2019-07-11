@@ -189,7 +189,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(ravePayInitializer.getAmount() + "")
 //                    .setCountry(ravePayInitializer.getCountry())
@@ -198,15 +198,15 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 .setEmail(ravePayInitializer.getEmail())
                 .setFirstname(ravePayInitializer.getfName())
                 .setLastname(ravePayInitializer.getlName())
-                .setIP(Utils.getDeviceImei(activity))
+                .setIP(Utils.getDeviceImei(context))
                 .setTxRef(ravePayInitializer.getTxRef())
                 .setMeta(ravePayInitializer.getMeta())
                 .setSubAccount(ravePayInitializer.getSubAccount())
                 .setNetwork("UGX")
-                .setPhonenumber(dataHashMap.get(activity.getResources().getString(R.string.fieldPhone)).getData())
+                .setPhonenumber(dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData())
                 .setPBFPubKey(ravePayInitializer.getPublicKey())
                 .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                .setDevice_fingerprint(Utils.getDeviceImei(activity));
+                .setDevice_fingerprint(Utils.getDeviceImei(context));
 
         if (ravePayInitializer.getPayment_plan() != null) {
             builder.setPaymentPlan(ravePayInitializer.getPayment_plan());

@@ -102,7 +102,7 @@ public interface CardContract {
 
         void validate(HashMap<String, ViewObject> dataHashMap);
 
-        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity);
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
 
     }
 

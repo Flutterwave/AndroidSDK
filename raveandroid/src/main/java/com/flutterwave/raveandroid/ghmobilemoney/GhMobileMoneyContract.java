@@ -33,6 +33,6 @@ public interface GhMobileMoneyContract {
         void chargeGhMobileMoney(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
         void validate(HashMap<String, ViewObject> dataHashMap);
-        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity);
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
     }
 }

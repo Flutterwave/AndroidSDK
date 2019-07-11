@@ -215,25 +215,25 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
        Boolean valid = true;
 
-        int amountID = dataHashMap.get("amount").getViewId();
-        String amount = dataHashMap.get("amount").getData();
-        Class amountViewType = dataHashMap.get("amount").getViewType();
+        int amountID = dataHashMap.get(context.getString(R.string.fieldAmount)).getViewId();
+        String amount = dataHashMap.get(context.getString(R.string.fieldAmount)).getData();
+        Class amountViewType = dataHashMap.get(context.getString(R.string.fieldAmount)).getViewType();
 
-        int emailID = dataHashMap.get("email").getViewId();
-        String email = dataHashMap.get("email").getData();
-        Class emailViewType = dataHashMap.get("email").getViewType();
+        int emailID = dataHashMap.get(context.getString(R.string.fieldEmail)).getViewId();
+        String email = dataHashMap.get(context.getString(R.string.fieldEmail)).getData();
+        Class emailViewType = dataHashMap.get(context.getString(R.string.fieldEmail)).getViewType();
 
-        int cvvID = dataHashMap.get("cvv").getViewId();
-        String cvv = dataHashMap.get("cvv").getData();
-        Class cvvViewType = dataHashMap.get("cvv").getViewType();
+        int cvvID = dataHashMap.get(context.getString(R.string.fieldCvv)).getViewId();
+        String cvv = dataHashMap.get(context.getString(R.string.fieldCvv)).getData();
+        Class cvvViewType = dataHashMap.get(context.getString(R.string.fieldCvv)).getViewType();
 
-        int cardExpiryID = dataHashMap.get("cardExpiry").getViewId();
-        String cardExpiry = dataHashMap.get("cardExpiry").getData();
-        Class cardExpiryViewType = dataHashMap.get("cardExpiry").getViewType();
+        int cardExpiryID = dataHashMap.get(context.getString(R.string.fieldCardExpiry)).getViewId();
+        String cardExpiry = dataHashMap.get(context.getString(R.string.fieldCardExpiry)).getData();
+        Class cardExpiryViewType = dataHashMap.get(context.getString(R.string.fieldCardExpiry)).getViewType();
 
-        int cardNoStrippedID = dataHashMap.get("cardNoStripped").getViewId();
-        String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
-        Class cardNoStrippedViewType = dataHashMap.get("cardNoStripped").getViewType();
+        int cardNoStrippedID = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getViewId();
+        String cardNoStripped = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getData();
+        Class cardNoStrippedViewType = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getViewType();
 
         try{
 
@@ -253,18 +253,18 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                 Boolean isCVVValidated = new CvvValidator().check(cvv);
                 if (!isCVVValidated) {
-                    valid = false; mView.showFieldError(cvvID, "Enter a valid cvv", cvvViewType);
+                    valid = false; mView.showFieldError(cvvID, context.getResources().getString(R.string.validCvvPrompt), cvvViewType);
                 }
 
                 Boolean isCardExpiryValidated = new CardExpiryValidator().check(cardExpiry);
 
                 if (!isCardExpiryValidated) {
-                    valid = false;  mView.showFieldError(cardExpiryID, "Enter a valid expiry date", cardExpiryViewType);
+                    valid = false;  mView.showFieldError(cardExpiryID, context.getResources().getString(R.string.validExpiryDatePrompt), cardExpiryViewType);
                 }
 
                 Boolean isCardNoStrippedValidator = new CardNoStrippedValidator().check(cardNoStripped);
                 if (!isCardNoStrippedValidator) {
-                    valid = false; mView.showFieldError(cardNoStrippedID, "Enter a valid credit card number", cardNoStrippedViewType);
+                    valid = false; mView.showFieldError(cardNoStrippedID, context.getResources().getString(R.string.validCreditCardPrompt), cardNoStrippedViewType);
                 }
 
                 if (valid) {
@@ -274,29 +274,26 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        String amount = dataHashMap.get("amount").getData();
-        String email = dataHashMap.get("email").getData();
-        String cvv = dataHashMap.get("cvv").getData();
-        String cardExpiry = dataHashMap.get("cardExpiry").getData();
-        String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
-
-        String txRef = ravePayInitializer.getTxRef();
-        Log.d("txRef", txRef);
-
-        ravePayInitializer.setAmount(Double.parseDouble(amount));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData()));
 
         PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(cardNoStripped)
-                .setCountry(ravePayInitializer.getCountry()).setCurrency(ravePayInitializer.getCurrency())
-                .setCvv(cvv).setEmail(email).setFirstname(ravePayInitializer.getfName())
-                .setLastname(ravePayInitializer.getlName()).setIP(Utils.getDeviceImei(activity)).setTxRef(ravePayInitializer.getTxRef())
-                .setExpiryyear(cardExpiry.substring(3, 5)).setExpirymonth(cardExpiry.substring(0, 2))
+        builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(dataHashMap.get(context.getResources().getString(R.string.fieldcardNoStripped)).getData())
+                .setCountry(ravePayInitializer.getCountry())
+                .setCurrency(ravePayInitializer.getCurrency())
+                .setCvv(dataHashMap.get(context.getResources().getString(R.string.fieldCvv)).getData())
+                .setEmail(dataHashMap.get(context.getResources().getString(R.string.fieldEmail)).getData())
+                .setFirstname(ravePayInitializer.getfName())
+                .setLastname(ravePayInitializer.getlName())
+                .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
+                .setExpiryyear(dataHashMap.get(context.getResources().getString(R.string.fieldCardExpiry)).getData().substring(3, 5))
+                .setExpirymonth(dataHashMap.get(context.getResources().getString(R.string.fieldCardExpiry)).getData().substring(0, 2))
                 .setMeta(ravePayInitializer.getMeta())
                 .setSubAccount(ravePayInitializer.getSubAccount())
                 .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                .setPBFPubKey(ravePayInitializer.getPublicKey()).setDevice_fingerprint(Utils.getDeviceImei(activity));
+                .setPBFPubKey(ravePayInitializer.getPublicKey())
+                .setDevice_fingerprint(Utils.getDeviceImei(context));
 
         if (ravePayInitializer.getPayment_plan() != null) {
             builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
@@ -362,15 +359,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
                         else {
-                            mView.onPaymentError("Unknown Auth Model");
+                            mView.onPaymentError(context.getResources().getString(R.string.unknownAuth));
                         }
                     }
                     else {
-                        mView.onPaymentError("Unknown charge response code");
+                        mView.onPaymentError(context.getResources().getString(R.string.unknownResCode));
                     }
                 }
                 else {
-                    mView.onPaymentError("Invalid charge response code");
+                    mView.onPaymentError(context.getResources().getString(R.string.invalidChargeCode));
                 }
 
             }
@@ -403,7 +400,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase("success")) {
+                    if (status.equalsIgnoreCase(context.getResources().getString(R.string.success))) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
                     }
                     else {
@@ -547,11 +544,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 mView.showProgressIndicator(false);
 
 
-                if (responseAsJSONString.contains("token not found")) {
-                    mView.onPaymentError("Token not found");
+                if (responseAsJSONString.contains(context.getResources().getString(R.string.tokenNotFound))) {
+                    mView.onPaymentError(context.getResources().getString(R.string.tokenNotFound));
                 }
-                else if (responseAsJSONString.contains("expired")) {
-                    mView.onPaymentError("Token expired");
+                else if (responseAsJSONString.contains(context.getResources().getString(R.string.expired))) {
+                    mView.onPaymentError(context.getResources().getString(R.string.tokenExpired));
                 }
                 else {
                     mView.onPaymentError(message);

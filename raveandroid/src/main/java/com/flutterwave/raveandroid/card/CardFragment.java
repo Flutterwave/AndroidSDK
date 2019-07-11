@@ -171,11 +171,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put("amount", new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put("email", new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put("cvv", new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put("cardExpiry", new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put("cardNoStripped", new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString().replaceAll("\\s", ""), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldEmail), new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldCvv), new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldCardExpiry), new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldcardNoStripped), new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString().replaceAll("\\s", ""), TextInputLayout.class));
 
         presenter.validate(dataHashMap);
     }
@@ -201,10 +201,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-            String cardNoStripped = dataHashMap.get("cardNoStripped").getData();
+            String cardNoStripped = dataHashMap.get(getResources().getString(R.string.cardNoStripped)).getData();
             CheckSaveCard(cardNoStripped);
 
-            presenter.processTransaction(dataHashMap, ravePayInitializer, getActivity());
+            presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }
 

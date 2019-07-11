@@ -231,7 +231,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
 
-        presenter.processTransaction(dataHashMap, ravePayInitializer, getActivity());
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }
 
