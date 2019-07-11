@@ -88,11 +88,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
         presenter = new MpesaPresenter(getActivity(), this);
+        payButton =  v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         amountEt =  v.findViewById(R.id.rave_amountTV);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
-        payButton =  v.findViewById(R.id.rave_payButton);
     }
 
     @Override

@@ -52,11 +52,7 @@ public class AchFragment extends Fragment implements AchContract.View {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_ach, container, false);
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        payInstructionsTv = (TextView) v.findViewById(R.id.paymentInstructionsTv);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        initializeViews();
 
         presenter.onStartAchPayment(ravePayInitializer);
 
@@ -70,12 +66,20 @@ public class AchFragment extends Fragment implements AchContract.View {
         return v;
     }
 
+    private void initializeViews() {
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+        payInstructionsTv =  v.findViewById(R.id.paymentInstructionsTv);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        amountEt =  v.findViewById(R.id.rave_amountTV);
+    }
+
     @Override
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + currency + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + currency + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -83,7 +87,7 @@ public class AchFragment extends Fragment implements AchContract.View {
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
             }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

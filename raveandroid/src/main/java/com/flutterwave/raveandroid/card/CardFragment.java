@@ -293,7 +293,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             if (progessDialog == null) {
                 progessDialog = new ProgressDialog(getActivity());
                 progessDialog.setCanceledOnTouchOutside(false);
-                progessDialog.setMessage("Please wait...");
+                progessDialog.setMessage(getResources().getString(R.string.wait));
             }
 
             if (active && !progessDialog.isShowing()) {
@@ -584,8 +584,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void displayFee(String charge_amount, final Payload payload, final int why) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes) , new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -597,7 +597,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 }
 
             }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no) , new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
