@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -54,7 +55,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 double amnt = Double.parseDouble(amount);
 
                 if (amnt <= 0) {
-                    mView.showAmountError("Enter a valid amount");
+                    mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
                 }
                 else {
                     ravePayInitializer.setAmount(amnt);
@@ -63,7 +64,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                mView.showAmountError("Enter a valid amount");
+                mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
             }
         }
 

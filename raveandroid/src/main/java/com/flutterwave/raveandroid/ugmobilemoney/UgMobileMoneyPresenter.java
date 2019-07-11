@@ -10,9 +10,12 @@ import android.widget.Button;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -36,11 +39,6 @@ import java.util.List;
 public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
     private Context context;
     private UgMobileMoneyContract.View mView;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    Button payButton;
 
     public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
@@ -67,7 +65,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
                 }
             }
 
@@ -75,7 +73,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
             }
         });
     }
@@ -106,7 +104,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError("No response data was returned");
+                    mView.onPaymentError(context.getResources().getString(R.string.noResponse));
                 }
 
             }
@@ -156,35 +154,71 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void validate(HashMap<String, List<String>> dataHashMap) {
+    public void validate(HashMap<String, ViewObject> dataHashMap) {
 
          Boolean valid = true;
 
-        int amountID = Integer.valueOf(dataHashMap.get("amount").get(0));
-        String amount = dataHashMap.get("amount").get(1);
+        int amountID = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewId();
+        String amount = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData();
+        Class amountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewType();
 
-        int phoneID = Integer.valueOf(dataHashMap.get("phone").get(0));
-        String phone = dataHashMap.get("phone").get(1);
+        int phoneID = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewId();
+        String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
+        Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
                 try {
-                    double amnt = Double.parseDouble(amount);
-
-                        if (amnt <= 0) {
+                        if (Double.parseDouble(amount) <= 0) {
                         valid = false;
-                        mView.showFieldError(amountID, "Enter a valid amount");
+                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt));
                             }
                     } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showFieldError(amountID, "Enter a valid amount");
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt));
                  }
 
                  if (phone.length() < 1) {
                         valid = false;
-                        mView.showFieldError(phoneID, "Enter a valid number");
+                        mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt));
                 }
-                mView.onValidate(valid);
 
+                 if (valid) {
+                     mView.onValidationSuccessful(dataHashMap);
+                 }
+
+    }
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(ravePayInitializer.getAmount() + "")
+//                    .setCountry(ravePayInitializer.getCountry())
+                .setCountry("NG") //Country has to be set to NG for UGX payments (as at 10/12/2018)
+                .setCurrency(ravePayInitializer.getCurrency())
+                .setEmail(ravePayInitializer.getEmail())
+                .setFirstname(ravePayInitializer.getfName())
+                .setLastname(ravePayInitializer.getlName())
+                .setIP(Utils.getDeviceImei(activity))
+                .setTxRef(ravePayInitializer.getTxRef())
+                .setMeta(ravePayInitializer.getMeta())
+                .setSubAccount(ravePayInitializer.getSubAccount())
+                .setNetwork("UGX")
+                .setPhonenumber(dataHashMap.get(activity.getResources().getString(R.string.fieldPhone)).getData())
+                .setPBFPubKey(ravePayInitializer.getPublicKey())
+                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                .setDevice_fingerprint(Utils.getDeviceImei(activity));
+
+        if (ravePayInitializer.getPayment_plan() != null) {
+            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+        }
+
+        Payload body = builder.createUgMobileMoneyPayload();
+
+        if(ravePayInitializer.getIsDisplayFee()){
+            fetchFee(body);
+        } else {
+            chargeUgMobileMoney(body, ravePayInitializer.getEncryptionKey());
+        }
     }
 
 }

@@ -1,9 +1,6 @@
 package com.flutterwave.raveandroid.mpesa;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.view.View;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;

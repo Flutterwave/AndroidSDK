@@ -7,7 +7,6 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by hfetuga on 28/06/2018.

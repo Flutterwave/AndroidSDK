@@ -1,14 +1,8 @@
 package com.flutterwave.raveandroid.mpesa;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
@@ -22,15 +16,11 @@ import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
-import com.flutterwave.raveandroid.data.RequeryRequestBodyv2;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
 import java.util.HashMap;
-
-import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 
 /**
  * Created by hfetuga on 27/06/2018.
@@ -39,11 +29,6 @@ import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 public class MpesaPresenter implements MpesaContract.UserActionsListener {
     private Context context;
     private MpesaContract.View mView;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    Button payButton;
 
     public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
@@ -70,7 +55,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
                 }
             }
 
@@ -78,7 +63,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
             }
         });
     }
@@ -111,7 +96,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError("No response data was returned");
+                    mView.onPaymentError(context.getResources().getString(R.string.noResponse));
                 }
 
             }
@@ -166,30 +151,30 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
          Boolean valid = true;
 
-        int amountID = dataHashMap.get("amount").getViewId();
-        String amount = dataHashMap.get("amount").getData();
-        Class amountViewType = dataHashMap.get("amount").getViewType();
+        int amountID = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewId();
+        String amount = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData();
+        Class amountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewType();
 
-        int phoneID = dataHashMap.get("phone").getViewId();
-        String phone = dataHashMap.get("phone").getData();
-        Class phoneViewType = dataHashMap.get("phone").getViewType();
+        int phoneID = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewId();
+        String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
+        Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
                 try {
 
                     if (Double.parseDouble(amount) <= 0) {
                         valid = false;
-                        mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
                 if (phone.length() < 1) {
                     valid = false;
-                    mView.showFieldError(phoneID, "Enter a valid number", phoneViewType);
+                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
                 if (valid) {

@@ -10,7 +10,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import static android.view.View.GONE;
 

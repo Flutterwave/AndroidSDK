@@ -1,8 +1,11 @@
 package com.flutterwave.raveandroid.account;
 
 
+import android.app.Activity;
+
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -44,9 +47,11 @@ public interface AccountContract {
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
 
-        void onValidate(Boolean valid);
+        void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
-        void showFieldError(int viewID, String message);
+        void showFieldError(int viewID, String message, Class<?> viewtype);
+
+        void showGTBankAmountIssue();
     }
 
     interface UserActionsListener {
@@ -64,7 +69,10 @@ public interface AccountContract {
 
         void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
 
-        void validate(HashMap<String, List<String>> dataHashMap);
+        void validate(HashMap<String, ViewObject> dataHashMap);
+
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
     }
 
 }

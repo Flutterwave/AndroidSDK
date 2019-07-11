@@ -4,17 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
-
+import com.flutterwave.raveandroid.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
-import com.flutterwave.raveandroid.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -36,8 +33,6 @@ import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.internal.Util;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
@@ -244,16 +239,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
               Boolean isAmountValidated = new AmountValidator().check(amount);
                  if (!isAmountValidated) {
-                        valid = false; mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                        valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid = false; mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                    valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
                 Boolean isEmailValidated = new EmailValidator().check(email);
                 if (!isEmailValidated) {
-                    valid = false; mView.showFieldError(emailID, "Enter a valid email", emailViewType);
+                    valid = false; mView.showFieldError(emailID, context.getResources().getString(R.string.validPhonePrompt), emailViewType);
                 }
 
                 Boolean isCVVValidated = new CvvValidator().check(cvv);

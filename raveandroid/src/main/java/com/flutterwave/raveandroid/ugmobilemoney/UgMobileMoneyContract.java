@@ -1,9 +1,12 @@
 package com.flutterwave.raveandroid.ugmobilemoney;
 
+import android.app.Activity;
+
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Jeremiah on 28/06/2018.
@@ -21,7 +24,7 @@ public interface UgMobileMoneyContract {
         void displayFee(String charge_amount, Payload payload);
         void showFetchFeeFailed(String s);
         void onPaymentFailed(String message, String responseAsJSONString);
-        void onValidate(Boolean valid);
+        void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
         void showFieldError(int viewID, String message);
     }
 
@@ -29,6 +32,7 @@ public interface UgMobileMoneyContract {
         void fetchFee(Payload payload);
         void chargeUgMobileMoney(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
-        void validate(HashMap<String, List<String>> dataHashMap);
+        void validate(HashMap<String, ViewObject> dataHashMap);
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer, Activity activity);
     }
 }

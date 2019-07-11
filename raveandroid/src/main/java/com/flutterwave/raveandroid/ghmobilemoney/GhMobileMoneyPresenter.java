@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,16 +21,11 @@ import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
-import com.flutterwave.raveandroid.data.RequeryRequestBodyv2;
-import com.flutterwave.raveandroid.mpesa.MpesaContract;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by hfetuga on 28/06/2018.
@@ -222,12 +216,12 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                     if (Double.parseDouble(amount) <= 0) {
                         valid = false;
-                        mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showFieldError(amountID, "Enter a valid amount", amountViewType);
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
                 if (phone.length() < 1) {
