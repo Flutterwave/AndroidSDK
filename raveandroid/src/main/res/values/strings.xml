@@ -75,6 +75,21 @@
         <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
         ]]>
     </string>
+    <string name="checkStatus">Checking transaction status.  Please wait</string>
+    <string name="mtn">mtn</string>
+    <string name="tigo">tigo</string>
+    <string name="vodafone">vodafone</string>
+    <string name="fieldAmount">amount</string>
+    <string name="fieldPhone">phone</string>
+    <string name="fieldVoucher">voucher</string>
+    <string name="fieldNetwork">network</string>
+    <string name="wait">Please wait...</string>
+    <string name="cancelPayment">CANCEL PAYMENT</string>
+    <string name="response">response</string>
+    <string name="charge">You will be charged a total of</string>
+    <string name="askToContinue">. Do you want to continue?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 
 
     <string-array name="gh_mobile_money_networks">
