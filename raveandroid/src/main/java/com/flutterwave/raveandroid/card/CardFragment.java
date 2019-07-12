@@ -163,7 +163,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         dataHashMap.put(getResources().getString(R.string.fieldEmail), new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldCvv), new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldCardExpiry), new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldcardNoStripped), new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString().replaceAll("\\s", ""), TextInputLayout.class));
+        dataHashMap.put(getResources().getString(R.string.fieldcardNoStripped), new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
 
         presenter.validate(dataHashMap);
     }

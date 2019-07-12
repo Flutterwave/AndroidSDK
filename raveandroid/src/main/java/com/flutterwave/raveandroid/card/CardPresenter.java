@@ -224,7 +224,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         Class cardExpiryViewType = dataHashMap.get(context.getString(R.string.fieldCardExpiry)).getViewType();
 
         int cardNoStrippedID = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getViewId();
-        String cardNoStripped = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getData();
+        String cardNoStripped = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getData().replaceAll("\\s", "");
         Class cardNoStrippedViewType = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getViewType();
 
         try{
