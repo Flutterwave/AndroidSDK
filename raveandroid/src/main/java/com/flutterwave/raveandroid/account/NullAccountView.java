@@ -106,4 +106,14 @@ public class NullAccountView extends Fragment implements AccountContract.View {
 
     }
 
+    @Override
+    public void onEmailValidationSuccessful() {
+
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+
+    }
+
 }

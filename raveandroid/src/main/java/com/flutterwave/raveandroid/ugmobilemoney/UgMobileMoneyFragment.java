@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import static android.view.View.GONE;
 /**
  * Created by Jeremiah on 10/12/2018.
  */
-public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View {
+public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener {
 
     View v;
     TextInputEditText amountEt;
@@ -50,23 +51,13 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this v
         v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
         initializeViews();
 
-        if (ravePayInitializer.getAmount() > 0) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
-        }
+        presenter.init(ravePayInitializer);
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearErrors();
-                collectData();
-            }
-        });
+        setOnClickListeners();
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
@@ -82,6 +73,20 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         amountEt =  v.findViewById(R.id.rave_amountTV);
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
         payButton = v.findViewById(R.id.rave_payButton);
+    }
+
+    private void setOnClickListeners() {
+        payButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.rave_payButton) {
+            clearErrors();
+            Utils.hide_keyboard(getActivity());
+            collectData();
+        }
     }
 
     private void showInstructionsAndVoucher(boolean show) {
@@ -109,6 +114,12 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         presenter.validate(dataHashMap);
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
     }
 
     @Override

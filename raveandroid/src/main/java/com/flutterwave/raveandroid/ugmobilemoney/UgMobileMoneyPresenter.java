@@ -18,6 +18,7 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
 
@@ -28,8 +29,9 @@ import java.util.HashMap;
 public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
     private Context context;
     private UgMobileMoneyContract.View mView;
+    private AmountValidator amountValidator = new AmountValidator();
 
-    public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
+     UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -210,6 +212,13 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         }
     }
 
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        if (isAmountValid){
+            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+        }
+    }
 }
 
 

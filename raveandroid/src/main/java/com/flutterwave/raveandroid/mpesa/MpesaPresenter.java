@@ -19,6 +19,8 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
@@ -29,6 +31,8 @@ import java.util.HashMap;
 public class MpesaPresenter implements MpesaContract.UserActionsListener {
     private Context context;
     private MpesaContract.View mView;
+    private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
     public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
@@ -161,7 +165,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
                 try {
 
-                    if (Double.parseDouble(amount) <= 0) {
+                    if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
                         valid = false;
                         mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
@@ -172,7 +176,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
-                if (phone.length() < 1) {
+                if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
                     mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
@@ -215,5 +219,11 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         }
     }
 
-
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        if (isAmountValid){
+            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+        }
+    }
 }

@@ -59,6 +59,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+
+    }
+
+    @Override
     public void showToast(String message) {
 
     }
@@ -106,6 +111,11 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onTokenRetrievalError(String s) {
+
+    }
+
+    @Override
+    public void onEmailValidationSuccessful() {
 
     }
 

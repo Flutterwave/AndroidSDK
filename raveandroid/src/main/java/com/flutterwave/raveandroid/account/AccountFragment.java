@@ -125,7 +125,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onClick(View view) {
-        int i = v.getId();
+        int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
             collectData();

@@ -43,7 +43,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     MpesaPresenter presenter;
     Button payButton;
     int rave_phoneEtInt;
-    int amountID;
 
     public MpesaFragment() {
         // Required empty public constructor
@@ -61,9 +60,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         setOnClickListeners();
 
-        if (ravePayInitializer.getAmount() > 0) {
-
-        }
+        presenter.init(ravePayInitializer);
 
         return v;
     }
@@ -74,7 +71,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     @Override
     public void onClick(View view) {
-        int i = v.getId();
+        int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
             Utils.hide_keyboard(getActivity());
@@ -249,7 +246,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void clearErrors() {
         amountTil.setError(null);
         phoneTil.setError(null);
-
         amountTil.setErrorEnabled(false);
         phoneTil.setErrorEnabled(false);
 

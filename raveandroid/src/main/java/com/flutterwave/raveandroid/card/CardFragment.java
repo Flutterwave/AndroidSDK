@@ -103,24 +103,26 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         initializeViews();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         presenter.checkForSavedCards(ravePayInitializer.getEmail());
 
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
 
-        savedCardBtn.setOnClickListener(this);
-
-        payButton.setOnClickListener(this);
+        setOnClickListeners();
 
         presenter.init(ravePayInitializer);
 
         return v;
     }
 
+    private void setOnClickListeners() {
+        savedCardBtn.setOnClickListener(this);
+        payButton.setOnClickListener(this);
+    }
+
     private void initializeViews() {
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         progressContainer =  v.findViewById(R.id.rave_progressContainer);
         pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
         saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
@@ -141,9 +143,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
 
-        int i = v.getId();
+        int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
             collectData();

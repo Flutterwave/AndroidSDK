@@ -203,7 +203,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                 try {
 
-                    if (amountValidator.isAmountValid(Double.valueOf(amount))) {
+                    if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
                         valid = false;
                         mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
@@ -213,7 +213,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
-                if (phoneValidator.isPhoneValid(phone)) {
+                if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
                     mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }

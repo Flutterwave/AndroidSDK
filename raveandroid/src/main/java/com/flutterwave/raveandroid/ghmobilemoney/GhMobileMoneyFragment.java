@@ -76,7 +76,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     @Override
     public void onClick(View view) {
-        int i = v.getId();
+        int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
             collectData();

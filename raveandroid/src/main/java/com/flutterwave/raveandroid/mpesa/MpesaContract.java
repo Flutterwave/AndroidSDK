@@ -20,7 +20,7 @@ public interface MpesaContract {
         void onPaymentError(String message);
         void showPollingIndicator(boolean active);
         void showProgressIndicator(boolean active);
-        void onAmountValidationSuccessful(String valueOf);
+        void onAmountValidationSuccessful(String amountToPay);
         void displayFee(String charge_amount, Payload payload);
         void onPaymentFailed(String message, String responseAsJSONString);
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
@@ -31,6 +31,7 @@ public interface MpesaContract {
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
+        void init(RavePayInitializer ravePayInitializer);
         void validate(HashMap<String, ViewObject> dataHashMap);
         void chargeMpesa(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);

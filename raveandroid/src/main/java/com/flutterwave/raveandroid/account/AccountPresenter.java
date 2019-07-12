@@ -160,7 +160,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void fetchFee(final Payload payload, final boolean internetbanking) {
 
-
         FeeCheckRequestBody body = new FeeCheckRequestBody();
         body.setAmount(payload.getAmount());
         body.setCurrency(payload.getCurrency());
@@ -191,7 +190,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             }
         });
     }
-
 
     public void requeryTx(String flwRef, String publicKey) {
         RequeryRequestBody body = new RequeryRequestBody();
@@ -252,16 +250,15 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
 
-                if (phoneValidator.isPhoneValid(phone)) {
+                if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
                     mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
-                if (emailValidator.isEmailValid(email)) {
+                if (!emailValidator.isEmailValid(email)) {
                     valid = false;
                     mView.showFieldError(emailID, context.getResources().getString(R.string.validEmailPrompt), emailViewType);
                 }
-
 
                 if (account.isEmpty()) {
                         valid = false;
