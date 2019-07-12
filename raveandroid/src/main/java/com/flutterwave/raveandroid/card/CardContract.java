@@ -21,35 +21,26 @@ public interface CardContract {
 
     interface View {
         void showProgressIndicator(boolean active);
+
         void onPaymentError(String message);
 
-        void onPinAuthModelSuggested(Payload payload);
+        void hideSavedCardsButton();
 
         void showToast(String message);
 
-        void showOTPLayout(String flwRef, String chargeResponseMessage);
-
-        void onValidateSuccessful(String message, String responseAsString);
-
         void onValidateError(String message);
-
-        void onVBVAuthModelUsed(String authUrlCrude, String flwRef);
-
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
-
-        void onPaymentFailed(String status, String responseAsString);
-
-        void showSavedCards(List<SavedCard> cards);
-
-        void onTokenRetrieved(String flwRef, String cardBIN, String token);
-
-        void onTokenRetrievalError(String s);
-
-        void displayFee(String charge_amount, Payload payload, int why);
 
         void showFetchFeeFailed(String s);
 
-        void hideSavedCardsButton();
+        void onTokenRetrievalError(String s);
+
+        void onEmailValidationSuccessful();
+
+        void showSavedCards(List<SavedCard> cards);
+
+        void onPinAuthModelSuggested(Payload payload);
+
+        void onAmountValidationSuccessful(String amountToPay);
 
         void onChargeTokenComplete(ChargeResponse response);
 
@@ -57,11 +48,21 @@ public interface CardContract {
 
         void onAVS_VBVSECURECODEModelSuggested(Payload payload);
 
+        void onVBVAuthModelUsed(String authUrlCrude, String flwRef);
+
+        void showOTPLayout(String flwRef, String chargeResponseMessage);
+
+        void onValidateSuccessful(String message, String responseAsString);
+
+        void displayFee(String charge_amount, Payload payload, int why);
+
+        void onPaymentFailed(String status, String responseAsString);
+
+        void onTokenRetrieved(String flwRef, String cardBIN, String token);
+
         void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
 
         void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
-
-        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
 
         void onNoAuthInternationalSuggested(Payload payload);
 
@@ -70,39 +71,48 @@ public interface CardContract {
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
         void showFieldError(int viewID, String message, Class<?> viewtype);
+
+        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
+
+        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
     }
 
     interface UserActionsListener {
+
+        void onDetachView();
+
+        void chargeToken(Payload payload);
+
+        void checkForSavedCards(String email);
+
+        void onSavedCardsClicked(String email);
+
+        void fetchFee(Payload payload, int reason);
+
+        void onAttachView(CardContract.View view);
+
+        void init(RavePayInitializer ravePayInitializer);
+
+        void validate(HashMap<String, ViewObject> dataHashMap);
+
         void chargeCard(Payload payload, String encryptionKey);
 
-        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
+        void savePotentialCardDets(String cardFirst6, String cardLast4);
 
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
         void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
 
-        void savePotentialCardDets(String cardFirst6, String cardLast4);
-
-        void onSavedCardsClicked(String email);
-
-        void chargeToken(Payload payload);
-
-        void fetchFee(Payload payload, int reason);
-
-        void checkForSavedCards(String email);
-
-        void onAttachView(CardContract.View view);
-
-        void onDetachView();
+        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
 
-        void validate(HashMap<String, ViewObject> dataHashMap);
-
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+
 
     }
 

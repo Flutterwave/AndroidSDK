@@ -52,6 +52,10 @@ public interface AccountContract {
         void showFieldError(int viewID, String message, Class<?> viewtype);
 
         void showGTBankAmountIssue();
+
+        void onEmailValidationSuccessful();
+
+        void onAmountValidationSuccessful(String amountToPay);
     }
 
     interface UserActionsListener {
@@ -73,6 +77,7 @@ public interface AccountContract {
 
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
 
+        void init(RavePayInitializer ravePayInitializer);
     }
 
 }

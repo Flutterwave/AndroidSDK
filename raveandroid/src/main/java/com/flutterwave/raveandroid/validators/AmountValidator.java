@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.validators;
 
 public class AmountValidator {
 
-    public Boolean check(String amount){
-        return Double.parseDouble(amount) > 0;
+    public Boolean isAmountValid(Double amount){
+        return amount > 0;
     }
 }

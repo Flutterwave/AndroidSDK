@@ -64,7 +64,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             @Override
             public void onClick(View view) {
                 clearErrors();
-                formValidate();
+                collectData();
             }
         });
 
@@ -102,7 +102,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
     }
 
-    private void formValidate() {
+    private void collectData() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
@@ -197,7 +197,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
                 presenter.chargeUgMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
-
             }
         }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
@@ -230,7 +229,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
         ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
-
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }

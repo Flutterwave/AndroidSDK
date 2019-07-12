@@ -1,13 +1,7 @@
 package com.flutterwave.raveandroid.ghmobilemoney;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
@@ -24,6 +18,8 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
@@ -34,17 +30,10 @@ import java.util.HashMap;
 public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActionsListener {
     private Context context;
     private GhMobileMoneyContract.View mView;
-    Spinner networkSpinner;
-    TextView instructionsTv;
-    TextInputEditText voucherEt;
-    TextInputLayout voucherTil;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    Button payButton;
+    private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
-    public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
+    GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -198,23 +187,23 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         Boolean valid = true;
 
-        int amountID = dataHashMap.get("amount").getViewId();
-        String amount = dataHashMap.get("amount").getData();
-        Class amountViewType = dataHashMap.get("amount").getViewType();
+        int amountID = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewId();
+        String amount = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData();
+        Class amountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewType();
 
-        int phoneID = dataHashMap.get("phone").getViewId();
-        String phone = dataHashMap.get("phone").getData();
-        Class phoneViewType = dataHashMap.get("phone").getViewType();
+        int phoneID = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewId();
+        String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
+        Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
-        int voucherID = dataHashMap.get("voucher").getViewId();
-        String voucher = dataHashMap.get("voucher").getData();
-        Class voucherViewType = dataHashMap.get("voucher").getViewType();
+        int voucherID = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getViewId();
+        String voucher = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getData();
+        Class voucherViewType = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getViewType();
 
-        int network = Integer.valueOf(dataHashMap.get("network").getData());
+        int network = Integer.valueOf(dataHashMap.get(context.getResources().getString(R.string.fieldNetwork)).getData());
 
                 try {
 
-                    if (Double.parseDouble(amount) <= 0) {
+                    if (amountValidator.isAmountValid(Double.valueOf(amount))) {
                         valid = false;
                         mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
@@ -224,19 +213,19 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
-                if (phone.length() < 1) {
+                if (phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, "Enter a valid number", phoneViewType);
+                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
                 if (network == 0) {
                     valid = false;
-                    mView.showToast("Select a network");
+                    mView.showToast(context.getResources().getString(R.string.validNetworkPrompt));
                 }
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, "Enter a valid voucher code", voucherViewType);
+                    mView.showFieldError(voucherID, context.getResources().getString(R.string.validVoucherPrompt), voucherViewType);
                 }
 
                 if (valid) {
@@ -245,7 +234,13 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
     }
 
-
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        if (isAmountValid){
+            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+        }
+    }
 }
 
 

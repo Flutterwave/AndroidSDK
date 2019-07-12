@@ -115,23 +115,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         payButton.setOnClickListener(this);
 
-        getFieldValues();
+        presenter.init(ravePayInitializer);
 
         return v;
-    }
-
-    private void getFieldValues() {
-        Boolean isEmailValidated = new EmailValidator().check(ravePayInitializer.getEmail());
-        if (isEmailValidated) {
-            emailTil.setVisibility(GONE);
-            emailEt.setText(ravePayInitializer.getEmail());
-        }
-
-        Boolean isAmountValidated = new AmountValidator().check(String.valueOf(ravePayInitializer.getAmount()));
-        if (isAmountValidated) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
-        }
     }
 
     private void initializeViews() {
@@ -160,14 +146,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         int i = v.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
-            formValidate();
+            collectData();
         }
         else if (i == R.id.rave_savedCardButton){
             presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
         }
     }
 
-    private void formValidate() {
+    private void collectData() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
@@ -181,16 +167,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     private void clearErrors() {
-        amountTil.setError(null);
-        emailTil.setError(null);
-        cvvTil.setError(null);
-        cardExpiryTil.setError(null);
-        cardNoTil.setError(null);
+        cardExpiryTil.setErrorEnabled(false);
+        cardNoTil.setErrorEnabled(false);
         amountTil.setErrorEnabled(false);
         emailTil.setErrorEnabled(false);
         cvvTil.setErrorEnabled(false);
-        cardExpiryTil.setErrorEnabled(false);
-        cardNoTil.setErrorEnabled(false);
+        cardExpiryTil.setError(null);
+        amountTil.setError(null);
+        emailTil.setError(null);
+        cardNoTil.setError(null);
+        cvvTil.setError(null);
     }
 
     @Override
@@ -230,6 +216,18 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             view.setError(message);
         }
 
+    }
+
+    @Override
+    public void onEmailValidationSuccessful() {
+        emailTil.setVisibility(GONE);
+        emailEt.setText(ravePayInitializer.getEmail());
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
     }
 
     @Override

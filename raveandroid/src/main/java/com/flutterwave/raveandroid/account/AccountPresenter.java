@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.account;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.URLUtil;
@@ -22,6 +21,9 @@ import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.EmailValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,10 +34,13 @@ import java.util.List;
 
 public class AccountPresenter implements AccountContract.UserActionsListener {
 
-    Context context;
-    AccountContract.View mView;
+    private Context context;
+    private AccountContract.View mView;
+    private EmailValidator emailValidator = new EmailValidator();
+    private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
-    public AccountPresenter(Context context, AccountContract.View mView) {
+     AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -247,14 +252,14 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
 
-                if (phone.length() < 1) {
+                if (phoneValidator.isPhoneValid(phone)) {
                     valid = false;
                     mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
-                if (!Utils.isEmailValid(email)) {
+                if (emailValidator.isEmailValid(email)) {
                     valid = false;
-                    mView.showFieldError(emailID, context.getResources().getString(R.string.validPhonePrompt), emailViewType);
+                    mView.showFieldError(emailID, context.getResources().getString(R.string.validEmailPrompt), emailViewType);
                 }
 
 
@@ -329,5 +334,19 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void onDetachView() {
         this.mView = new NullAccountView();
+    }
+
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+
+        Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
+        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        if (isEmailValid){
+            mView.onEmailValidationSuccessful();
+        }
+        if (isAmountValid){
+            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+        }
+
     }
 }

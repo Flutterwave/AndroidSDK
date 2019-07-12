@@ -90,46 +90,19 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         initializeViews();
 
+        setonClickListeners();
+
+        presenter.init(ravePayInitializer);
+
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-        bankEt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getBanks();
-            }
-        });
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearErrors();
-                sendDataToPresenter();
-            }
-        });
-
-        dateOfBirthEt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-
-        if (Utils.isEmailValid(ravePayInitializer.getEmail())) {
-            emailTil.setVisibility(GONE);
-            emailEt.setText(ravePayInitializer.getEmail());
-        }
-
-        double amountToPay = ravePayInitializer.getAmount();
-
-        if (amountToPay != -1) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(amountToPay));
-        }
-
-
         return v;
+    }
+
+    private void setonClickListeners() {
+        bankEt.setOnClickListener(this);
+        payButton.setOnClickListener(this);
+        dateOfBirthEt.setOnClickListener(this);
     }
 
     private void initializeViews() {
@@ -155,7 +128,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         int i = v.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
-            sendDataToPresenter();
+            collectData();
         }
         else if (i == R.id.rave_bankEditText){
             presenter.getBanks();
@@ -181,6 +154,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     }
 
+    @Override
+    public void onEmailValidationSuccessful() {
+        emailTil.setVisibility(GONE);
+        emailEt.setText(ravePayInitializer.getEmail());
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+    }
+
     private void clearErrors(){
         bankEt.setError(null);
         accountNumberTil.setError(null);
@@ -195,7 +180,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         rave_bvnTil.setErrorEnabled(false);
     }
 
-    private void sendDataToPresenter() {
+    private void collectData() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 

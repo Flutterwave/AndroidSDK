@@ -34,7 +34,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View {
+public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
 
     View v;
     TextInputEditText amountEt;
@@ -61,22 +61,32 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         initilaizeViews();
 
-        if (ravePayInitializer.getAmount() > 0) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
-        }
-
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearErrors();
-                formValidate();
-            }
-        });
+        presenter.init(ravePayInitializer);
 
         setUpNetworks();
 
+        setOnClickListeners();
+
         return v;
+    }
+
+    private void setOnClickListeners() {
+        payButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = v.getId();
+        if (i == R.id.rave_payButton) {
+            clearErrors();
+            collectData();
+        }
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        voucherTil.setError(null);
     }
 
     private void setUpNetworks() {
@@ -133,7 +143,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
     }
 
-    private void formValidate() {
+    private void collectData() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
@@ -149,6 +159,29 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
 
         presenter.validate(dataHashMap);
+    }
+
+
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class){
+            TextInputLayout view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+        else if (viewType == EditText.class){
+            EditText view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+
     }
 
     private void showInstructionsAndVoucher(boolean show) {
@@ -180,6 +213,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         else {
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
     }
 
     @Override
@@ -239,12 +278,6 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-        voucherTil.setError(null);
-    }
-
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -285,28 +318,6 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
-    }
-
-    @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
-            presenter.processTransaction(dataHashMap, ravePayInitializer);
-
-    }
-
-    @Override
-    public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
-
     }
 
 }

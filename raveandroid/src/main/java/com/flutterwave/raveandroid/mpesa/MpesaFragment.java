@@ -30,7 +30,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MpesaFragment extends Fragment implements MpesaContract.View {
+public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
     View v;
     TextInputEditText amountEt;
@@ -59,24 +59,37 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
 
         initializeViews();
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearErrors();
-                Utils.hide_keyboard(getActivity());
-                formValidate();
-            }
-        });
+        setOnClickListeners();
 
         if (ravePayInitializer.getAmount() > 0) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(ravePayInitializer.getAmount()));
+
         }
 
         return v;
     }
 
-    private void formValidate() {
+    private void setOnClickListeners() {
+        payButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = v.getId();
+        if (i == R.id.rave_payButton) {
+            clearErrors();
+            Utils.hide_keyboard(getActivity());
+            collectData();
+        }
+    }
+
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+    }
+
+    private void collectData() {
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
         dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));

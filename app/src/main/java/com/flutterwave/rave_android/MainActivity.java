@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             amount = "0";
         }
 
-        //check for compulsory fields
+        //isAmountValid for compulsory fields
         if (!Utils.isEmailValid(email)) {
             valid = false;
             emailEt.setError("A valid email is required");
