@@ -31,7 +31,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void onStartAchPayment(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer.getAmount() > 0) {
+        if (ravePayInitializer.getAmount() > 0 || ravePayInitializer.toString().isEmpty()) {
             mView.showAmountField(false);
             mView.showRedirectMessage(true);
         }

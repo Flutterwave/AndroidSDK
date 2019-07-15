@@ -32,7 +32,7 @@ public interface MpesaContract {
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void init(RavePayInitializer ravePayInitializer);
-        void validate(HashMap<String, ViewObject> dataHashMap);
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
         void chargeMpesa(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);

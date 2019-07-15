@@ -90,7 +90,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         initializeViews();
 
-        setonClickListeners();
+        setListeners();
 
         presenter.init(ravePayInitializer);
 
@@ -99,7 +99,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         return v;
     }
 
-    private void setonClickListeners() {
+    private void setListeners() {
         bankEt.setOnClickListener(this);
         payButton.setOnClickListener(this);
         dateOfBirthEt.setOnClickListener(this);
@@ -155,16 +155,17 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onEmailValidationSuccessful() {
-        emailTil.setVisibility(GONE);
-        emailEt.setText(ravePayInitializer.getEmail());
+    public void onEmailValidated(String emailToSet, int visibility) {
+        emailTil.setVisibility(visibility);
+        emailEt.setText(emailToSet);
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
-        amountTil.setVisibility(GONE);
-        amountEt.setText(amountToPay);
+    public void onAmountValidated(String amountToSet, int visibility) {
+        amountTil.setVisibility(visibility);
+        amountEt.setText(amountToSet);
     }
+
 
     private void clearErrors(){
         bankEt.setError(null);
@@ -199,13 +200,28 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             }
          }
 
-        presenter.validate(dataHashMap);
+        presenter.onDataCollected(dataHashMap);
     }
 
 
     @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetBankingSelected(int whatToShow) {
+        accountNumberTil.setVisibility(whatToShow);
+    }
+
+    @Override
+    public void showDateOfBirth(int whatToShow) {
+        dateOfBirthEt.setVisibility(whatToShow);
+    }
+
+    @Override
+    public void showBVN(int whatToShow) {
+        rave_bvnTil.setVisibility(whatToShow);
     }
 
     @Override
@@ -225,23 +241,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                 bankEt.setError(null);
                 bankEt.setText(b.getBankname());
                 selectedBank = b;
-                if (selectedBank.isInternetbanking()) {
-                    accountNumberTil.setVisibility(View.GONE);
-                } else {
-                    accountNumberTil.setVisibility(View.VISIBLE);
-                }
 
-                if (selectedBank.getBankcode().equals("057")  || selectedBank.getBankcode().equals("033")) {
-                    dateOfBirthEt.setVisibility(View.VISIBLE);
-                }
-                else {
-                    dateOfBirthEt.setVisibility(View.GONE);
-                }
-                if(selectedBank.getBankcode().equals("033")){
-                    rave_bvnTil.setVisibility(View.VISIBLE);
-                }else{
-                    rave_bvnTil.setVisibility(View.GONE);
-                }
+                presenter.onInternetBankingValidated(b);
+
             }
         });
 
@@ -321,8 +323,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onChargeAccountFailed(String message, String responseAsJSONString) {
         showToast(message);
-        //// TODO: 25/07/2017 ask Rd
-//        showToast(responseAsJSONString);
     }
 
 

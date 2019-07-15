@@ -65,12 +65,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         setUpNetworks();
 
-        setOnClickListeners();
+        setListeners();
 
         return v;
     }
 
-    private void setOnClickListeners() {
+    private void setListeners() {
         payButton.setOnClickListener(this);
     }
 
@@ -158,7 +158,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             dataHashMap.put(getResources().getString(R.string.fieldNetwork), new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
         }
 
-        presenter.validate(dataHashMap);
+        presenter.onDataCollected(dataHashMap);
     }
 
 

@@ -165,6 +165,7 @@
                     android:text="@string/choose_saved_card"
                     android:id="@+id/rave_savedCardButton"
                     style="?SavedCardButtonStyle"
+                    android:visibility="gone"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="35dp"
                     android:layout_marginLeft="10dp"

@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.account;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.webkit.URLUtil;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -229,7 +230,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     }
 
     @Override
-    public void validate(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
         Boolean valid = true;
 
@@ -249,6 +250,11 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
+
+                if (!amountValidator.isAmountValid(amount)) {
+                    valid = false;
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
@@ -339,10 +345,38 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
         Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
         if (isEmailValid){
-            mView.onEmailValidationSuccessful();
+            mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
+        }
+        else{
+            mView.onEmailValidated("", View.VISIBLE);
         }
         if (isAmountValid){
-            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+            mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
+        }
+        else {
+            mView.onAmountValidated("", View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onInternetBankingValidated(Bank bank) {
+        if (bank.isInternetbanking()) {
+            mView.showInternetBankingSelected(View.GONE);
+            if (bank.getBankcode().equals("057")  || bank.getBankcode().equals("033")) {
+                mView.showDateOfBirth(View.VISIBLE);
+            }
+            else {
+                mView.showDateOfBirth(View.GONE);
+            }
+            if(bank.getBankcode().equals("033")){
+                mView.showBVN(View.VISIBLE);
+            }else{
+                mView.showBVN(View.GONE);
+            }
+        }
+        else{
+            mView.showInternetBankingSelected(View.VISIBLE);
         }
 
     }

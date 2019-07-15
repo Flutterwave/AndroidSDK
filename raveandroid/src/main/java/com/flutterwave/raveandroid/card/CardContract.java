@@ -34,13 +34,13 @@ public interface CardContract {
 
         void onTokenRetrievalError(String s);
 
-        void onEmailValidationSuccessful();
+        void onEmailValidated(String emailToSet, int visibility);
+
+        void onAmountValidated(String amountToSet, int visibility);
 
         void showSavedCards(List<SavedCard> cards);
 
         void onPinAuthModelSuggested(Payload payload);
-
-        void onAmountValidationSuccessful(String amountToPay);
 
         void onChargeTokenComplete(ChargeResponse response);
 
@@ -83,9 +83,9 @@ public interface CardContract {
 
         void chargeToken(Payload payload);
 
-        void checkForSavedCards(String email);
+//        void checkForSavedCards(String email);
 
-        void onSavedCardsClicked(String email);
+//        void onSavedCardsClicked(String email);
 
         void fetchFee(Payload payload, int reason);
 
@@ -93,7 +93,7 @@ public interface CardContract {
 
         void init(RavePayInitializer ravePayInitializer);
 
-        void validate(HashMap<String, ViewObject> dataHashMap);
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
 
         void chargeCard(Payload payload, String encryptionKey);
 

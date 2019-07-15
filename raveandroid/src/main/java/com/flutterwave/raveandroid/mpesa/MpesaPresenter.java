@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.mpesa;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -151,7 +150,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
     @Override
-    public void validate(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
          Boolean valid = true;
 
@@ -163,15 +162,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
-                try {
 
-                    if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
-                        valid = false;
-                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
+                if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
                     mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }

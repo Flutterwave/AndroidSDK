@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         presenter.init(ravePayInitializer);
 
-        setOnClickListeners();
+        setListeners();
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
@@ -75,7 +76,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         payButton = v.findViewById(R.id.rave_payButton);
     }
 
-    private void setOnClickListeners() {
+    private void setListeners() {
         payButton.setOnClickListener(this);
     }
 
@@ -113,7 +114,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        presenter.validate(dataHashMap);
+        presenter.onDataCollected(dataHashMap);
     }
 
     @Override
@@ -245,9 +246,18 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     @Override
-    public void showFieldError(int viewID, String message) {
-        TextInputLayout amountView  = (TextInputLayout) v.findViewById(viewID);
-        amountView.setError(message);
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class){
+            TextInputLayout view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+        else if (viewType == EditText.class){
+            EditText view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+
     }
+
 }
 

@@ -58,14 +58,14 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         initializeViews();
 
-        setOnClickListeners();
+        setListeners();
 
         presenter.init(ravePayInitializer);
 
         return v;
     }
 
-    private void setOnClickListeners() {
+    private void setListeners() {
         payButton.setOnClickListener(this);
     }
 
@@ -91,7 +91,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        presenter.validate(dataHashMap);
+        presenter.onDataCollected(dataHashMap);
     }
 
     private void initializeViews() {
@@ -224,8 +224,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-                ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
-                presenter.processTransaction(dataHashMap, ravePayInitializer);
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
 
     }
 

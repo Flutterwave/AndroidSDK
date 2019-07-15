@@ -53,9 +53,15 @@ public interface AccountContract {
 
         void showGTBankAmountIssue();
 
-        void onEmailValidationSuccessful();
+        void onEmailValidated(String emailToSet, int visibility);
 
-        void onAmountValidationSuccessful(String amountToPay);
+        void onAmountValidated(String amountToSet, int visibility);
+
+        void showDateOfBirth(int whatToShow);
+
+        void showBVN(int whatToShow);
+
+        void showInternetBankingSelected(int whatToShow);
     }
 
     interface UserActionsListener {
@@ -73,11 +79,13 @@ public interface AccountContract {
 
         void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
 
-        void validate(HashMap<String, ViewObject> dataHashMap);
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
 
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
 
         void init(RavePayInitializer ravePayInitializer);
+
+        void onInternetBankingValidated(Bank bank);
     }
 
 }

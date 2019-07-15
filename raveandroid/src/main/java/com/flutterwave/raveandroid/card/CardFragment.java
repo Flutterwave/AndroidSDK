@@ -39,8 +39,6 @@ import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.validators.AmountValidator;
-import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -105,18 +103,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-        presenter.checkForSavedCards(ravePayInitializer.getEmail());
-
-        cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
-
-        setOnClickListeners();
+        setListeners();
 
         presenter.init(ravePayInitializer);
 
         return v;
     }
 
-    private void setOnClickListeners() {
+    private void setListeners() {
+        cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
         savedCardBtn.setOnClickListener(this);
         payButton.setOnClickListener(this);
     }
@@ -150,9 +145,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             clearErrors();
             collectData();
         }
-        else if (i == R.id.rave_savedCardButton){
-            presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
-        }
+//        else if (i == R.id.rave_savedCardButton){
+//            presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
+//        }
     }
 
     private void collectData() {
@@ -165,7 +160,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         dataHashMap.put(getResources().getString(R.string.fieldCardExpiry), new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
         dataHashMap.put(getResources().getString(R.string.fieldcardNoStripped), new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
 
-        presenter.validate(dataHashMap);
+        presenter.onDataCollected(dataHashMap);
     }
 
     private void clearErrors() {
@@ -190,21 +185,21 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
             String cardNoStripped = dataHashMap.get(getResources().getString(R.string.cardNoStripped)).getData();
-            CheckSaveCard(cardNoStripped);
+            //CheckSaveCard(cardNoStripped);
 
             presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }
 
-    private void CheckSaveCard(String cardNoStripped) {
-        if (saveCardSwitch.isChecked()) {
-            int cardLen = cardNoStripped.length();
-            cardFirst6 = cardNoStripped.substring(0, 6);
-            cardLast4 = cardNoStripped.substring(cardLen - 4, cardLen);
-            shouldISaveThisCard = true;
-            presenter.savePotentialCardDets(cardFirst6, cardLast4);
-        }
-    }
+//    private void CheckSaveCard(String cardNoStripped) {
+//        if (saveCardSwitch.isChecked()) {
+//            int cardLen = cardNoStripped.length();
+//            cardFirst6 = cardNoStripped.substring(0, 6);
+//            cardLast4 = cardNoStripped.substring(cardLen - 4, cardLen);
+//            shouldISaveThisCard = true;
+//            presenter.savePotentialCardDets(cardFirst6, cardLast4);
+//        }
+//    }
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
@@ -221,15 +216,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onEmailValidationSuccessful() {
-        emailTil.setVisibility(GONE);
-        emailEt.setText(ravePayInitializer.getEmail());
+    public void onEmailValidated(String emailToSet, int visibility) {
+        emailTil.setVisibility(visibility);
+        emailEt.setText(emailToSet);
     }
 
+
     @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
-        amountTil.setVisibility(GONE);
-        amountEt.setText(amountToPay);
+    public void onAmountValidated(String amountToSet, int visibility) {
+        amountTil.setVisibility(visibility);
+        amountEt.setText(amountToSet);
     }
 
     @Override

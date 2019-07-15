@@ -18,9 +18,9 @@ public interface UgMobileMoneyContract {
         void onPaymentError(String message);
         void showPollingIndicator(boolean active);
         void showProgressIndicator(boolean active);
-        void showFieldError(int viewID, String message);
         void onAmountValidationSuccessful(String amountToPay);
         void displayFee(String charge_amount, Payload payload);
+        void showFieldError(int viewID, String message, Class<?> viewType);
         void onPaymentFailed(String message, String responseAsJSONString);
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
         void onPollingRoundComplete(String flwRef, String txRef, String publicKey);
@@ -30,7 +30,7 @@ public interface UgMobileMoneyContract {
     interface UserActionsListener {
         void fetchFee(Payload payload);
         void init(RavePayInitializer ravePayInitializer);
-        void validate(HashMap<String, ViewObject> dataHashMap);
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
         void requeryTx(String flwRef, String txRef, String publicKey);
         void chargeUgMobileMoney(Payload payload, String encryptionKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);

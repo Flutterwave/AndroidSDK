@@ -183,7 +183,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     }
 
     @Override
-    public void validate(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
         Boolean valid = true;
 
@@ -201,14 +201,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         int network = Integer.valueOf(dataHashMap.get(context.getResources().getString(R.string.fieldNetwork)).getData());
 
-                try {
 
-                    if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
-                        valid = false;
-                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
                     mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }

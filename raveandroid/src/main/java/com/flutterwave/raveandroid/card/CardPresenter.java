@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -26,7 +27,7 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
-import com.flutterwave.raveandroid.validators.CardNoStrippedValidator;
+import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
@@ -47,6 +48,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
     private CardContract.View mView;
     private EmailValidator emailValidator = new EmailValidator();
     private AmountValidator amountValidator = new AmountValidator();
+    private CvvValidator cvvValidator = new CvvValidator();
+    private CardExpiryValidator cardExpiryValidator = new CardExpiryValidator();
+    private CardNoValidator cardNoValidator = new CardNoValidator();
 
      CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
@@ -203,7 +207,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void validate(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
        Boolean valid = true;
 
@@ -227,9 +231,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardNoStripped = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getData().replaceAll("\\s", "");
         Class cardNoStrippedViewType = dataHashMap.get(context.getString(R.string.fieldcardNoStripped)).getViewType();
 
-        try{
-
-              Boolean isAmountValidated = new AmountValidator().isAmountValid(Double.valueOf(amount));
+             try{
+              Boolean isAmountValidated = amountValidator.isAmountValid(amount);
                  if (!isAmountValidated) {
                         valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                     }
@@ -238,24 +241,24 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
-                Boolean isEmailValidated = new EmailValidator().isEmailValid(email);
+                Boolean isEmailValidated = emailValidator.isEmailValid(email);
                 if (!isEmailValidated) {
                     valid = false; mView.showFieldError(emailID, context.getResources().getString(R.string.validPhonePrompt), emailViewType);
                 }
 
-                Boolean isCVVValidated = new CvvValidator().isCvvValid(cvv);
+                Boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
                 if (!isCVVValidated) {
                     valid = false; mView.showFieldError(cvvID, context.getResources().getString(R.string.validCvvPrompt), cvvViewType);
                 }
 
-                Boolean isCardExpiryValidated = new CardExpiryValidator().isCardExpiryValid(cardExpiry);
+                Boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
 
                 if (!isCardExpiryValidated) {
                     valid = false;  mView.showFieldError(cardExpiryID, context.getResources().getString(R.string.validExpiryDatePrompt), cardExpiryViewType);
                 }
 
-                Boolean isCardNoStrippedValidator = new CardNoStrippedValidator().isCardNoStrippedValid(cardNoStripped);
-                if (!isCardNoStrippedValidator) {
+                Boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
+                if (!isCardNoValidator) {
                     valid = false; mView.showFieldError(cardNoStrippedID, context.getResources().getString(R.string.validCreditCardPrompt), cardNoStrippedViewType);
                 }
 
@@ -454,16 +457,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
         new SharedPrefsRequestImpl(context).saveCardDetsToSave(new CardDetsToSave(cardFirst6, cardLast4));
     }
 
-    @Override
-    public void onSavedCardsClicked(String email) {
-
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-
-        mView.showSavedCards(cards);
-
-    }
+//    @Override
+//    public void onSavedCardsClicked(String email) {
+//
+//        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
+//
+//        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+//
+//        mView.showSavedCards(cards);
+//
+//    }
 
     @Override
     public void fetchFee(final Payload payload, final int reason) {
@@ -506,16 +509,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     }
 
-    @Override
-    public void checkForSavedCards(String email) {
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-
-        if (cards == null || cards.size() == 0) {
-            mView.hideSavedCardsButton();
-        }
-    }
+//    @Override
+//    public void checkForSavedCards(String email) {
+//        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
+//
+//        List<SavedCard> cards = sharedMgr.getSavedCards(email);
+//
+//        if (cards == null || cards.size() == 0) {
+//            mView.hideSavedCardsButton();
+//        }
+//    }
 
     @Override
     public void chargeToken(Payload payload) {
@@ -567,10 +570,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
         Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
         Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
         if (isEmailValid){
-            mView.onEmailValidationSuccessful();
+            mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
+        }
+        else{
+            mView.onEmailValidated("", View.VISIBLE);
         }
         if (isAmountValid){
-            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+            mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
+        }
+        else {
+            mView.onAmountValidated("", View.VISIBLE);
         }
     }
 }

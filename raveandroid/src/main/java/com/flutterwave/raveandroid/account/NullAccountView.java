@@ -107,13 +107,27 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void onEmailValidationSuccessful() {
+    public void onEmailValidated(String emailToSet, int visibility) {
 
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
+    public void onAmountValidated(String amountToSet, int visibility) {
 
     }
 
+    @Override
+    public void showDateOfBirth(int whatToShow) {
+
+    }
+
+    @Override
+    public void showBVN(int whatToShow) {
+
+    }
+
+    @Override
+    public void showInternetBankingSelected(int whatToShow) {
+
+    }
 }

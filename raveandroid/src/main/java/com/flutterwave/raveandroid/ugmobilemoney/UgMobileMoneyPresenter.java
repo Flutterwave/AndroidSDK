@@ -145,7 +145,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void validate(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
          Boolean valid = true;
 
@@ -157,20 +157,14 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
-                try {
-                        if (Double.parseDouble(amount) <= 0) {
-                        valid = false;
-                        mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt));
-                            }
-                    } catch (Exception e) {
-                    e.printStackTrace();
+                if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt));
-                 }
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                }
 
                  if (phone.length() < 1) {
                         valid = false;
-                        mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt));
+                        mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
                  if (valid) {
