@@ -24,6 +24,7 @@ public class PayloadBuilder {
     private String voucher;
     private boolean isPreAuth = false;
     private boolean is_us_bank_charge = false;
+    private boolean is_bank_transfer= false;
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -34,6 +35,12 @@ public class PayloadBuilder {
         this.is_mobile_money_ug = is_mobile_money_ug;
         return this;
     }
+
+    public PayloadBuilder setIs_bank_transfer(boolean is_bank_transfer) {
+        this.is_bank_transfer = is_bank_transfer;
+        return this;
+    }
+
 
     private String is_mobile_money_gh;
     private String is_mobile_money_ug;
@@ -202,6 +209,17 @@ public class PayloadBuilder {
         return payload;
     }
 
+    public Payload createBankTransferPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_bank_transfer(true);
+        payload.setPayment_type("banktransfer");
+        payload.setNetwork(network);
+        return payload;
+    }
+
     public Payload createMpesaPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
@@ -236,6 +254,8 @@ public class PayloadBuilder {
         return payload;
     }
 
+
+
     public PayloadBuilder setMeta(String meta) {
         this.meta = meta;
         return this;
@@ -255,4 +275,6 @@ public class PayloadBuilder {
         this.network = network;
         return this;
     }
+
+
 }

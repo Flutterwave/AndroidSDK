@@ -201,6 +201,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         });
     }
 
+
+
     @Override
     public void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, final Callbacks.OnRequeryRequestv2Complete callback) {
 
@@ -226,6 +228,52 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     Gson gson = new Gson();
                     Type type = new TypeToken<RequeryResponsev2>() {}.getType();
                     RequeryResponsev2 requeryResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(requeryResponse, jsonResponse);
+                }
+                else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
+    public void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
+
+        createService();
+
+        Call<String> call = service.requeryPayWithBankTx(requeryRequestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body());
+                        if (jsonObject.has("status")) {
+                            jsonObject.put("status", "Transaction successfully fetched");
+                            jsonResponse = jsonObject.toString();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<RequeryResponse>() {}.getType();
+                    RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
                 }
                 else {
@@ -292,7 +340,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             }
         });
     }
-
     @Override
     public void getBanks(final Callbacks.OnGetBanksRequestComplete callback) {
 

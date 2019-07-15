@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat accountSwitch;
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat ugMobileMoneySwitch;
+    SwitchCompat bankTransferSwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
+        bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 clear();
             }
         });
+
     }
 
     private void clear(){
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptAchPayments(accountAchSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
+                    .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
                     .isPreAuth(isPreAuthSwitch.isChecked())

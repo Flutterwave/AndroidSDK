@@ -49,6 +49,43 @@ public class ChargeResponse {
         String authModelUsed;
         String flwRef;
 
+        // Pay with bank (extra) response fields
+        String flw_reference;
+        String response_code;
+        String response_message;
+        String accountnumber;
+        String bankname;
+        String note;
+        String amount;
+
+        public String getFlw_reference() {
+            return flw_reference;
+        }
+
+        public String getResponse_code() {
+            return response_code;
+        }
+
+        public String getResponse_message() {
+            return response_message;
+        }
+
+        public String getAccountnumber() {
+            return accountnumber;
+        }
+
+        public String getBankname() {
+            return bankname;
+        }
+
+        public String getNote() {
+            return note;
+        }
+
+        public String getAmount() {
+            return amount;
+        }
+
         public AccountValidateInstructions getValidateInstructions() {
             return validateInstructions;
         }

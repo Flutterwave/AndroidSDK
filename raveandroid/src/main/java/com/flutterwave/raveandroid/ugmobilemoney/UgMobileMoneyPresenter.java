@@ -11,14 +11,9 @@ import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
-import com.flutterwave.raveandroid.data.RequeryRequestBodyv2;
-import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyContract;
-import com.flutterwave.raveandroid.mpesa.MpesaContract;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 
 /**
  * Created by Jeremiah on 10/12/2018.

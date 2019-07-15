@@ -254,6 +254,8 @@ public class Payload
 
     }
 
+
+
     public String getToken() {
         return token;
     }
@@ -607,6 +609,12 @@ public class Payload
 
     public void setIs_us_bank_charge(boolean is_us_bank_charge) {
         this.is_us_bank_charge = is_us_bank_charge;
+    }
+
+    public boolean is_bank_transfer;
+
+    public void setIs_bank_transfer(boolean is_bank_transfer) {
+        this.is_bank_transfer = is_bank_transfer;
     }
 }
 

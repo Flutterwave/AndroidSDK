@@ -5,22 +5,19 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
+import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
@@ -119,6 +116,12 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithUgMobileMoney()) {
             raveFragments.add(new RaveFragment(new UgMobileMoneyFragment(), "UGANDA MOBILE MONEY"));
+        }
+
+        if (ravePayInitializer.isWithBankTransfer()) {
+            if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")){
+                raveFragments.add(new RaveFragment(new BankTransferFragment(), "Pay with Bank Transfer"));
+            }
         }
 
         mainPagerAdapter.setFragments(raveFragments);
