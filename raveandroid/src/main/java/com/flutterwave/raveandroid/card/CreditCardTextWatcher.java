@@ -58,10 +58,6 @@ class CreditCardTextWatcher implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
 
-//        if (s.length() > 0) {
-//            String spacified = spacifyCardNumber(s.toString());
-//            s.replace(0, s.length(), spacified);
-//        }
 
         if (s.length() > 0 && (s.length() % 5) == 0) {
             final char c = s.charAt(s.length() - 1);

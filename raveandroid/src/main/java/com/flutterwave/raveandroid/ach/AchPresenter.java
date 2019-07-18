@@ -20,9 +20,9 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     private Context context;
     private AchContract.View mView;
-    SharedPrefsRequestImpl sharedMgr;
+    private SharedPrefsRequestImpl sharedMgr;
 
-    public AchPresenter(Context context, AchContract.View mView) {
+    private AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
         sharedMgr = new SharedPrefsRequestImpl(context);
@@ -71,24 +71,6 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
     private void initiatePayment(RavePayInitializer ravePayInitializer) {
-
-
-//        {
-//            "PBFPubKey": "FLWPUBK-7adb6177bd71dd43c2efa3f1229e3b7f-X",
-//                "currency": "USD",
-//                "payment_type": "account",
-//                "country": "US",
-//                "amount": "20",
-//                "email": "user@example.com",
-//                "phonenumber": "0000000000",
-//                "firstname": "Temi",
-//                "lastname": "Tester",
-//                "IP": "355426087298442",
-//                "txRef": "rave-checkout-" + Date.now(),
-//                "is_us_bank_charge": "true",
-//                "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
-//                "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
-//        }
 
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(ravePayInitializer.getAmount() + "")

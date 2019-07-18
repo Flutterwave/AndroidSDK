@@ -33,7 +33,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     private AmountValidator amountValidator = new AmountValidator();
     private PhoneValidator phoneValidator = new PhoneValidator();
 
-    public MpesaPresenter(Context context, MpesaContract.View mView) {
+    private MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -163,19 +163,19 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
 
 
-                if (!amountValidator.isAmountValid(amount)) {
-                    valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
-                }
+        if (!amountValidator.isAmountValid(amount)) {
+            valid = false;
+            mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+        }
 
-                if (!phoneValidator.isPhoneValid(phone)) {
-                    valid = false;
-                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
-                }
+        if (!phoneValidator.isPhoneValid(phone)) {
+            valid = false;
+            mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+        }
 
-                if (valid) {
-                    mView.onValidationSuccessful(dataHashMap);
-                }
+        if (valid) {
+            mView.onValidationSuccessful(dataHashMap);
+        }
 
     }
 

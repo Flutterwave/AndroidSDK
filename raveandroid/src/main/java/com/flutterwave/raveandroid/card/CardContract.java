@@ -24,8 +24,6 @@ public interface CardContract {
 
         void onPaymentError(String message);
 
-        void hideSavedCardsButton();
-
         void showToast(String message);
 
         void onValidateError(String message);
@@ -83,10 +81,6 @@ public interface CardContract {
 
         void chargeToken(Payload payload);
 
-//        void checkForSavedCards(String email);
-
-//        void onSavedCardsClicked(String email);
-
         void fetchFee(Payload payload, int reason);
 
         void onAttachView(CardContract.View view);
@@ -96,8 +90,6 @@ public interface CardContract {
         void onDataCollected(HashMap<String, ViewObject> dataHashMap);
 
         void chargeCard(Payload payload, String encryptionKey);
-
-        void savePotentialCardDets(String cardFirst6, String cardLast4);
 
         void validateCardCharge(String flwRef, String otp, String publicKey);
 

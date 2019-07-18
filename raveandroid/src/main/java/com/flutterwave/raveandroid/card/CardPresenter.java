@@ -453,22 +453,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void savePotentialCardDets(String cardFirst6, String cardLast4) {
-        new SharedPrefsRequestImpl(context).saveCardDetsToSave(new CardDetsToSave(cardFirst6, cardLast4));
-    }
-
-//    @Override
-//    public void onSavedCardsClicked(String email) {
-//
-//        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-//
-//        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-//
-//        mView.showSavedCards(cards);
-//
-//    }
-
-    @Override
     public void fetchFee(final Payload payload, final int reason) {
 
         FeeCheckRequestBody body = new FeeCheckRequestBody();
@@ -508,17 +492,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         });
 
     }
-
-//    @Override
-//    public void checkForSavedCards(String email) {
-//        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-//
-//        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-//
-//        if (cards == null || cards.size() == 0) {
-//            mView.hideSavedCardsButton();
-//        }
-//    }
 
     @Override
     public void chargeToken(Payload payload) {

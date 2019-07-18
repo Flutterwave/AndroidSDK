@@ -145,9 +145,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             clearErrors();
             collectData();
         }
-//        else if (i == R.id.rave_savedCardButton){
-//            presenter.onSavedCardsClicked(ravePayInitializer.getEmail());
-//        }
     }
 
     private void collectData() {
@@ -190,16 +187,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }
-
-//    private void CheckSaveCard(String cardNoStripped) {
-//        if (saveCardSwitch.isChecked()) {
-//            int cardLen = cardNoStripped.length();
-//            cardFirst6 = cardNoStripped.substring(0, 6);
-//            cardLast4 = cardNoStripped.substring(cardLen - 4, cardLen);
-//            shouldISaveThisCard = true;
-//            presenter.savePotentialCardDets(cardFirst6, cardLast4);
-//        }
-//    }
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
@@ -265,20 +252,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     }
 
-    /**
-     * Validate card details and get the fee if available
-     */
 
-    /**
-     * Remove all errors from the input fields
-     */
-
-
-    /**
-     * Show/Hide a progress dialog (general purpose)
-     *
-     * @param active = status of progress indicator
-     */
     @Override
     public void showProgressIndicator(boolean active) {
 
@@ -451,10 +425,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
         dismissDialog();
 
-//        if (shouldISaveThisCard && flwRef != null) {
-//            presenter.saveThisCard(ravePayInitializer.getEmail(), flwRef, ravePayInitializer.getSecretKey());
-//        }
-
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
 
@@ -493,36 +463,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void showSavedCards(List<SavedCard> cards) {
-
-
-//        if (cards.size() > 0) {
-//            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-//            LayoutInflater inflater = LayoutInflater.from(getActivity());
-//            View v = inflater.inflate(R.layout.pick_saved_card_layout, null, false);
-//            RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
-//
-//            SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
-//            adapter.set(cards);
-//
-//            adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {
-//                @Override
-//                public void onCardSelected(SavedCard savedCard) {
-//                    bottomSheetDialog.dismiss();
-//                    String ref = Utils.decryptRef(RavePayActivity.getSecretKey(), savedCard.getFlwRef());
-//
-//                    presenter.requeryTxForToken(ref, RavePayActivity.getSecretKey());
-//
-//                }
-//            });
-//
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//            recyclerView.setAdapter(adapter);
-//            bottomSheetDialog.setContentView(v);
-//            bottomSheetDialog.show();
-//        }
-//        else {
-//            showToast("You have no saved cards");
-//        }
 
     }
 
@@ -611,11 +551,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void showFetchFeeFailed(String s) {
         showToast(s);
-    }
-
-    @Override
-    public void hideSavedCardsButton() {
-        savedCardBtn.setVisibility(GONE);
     }
 
     @Override
