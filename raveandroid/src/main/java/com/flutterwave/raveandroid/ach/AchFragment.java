@@ -54,6 +54,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         v = inflater.inflate(R.layout.fragment_ach, container, false);
 
         initializeViews();
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
         presenter.onStartAchPayment(ravePayInitializer);
 
@@ -76,7 +77,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     }
 
     private void initializeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         payInstructionsTv =  v.findViewById(R.id.paymentInstructionsTv);
         payButton =  v.findViewById(R.id.rave_payButton);
         amountTil =  v.findViewById(R.id.rave_amountTil);
@@ -87,8 +87,8 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + currency + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setMessage(RaveConstants.charge + charge_amount + currency + RaveConstants.askToContinue);
+        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -96,7 +96,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
             }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

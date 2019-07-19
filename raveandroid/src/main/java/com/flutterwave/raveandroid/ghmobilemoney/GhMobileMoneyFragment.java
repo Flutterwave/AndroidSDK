@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -103,19 +104,19 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
                     if (position == 0) {
                         showInstructionsAndVoucher(false);
-                        validateInstructions = getResources().getString(R.string.checkStatus);
+                        validateInstructions = RaveConstants.checkStatus;
                     }
 
-                    if (network.equalsIgnoreCase(getResources().getString(R.string.mtn))) {
+                    if (network.equalsIgnoreCase(RaveConstants.mtn)) {
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
-                    else if (network.equalsIgnoreCase(getResources().getString(R.string.tigo))) {
+                    else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
                         validateInstructions =  getResources().getString(R.string.tigo_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
-                    else if (network.equalsIgnoreCase(getResources().getString(R.string.vodafone))) {
-                        validateInstructions = getResources().getString(R.string.checkStatus);
+                    else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
+                        validateInstructions = RaveConstants.checkStatus;
                         showInstructionsAndVoucher(true);
                         instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
                     }
@@ -147,15 +148,15 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldVoucher), new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldNetwork), new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldVoucher, new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
 
         if (voucherTil.getVisibility() == View.VISIBLE && voucherEt.getText().toString().length() == 0){
-            dataHashMap.put(getResources().getString(R.string.fieldNetwork), new ViewObject(networkSpinner.getId(), "", Spinner.class));
+            dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), "", Spinner.class));
         }else{
-            dataHashMap.put(getResources().getString(R.string.fieldNetwork), new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+            dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
         }
 
         presenter.onDataCollected(dataHashMap);
@@ -165,7 +166,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }
@@ -204,7 +205,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(getResources().getString(R.string.wait));
+            progressDialog.setMessage(RaveConstants.wait);
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -232,7 +233,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancelPayment, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -270,7 +271,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -281,8 +282,8 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setMessage((RaveConstants.charge) + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
+        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -291,7 +292,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
 
             }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -313,7 +314,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             pollingProgressDialog.dismiss();
         }
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();

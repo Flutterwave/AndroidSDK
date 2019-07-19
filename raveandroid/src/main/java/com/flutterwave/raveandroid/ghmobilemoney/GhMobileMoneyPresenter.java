@@ -151,34 +151,37 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     @Override
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(ravePayInitializer.getAmount() + "")
-                .setCountry(ravePayInitializer.getCountry())
-                .setCurrency(ravePayInitializer.getCurrency())
-                .setEmail(ravePayInitializer.getEmail())
-                .setFirstname(ravePayInitializer.getfName())
-                .setLastname(ravePayInitializer.getlName())
-                .setIP(Utils.getDeviceImei(context))
-                .setTxRef(ravePayInitializer.getTxRef())
-                .setMeta(ravePayInitializer.getMeta())
-                .setSubAccount(ravePayInitializer.getSubAccount())
-                .setNetwork(dataHashMap.get("network").getData())
-                .setVoucher(dataHashMap.get("voucher").getData())
-                .setPhonenumber(dataHashMap.get("phone").getData())
-                .setPBFPubKey(ravePayInitializer.getPublicKey())
-                .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                .setDevice_fingerprint(Utils.getDeviceImei(context));
+        if (ravePayInitializer!=null) {
 
-        if (ravePayInitializer.getPayment_plan() != null) {
-            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-        }
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(context))
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setNetwork(dataHashMap.get("network").getData())
+                    .setVoucher(dataHashMap.get("voucher").getData())
+                    .setPhonenumber(dataHashMap.get("phone").getData())
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setDevice_fingerprint(Utils.getDeviceImei(context));
 
-        Payload body = builder.createGhMobileMoneyPayload();
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
 
-        if(ravePayInitializer.getIsDisplayFee()){
-            fetchFee(body);
-        } else {
-            chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            Payload body = builder.createGhMobileMoneyPayload();
+
+            if (ravePayInitializer.getIsDisplayFee()) {
+                fetchFee(body);
+            } else {
+                chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
         }
     }
 
@@ -187,38 +190,38 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         boolean valid = true;
 
-        int amountID = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewId();
-        String amount = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData();
-        Class amountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewType();
+        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
+        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewId();
-        String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
-        Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
+        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
+        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
 
-        int voucherID = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getViewId();
-        String voucher = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getData();
-        Class voucherViewType = dataHashMap.get(context.getResources().getString(R.string.fieldVoucher)).getViewType();
+        int voucherID = dataHashMap.get(RaveConstants.fieldVoucher).getViewId();
+        String voucher = dataHashMap.get(RaveConstants.fieldVoucher).getData();
+        Class voucherViewType = dataHashMap.get(RaveConstants.fieldVoucher).getViewType();
 
-        int network = Integer.valueOf(dataHashMap.get(context.getResources().getString(R.string.fieldNetwork)).getData());
+        int network = Integer.valueOf(dataHashMap.get(RaveConstants.fieldNetwork).getData());
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
                 }
 
                 if (network == 0) {
                     valid = false;
-                    mView.showToast(context.getResources().getString(R.string.validNetworkPrompt));
+                    mView.showToast(RaveConstants.validNetworkPrompt);
                 }
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, context.getResources().getString(R.string.validVoucherPrompt), voucherViewType);
+                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
                 }
 
                 if (valid) {
@@ -229,9 +232,13 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
     @Override
     public void init(RavePayInitializer ravePayInitializer) {
-        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
-        if (isAmountValid){
-            mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+
+        if (ravePayInitializer!=null) {
+
+            Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isAmountValid) {
+                mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+            }
         }
     }
 }

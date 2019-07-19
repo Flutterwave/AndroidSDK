@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -56,9 +57,13 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         initializeViews();
 
-        presenter.init(ravePayInitializer);
-
         setListeners();
+
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
+        presenter = new UgMobileMoneyPresenter(getActivity(), this);
+
+        presenter.init(ravePayInitializer);
 
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
@@ -66,8 +71,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     private void initializeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        presenter = new UgMobileMoneyPresenter(getActivity(), this);
         instructionsTv =  v.findViewById(R.id.instructionsTv);
         amountTil =  v.findViewById(R.id.rave_amountTil);
         phoneTil =  v.findViewById(R.id.rave_phoneTil);
@@ -112,8 +115,8 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         presenter.onDataCollected(dataHashMap);
     }
 
@@ -130,7 +133,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(getResources().getString(R.string.wait));
+            progressDialog.setMessage(RaveConstants.wait);
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -152,7 +155,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancelPayment, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -190,7 +193,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -201,8 +204,8 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setMessage(RaveConstants.charge + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
+        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -210,7 +213,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
                 presenter.chargeUgMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
             }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -230,7 +233,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) { pollingProgressDialog.dismiss(); }
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
@@ -240,7 +243,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }

@@ -23,8 +23,7 @@
                 android:layout_centerVertical="true"
                 android:letterSpacing="0.04"
                 android:textColor="#4a4a4a"
-                android:textSize="16sp"
-                tools:text="@sample/banklist" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"

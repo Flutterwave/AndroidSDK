@@ -5,6 +5,7 @@ import android.content.Context;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -22,7 +23,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     private AchContract.View mView;
     private SharedPrefsRequestImpl sharedMgr;
 
-    private AchPresenter(Context context, AchContract.View mView) {
+    public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
         sharedMgr = new SharedPrefsRequestImpl(context);
@@ -55,7 +56,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 double amnt = Double.parseDouble(amount);
 
                 if (amnt <= 0) {
-                    mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
+                    mView.showAmountError(RaveConstants.validAmountPrompt);
                 }
                 else {
                     ravePayInitializer.setAmount(amnt);
@@ -64,7 +65,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
+                mView.showAmountError(RaveConstants.validAmountPrompt);
             }
         }
 

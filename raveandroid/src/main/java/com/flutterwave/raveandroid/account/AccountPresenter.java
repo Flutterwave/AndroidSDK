@@ -136,7 +136,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase(context.getResources().getString(R.string.success))) {
+                    if (status.equalsIgnoreCase(RaveConstants.success)) {
                         mView.onValidateSuccessful(flwRef, responseAsJSONString);
                     }
                     else {
@@ -144,7 +144,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     }
                 }
                 else {
-                    mView.onPaymentError(context.getResources().getString(R.string.invalidCharge));
+                    mView.onPaymentError(RaveConstants.invalidCharge);
                 }
             }
 
@@ -234,36 +234,36 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         Boolean valid = true;
 
-        int amountID = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewId();
-        String amount = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getData();
-        Class amountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAmount)).getViewType();
+        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
+        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
 
-        int emailID = dataHashMap.get(context.getResources().getString(R.string.fieldEmail)).getViewId();
-        String email = dataHashMap.get(context.getResources().getString(R.string.fieldEmail)).getData();
-        Class emailViewType = dataHashMap.get(context.getResources().getString(R.string.fieldEmail)).getViewType();
+        int emailID = dataHashMap.get(RaveConstants.fieldEmail).getViewId();
+        String email = dataHashMap.get(RaveConstants.fieldEmail).getData();
+        Class emailViewType = dataHashMap.get(RaveConstants.fieldEmail).getViewType();
 
-        int accountID = dataHashMap.get(context.getResources().getString(R.string.fieldAccount)).getViewId();
-        String account = dataHashMap.get(context.getResources().getString(R.string.fieldAccount)).getData();
-        Class accountViewType = dataHashMap.get(context.getResources().getString(R.string.fieldAccount)).getViewType();
+        int accountID = dataHashMap.get(RaveConstants.fieldAccount).getViewId();
+        String account = dataHashMap.get(RaveConstants.fieldAccount).getData();
+        Class accountViewType = dataHashMap.get(RaveConstants.fieldAccount).getViewType();
 
-        int phoneID = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewId();
-        String phone = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getData();
-        Class phoneViewType = dataHashMap.get(context.getResources().getString(R.string.fieldPhone)).getViewType();
+        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
+        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
 
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
                 }
 
                 if (!emailValidator.isEmailValid(email)) {
                     valid = false;
-                    mView.showFieldError(emailID, context.getResources().getString(R.string.validEmailPrompt), emailViewType);
+                    mView.showFieldError(emailID, RaveConstants.validEmailPrompt, emailViewType);
                 }
 
                 if (account.isEmpty()) {
@@ -278,12 +278,12 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
                     if (amnt <= 0) {
                         valid = false;
-                        mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
+                        mView.showToast(RaveConstants.validAmountPrompt);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
+                    mView.showToast(RaveConstants.validAmountPrompt);
                 }
 
                 if (valid){
@@ -296,34 +296,36 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
         //make request
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(ravePayInitializer.getAmount() + "")
-                .setEmail(dataHashMap.get(context.getString(R.string.fieldEmail)).getData())
-                .setCountry("NG").setCurrency("NGN")
-                .setPBFPubKey(ravePayInitializer.getPublicKey())
-                .setDevice_fingerprint(Utils.getDeviceImei(context))
-                .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
-                .setAccountbank(dataHashMap.get(context.getString(R.string.fieldBankCode)).getData())
-                .setMeta(ravePayInitializer.getMeta())
-                .setSubAccount(ravePayInitializer.getSubAccount())
-                .setAccountnumber(dataHashMap.get(context.getString(R.string.fieldAccount)).getData())
-                .setBVN(context.getResources().getString(R.string.fieldBVN))
-                .setIsPreAuth(ravePayInitializer.getIsPreAuth());
 
-        Payload body = builder.createBankPayload();
-        body.setPasscode(context.getResources().getString(R.string.date_of_birth));
-        body.setPhonenumber(context.getResources().getString(R.string.fieldPhone));
+        if (ravePayInitializer!=null) {
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setEmail(dataHashMap.get(RaveConstants.fieldEmail).getData())
+                    .setCountry("NG").setCurrency("NGN")
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setDevice_fingerprint(Utils.getDeviceImei(context))
+                    .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
+                    .setAccountbank(dataHashMap.get(RaveConstants.fieldBankCode).getData())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setAccountnumber(dataHashMap.get(RaveConstants.fieldAccount).getData())
+                    .setBVN(RaveConstants.fieldBVN)
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth());
 
-        if ((dataHashMap.get(context.getString(R.string.fieldBankCode)).getData().equalsIgnoreCase("058") ||
-                dataHashMap.get(context.getString(R.string.fieldBankCode)).getData().equalsIgnoreCase("011"))
-                && (Double.parseDouble(dataHashMap.get(context.getString(R.string.fieldAmount)).getData()) <= 100)) {
+            Payload body = builder.createBankPayload();
+            body.setPasscode(RaveConstants.date_of_birth);
+            body.setPhonenumber(RaveConstants.fieldPhone);
+
+            if ((dataHashMap.get(RaveConstants.fieldBankCode).getData().equalsIgnoreCase("058") ||
+                    dataHashMap.get(RaveConstants.fieldBankCode).getData().equalsIgnoreCase("011"))
+                    && (Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()) <= 100)) {
                 mView.showGTBankAmountIssue();
-        }
-        else {
-            if(ravePayInitializer.getIsDisplayFee()){
-                fetchFee(body, Boolean.valueOf(dataHashMap.get(context.getString(R.string.isInternetBanking)).getData()));
             } else {
-                chargeAccount(body, ravePayInitializer.getEncryptionKey(), Boolean.valueOf(dataHashMap.get(context.getString(R.string.isInternetBanking)).getData()));
+                if (ravePayInitializer.getIsDisplayFee()) {
+                    fetchFee(body, Boolean.valueOf(dataHashMap.get(RaveConstants.isInternetBanking).getData()));
+                } else {
+                    chargeAccount(body, ravePayInitializer.getEncryptionKey(), Boolean.valueOf(dataHashMap.get(RaveConstants.isInternetBanking).getData()));
+                }
             }
         }
     }
@@ -342,21 +344,20 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void init(RavePayInitializer ravePayInitializer) {
 
-        Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
-        Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
-        if (isEmailValid){
-            mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
-        }
-        else{
-            mView.onEmailValidated("", View.VISIBLE);
-        }
-        if (isAmountValid){
-            mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
-        }
-        else {
-            mView.onAmountValidated("", View.VISIBLE);
-        }
-
+         if (ravePayInitializer!=null) {
+             Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
+             Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+             if (isEmailValid) {
+                 mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
+             } else {
+                 mView.onEmailValidated("", View.VISIBLE);
+             }
+             if (isAmountValid) {
+                 mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
+             } else {
+                 mView.onAmountValidated("", View.VISIBLE);
+             }
+         }
     }
 
     @Override

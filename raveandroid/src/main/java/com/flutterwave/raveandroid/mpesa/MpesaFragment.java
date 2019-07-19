@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -60,6 +61,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         setListeners();
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
         presenter.init(ravePayInitializer);
 
         return v;
@@ -89,13 +92,12 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void collectData() {
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         presenter.onDataCollected(dataHashMap);
     }
 
     private void initializeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
         presenter = new MpesaPresenter(getActivity(), this);
         payButton =  v.findViewById(R.id.rave_payButton);
@@ -120,11 +122,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         if(pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setMessage(getResources().getString(R.string.checkStatus));
+            pollingProgressDialog.setMessage(RaveConstants.checkStatus);
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -149,7 +151,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(getResources().getString(R.string.wait));
+            progressDialog.setMessage(RaveConstants.wait);
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -177,7 +179,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -188,15 +190,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setMessage((RaveConstants.charge) + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
+        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
         presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
 
             }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -214,7 +216,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra(getResources().getString(R.string.response), responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
@@ -225,7 +227,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
         presenter.processTransaction(dataHashMap, ravePayInitializer);
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
     }
 

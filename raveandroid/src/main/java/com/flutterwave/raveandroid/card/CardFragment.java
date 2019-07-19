@@ -105,6 +105,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         setListeners();
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
         presenter.init(ravePayInitializer);
 
         return v;
@@ -117,7 +119,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     private void initializeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         progressContainer =  v.findViewById(R.id.rave_progressContainer);
         pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
         saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
@@ -151,11 +152,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldEmail), new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldCvv), new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldCardExpiry), new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldcardNoStripped), new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldCvv, new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldCardExpiry, new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldcardNoStripped, new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
 
         presenter.onDataCollected(dataHashMap);
     }
@@ -181,7 +182,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-            String cardNoStripped = dataHashMap.get(getResources().getString(R.string.cardNoStripped)).getData();
+            String cardNoStripped = dataHashMap.get(RaveConstants.cardNoStripped).getData();
             //CheckSaveCard(cardNoStripped);
 
             presenter.processTransaction(dataHashMap, ravePayInitializer);
@@ -263,7 +264,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             if (progessDialog == null) {
                 progessDialog = new ProgressDialog(getActivity());
                 progessDialog.setCanceledOnTouchOutside(false);
-                progessDialog.setMessage(getResources().getString(R.string.wait));
+                progessDialog.setMessage(RaveConstants.wait);
             }
 
             if (active && !progessDialog.isShowing()) {
@@ -520,8 +521,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void displayFee(String charge_amount, final Payload payload, final int why) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes) , new DialogInterface.OnClickListener() {
+        builder.setMessage((RaveConstants.charge + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue));
+        builder.setPositiveButton(RaveConstants.yes , new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -533,7 +534,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 }
 
             }
-        }).setNegativeButton(getResources().getString(R.string.no) , new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no , new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

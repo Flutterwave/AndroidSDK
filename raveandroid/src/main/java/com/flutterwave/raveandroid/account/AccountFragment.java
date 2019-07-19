@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -92,6 +93,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         setListeners();
 
+        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
         presenter.init(ravePayInitializer);
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
@@ -106,7 +109,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     private void initializeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
         accountNumberTil =  v.findViewById(R.id.rave_accountNumberTil);
         accountNumberEt =  v.findViewById(R.id.rave_accountNumberEt);
         pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
@@ -185,18 +187,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(getResources().getString(R.string.fieldEmail), new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldPhone), new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldAmount), new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
 
         if (accountNumberTil.getVisibility() == View.VISIBLE) {
             if (accountNumberEt.getText().toString().length() != 10) {
 
-                dataHashMap.put(getResources().getString(R.string.fieldAccount), new ViewObject(accountNumberTil.getId(), "", TextInputLayout.class));
+                dataHashMap.put(RaveConstants.fieldAccount, new ViewObject(accountNumberTil.getId(), "", TextInputLayout.class));
             }
             else{
 
-                dataHashMap.put(getResources().getString(R.string.fieldAccount), new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
+                dataHashMap.put(RaveConstants.fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
             }
          }
 
@@ -443,12 +445,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(getResources().getString(R.string.fieldAmount)).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
-        dataHashMap.put(getResources().getString(R.string.fieldBVN), new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldDOB), new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.fieldBankCode), new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
-        dataHashMap.put(getResources().getString(R.string.isInternetBanking), new ViewObject(bankEt.getId(), selectedBank.isInternetbanking()+"", TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldBVN, new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldDOB, new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldBankCode, new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.isInternetBanking, new ViewObject(bankEt.getId(), selectedBank.isInternetbanking()+"", TextInputLayout.class));
 
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
