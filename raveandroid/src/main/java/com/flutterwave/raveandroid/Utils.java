@@ -90,7 +90,7 @@ public class Utils {
         return false;
     }
 
-    private static Boolean areAmountsSame(String amount1, String amount2) {
+    private static boolean areAmountsSame(String amount1, String amount2) {
         Double number1 = Double.parseDouble(amount1);
         Double number2 = Double.parseDouble(amount2);
 

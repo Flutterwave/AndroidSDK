@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         addVendorBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Boolean valid = true;
+                boolean valid = true;
                 String vendorRef = vendorReferenceET.getText().toString().trim();
                 String vendorRatio = vendorRatioET.getText().toString().trim();
 

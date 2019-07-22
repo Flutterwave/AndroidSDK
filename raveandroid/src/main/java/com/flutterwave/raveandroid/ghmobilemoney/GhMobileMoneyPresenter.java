@@ -206,22 +206,22 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
                 if (network == 0) {
                     valid = false;
-                    mView.showToast(RaveConstants.validNetworkPrompt);
+                    mView.showToast(context.getResources().getString(R.string.validNetworkPrompt));
                 }
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
+                    mView.showFieldError(voucherID, context.getResources().getString(R.string.validVoucherPrompt), voucherViewType);
                 }
 
                 if (valid) {
@@ -235,7 +235,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         if (ravePayInitializer!=null) {
 
-            Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }

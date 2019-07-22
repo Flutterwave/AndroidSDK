@@ -58,7 +58,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(RaveConstants.transactionError);
+                    mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
                 }
             }
 
@@ -66,7 +66,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(RaveConstants.transactionError);
+                mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
             }
         });
     }
@@ -152,7 +152,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-         Boolean valid = true;
+         boolean valid = true;
 
         int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
         String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
@@ -165,12 +165,12 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         if (!amountValidator.isAmountValid(amount)) {
             valid = false;
-            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+            mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
         }
 
         if (!phoneValidator.isPhoneValid(phone)) {
             valid = false;
-            mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+            mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
         }
 
         if (valid) {
@@ -219,7 +219,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         if (ravePayInitializer!=null) {
 
-            Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }

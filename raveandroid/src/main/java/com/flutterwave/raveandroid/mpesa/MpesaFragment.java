@@ -122,11 +122,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         if(pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setMessage(RaveConstants.checkStatus);
+            pollingProgressDialog.setMessage(getResources().getString(R.string.checkStatus));
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancel, new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -151,7 +151,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(RaveConstants.wait);
+            progressDialog.setMessage(getResources().getString(R.string.wait));
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -190,15 +190,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage((RaveConstants.charge) + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
-        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
         presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
 
             }
-        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

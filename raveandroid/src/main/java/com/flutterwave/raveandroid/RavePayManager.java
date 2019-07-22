@@ -106,7 +106,7 @@ public class RavePayManager {
         return this;
     }
 
-    public RavePayManager showStagingLabel(Boolean showStagingLabel){
+    public RavePayManager showStagingLabel(boolean showStagingLabel){
         this.showStagingLabel = showStagingLabel;
         return this;
     }
@@ -181,7 +181,7 @@ public class RavePayManager {
         }
     }
 
-    public RavePayManager shouldDisplayFee(Boolean displayFee){
+    public RavePayManager shouldDisplayFee(boolean displayFee){
         this.displayFee = displayFee;
         return this;
     }

@@ -239,7 +239,7 @@ public class RavePayInitializer {
         this.payment_plan = payment_plan;
     }
 
-    public void setPreAuth( Boolean isPreAuth){ this.isPreAuth = isPreAuth; }
+    public void setPreAuth( boolean isPreAuth){ this.isPreAuth = isPreAuth; }
 
     public boolean getIsPreAuth() { return  isPreAuth; }
 

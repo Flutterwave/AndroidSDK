@@ -136,7 +136,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase(RaveConstants.success)) {
+                    if (status.equalsIgnoreCase(context.getResources().getString(R.string.success))) {
                         mView.onValidateSuccessful(flwRef, responseAsJSONString);
                     }
                     else {
@@ -144,7 +144,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     }
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.invalidCharge);
+                    mView.onPaymentError(context.getResources().getString(R.string.invalidCharge));
                 }
             }
 
@@ -232,7 +232,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-        Boolean valid = true;
+        boolean valid = true;
 
         int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
         String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
@@ -253,17 +253,17 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
                 }
 
                 if (!emailValidator.isEmailValid(email)) {
                     valid = false;
-                    mView.showFieldError(emailID, RaveConstants.validEmailPrompt, emailViewType);
+                    mView.showFieldError(emailID, context.getResources().getString(R.string.validEmailPrompt), emailViewType);
                 }
 
                 if (account.isEmpty()) {
@@ -278,12 +278,12 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
                     if (amnt <= 0) {
                         valid = false;
-                        mView.showToast(RaveConstants.validAmountPrompt);
+                        mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showToast(RaveConstants.validAmountPrompt);
+                    mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
                 }
 
                 if (valid){
@@ -345,8 +345,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
          if (ravePayInitializer!=null) {
-             Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
-             Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
+             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
              if (isEmailValid) {
                  mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
              } else {

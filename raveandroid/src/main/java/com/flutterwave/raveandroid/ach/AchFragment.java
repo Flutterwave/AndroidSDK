@@ -16,19 +16,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.AVSVBVFragment;
-import com.flutterwave.raveandroid.OTPFragment;
-import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
-import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,8 +81,8 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(RaveConstants.charge + charge_amount + currency + RaveConstants.askToContinue);
-        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + currency + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -96,7 +90,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
             }
-        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

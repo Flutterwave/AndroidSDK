@@ -133,7 +133,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(RaveConstants.wait);
+            progressDialog.setMessage(getResources().getString(R.string.wait));
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -155,7 +155,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancelPayment, new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -204,8 +204,8 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(RaveConstants.charge + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
-        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -213,7 +213,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
                 presenter.chargeUgMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
             }
-        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
