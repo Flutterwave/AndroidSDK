@@ -17,15 +17,13 @@
             android:layout_height="50dp">
 
             <TextView
+                android:id="@+id/bankNameTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:id="@+id/bankNameTv"
-                android:letterSpacing="0.04"
                 android:layout_centerVertical="true"
+                android:letterSpacing="0.04"
                 android:textColor="#4a4a4a"
-                tools:text="James Hanson: 0908403298"
-                />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"

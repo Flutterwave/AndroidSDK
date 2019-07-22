@@ -9,26 +9,29 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
+
+import java.util.HashMap;
 
 import static android.view.View.GONE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MpesaFragment extends Fragment implements MpesaContract.View {
+public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
     View v;
     TextInputEditText amountEt;
@@ -39,6 +42,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
     MpesaPresenter presenter;
+    Button payButton;
+    int rave_phoneEtInt;
 
     public MpesaFragment() {
         // Required empty public constructor
@@ -49,34 +54,57 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
+        // Inflate the layout for this v
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
-        presenter = new MpesaPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        phoneEt = (TextInputEditText) v.findViewById(R.id.rave_phoneEt);
-        phoneTil = (TextInputLayout) v.findViewById(R.id.rave_phoneTil);
+        initializeViews();
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
+        setListeners();
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validate();
-            }
-        });
-
-        double amountToPay = ravePayInitializer.getAmount();
-
-        if (amountToPay > 0) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(amountToPay));
-        }
+        presenter.init(ravePayInitializer);
 
         return v;
+    }
+
+    private void setListeners() {
+        payButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.rave_payButton) {
+            clearErrors();
+            Utils.hide_keyboard(getActivity());
+            collectData();
+        }
+    }
+
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+    }
+
+    private void collectData() {
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        presenter.onDataCollected(dataHashMap);
+    }
+
+    private void initializeViews() {
+        rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
+        presenter = new MpesaPresenter(getActivity(), this);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        amountEt =  v.findViewById(R.id.rave_amountTV);
+        phoneTil = v.findViewById(R.id.rave_phoneTil);
+        phoneEt =  v.findViewById(R.id.rave_phoneEt);
     }
 
     @Override
@@ -94,11 +122,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
 
         if(pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
+            pollingProgressDialog.setMessage(RaveConstants.checkStatus);
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -115,82 +143,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         }
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
-    }
-
-    private void validate() {
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-        String phone = phoneEt.getText().toString();
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (phone.length() < 1) {
-            valid = false;
-            phoneTil.setError("Enter a valid number");
-        }
-
-        if (valid) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCountry(ravePayInitializer.getCountry())
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(phone)
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-            if (ravePayInitializer.getPayment_plan() != null) {
-                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-            }
-
-            Payload body = builder.createMpesaPayload();
-
-            if(ravePayInitializer.getIsDisplayFee()){
-                presenter.fetchFee(body);
-            } else {
-                presenter.chargeMpesa(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
-
-    }
-
-
-
     @Override
     public void showProgressIndicator(boolean active) {
 
@@ -199,7 +151,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage("Please wait...");
+            progressDialog.setMessage(RaveConstants.wait);
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -227,7 +179,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra("response", responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -238,17 +190,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage((RaveConstants.charge) + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
+        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
-
         presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
 
-
             }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -266,10 +216,40 @@ public class MpesaFragment extends Fragment implements MpesaContract.View {
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class){
+            TextInputLayout view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+        else if (viewType == EditText.class){
+            EditText view  =  v.findViewById(viewID);
+            view.setError(message);
+        }
+
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        amountTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+
     }
 }

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -19,7 +21,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     private Context context;
     private AchContract.View mView;
-    SharedPrefsRequestImpl sharedMgr;
+    private SharedPrefsRequestImpl sharedMgr;
 
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
@@ -30,7 +32,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void onStartAchPayment(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer.getAmount() > 0) {
+        if (ravePayInitializer.getAmount() > 0 || ravePayInitializer.toString().isEmpty()) {
             mView.showAmountField(false);
             mView.showRedirectMessage(true);
         }
@@ -54,7 +56,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 double amnt = Double.parseDouble(amount);
 
                 if (amnt <= 0) {
-                    mView.showAmountError("Enter a valid amount");
+                    mView.showAmountError(RaveConstants.validAmountPrompt);
                 }
                 else {
                     ravePayInitializer.setAmount(amnt);
@@ -63,31 +65,13 @@ public class AchPresenter implements AchContract.UserActionsListener {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                mView.showAmountError("Enter a valid amount");
+                mView.showAmountError(RaveConstants.validAmountPrompt);
             }
         }
 
     }
 
     private void initiatePayment(RavePayInitializer ravePayInitializer) {
-
-
-//        {
-//            "PBFPubKey": "FLWPUBK-7adb6177bd71dd43c2efa3f1229e3b7f-X",
-//                "currency": "USD",
-//                "payment_type": "account",
-//                "country": "US",
-//                "amount": "20",
-//                "email": "user@example.com",
-//                "phonenumber": "0000000000",
-//                "firstname": "Temi",
-//                "lastname": "Tester",
-//                "IP": "355426087298442",
-//                "txRef": "rave-checkout-" + Date.now(),
-//                "is_us_bank_charge": "true",
-//                "redirect_url": "https://rave-webhook.herokuapp.com/receivepayment",
-//                "device_fingerprint": "69e6b7f0b72037aa8428b70fbe03986c"
-//        }
 
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(ravePayInitializer.getAmount() + "")
