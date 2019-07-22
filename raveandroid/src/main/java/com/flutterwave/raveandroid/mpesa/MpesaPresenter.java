@@ -58,7 +58,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
+                    mView.showFetchFeeFailed(RaveConstants.transactionError);
                 }
             }
 
@@ -66,7 +66,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
+                mView.showFetchFeeFailed(RaveConstants.transactionError);
             }
         });
     }
@@ -165,12 +165,12 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         if (!amountValidator.isAmountValid(amount)) {
             valid = false;
-            mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
         }
 
         if (!phoneValidator.isPhoneValid(phone)) {
             valid = false;
-            mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+            mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
         }
 
         if (valid) {

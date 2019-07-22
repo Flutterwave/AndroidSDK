@@ -7,7 +7,6 @@ import android.view.View;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -226,32 +225,32 @@ public class CardPresenter implements CardContract.UserActionsListener {
              try{
               boolean isAmountValidated = amountValidator.isAmountValid(amount);
                  if (!isAmountValidated) {
-                        valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                        valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    valid = false; mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                    valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }
 
                 boolean isEmailValidated = emailValidator.isEmailValid(email);
                 if (!isEmailValidated) {
-                    valid = false; mView.showFieldError(emailID, context.getResources().getString(R.string.validPhonePrompt), emailViewType);
+                    valid = false; mView.showFieldError(emailID, RaveConstants.validPhonePrompt, emailViewType);
                 }
 
                 boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
                 if (!isCVVValidated) {
-                    valid = false; mView.showFieldError(cvvID, context.getResources().getString(R.string.validCvvPrompt), cvvViewType);
+                    valid = false; mView.showFieldError(cvvID, RaveConstants.validCvvPrompt, cvvViewType);
                 }
 
                 boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
 
                 if (!isCardExpiryValidated) {
-                    valid = false;  mView.showFieldError(cardExpiryID, context.getResources().getString(R.string.validExpiryDatePrompt), cardExpiryViewType);
+                    valid = false;  mView.showFieldError(cardExpiryID, RaveConstants.validExpiryDatePrompt, cardExpiryViewType);
                 }
 
                 boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
                 if (!isCardNoValidator) {
-                    valid = false; mView.showFieldError(cardNoStrippedID, context.getResources().getString(R.string.validCreditCardPrompt), cardNoStrippedViewType);
+                    valid = false; mView.showFieldError(cardNoStrippedID, RaveConstants.validCreditCardPrompt, cardNoStrippedViewType);
                 }
 
                 if (valid) {
@@ -349,15 +348,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
                         else {
-                            mView.onPaymentError(context.getResources().getString(R.string.unknownAuthmsg));
+                            mView.onPaymentError(RaveConstants.unknownAuthmsg);
                         }
                     }
                     else {
-                        mView.onPaymentError(context.getResources().getString(R.string.unknownResCodemsg));
+                        mView.onPaymentError(RaveConstants.unknownResCodemsg);
                     }
                 }
                 else {
-                    mView.onPaymentError(context.getResources().getString(R.string.invalidChargeCode));
+                    mView.onPaymentError(RaveConstants.invalidChargeCode);
                 }
 
             }

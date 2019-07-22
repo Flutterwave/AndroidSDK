@@ -56,7 +56,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
+                    mView.showFetchFeeFailed(RaveConstants.transactionError);
                 }
             }
 
@@ -64,7 +64,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(context.getResources().getString(R.string.transactionError));
+                mView.showFetchFeeFailed(RaveConstants.transactionError);
             }
         });
     }
@@ -95,7 +95,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError(context.getResources().getString(R.string.noResponse));
+                    mView.onPaymentError(RaveConstants.noResponse);
                 }
 
             }
@@ -159,12 +159,12 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         if (!amountValidator.isAmountValid(amount)) {
             valid = false;
-            mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
         }
 
          if (phone.length() < 1) {
                 valid = false;
-                mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+                mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
         }
 
          if (valid) {

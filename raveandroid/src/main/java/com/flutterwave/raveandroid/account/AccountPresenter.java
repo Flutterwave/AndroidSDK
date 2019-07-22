@@ -136,7 +136,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase(context.getResources().getString(R.string.success))) {
+                    if (status.equalsIgnoreCase(RaveConstants.success)) {
                         mView.onValidateSuccessful(flwRef, responseAsJSONString);
                     }
                     else {
@@ -144,7 +144,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     }
                 }
                 else {
-                    mView.onPaymentError(context.getResources().getString(R.string.invalidCharge));
+                    mView.onPaymentError(RaveConstants.invalidCharge);
                 }
             }
 
@@ -253,17 +253,17 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
                 }
 
                 if (!emailValidator.isEmailValid(email)) {
                     valid = false;
-                    mView.showFieldError(emailID, context.getResources().getString(R.string.validEmailPrompt), emailViewType);
+                    mView.showFieldError(emailID, RaveConstants.validEmailPrompt, emailViewType);
                 }
 
                 if (account.isEmpty()) {
@@ -278,12 +278,12 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
                     if (amnt <= 0) {
                         valid = false;
-                        mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
+                        mView.showToast(RaveConstants.validAmountPrompt);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     valid = false;
-                    mView.showToast(context.getResources().getString(R.string.validAmountPrompt));
+                    mView.showToast(RaveConstants.validAmountPrompt);
                 }
 
                 if (valid){

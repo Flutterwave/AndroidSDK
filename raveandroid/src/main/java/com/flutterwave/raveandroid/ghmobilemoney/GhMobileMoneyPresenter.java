@@ -206,22 +206,22 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                 if (!amountValidator.isAmountValid(amount)) {
                     valid = false;
-                    mView.showFieldError(amountID, context.getResources().getString(R.string.validAmountPrompt), amountViewType);
+                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }
 
                 if (!phoneValidator.isPhoneValid(phone)) {
                     valid = false;
-                    mView.showFieldError(phoneID, context.getResources().getString(R.string.validPhonePrompt), phoneViewType);
+                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
                 }
 
                 if (network == 0) {
                     valid = false;
-                    mView.showToast(context.getResources().getString(R.string.validNetworkPrompt));
+                    mView.showToast(RaveConstants.validNetworkPrompt);
                 }
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, context.getResources().getString(R.string.validVoucherPrompt), voucherViewType);
+                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
                 }
 
                 if (valid) {
