@@ -220,7 +220,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
         Class cardExpiryViewType = dataHashMap.get(RaveConstants.fieldCardExpiry).getViewType();
 
         int cardNoStrippedID = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewId();
-        String cardNoStripped = dataHashMap.get(RaveConstants.fieldcardNoStripped).getData().replaceAll("\\s", "");
+        String cardNoStripped = dataHashMap.get(RaveConstants.fieldcardNoStripped).getData().replaceAll(" ", "");
+        dataHashMap.get(RaveConstants.fieldcardNoStripped).setData(cardNoStripped);
+
         Class cardNoStrippedViewType = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewType();
 
              try{
@@ -268,7 +270,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "").setCardno(dataHashMap.get(RaveConstants.fieldcardNoStripped).getData())
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCardno(dataHashMap.get(RaveConstants.fieldcardNoStripped).getData())
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setCvv(dataHashMap.get(RaveConstants.fieldCvv).getData())
