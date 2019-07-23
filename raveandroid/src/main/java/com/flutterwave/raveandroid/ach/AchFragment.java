@@ -16,23 +16,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.AVSVBVFragment;
-import com.flutterwave.raveandroid.OTPFragment;
-import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
-import static com.flutterwave.raveandroid.RaveConstants.PIN;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AchFragment extends Fragment implements AchContract.View {
+public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener {
 
     private ProgressDialog progressDialog;
     AchPresenter presenter;
@@ -52,30 +47,42 @@ public class AchFragment extends Fragment implements AchContract.View {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_ach, container, false);
 
+        initializeViews();
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        payInstructionsTv = (TextView) v.findViewById(R.id.paymentInstructionsTv);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
 
         presenter.onStartAchPayment(ravePayInitializer);
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amount = amountEt.getText().toString();
-                presenter.onPayButtonClicked(ravePayInitializer, amount);
-            }
-        });
+        setListeners();
+
         return v;
+    }
+
+    private void setListeners() {
+        payButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.rave_payButton) {
+            String amount = amountEt.getText().toString();
+            presenter.onPayButtonClicked(ravePayInitializer, amount);
+        }
+    }
+
+    private void initializeViews() {
+        payInstructionsTv =  v.findViewById(R.id.paymentInstructionsTv);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        amountEt =  v.findViewById(R.id.rave_amountTV);
     }
 
     @Override
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + currency + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + currency + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -83,7 +90,7 @@ public class AchFragment extends Fragment implements AchContract.View {
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
             }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -214,4 +221,5 @@ public class AchFragment extends Fragment implements AchContract.View {
             getActivity().finish();
         }
     }
+
 }

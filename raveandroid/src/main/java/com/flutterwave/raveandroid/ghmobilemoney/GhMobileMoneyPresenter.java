@@ -5,19 +5,22 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
-import com.flutterwave.raveandroid.data.RequeryRequestBodyv2;
-import com.flutterwave.raveandroid.mpesa.MpesaContract;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
+
+import java.util.HashMap;
 
 /**
  * Created by hfetuga on 28/06/2018.
@@ -26,8 +29,10 @@ import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActionsListener {
     private Context context;
     private GhMobileMoneyContract.View mView;
+    private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
-    public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
+    GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -139,6 +144,101 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                 mView.onPaymentFailed(message, responseAsJSONString);
             }
         });
+    }
+
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
+
+        if (ravePayInitializer!=null) {
+
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(context))
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setNetwork(dataHashMap.get("network").getData())
+                    .setVoucher(dataHashMap.get("voucher").getData())
+                    .setPhonenumber(dataHashMap.get("phone").getData())
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
+            Payload body = builder.createGhMobileMoneyPayload();
+
+            if (ravePayInitializer.getIsDisplayFee()) {
+                fetchFee(body);
+            } else {
+                chargeGhMobileMoney(body, ravePayInitializer.getEncryptionKey());
+            }
+        }
+    }
+
+    @Override
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
+
+        boolean valid = true;
+
+        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
+        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+
+        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
+        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+
+        int voucherID = dataHashMap.get(RaveConstants.fieldVoucher).getViewId();
+        String voucher = dataHashMap.get(RaveConstants.fieldVoucher).getData();
+        Class voucherViewType = dataHashMap.get(RaveConstants.fieldVoucher).getViewType();
+
+        int network = Integer.valueOf(dataHashMap.get(RaveConstants.fieldNetwork).getData());
+
+                if (!amountValidator.isAmountValid(amount)) {
+                    valid = false;
+                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                }
+
+                if (!phoneValidator.isPhoneValid(phone)) {
+                    valid = false;
+                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+                }
+
+                if (network == 0) {
+                    valid = false;
+                    mView.showToast(RaveConstants.validNetworkPrompt);
+                }
+
+                if (!voucher.isEmpty()) {
+                    valid = false;
+                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
+                }
+
+                if (valid) {
+                    mView.onValidationSuccessful(dataHashMap);
+                }
+
+    }
+
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+
+        if (ravePayInitializer!=null) {
+
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isAmountValid) {
+                mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+            }
+        }
     }
 }
 

@@ -1,11 +1,15 @@
 package com.flutterwave.raveandroid.account;
 
 
+import android.app.Activity;
+
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +46,22 @@ public interface AccountContract {
         void showFetchFeeFailed(String s);
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
+
+        void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
+
+        void showFieldError(int viewID, String message, Class<?> viewtype);
+
+        void showGTBankAmountIssue();
+
+        void onEmailValidated(String emailToSet, int visibility);
+
+        void onAmountValidated(String amountToSet, int visibility);
+
+        void showDateOfBirth(int whatToShow);
+
+        void showBVN(int whatToShow);
+
+        void showInternetBankingSelected(int whatToShow);
     }
 
     interface UserActionsListener {
@@ -58,6 +78,14 @@ public interface AccountContract {
         void onDetachView();
 
         void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer);
+
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
+
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void init(RavePayInitializer ravePayInitializer);
+
+        void onInternetBankingValidated(Bank bank);
     }
 
 }

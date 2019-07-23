@@ -19,20 +19,15 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.OAEPParameterSpec;
-import javax.crypto.spec.PSource;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -90,7 +85,7 @@ public class Utils {
         return false;
     }
 
-    private static Boolean areAmountsSame(String amount1, String amount2) {
+    private static boolean areAmountsSame(String amount1, String amount2) {
         Double number1 = Double.parseDouble(amount1);
         Double number2 = Double.parseDouble(amount2);
 
@@ -223,12 +218,12 @@ public class Utils {
     }
 
     private static String encrypt(String data, String key) throws Exception {
-        byte[] keyBytes = key.getBytes(UTF_8);
+        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
         cipher.init(Cipher.ENCRYPT_MODE, skey);
-        byte[] plainTextBytes = data.getBytes(UTF_8);
+        byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
         byte[] buf = cipher.doFinal(plainTextBytes);
         return Base64.encodeToString(buf, Base64.DEFAULT);
 
@@ -239,7 +234,7 @@ public class Utils {
         byte[] array = md.digest(md5.getBytes(CHARSET_NAME));
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100), 1, 3);
         }
         return sb.toString();
     }
@@ -300,7 +295,7 @@ public class Utils {
         }
 
         String reversedNumber = new StringBuffer(number).reverse().toString();
-        char reversedCharArray[] = reversedNumber.toCharArray();
+        char[] reversedCharArray = reversedNumber.toCharArray();
         int luhnSum = 0;
 
         // Double the value of every second digit from the right
