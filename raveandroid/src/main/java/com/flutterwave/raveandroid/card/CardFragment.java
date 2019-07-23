@@ -180,7 +180,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-        Log.d("okh", dataHashMap.get(RaveConstants.fieldcardNoStripped).getData() + "card sent");
             presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
