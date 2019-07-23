@@ -56,7 +56,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 double amnt = Double.parseDouble(amount);
 
                 if (amnt <= 0) {
-                    mView.showAmountError(RaveConstants.validAmountPrompt);
+                    mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
                 }
                 else {
                     ravePayInitializer.setAmount(amnt);
@@ -65,7 +65,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                mView.showAmountError(RaveConstants.validAmountPrompt);
+                mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
             }
         }
 
@@ -132,12 +132,12 @@ public class AchPresenter implements AchContract.UserActionsListener {
                         }
                     }
                     else {
-                        mView.onPaymentError("No authUrl was returned");
+                        mView.onPaymentError(context.getResources().getString(R.string.no_authurl_was_returnedmsg));
                     }
 
                 }
                 else {
-                    mView.onPaymentError("No response data was returned");
+                    mView.onPaymentError(RaveConstants.no_response_data_was_returnedmsg);
                 }
 
             }

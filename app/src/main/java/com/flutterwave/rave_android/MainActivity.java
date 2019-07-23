@@ -1,9 +1,9 @@
 package com.flutterwave.rave_android;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         addVendorBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Boolean valid = true;
+                boolean valid = true;
                 String vendorRef = vendorReferenceET.getText().toString().trim();
                 String vendorRatio = vendorRatioET.getText().toString().trim();
 

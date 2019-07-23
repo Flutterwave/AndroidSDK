@@ -8,7 +8,6 @@ import android.webkit.URLUtil;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -232,7 +231,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-        Boolean valid = true;
+        boolean valid = true;
 
         int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
         String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
@@ -345,8 +344,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
          if (ravePayInitializer!=null) {
-             Boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
-             Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
+             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
              if (isEmailValid) {
                  mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
              } else {

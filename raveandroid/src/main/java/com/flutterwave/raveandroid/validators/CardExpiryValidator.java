@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.validators;
 
 public class CardExpiryValidator {
 
-    public Boolean isCardExpiryValid(String cardExpiry){
+    public boolean isCardExpiryValid(String cardExpiry) {
         return cardExpiry.length() == 5;
     }
 }

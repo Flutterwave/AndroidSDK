@@ -6,7 +6,6 @@ import android.util.Log;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -152,7 +151,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-         Boolean valid = true;
+        boolean valid = true;
 
         int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
         String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
@@ -219,7 +218,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         if (ravePayInitializer!=null) {
 
-            Boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }

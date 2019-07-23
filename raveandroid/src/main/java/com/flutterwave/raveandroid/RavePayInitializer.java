@@ -2,8 +2,6 @@ package com.flutterwave.raveandroid;
 
 import org.parceler.Parcel;
 
-import java.util.List;
-
 /**
  * Created by hamzafetuga on 21/07/2017.
  */
@@ -239,7 +237,9 @@ public class RavePayInitializer {
         this.payment_plan = payment_plan;
     }
 
-    public void setPreAuth( Boolean isPreAuth){ this.isPreAuth = isPreAuth; }
+    public void setPreAuth(boolean isPreAuth) {
+        this.isPreAuth = isPreAuth;
+    }
 
     public boolean getIsPreAuth() { return  isPreAuth; }
 

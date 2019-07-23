@@ -104,7 +104,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
                     if (position == 0) {
                         showInstructionsAndVoucher(false);
-                        validateInstructions = RaveConstants.checkStatus;
+                        validateInstructions = getResources().getString(R.string.checkStatus);
                     }
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
@@ -116,7 +116,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
-                        validateInstructions = RaveConstants.checkStatus;
+                        validateInstructions = getResources().getString(R.string.checkStatus);
                         showInstructionsAndVoucher(true);
                         instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
                     }
@@ -205,7 +205,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(RaveConstants.wait);
+            progressDialog.setMessage(getResources().getString(R.string.wait));
         }
 
         if (active && !progressDialog.isShowing()) {
@@ -233,7 +233,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, RaveConstants.cancelPayment, new DialogInterface.OnClickListener() {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
@@ -282,8 +282,8 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage((RaveConstants.charge) + charge_amount + ravePayInitializer.getCurrency() + RaveConstants.askToContinue);
-        builder.setPositiveButton(RaveConstants.yes, new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -292,7 +292,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
 
             }
-        }).setNegativeButton(RaveConstants.no, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
