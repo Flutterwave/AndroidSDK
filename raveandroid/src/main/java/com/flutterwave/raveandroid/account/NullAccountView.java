@@ -3,9 +3,11 @@ package com.flutterwave.raveandroid.account;
 import android.support.v4.app.Fragment;
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -86,6 +88,46 @@ public class NullAccountView extends Fragment implements AccountContract.View {
 
     @Override
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewtype) {
+
+    }
+
+    @Override
+    public void showGTBankAmountIssue() {
+
+    }
+
+    @Override
+    public void onEmailValidated(String emailToSet, int visibility) {
+
+    }
+
+    @Override
+    public void onAmountValidated(String amountToSet, int visibility) {
+
+    }
+
+    @Override
+    public void showDateOfBirth(int whatToShow) {
+
+    }
+
+    @Override
+    public void showBVN(int whatToShow) {
+
+    }
+
+    @Override
+    public void showInternetBankingSelected(int whatToShow) {
 
     }
 }

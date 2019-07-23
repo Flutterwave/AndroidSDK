@@ -1,12 +1,16 @@
 package com.flutterwave.raveandroid.card;
 
 
+import android.app.Activity;
+
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,35 +21,24 @@ public interface CardContract {
 
     interface View {
         void showProgressIndicator(boolean active);
-        void onPaymentError(String message);
 
-        void onPinAuthModelSuggested(Payload payload);
+        void onPaymentError(String message);
 
         void showToast(String message);
 
-        void showOTPLayout(String flwRef, String chargeResponseMessage);
-
-        void onValidateSuccessful(String message, String responseAsString);
-
         void onValidateError(String message);
-
-        void onVBVAuthModelUsed(String authUrlCrude, String flwRef);
-
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
-
-        void onPaymentFailed(String status, String responseAsString);
-
-        void showSavedCards(List<SavedCard> cards);
-
-        void onTokenRetrieved(String flwRef, String cardBIN, String token);
-
-        void onTokenRetrievalError(String s);
-
-        void displayFee(String charge_amount, Payload payload, int why);
 
         void showFetchFeeFailed(String s);
 
-        void hideSavedCardsButton();
+        void onTokenRetrievalError(String s);
+
+        void onEmailValidated(String emailToSet, int visibility);
+
+        void onAmountValidated(String amountToSet, int visibility);
+
+        void showSavedCards(List<SavedCard> cards);
+
+        void onPinAuthModelSuggested(Payload payload);
 
         void onChargeTokenComplete(ChargeResponse response);
 
@@ -53,44 +46,66 @@ public interface CardContract {
 
         void onAVS_VBVSECURECODEModelSuggested(Payload payload);
 
+        void onVBVAuthModelUsed(String authUrlCrude, String flwRef);
+
+        void showOTPLayout(String flwRef, String chargeResponseMessage);
+
+        void onValidateSuccessful(String message, String responseAsString);
+
+        void displayFee(String charge_amount, Payload payload, int why);
+
+        void onPaymentFailed(String status, String responseAsString);
+
+        void onTokenRetrieved(String flwRef, String cardBIN, String token);
+
         void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
 
         void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
 
-        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
-
         void onNoAuthInternationalSuggested(Payload payload);
 
         void onNoAuthUsed(String flwRef, String publicKey);
+
+        void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
+
+        void showFieldError(int viewID, String message, Class<?> viewtype);
+
+        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
+
+        void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
     }
 
     interface UserActionsListener {
-        void chargeCard(Payload payload, String encryptionKey);
 
-        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
-
-        void validateCardCharge(String flwRef, String otp, String publicKey);
-
-        void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
-
-        void savePotentialCardDets(String cardFirst6, String cardLast4);
-
-        void onSavedCardsClicked(String email);
+        void onDetachView();
 
         void chargeToken(Payload payload);
 
         void fetchFee(Payload payload, int reason);
 
-        void checkForSavedCards(String email);
-
         void onAttachView(CardContract.View view);
 
-        void onDetachView();
+        void init(RavePayInitializer ravePayInitializer);
+
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
+
+        void chargeCard(Payload payload, String encryptionKey);
+
+        void validateCardCharge(String flwRef, String otp, String publicKey);
+
+        void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
+
+        void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
+
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+
+
     }
 
 }

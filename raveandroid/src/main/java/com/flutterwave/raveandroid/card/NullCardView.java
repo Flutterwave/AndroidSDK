@@ -4,10 +4,12 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +30,16 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onNoAuthUsed(String flwRef, String secretKey) {
+
+    }
+
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewtype) {
 
     }
 
@@ -98,17 +110,22 @@ public class NullCardView extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
+    public void onEmailValidated(String emailToSet, int visibility) {
+
+    }
+
+    @Override
+    public void onAmountValidated(String amountToSet, int visibility) {
+
+    }
+
+    @Override
     public void displayFee(String charge_amount, Payload payload, int why) {
 
     }
 
     @Override
     public void showFetchFeeFailed(String s) {
-
-    }
-
-    @Override
-    public void hideSavedCardsButton() {
 
     }
 

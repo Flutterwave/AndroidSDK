@@ -2,27 +2,29 @@ package com.flutterwave.raveandroid.card;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
-
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
-import com.flutterwave.raveandroid.data.CardDetsToSave;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
-import com.flutterwave.raveandroid.data.SavedCard;
-import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.CardExpiryValidator;
+import com.flutterwave.raveandroid.validators.CardNoValidator;
+import com.flutterwave.raveandroid.validators.CvvValidator;
+import com.flutterwave.raveandroid.validators.EmailValidator;
 
-import java.util.List;
-
-import okhttp3.internal.Util;
+import java.util.HashMap;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
@@ -32,10 +34,16 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
  */
 
 public class CardPresenter implements CardContract.UserActionsListener {
+
     private Context context;
     private CardContract.View mView;
+    private EmailValidator emailValidator = new EmailValidator();
+    private AmountValidator amountValidator = new AmountValidator();
+    private CvvValidator cvvValidator = new CvvValidator();
+    private CardExpiryValidator cardExpiryValidator = new CardExpiryValidator();
+    private CardNoValidator cardNoValidator = new CardNoValidator();
 
-    public CardPresenter(Context context, CardContract.View mView) {
+     CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -190,6 +198,111 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
+    public void
+    onDataCollected(HashMap<String, ViewObject> dataHashMap) {
+
+        boolean valid = true;
+
+        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
+        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+
+        int emailID = dataHashMap.get(RaveConstants.fieldEmail).getViewId();
+        String email = dataHashMap.get(RaveConstants.fieldEmail).getData();
+        Class emailViewType = dataHashMap.get(RaveConstants.fieldEmail).getViewType();
+
+        int cvvID = dataHashMap.get(RaveConstants.fieldCvv).getViewId();
+        String cvv = dataHashMap.get(RaveConstants.fieldCvv).getData();
+        Class cvvViewType = dataHashMap.get(RaveConstants.fieldCvv).getViewType();
+
+        int cardExpiryID = dataHashMap.get(RaveConstants.fieldCardExpiry).getViewId();
+        String cardExpiry = dataHashMap.get(RaveConstants.fieldCardExpiry).getData();
+        Class cardExpiryViewType = dataHashMap.get(RaveConstants.fieldCardExpiry).getViewType();
+
+        int cardNoStrippedID = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewId();
+        String cardNoStripped = dataHashMap.get(RaveConstants.fieldcardNoStripped).getData().replaceAll(" ", "");
+        dataHashMap.get(RaveConstants.fieldcardNoStripped).setData(cardNoStripped);
+
+        Class cardNoStrippedViewType = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewType();
+
+             try{
+                 boolean isAmountValidated = amountValidator.isAmountValid(amount);
+                 if (!isAmountValidated) {
+                        valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                }
+
+        boolean isEmailValidated = emailValidator.isEmailValid(email);
+                if (!isEmailValidated) {
+                    valid = false; mView.showFieldError(emailID, RaveConstants.validPhonePrompt, emailViewType);
+                }
+
+        boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
+                if (!isCVVValidated) {
+                    valid = false; mView.showFieldError(cvvID, RaveConstants.validCvvPrompt, cvvViewType);
+                }
+
+        boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
+
+                if (!isCardExpiryValidated) {
+                    valid = false;  mView.showFieldError(cardExpiryID, RaveConstants.validExpiryDatePrompt, cardExpiryViewType);
+                }
+
+        boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
+                if (!isCardNoValidator) {
+                    valid = false; mView.showFieldError(cardNoStrippedID, RaveConstants.validCreditCardPrompt, cardNoStrippedViewType);
+                }
+
+                if (valid) {
+                    mView.onValidationSuccessful(dataHashMap);
+                }
+
+    }
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
+
+        if (ravePayInitializer!=null) {
+
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCardno(dataHashMap.get(RaveConstants.fieldcardNoStripped).getData())
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setCvv(dataHashMap.get(RaveConstants.fieldCvv).getData())
+                    .setEmail(dataHashMap.get(RaveConstants.fieldEmail).getData())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
+                    .setExpiryyear(dataHashMap.get(RaveConstants.fieldCardExpiry).getData().substring(3, 5))
+                    .setExpirymonth(dataHashMap.get(RaveConstants.fieldCardExpiry).getData().substring(0, 2))
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
+            Payload body = builder.createPayload();
+
+            if (ravePayInitializer.getIsDisplayFee()) {
+                fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+            } else {
+                chargeCard(body, ravePayInitializer.getEncryptionKey());
+            }
+        }
+    }
+
+
+    @Override
     public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
@@ -239,15 +352,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
                         else {
-                            mView.onPaymentError("Unknown Auth Model");
+                            mView.onPaymentError(RaveConstants.unknownAuthmsg);
                         }
                     }
                     else {
-                        mView.onPaymentError("Unknown charge response code");
+                        mView.onPaymentError(RaveConstants.unknownResCodemsg);
                     }
                 }
                 else {
-                    mView.onPaymentError("Invalid charge response code");
+                    mView.onPaymentError(RaveConstants.invalidChargeCode);
                 }
 
             }
@@ -280,7 +393,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase("success")) {
+                    if (status.equalsIgnoreCase(RaveConstants.success)) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
                     }
                     else {
@@ -338,22 +451,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void savePotentialCardDets(String cardFirst6, String cardLast4) {
-        new SharedPrefsRequestImpl(context).saveCardDetsToSave(new CardDetsToSave(cardFirst6, cardLast4));
-    }
-
-    @Override
-    public void onSavedCardsClicked(String email) {
-
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-
-        mView.showSavedCards(cards);
-
-    }
-
-    @Override
     public void fetchFee(final Payload payload, final int reason) {
 
         FeeCheckRequestBody body = new FeeCheckRequestBody();
@@ -395,17 +492,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     }
 
     @Override
-    public void checkForSavedCards(String email) {
-        SharedPrefsRequestImpl sharedMgr = new SharedPrefsRequestImpl(context);
-
-        List<SavedCard> cards = sharedMgr.getSavedCards(email);
-
-        if (cards == null || cards.size() == 0) {
-            mView.hideSavedCardsButton();
-        }
-    }
-
-    @Override
     public void chargeToken(Payload payload) {
 
         mView.showProgressIndicator(true);
@@ -424,11 +510,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 mView.showProgressIndicator(false);
 
 
-                if (responseAsJSONString.contains("token not found")) {
-                    mView.onPaymentError("Token not found");
+                if (responseAsJSONString.contains(RaveConstants.tokenNotFound)) {
+                    mView.onPaymentError(RaveConstants.tokenNotFound);
                 }
-                else if (responseAsJSONString.contains("expired")) {
-                    mView.onPaymentError("Token expired");
+                else if (responseAsJSONString.contains(RaveConstants.expired)) {
+                    mView.onPaymentError(RaveConstants.tokenExpired);
                 }
                 else {
                     mView.onPaymentError(message);
@@ -448,5 +534,25 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Override
     public void onAttachView(CardContract.View view) {
         this.mView = view;
+    }
+
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+
+        if (ravePayInitializer != null) {
+
+            boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isEmailValid) {
+                mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
+            } else {
+                mView.onEmailValidated("", View.VISIBLE);
+            }
+            if (isAmountValid) {
+                mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
+            } else {
+                mView.onAmountValidated("", View.VISIBLE);
+            }
+        }
     }
 }
