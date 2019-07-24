@@ -57,7 +57,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog;
     BankTransferPresenter presenter;
-    boolean canShowPollingIndicator = false;
 
     public BankTransferFragment() {
         // Required empty public constructor
@@ -81,32 +80,25 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
         presenter.init(ravePayInitializer);
 
-        double amountToPay = ravePayInitializer.getAmount();
-
-        if (amountToPay > 0) {
-            amountTil.setVisibility(GONE);
-            amountEt.setText(String.valueOf(amountToPay));
-        }
-
         return v;
     }
 
     private void setListeners() {
-                payButton.setOnClickListener(this);
+        payButton.setOnClickListener(this);
         verifyPaymentButton.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
-        int i = view.getId();
-        if (i == payButton.getId()) {
+        int viewId = view.getId();
+        if (viewId == payButton.getId()) {
             clearErrors();
             Utils.hide_keyboard(getActivity());
             collectData();
         }
 
-        if(i == verifyPaymentButton.getId()){
+        if (viewId == verifyPaymentButton.getId()) {
             verifyPayment();
         }
     }
@@ -155,23 +147,11 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
 
     private void verifyPayment() {
-        canShowPollingIndicator = true;
         showPollingIndicator(true);
-        presenter.setRequeryCountdownTime(System.currentTimeMillis());
+        presenter.startPaymentVerification();
 
     }
 
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-        if (canShowPollingIndicator) {
-            if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-                presenter.requeryTx(flwRef, txRef, publicKey);
-            }
-        } else presenter.requeryTx(flwRef, txRef, publicKey);
-
-
-    }
 
     @Override
     public void showPollingIndicator(boolean active) {
@@ -180,27 +160,25 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
                 return;
         }
 
-        if (canShowPollingIndicator) {
-            if (pollingProgressDialog == null) {
-                pollingProgressDialog = new ProgressDialog(getActivity());
-                pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
-            }
-
-            if (active && !pollingProgressDialog.isShowing()) {
-                pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        pollingProgressDialog.dismiss();
-                    }
-                });
-
-                pollingProgressDialog.show();
-            } else if (active && pollingProgressDialog.isShowing()) {
-                //pass
-            } else {
-                pollingProgressDialog.dismiss();
-            }
+        if (pollingProgressDialog == null) {
+            pollingProgressDialog = new ProgressDialog(getActivity());
+            pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
         }
+
+        if (active && !pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    pollingProgressDialog.dismiss();
+                }
+            });
+            pollingProgressDialog.show();
+        } else if (active && pollingProgressDialog.isShowing()) {
+            //pass
+        } else {
+            pollingProgressDialog.dismiss();
+        }
+
     }
 
     private void clearErrors() {
@@ -289,66 +267,24 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void onPaymentSuccessful(String status, String flwRef, final String responseAsString) {
+        Intent intent = new Intent();
+        intent.putExtra("response", responseAsString);
 
-        if (canShowPollingIndicator) { //Verify payment button has been clicked previously
-            Intent intent = new Intent();
-            intent.putExtra("response", responseAsString);
-
-            if (getActivity() != null) {
-                getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-                getActivity().finish();
-            }
-        } else {
-            verifyPaymentButton.setText(getString(R.string.proceed));
-            transferStatusTv.setText(getString(R.string.transfer_received_successfully));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                transferStatusTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_circle_black_24dp, 0, 0, 0);
-            } else transferStatusTv.setTextColor(Color.parseColor("#4BB543"));
-            transferStatusTv.setVisibility(View.VISIBLE);
-
-            verifyPaymentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.putExtra("response", responseAsString);
-
-                    if (getActivity() != null) {
-                        getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-                        getActivity().finish();
-                    }
-                }
-            });
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentFailed(String message, final String responseAsJSONString) {
-        if (canShowPollingIndicator) {// Verify Payment button has been clicked
-            Intent intent = new Intent();
-            intent.putExtra("response", responseAsJSONString);
-            if (getActivity() != null) {
-                getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
-                getActivity().finish();
-            }
-        } else {
-            transferStatusTv.setText(getString(R.string.payment_failed));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                transferStatusTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_error_black_24dp, 0, 0, 0);
-            } else transferStatusTv.setTextColor(Color.parseColor("#FC100D"));
-            transferStatusTv.setVisibility(View.VISIBLE);
-            verifyPaymentButton.setText(getString(R.string.back_to_app));
-            verifyPaymentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.putExtra("response", responseAsJSONString);
-                    if (getActivity() != null) {
-                        getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
-                        getActivity().finish();
-                    }
-                }
-            });
+        Intent intent = new Intent();
+        intent.putExtra("response", responseAsJSONString);
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            getActivity().finish();
         }
+
     }
 
     @Override
@@ -385,6 +321,11 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
+    }
+
+    @Override
+    public void onAmountValidationFailed() {
+        amountTil.setVisibility(View.VISIBLE);
     }
 
 }

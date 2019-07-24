@@ -30,6 +30,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private Context context;
     private BankTransferContract.View mView;
     private AmountValidator amountValidator = new AmountValidator();
+    private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
 
     BankTransferPresenter(Context context, BankTransferContract.View mView) {
@@ -90,9 +91,9 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                 if (response.getData() != null) {
                     Log.d("resp", responseAsJSONString);
 
-                    String flwRef = response.getData().getFlw_reference();
-                    String txRef = response.getData().getTx_ref();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
+                    flwRef = response.getData().getFlw_reference();
+                    txRef = response.getData().getTx_ref();
+                    publicKey = payload.getPBFPubKey();
                     mView.onTransferDetailsReceived(response);
                 } else {
                     mView.onPaymentError("No response data was returned");
@@ -109,19 +110,18 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     }
 
     @Override
-    public void setRequeryCountdownTime(long currentTimeMillis) {
-        requeryCountdownTime = currentTimeMillis;
+    public void startPaymentVerification() {
+        requeryCountdownTime = System.currentTimeMillis();
+        mView.showPollingIndicator(true);
+        requeryTx();
     }
 
-
     @Override
-    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
+    public void requeryTx() {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
-
-        mView.showPollingIndicator(true);
 
         new NetworkRequestImpl().requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -129,16 +129,14 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("01")) {
-                    if (requeryCountdownTime != 0) {
-                        if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
-                            mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                        } else {
-                            mView.showPollingIndicator(false);
-                            mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
-                        }
+
+                    if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
+                        requeryTx();
                     } else {
-                        mView.onPollingRoundComplete(flwRef, txRef, publicKey);
+                        mView.showPollingIndicator(false);
+                        mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
                     }
+
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
                     mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
@@ -164,7 +162,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
-            }
+            } else mView.onAmountValidationFailed();
+
         }
     }
 

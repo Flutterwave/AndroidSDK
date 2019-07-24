@@ -13,7 +13,6 @@ public interface BankTransferContract {
     interface View {
         void showProgressIndicator(boolean active);
         void showPollingIndicator(boolean active);
-        void onPollingRoundComplete(String flwRef, String txRef, String encryptionKey);
         void onPaymentError(String message);
         void showToast(String message);
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
@@ -25,15 +24,16 @@ public interface BankTransferContract {
         void onAmountValidationSuccessful(String valueOf);
         void showFieldError(int viewID, String message, Class<?> viewType);
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
+        void onAmountValidationFailed();
     }
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
-        void requeryTx(String flwRef, String txRef, String publicKey);
+        void requeryTx();
         void payWithBankTransfer(Payload body, String encryptionKey);
-        void setRequeryCountdownTime(long currentTimeMillis);
         void init(RavePayInitializer ravePayInitializer);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
         void onDataCollected(HashMap<String, ViewObject> dataHashMap);
+        void startPaymentVerification();
     }
 }
