@@ -94,7 +94,14 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     flwRef = response.getData().getFlw_reference();
                     txRef = response.getData().getTx_ref();
                     publicKey = payload.getPBFPubKey();
-                    mView.onTransferDetailsReceived(response);
+                    String beneficiaryName = response.getData().getNote().substring(
+                            response.getData().getNote().indexOf("to ") + 3
+                    );
+                    mView.onTransferDetailsReceived(
+                            response.getData().getAmount(),
+                            response.getData().getAccountnumber(),
+                            response.getData().getBankname(),
+                            beneficiaryName);
                 } else {
                     mView.onPaymentError("No response data was returned");
                 }

@@ -188,10 +188,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     }
 
-    @Override
-    public void onTransferDetailsReceived(ChargeResponse response) {
-        showTransferDetails(response);
-    }
+
 
     @Override
     public void onPollingTimeout(String flwRef, String txRef, final String responseAsJSONString) {
@@ -210,25 +207,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
                 }
             }
         });
-    }
-
-    private void showTransferDetails(ChargeResponse response) {
-        String beneficiaryName = response.getData().getNote().substring(
-                response.getData().getNote().indexOf("to ") + 3
-        );
-
-        amountTv.setText(response.getData().getAmount());
-        beneficiaryNameTv.setText(beneficiaryName);
-        bankNameTv.setText(response.getData().getBankname());
-        accountNumberTv.setText(response.getData().getAccountnumber());
-        transferInstructionTv.setText(
-                transferInstructionTv.getText() + " " + beneficiaryName
-        );
-
-        initiateChargeLayout.setVisibility(GONE);
-        transferDetailsLayout.setVisibility(View.VISIBLE);
-
-
     }
 
 
@@ -284,6 +262,28 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
+
+    }
+
+    @Override
+    public void onTransferDetailsReceived(String amount, String accountNumber, String bankName, String beneficiaryName) {
+        showTransferDetails(amount, accountNumber, bankName, beneficiaryName);
+    }
+
+    private void showTransferDetails(String amount, String accountNumber, String bankName, String beneficiaryName) {
+
+
+        amountTv.setText(amount);
+        beneficiaryNameTv.setText(beneficiaryName);
+        bankNameTv.setText(bankName);
+        accountNumberTv.setText(accountNumber);
+        transferInstructionTv.setText(
+                transferInstructionTv.getText() + " " + beneficiaryName
+        );
+
+        initiateChargeLayout.setVisibility(GONE);
+        transferDetailsLayout.setVisibility(View.VISIBLE);
+
 
     }
 

@@ -19,7 +19,7 @@ public interface BankTransferContract {
         void displayFee(String charge_amount, Payload payload);
         void showFetchFeeFailed(String s);
         void onPaymentFailed(String message, String responseAsJSONString);
-        void onTransferDetailsReceived(ChargeResponse response);
+        void onTransferDetailsReceived(String amount, String accountNumber, String bankName, String beneficiaryName);
         void onPollingTimeout(String flwRef, String txRef, String responseAsJSONString);
         void onAmountValidationSuccessful(String valueOf);
         void showFieldError(int viewID, String message, Class<?> viewType);
