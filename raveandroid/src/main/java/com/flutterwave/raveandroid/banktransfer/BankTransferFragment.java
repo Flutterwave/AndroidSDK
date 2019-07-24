@@ -17,23 +17,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+
+import java.util.HashMap;
 
 import static android.view.View.GONE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BankTransferFragment extends Fragment implements BankTransferContract.View {
+public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener {
 
     View v;
     TextInputEditText amountEt;
@@ -45,6 +50,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     TextView transferInstructionTv;
     TextView transferStatusTv;
     Button verifyPaymentButton;
+    Button payButton;
     ConstraintLayout initiateChargeLayout;
     ConstraintLayout transferDetailsLayout;
     RavePayInitializer ravePayInitializer;
@@ -61,40 +67,19 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        presenter = new BankTransferPresenter(getActivity(), this);
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_bank_transfer, container, false);
 
-        presenter = new BankTransferPresenter(getActivity(), this);
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        initiateChargeLayout = (ConstraintLayout) v.findViewById(R.id.rave_initiate_payment_layout);
-        transferDetailsLayout = (ConstraintLayout) v.findViewById(R.id.rave_transfer_details_layout);
-        transferInstructionTv = (TextView) v.findViewById(R.id.rave_bank_transfer_instruction);
-        transferStatusTv = (TextView) v.findViewById(R.id.rave_transfer_status_tv);
-        amountTv = (TextView) v.findViewById(R.id.rave_amount_tv);
-        beneficiaryNameTv = (TextView) v.findViewById(R.id.rave_beneficiary_name_tv);
-        bankNameTv = (TextView) v.findViewById(R.id.rave_bank_name_tv);
-        accountNumberTv = (TextView) v.findViewById(R.id.rave_account_number_tv);
 
-        Button payButton = (Button) v.findViewById(R.id.rave_payButton);
-        verifyPaymentButton = (Button) v.findViewById(R.id.rave_verify_payment_button);
+        initializeViews();
+
+        setListeners();
 
         ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
 
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validate();
-            }
-
-        });
-        verifyPaymentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyPayment();
-            }
-        });
+        presenter.init(ravePayInitializer);
 
         double amountToPay = ravePayInitializer.getAmount();
 
@@ -105,6 +90,69 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
         return v;
     }
+
+    private void setListeners() {
+                payButton.setOnClickListener(this);
+        verifyPaymentButton.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == payButton.getId()) {
+            clearErrors();
+            Utils.hide_keyboard(getActivity());
+            collectData();
+        }
+
+        if(i == verifyPaymentButton.getId()){
+            verifyPayment();
+        }
+    }
+
+    private void collectData() {
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+
+        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        presenter.onDataCollected(dataHashMap);
+    }
+
+    private void initializeViews() {
+        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
+        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
+        initiateChargeLayout = (ConstraintLayout) v.findViewById(R.id.rave_initiate_payment_layout);
+        transferDetailsLayout = (ConstraintLayout) v.findViewById(R.id.rave_transfer_details_layout);
+        transferInstructionTv = (TextView) v.findViewById(R.id.rave_bank_transfer_instruction);
+        transferStatusTv = (TextView) v.findViewById(R.id.rave_transfer_status_tv);
+        amountTv = (TextView) v.findViewById(R.id.rave_amount_tv);
+        beneficiaryNameTv = (TextView) v.findViewById(R.id.rave_beneficiary_name_tv);
+        bankNameTv = (TextView) v.findViewById(R.id.rave_bank_name_tv);
+        accountNumberTv = (TextView) v.findViewById(R.id.rave_account_number_tv);
+        payButton = (Button) v.findViewById(R.id.rave_payButton);
+        verifyPaymentButton = (Button) v.findViewById(R.id.rave_verify_payment_button);
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+    }
+
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
+            view.setError(message);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
+            view.setError(message);
+        }
+
+    }
+
 
     private void verifyPayment() {
         canShowPollingIndicator = true;
@@ -127,8 +175,9 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
-            return;
+        if (getActivity() != null) {
+            if (getActivity().isFinishing())
+                return;
         }
 
         if (canShowPollingIndicator) {
@@ -201,60 +250,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         initiateChargeLayout.setVisibility(GONE);
         transferDetailsLayout.setVisibility(View.VISIBLE);
 
-
-    }
-
-    private void validate() {
-        clearErrors();
-        Utils.hide_keyboard(getActivity());
-
-        boolean valid = true;
-
-        String amount = amountEt.getText().toString();
-
-        try {
-            double amnt = Double.parseDouble(amount);
-
-            if (amnt <= 0) {
-                valid = false;
-                amountTil.setError("Enter a valid amount");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            valid = false;
-            amountTil.setError("Enter a valid amount");
-        }
-
-        if (valid) {
-
-            ravePayInitializer.setAmount(Double.parseDouble(amount));
-
-            String txRef = ravePayInitializer.getTxRef();
-            Log.d("txRef", txRef);
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCountry(ravePayInitializer.getCountry())
-                    .setCurrency(ravePayInitializer.getCurrency())
-                    .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(getActivity()))
-                    .setTxRef(ravePayInitializer.getTxRef())
-                    .setMeta(ravePayInitializer.getMeta())
-                    .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(getActivity()));
-
-
-            Payload body = builder.createBankTransferPayload();
-
-            if (ravePayInitializer.getIsDisplayFee()) {
-                presenter.fetchFee(body);
-            } else {
-                presenter.payWithBankTransfer(body, ravePayInitializer.getEncryptionKey());
-            }
-        }
 
     }
 
@@ -384,5 +379,12 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         showToast(s);
     }
 
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+
+    }
 
 }

@@ -120,7 +120,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithBankTransfer()) {
             if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")){
-                raveFragments.add(new RaveFragment(new BankTransferFragment(), "Pay with Bank Transfer"));
+                raveFragments.add(new RaveFragment(new BankTransferFragment(), "Bank Transfer"));
             }
         }
 

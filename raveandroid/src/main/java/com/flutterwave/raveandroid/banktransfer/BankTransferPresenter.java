@@ -5,8 +5,11 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.banktransfer.BankTransferContract;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -15,6 +18,9 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
+
+import java.util.HashMap;
 
 /**
  * Created by hfetuga on 27/06/2018.
@@ -23,9 +29,10 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 public class BankTransferPresenter implements BankTransferContract.UserActionsListener {
     private Context context;
     private BankTransferContract.View mView;
+    private AmountValidator amountValidator = new AmountValidator();
     private long requeryCountdownTime = 0;
 
-    public BankTransferPresenter(Context context, BankTransferContract.View mView) {
+    BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -66,8 +73,6 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -149,4 +154,72 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
             }
         });
     }
+
+
+    @Override
+    public void init(RavePayInitializer ravePayInitializer) {
+
+        if (ravePayInitializer != null) {
+
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isAmountValid) {
+                mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+            }
+        }
+    }
+
+    @Override
+    public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
+
+        boolean valid = true;
+
+        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
+        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+
+
+        if (!amountValidator.isAmountValid(amount)) {
+            valid = false;
+            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+        }
+
+        if (valid) {
+            mView.onValidationSuccessful(dataHashMap);
+        }
+
+    }
+
+    @Override
+    public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
+
+
+        if (ravePayInitializer != null) {
+
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(Utils.getDeviceImei(context))
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setSubAccount(ravePayInitializer.getSubAccount())
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsPreAuth(ravePayInitializer.getIsPreAuth())
+                    .setDevice_fingerprint(Utils.getDeviceImei(context))
+                    .setNarration(ravePayInitializer.getNarration());
+
+
+            Payload body = builder.createBankTransferPayload();
+
+            if (ravePayInitializer.getIsDisplayFee()) {
+                fetchFee(body);
+            } else {
+                payWithBankTransfer(body, ravePayInitializer.getEncryptionKey());
+            }
+        }
+    }
+
 }

@@ -1,7 +1,11 @@
 package com.flutterwave.raveandroid.banktransfer;
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+
+import java.util.HashMap;
 
 
 public interface BankTransferContract {
@@ -18,6 +22,9 @@ public interface BankTransferContract {
         void onPaymentFailed(String message, String responseAsJSONString);
         void onTransferDetailsReceived(ChargeResponse response);
         void onPollingTimeout(String flwRef, String txRef, String responseAsJSONString);
+        void onAmountValidationSuccessful(String valueOf);
+        void showFieldError(int viewID, String message, Class<?> viewType);
+        void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
     }
 
     interface UserActionsListener {
@@ -25,5 +32,8 @@ public interface BankTransferContract {
         void requeryTx(String flwRef, String txRef, String publicKey);
         void payWithBankTransfer(Payload body, String encryptionKey);
         void setRequeryCountdownTime(long currentTimeMillis);
+        void init(RavePayInitializer ravePayInitializer);
+        void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+        void onDataCollected(HashMap<String, ViewObject> dataHashMap);
     }
 }
