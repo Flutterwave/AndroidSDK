@@ -251,7 +251,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
 
 
-                if (!amountValidator.isAmountValid(amount)) {
+                if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
                     valid = false;
                     mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }

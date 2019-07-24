@@ -157,7 +157,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
 
-        if (!amountValidator.isAmountValid(amount)) {
+        if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
             valid = false;
             mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
         }

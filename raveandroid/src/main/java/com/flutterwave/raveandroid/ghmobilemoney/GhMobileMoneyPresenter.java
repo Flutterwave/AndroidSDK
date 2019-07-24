@@ -204,7 +204,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         int network = Integer.valueOf(dataHashMap.get(RaveConstants.fieldNetwork).getData());
 
-                if (!amountValidator.isAmountValid(amount)) {
+                if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
                     valid = false;
                     mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                 }

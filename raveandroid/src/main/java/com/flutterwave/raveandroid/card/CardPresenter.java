@@ -225,7 +225,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         Class cardNoStrippedViewType = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewType();
 
              try{
-              boolean isAmountValidated = amountValidator.isAmountValid(amount);
+              boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
                  if (!isAmountValidated) {
                         valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
                     }
