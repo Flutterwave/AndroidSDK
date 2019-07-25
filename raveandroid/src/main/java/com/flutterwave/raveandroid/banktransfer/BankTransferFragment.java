@@ -4,15 +4,12 @@ package com.flutterwave.raveandroid.banktransfer;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 
 import java.util.HashMap;
 
@@ -109,18 +104,18 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     private void initializeViews() {
-        amountEt = (TextInputEditText) v.findViewById(R.id.rave_amountTV);
-        amountTil = (TextInputLayout) v.findViewById(R.id.rave_amountTil);
-        initiateChargeLayout = (ConstraintLayout) v.findViewById(R.id.rave_initiate_payment_layout);
-        transferDetailsLayout = (ConstraintLayout) v.findViewById(R.id.rave_transfer_details_layout);
-        transferInstructionTv = (TextView) v.findViewById(R.id.rave_bank_transfer_instruction);
-        transferStatusTv = (TextView) v.findViewById(R.id.rave_transfer_status_tv);
-        amountTv = (TextView) v.findViewById(R.id.rave_amount_tv);
-        beneficiaryNameTv = (TextView) v.findViewById(R.id.rave_beneficiary_name_tv);
-        bankNameTv = (TextView) v.findViewById(R.id.rave_bank_name_tv);
-        accountNumberTv = (TextView) v.findViewById(R.id.rave_account_number_tv);
-        payButton = (Button) v.findViewById(R.id.rave_payButton);
-        verifyPaymentButton = (Button) v.findViewById(R.id.rave_verify_payment_button);
+        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        initiateChargeLayout = v.findViewById(R.id.rave_initiate_payment_layout);
+        transferDetailsLayout = v.findViewById(R.id.rave_transfer_details_layout);
+        transferInstructionTv = v.findViewById(R.id.rave_bank_transfer_instruction);
+        transferStatusTv = v.findViewById(R.id.rave_transfer_status_tv);
+        amountTv = v.findViewById(R.id.rave_amount_tv);
+        beneficiaryNameTv = v.findViewById(R.id.rave_beneficiary_name_tv);
+        bankNameTv = v.findViewById(R.id.rave_bank_name_tv);
+        accountNumberTv = v.findViewById(R.id.rave_account_number_tv);
+        payButton = v.findViewById(R.id.rave_payButton);
+        verifyPaymentButton = v.findViewById(R.id.rave_verify_payment_button);
     }
 
     @Override
@@ -145,7 +140,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
 
     private void verifyPayment() {
-        showPollingIndicator(true);
         presenter.startPaymentVerification();
 
     }
