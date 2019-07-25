@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4.class)
 public class AmountValidatorTest {
@@ -28,6 +28,13 @@ public class AmountValidatorTest {
     @Test
     public void isAmountvalid_isNegativeAmountPassed_returnsFalse(){
         Double amount = -1.0;
+        boolean isAmountValid = SUT.isAmountValid(amount);
+        assertThat(false, is(isAmountValid));
+    }
+
+    @Test
+    public void isAmountvalid_isEmptyAmountPassed_returnsFalse() {
+        String amount = "";
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(false, is(isAmountValid));
     }

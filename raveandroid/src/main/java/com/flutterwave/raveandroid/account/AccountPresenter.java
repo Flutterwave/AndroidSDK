@@ -8,8 +8,6 @@ import android.webkit.URLUtil;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -29,7 +27,25 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.NG;
+import static com.flutterwave.raveandroid.RaveConstants.NGN;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.accounNumberPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.date_of_birth;
+import static com.flutterwave.raveandroid.RaveConstants.defaultAccounNumber;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldBVN;
+import static com.flutterwave.raveandroid.RaveConstants.fieldBankCode;
+import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.invalidCharge;
+import static com.flutterwave.raveandroid.RaveConstants.isInternetBanking;
+import static com.flutterwave.raveandroid.RaveConstants.success;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validEmailPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by hamzafetuga on 20/07/2017.
@@ -252,7 +268,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        boolean isAmountValid = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isAmountValid = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
         boolean isEmailValid = emailValidator.isEmailValid(email);
 

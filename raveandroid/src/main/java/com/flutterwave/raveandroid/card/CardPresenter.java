@@ -7,7 +7,6 @@ import android.view.View;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -26,7 +25,35 @@ import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.util.HashMap;
 
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.ACCESS_OTP;
+import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
+import static com.flutterwave.raveandroid.RaveConstants.GTB_OTP;
+import static com.flutterwave.raveandroid.RaveConstants.MANUAL_CARD_CHARGE;
+import static com.flutterwave.raveandroid.RaveConstants.NOAUTH;
+import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.RaveConstants.PIN;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.VBV;
+import static com.flutterwave.raveandroid.RaveConstants.enterOTP;
+import static com.flutterwave.raveandroid.RaveConstants.expired;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
+import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
+import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
+import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.success;
+import static com.flutterwave.raveandroid.RaveConstants.tokenExpired;
+import static com.flutterwave.raveandroid.RaveConstants.tokenNotFound;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.unknownAuthmsg;
+import static com.flutterwave.raveandroid.RaveConstants.unknownResCodemsg;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validCreditCardPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validCvvPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validExpiryDatePrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -221,33 +248,33 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         Class cardNoStrippedViewType = dataHashMap.get(fieldcardNoStripped).getViewType();
 
-        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
-        boolean isEmailValidated = emailValidator.isEmailValid(email);
-        boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
-        boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
-        boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
+        boolean isAmountValid = amountValidator.isAmountValid(amount);
+        boolean isEmailValid = emailValidator.isEmailValid(email);
+        boolean isCVVValid = cvvValidator.isCvvValid(cvv);
+        boolean isCardExpiryValid = cardExpiryValidator.isCardExpiryValid(cardExpiry);
+        boolean isCardNoValid = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
 
-        if (!isAmountValidated) {
+        if (!isAmountValid) {
             valid = false;
             mView.showFieldError(amountID, validAmountPrompt, amountViewType);
         }
 
-        if (!isEmailValidated) {
+        if (!isEmailValid) {
             valid = false;
             mView.showFieldError(emailID, validPhonePrompt, emailViewType);
         }
 
-        if (!isCVVValidated) {
+        if (!isCVVValid) {
             valid = false;
             mView.showFieldError(cvvID, validCvvPrompt, cvvViewType);
         }
 
-        if (!isCardExpiryValidated) {
+        if (!isCardExpiryValid) {
             valid = false;
             mView.showFieldError(cardExpiryID, validExpiryDatePrompt, cardExpiryViewType);
         }
 
-        if (!isCardNoValidator) {
+        if (!isCardNoValid) {
             valid = false;
             mView.showFieldError(cardNoStrippedID, validCreditCardPrompt, cardNoStrippedViewType);
         }

@@ -6,8 +6,6 @@ import android.util.Log;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -23,7 +21,13 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by hfetuga on 27/06/2018.
@@ -164,7 +168,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
         if (!isAmountValidated) {

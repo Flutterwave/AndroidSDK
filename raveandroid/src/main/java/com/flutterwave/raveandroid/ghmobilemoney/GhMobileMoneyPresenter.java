@@ -21,7 +21,17 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.fieldVoucher;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validNetworkPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validVoucherPrompt;
 
 /**
  * Created by hfetuga on 28/06/2018.
@@ -202,7 +212,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
 
-        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
                 if (!isAmountValidated) {
