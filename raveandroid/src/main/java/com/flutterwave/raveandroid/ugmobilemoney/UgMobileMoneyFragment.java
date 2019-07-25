@@ -243,7 +243,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }

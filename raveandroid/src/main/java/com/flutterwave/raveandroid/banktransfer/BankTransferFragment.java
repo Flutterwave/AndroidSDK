@@ -96,9 +96,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             clearErrors();
             Utils.hide_keyboard(getActivity());
             collectData();
-        }
-
-        if (viewId == verifyPaymentButton.getId()) {
+        } else if (viewId == verifyPaymentButton.getId()) {
             verifyPayment();
         }
     }
@@ -318,7 +316,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 
     }

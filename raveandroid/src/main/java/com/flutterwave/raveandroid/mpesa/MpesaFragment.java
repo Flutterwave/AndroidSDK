@@ -227,7 +227,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
         presenter.processTransaction(dataHashMap, ravePayInitializer);
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
     }
 

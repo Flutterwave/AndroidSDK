@@ -297,6 +297,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         //make request
 
         if (ravePayInitializer!=null) {
+
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
                     .setEmail(dataHashMap.get(RaveConstants.fieldEmail).getData())

@@ -152,6 +152,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         if (ravePayInitializer!=null) {
 
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
                     .setCountry(ravePayInitializer.getCountry())
