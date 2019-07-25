@@ -19,8 +19,12 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
+
+import static com.flutterwave.raveandroid.RaveConstants.NG;
+import static com.flutterwave.raveandroid.RaveConstants.UGX;
 
 /**
  * Created by Jeremiah on 10/12/2018.
@@ -30,6 +34,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     private Context context;
     private UgMobileMoneyContract.View mView;
     private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
      UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
@@ -157,12 +162,15 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
 
-        if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
+        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+
+        if (!isAmountValidated) {
             valid = false;
             mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
         }
 
-         if (phone.length() < 1) {
+         if (!isPhoneValid) {
                 valid = false;
                 mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
         }
@@ -181,7 +189,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
 //                    .setCountry(ravePayInitializer.getCountry())
-                    .setCountry("NG") //Country has to be set to NG for UGX payments (as at 10/12/2018)
+                    .setCountry(NG) //Country has to be set to NG for UGX payments (as at 10/12/2018)
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
@@ -190,7 +198,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork("UGX")
+                    .setNetwork(UGX)
                     .setPhonenumber(dataHashMap.get(RaveConstants.fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())

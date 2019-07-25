@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -27,23 +26,25 @@ import com.flutterwave.raveandroid.ViewObject;
 import java.util.HashMap;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.*;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private TextInputLayout phoneTil;
+    private MpesaPresenter presenter;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    MpesaPresenter presenter;
-    Button payButton;
-    int rave_phoneEtInt;
+
+    private int rave_phoneEtInt;
+    private RavePayInitializer ravePayInitializer;
 
     public MpesaFragment() {
         // Required empty public constructor
@@ -61,11 +62,16 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         setListeners();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null){
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
@@ -77,7 +83,9 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
-            Utils.hide_keyboard(getActivity());
+            if (getActivity() != null ){
+                Utils.hide_keyboard(getActivity());
+            }
             collectData();
         }
     }
@@ -92,17 +100,17 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void collectData() {
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         presenter.onDataCollected(dataHashMap);
     }
 
     private void initializeViews() {
-        rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
+        amountEt =  v.findViewById(R.id.rave_amountTV);
+        rave_phoneEtInt = amountEt.getId();
         presenter = new MpesaPresenter(getActivity(), this);
         payButton =  v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
     }
@@ -179,7 +187,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsString);
+        intent.putExtra(response, responseAsString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -189,23 +197,26 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-        dialog.dismiss();
-        presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
+        if ( getActivity() != null ) {
 
-            }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
 
-        builder.show();
+                }
+            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+        }
     }
 
     @Override
@@ -216,7 +227,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsJSONString);
+        intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
@@ -227,7 +238,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
         presenter.processTransaction(dataHashMap, ravePayInitializer);
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
     }
 

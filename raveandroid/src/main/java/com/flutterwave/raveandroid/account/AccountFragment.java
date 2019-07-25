@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -44,34 +43,39 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.*;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener {
-    public static final int FOR_INTERNET_BANKING = 111;
-    public static final int FOR_0TP = 222;
-    TextInputEditText accountNumberEt;
-    TextInputLayout accountNumberTil;
-    EditText bankEt;
-    Button payButton;
-    AccountPresenter presenter;
-    Bank selectedBank;
-    TextView pcidss_tv;
-    private ProgressDialog progessDialog;
-    private BottomSheetDialog bottomSheetDialog;
-    private TextInputEditText amountEt;
+
+    private View v;
+    private String flwRef;
+    private EditText bankEt;
+    private Button payButton;
+    private Bank selectedBank;
+    private TextView pcidss_tv;
     private TextInputLayout amountTil;
     private TextInputEditText emailEt;
-    private TextInputLayout emailTil,rave_bvnTil;
+    private AccountPresenter presenter;
+    private TextInputEditText amountEt;
     private TextInputEditText phoneEt;
     private TextInputLayout phoneTil;
-    private String flwRef;
-    private RavePayInitializer ravePayInitializer;
     private EditText dateOfBirthEt,bvnEt;
-    View v;
-    Calendar calendar = Calendar.getInstance();
+    private ProgressDialog progessDialog;
+    private TextInputEditText accountNumberEt;
+    private TextInputLayout accountNumberTil;
+    private BottomSheetDialog bottomSheetDialog;
+    private TextInputLayout emailTil,rave_bvnTil;
+    private RavePayInitializer ravePayInitializer;
+
+    private Calendar calendar = Calendar.getInstance();
+
+    public static final int FOR_0TP = 222;
+    public static final int FOR_INTERNET_BANKING = 111;
+
 
     public AccountFragment() {
         // Required empty public constructor
@@ -93,13 +97,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         setListeners();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null){
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
@@ -109,20 +118,20 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     private void initializeViews() {
-        accountNumberTil =  v.findViewById(R.id.rave_accountNumberTil);
-        accountNumberEt =  v.findViewById(R.id.rave_accountNumberEt);
-        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
-        dateOfBirthEt =  v.findViewById(R.id.rave_dobEditText);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        bankEt =  v.findViewById(R.id.rave_bankEditText);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        rave_bvnTil =  v.findViewById(R.id.rave_bvnTil);
+        bvnEt =  v.findViewById(R.id.rave_bvnEt);
+        phoneEt =  v.findViewById(R.id.rave_phoneEt);
+        emailEt =  v.findViewById(R.id.rave_emailEt);
         amountEt =  v.findViewById(R.id.rave_amountTV);
         emailTil =  v.findViewById(R.id.rave_emailTil);
         phoneTil =  v.findViewById(R.id.rave_phoneTil);
-        phoneEt =  v.findViewById(R.id.rave_phoneEt);
-        emailEt =  v.findViewById(R.id.rave_emailEt);
-        bvnEt =  v.findViewById(R.id.rave_bvnEt);
+        rave_bvnTil =  v.findViewById(R.id.rave_bvnTil);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        bankEt =  v.findViewById(R.id.rave_bankEditText);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        dateOfBirthEt =  v.findViewById(R.id.rave_dobEditText);
+        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
+        accountNumberEt =  v.findViewById(R.id.rave_accountNumberEt);
+        accountNumberTil =  v.findViewById(R.id.rave_accountNumberTil);
     }
 
     @Override
@@ -136,23 +145,27 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             presenter.getBanks();
         }
         else if (i == R.id.rave_dobEditText){
-            new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            if (getActivity() != null) {
+                new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
         }
     }
 
     @Override
     public void showGTBankAmountIssue() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.payWithBankAmountLimitPrompt));
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        if (getActivity() != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.payWithBankAmountLimitPrompt));
+            builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
 
     }
 
@@ -171,34 +184,32 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     private void clearErrors(){
         bankEt.setError(null);
-        accountNumberTil.setError(null);
-        accountNumberTil.setErrorEnabled(false);
-        emailTil.setError(null);
-        emailTil.setErrorEnabled(false);
-        phoneTil.setError(null);
-        phoneTil.setErrorEnabled(false);
         bankEt.setError(null);
-        dateOfBirthEt.setError(null);
+        phoneTil.setError(null);
+        emailTil.setError(null);
         rave_bvnTil.setError(null);
+        dateOfBirthEt.setError(null);
+        accountNumberTil.setError(null);
+        emailTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
         rave_bvnTil.setErrorEnabled(false);
+        accountNumberTil.setErrorEnabled(false);
     }
 
     private void collectData() {
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(RaveConstants.fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
 
         if (accountNumberTil.getVisibility() == View.VISIBLE) {
             if (accountNumberEt.getText().toString().length() != 10) {
-
-                dataHashMap.put(RaveConstants.fieldAccount, new ViewObject(accountNumberTil.getId(), "", TextInputLayout.class));
+                dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), "", TextInputLayout.class));
             }
             else{
-
-                dataHashMap.put(RaveConstants.fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
+                dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
             }
          }
 
@@ -228,32 +239,34 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void showBanks(List<Bank> banks) {
-        bottomSheetDialog = new BottomSheetDialog(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View v = inflater.inflate(R.layout.add_exisiting_bank, null, false);
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
 
-        BanksRecyclerAdapter adapter = new BanksRecyclerAdapter();
-        adapter.set(banks);
+        if (getActivity() != null) {
+            bottomSheetDialog = new BottomSheetDialog(getActivity());
 
-        adapter.setBankSelectedListener(new Callbacks.BankSelectedListener() {
-            @Override
-            public void onBankSelected(Bank b) {
-                bottomSheetDialog.dismiss();
-                bankEt.setError(null);
-                bankEt.setText(b.getBankname());
-                selectedBank = b;
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View v = inflater.inflate(R.layout.add_exisiting_bank, null, false);
+            RecyclerView recyclerView = v.findViewById(R.id.rave_recycler);
 
-                presenter.onInternetBankingValidated(b);
+            BanksRecyclerAdapter adapter = new BanksRecyclerAdapter();
+            adapter.set(banks);
 
-            }
-        });
+            adapter.setBankSelectedListener(new Callbacks.BankSelectedListener() {
+                @Override
+                public void onBankSelected(Bank b) {
+                    bottomSheetDialog.dismiss();
+                    bankEt.setError(null);
+                    bankEt.setText(b.getBankname());
+                    selectedBank = b;
+                    presenter.onInternetBankingValidated(b);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        bottomSheetDialog.setContentView(v);
-        bottomSheetDialog.show();
+                }
+            });
 
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            bottomSheetDialog.setContentView(v);
+            bottomSheetDialog.show();
+        }
     }
 
     @Override
@@ -289,6 +302,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
         this.flwRef = flwRef;
+
         Intent intent = new Intent(getContext(),VerificationActivity.class);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
         if (validateInstruction != null) {
@@ -300,14 +314,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if(resultCode == RavePayActivity.RESULT_SUCCESS){
+
             if(requestCode==FOR_0TP){
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
             }else if(requestCode==FOR_INTERNET_BANKING){
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
-        }else{
+        }
+
+        else{
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -373,21 +391,23 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
-            }
-        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        if (getActivity() != null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
+                }
+            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
 
     }
 
@@ -445,12 +465,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
-        dataHashMap.put(RaveConstants.fieldBVN, new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldDOB, new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldBankCode, new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.isInternetBanking, new ViewObject(bankEt.getId(), selectedBank.isInternetbanking()+"", TextInputLayout.class));
+        dataHashMap.put(fieldBVN, new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldDOB, new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldBankCode, new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
+        dataHashMap.put(isInternetBanking, new ViewObject(bankEt.getId(), selectedBank.isInternetbanking()+"", TextInputLayout.class));
 
         presenter.processTransaction(dataHashMap, ravePayInitializer);
 

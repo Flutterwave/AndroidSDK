@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.RaveConstants.PIN;
+import static com.flutterwave.raveandroid.RaveConstants.*;
 
 
 /**
@@ -54,37 +54,39 @@ import static com.flutterwave.raveandroid.RaveConstants.PIN;
  */
 public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
 
+    private View v;
+    private Button payButton;
+    private TextView pcidss_tv;
+    private AlertDialog dialog;
+    private Button savedCardBtn;
+    private TextInputLayout cvvTil;
+    private TextInputEditText cvvTv;
+    private TextInputLayout emailTil;
+    private TextInputLayout cardNoTil;
+    private TextInputEditText emailEt;
+    private TextInputLayout amountTil;
+    private TextInputEditText amountEt;
+    private TextInputEditText cardNoTv;
+    private TextInputLayout cardExpiryTil;
+    private TextInputEditText cardExpiryTv;
+    private SwitchCompat saveCardSwitch;
+    private ProgressDialog progessDialog;
+    private FrameLayout progressContainer;
+    private CardPresenter presenter;
+
+    private String flwRef;
+    private Payload payLoad;
+    private RavePayInitializer ravePayInitializer;
+    private boolean shouldISaveThisCard = false;
+
+    public static final int FOR_PIN = 444;
+    public static final int FOR_OTP = 666;
+    public static final int FOR_AVBVV = 333;
+    public static final int FOR_INTERNET_BANKING = 555;
+
     private static final String RAVEPAY = "ravepay";
     public static final String INTENT_SENDER = "cardFrag";
-    public static final int FOR_AVBVV = 333;
-    public static final int FOR_PIN = 444;
-    public static final int FOR_INTERNET_BANKING = 555;
-    public static final int FOR_OTP = 666;
-    TextInputEditText amountEt;
-    TextInputEditText emailEt;
-    TextInputEditText cardNoTv;
-    TextInputEditText cardExpiryTv;
-    TextInputEditText cvvTv;
-    TextInputLayout amountTil;
-    TextInputLayout emailTil;
-    TextInputLayout cardNoTil;
-    TextInputLayout cardExpiryTil;
-    TextInputLayout cvvTil;
-    SwitchCompat saveCardSwitch;
-    Button payButton;
-    private ProgressDialog progessDialog;
-    CardPresenter presenter;
-    private String flwRef;
-    RavePayInitializer ravePayInitializer;
-    private TextView pcidss_tv;
-    private Payload payLoad;
-    private AlertDialog dialog;
-    FrameLayout progressContainer;
-    View v;
-    Button savedCardBtn;
-    String cardFirst6;
-    String cardLast4;
-    boolean shouldISaveThisCard = false;
+
 
     public CardFragment() {
         // Required empty public constructor
@@ -151,11 +153,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
-        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldCvv, new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldCardExpiry, new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldcardNoStripped, new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldCvv, new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldCardExpiry, new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldcardNoStripped, new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
 
         presenter.onDataCollected(dataHashMap);
     }
@@ -311,7 +313,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 String zipCode = data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
                 String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
                 presenter.chargeCardWithAVSModel(payLoad, address, city, zipCode, country, state,
-                        RaveConstants.NOAUTH_INTERNATIONAL, ravePayInitializer.getEncryptionKey());
+                        NOAUTH_INTERNATIONAL, ravePayInitializer.getEncryptionKey());
             } else if (requestCode == FOR_INTERNET_BANKING) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(), shouldISaveThisCard);
             } else if (requestCode == FOR_OTP) {
@@ -368,11 +370,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onValidateSuccessful(String status, String responseAsJSONString) {
-
         presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey(), shouldISaveThisCard);
 
     }
-
 
     /**
      * Called when a validation error is received. Shows a toast
@@ -472,7 +472,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onTokenRetrieved(String flwRef, String cardBIN, String token) {
 
-
         String txRef = ravePayInitializer.getTxRef();
         Log.d("txRef", txRef);
         PayloadBuilder builder = new PayloadBuilder();
@@ -492,7 +491,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 //        body.setSECKEY(RavePayActivity.getSecretKey());
         body.setCardBIN(cardBIN);
         body.setPBFPubKey(ravePayInitializer.getPublicKey());
-        presenter.fetchFee(body, RaveConstants.TOKEN_CHARGE);
+        presenter.fetchFee(body, TOKEN_CHARGE);
     }
 
     /**
@@ -513,29 +512,30 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void displayFee(String charge_amount, final Payload payload, final int why) {
+        if (getActivity() != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes) , new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                    if (why == MANUAL_CARD_CHARGE) {
+                        presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
+                    } else if (why == TOKEN_CHARGE) {
+                        presenter.chargeToken(payload);
+                    }
 
-                if (why == RaveConstants.MANUAL_CARD_CHARGE) {
-                    presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
-                } else if (why == RaveConstants.TOKEN_CHARGE) {
-                    presenter.chargeToken(payload);
                 }
+            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
-            }
-        }).setNegativeButton(getResources().getString(R.string.no) , new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
+            builder.show();
+        }
     }
 
     /**
@@ -551,14 +551,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onChargeTokenComplete(ChargeResponse response) {
 
-        presenter
-                .requeryTx(response.getData().getFlwRef(), ravePayInitializer.getPublicKey(), false);
+        presenter.requeryTx(response.getData().getFlwRef(), ravePayInitializer.getPublicKey(), false);
     }
 
     @Override
     public void onChargeCardSuccessful(ChargeResponse response) {
-        presenter
-                .requeryTx(response.getData().getFlwRef(),
+        presenter.requeryTx(response.getData().getFlwRef(),
                         ravePayInitializer.getPublicKey(),
                         shouldISaveThisCard);
     }
@@ -613,35 +611,44 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         @Override
         public void afterTextChanged(Editable editable) {
             String input = editable.toString();
+            String cardExpiryToSet = cardExpiryTv.getText().toString() + "/";
 
             try {
                 calendar.setTime(simpleDateFormat.parse(input));
             } catch (ParseException e) {
-                if (editable.length() == 2 && !lastInput.endsWith("/")) {
-                    int month = Integer.parseInt(input);
-                    if (month <= 12) {
-                        cardExpiryTv.setText(cardExpiryTv.getText().toString() + "/");
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    } else {
-                        cardExpiryTv.setText("12");
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    }
-                } else if (editable.length() == 2 && lastInput.endsWith("/")) {
-                    int month = Integer.parseInt(input);
-                    if (month <= 12) {
-                        cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    } else {
-                        cardExpiryTv.setText("12");
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    }
-                } else if (editable.length() == 1) {
-                    int month = Integer.parseInt(input);
-                    if (month > 1) {
-                        cardExpiryTv.setText("0" + cardExpiryTv.getText().toString() + "/");
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    }
+
+            if (editable.length() == 2 && !lastInput.endsWith("/")) {
+
+                int month = Integer.parseInt(input);
+                if (month <= 12) {
+                    cardExpiryTv.setText(cardExpiryToSet);
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                } else {
+                    cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                 }
+            }
+
+            else if (editable.length() == 2 && lastInput.endsWith("/")) {
+
+                int month = Integer.parseInt(input);
+                if (month <= 12) {
+                    cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                } else {
+                    cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                }
+
+            }
+
+            else if (editable.length() == 1) {
+                int month = Integer.parseInt(input);
+                if (month > 1) {
+                    cardExpiryTv.setText(cardExpiryToSet);
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                }
+            }
 
                 lastInput = cardExpiryTv.getText().toString();
             }

@@ -23,6 +23,8 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
+import static com.flutterwave.raveandroid.RaveConstants.*;
+
 /**
  * Created by hfetuga on 27/06/2018.
  */
@@ -58,15 +60,15 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(RaveConstants.transactionError);
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(RaveConstants.transactionError);
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }
@@ -99,7 +101,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.noResponse);
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -152,25 +154,27 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-         boolean valid = true;
+        boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
-        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+        int phoneID = dataHashMap.get(fieldPhone).getViewId();
+        String phone = dataHashMap.get(fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
+        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
-        if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
+        if (!isAmountValidated) {
             valid = false;
-            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+            mView.showFieldError(amountID, validAmountPrompt, amountViewType);
         }
 
-        if (!phoneValidator.isPhoneValid(phone)) {
+        if (!isPhoneValid) {
             valid = false;
-            mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+            mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
         if (valid) {
@@ -195,7 +199,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(dataHashMap.get(RaveConstants.fieldAmount).getData())
+                    .setPhonenumber(dataHashMap.get(fieldAmount).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(context));

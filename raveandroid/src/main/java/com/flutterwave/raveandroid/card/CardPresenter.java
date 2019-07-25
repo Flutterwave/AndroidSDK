@@ -26,8 +26,7 @@ import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.util.HashMap;
 
-import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
-import static com.flutterwave.raveandroid.RaveConstants.PIN;
+import static com.flutterwave.raveandroid.RaveConstants.*;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -72,18 +71,17 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     if (response.getData().getSuggested_auth() != null) {
                         String suggested_auth = response.getData().getSuggested_auth();
 
-
-                        if (suggested_auth.equals(RaveConstants.PIN)) {
+                        if (suggested_auth.equals(PIN)) {
                             mView.onPinAuthModelSuggested(payload);
                         }
                         else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
                             mView.onAVS_VBVSECURECODEModelSuggested(payload);
                         }
-                        else if (suggested_auth.equalsIgnoreCase(RaveConstants.NOAUTH_INTERNATIONAL)) {
+                        else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
                             mView.onNoAuthInternationalSuggested(payload);
                         }
                         else {
-                            mView.onPaymentError("Unknown auth model");
+                            mView.onPaymentError(unknownAuthmsg);
                         }
                     }
                     else {
@@ -91,21 +89,21 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                         if (authModelUsed != null) {
 
-                            if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)) {
+                            if (authModelUsed.equalsIgnoreCase(VBV)) {
                                 String authUrlCrude = response.getData().getAuthurl();
                                 String flwRef = response.getData().getFlwRef();
 
                                 mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
                             }
-                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.GTB_OTP)
-                                    ||  authModelUsed.equalsIgnoreCase(RaveConstants.ACCESS_OTP)
+                            else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+                                    ||  authModelUsed.equalsIgnoreCase(ACCESS_OTP)
                                     || authModelUsed.toLowerCase().contains("otp")) {
                                 String flwRef = response.getData().getFlwRef();
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                                chargeResponseMessage = chargeResponseMessage == null ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                                chargeResponseMessage = chargeResponseMessage == null ? enterOTP : chargeResponseMessage;
                                 mView.showOTPLayout(flwRef, chargeResponseMessage);
                             }
-                            else if (authModelUsed.equalsIgnoreCase(RaveConstants.NOAUTH)) {
+                            else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
                                 String flwRef = response.getData().getFlwRef();
 
                                 mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
@@ -114,7 +112,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     }
                 }
                 else {
-                    mView.onPaymentError("No response data was returned");
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -140,8 +138,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
-//        Log.d("encrypted", encryptedCardRequestBody);
-
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
         body.setPBFPubKey(payload.getPBFPubKey());
@@ -159,31 +155,32 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String chargeResponseCode = response.getData().getChargeResponseCode();
 
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
-//                        mView.showToast("Payment successful");
                         mView.onChargeCardSuccessful(response);
                     }
+
                     else if (chargeResponseCode.equalsIgnoreCase("02")) {
                         String authModelUsed = response.getData().getAuthModelUsed();
-                        if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
+
+                        if (authModelUsed.equalsIgnoreCase(PIN)) {
                             String flwRef = response.getData().getFlwRef();
                             String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
+                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
                             mView.showOTPLayout(flwRef, chargeResponseMessage);
                         }
-                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.VBV)){
+                        else if (authModelUsed.equalsIgnoreCase(VBV)){
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
                         else {
-                            mView.onPaymentError("Unknown Auth Model");
+                            mView.onPaymentError(unknownAuthmsg);
                         }
                     }
                     else {
-                        mView.onPaymentError("Unknown charge response code");
+                        mView.onPaymentError(unknownResCodemsg);
                     }
                 }
                 else {
-                    mView.onPaymentError("Invalid charge response code");
+                    mView.onPaymentError(invalidChargeCode);
                 }
 
             }
@@ -200,64 +197,64 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-       boolean valid = true;
+        boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int emailID = dataHashMap.get(RaveConstants.fieldEmail).getViewId();
-        String email = dataHashMap.get(RaveConstants.fieldEmail).getData();
-        Class emailViewType = dataHashMap.get(RaveConstants.fieldEmail).getViewType();
+        int emailID = dataHashMap.get(fieldEmail).getViewId();
+        String email = dataHashMap.get(fieldEmail).getData();
+        Class emailViewType = dataHashMap.get(fieldEmail).getViewType();
 
-        int cvvID = dataHashMap.get(RaveConstants.fieldCvv).getViewId();
-        String cvv = dataHashMap.get(RaveConstants.fieldCvv).getData();
-        Class cvvViewType = dataHashMap.get(RaveConstants.fieldCvv).getViewType();
+        int cvvID = dataHashMap.get(fieldCvv).getViewId();
+        String cvv = dataHashMap.get(fieldCvv).getData();
+        Class cvvViewType = dataHashMap.get(fieldCvv).getViewType();
 
-        int cardExpiryID = dataHashMap.get(RaveConstants.fieldCardExpiry).getViewId();
-        String cardExpiry = dataHashMap.get(RaveConstants.fieldCardExpiry).getData();
-        Class cardExpiryViewType = dataHashMap.get(RaveConstants.fieldCardExpiry).getViewType();
+        int cardExpiryID = dataHashMap.get(fieldCardExpiry).getViewId();
+        String cardExpiry = dataHashMap.get(fieldCardExpiry).getData();
+        Class cardExpiryViewType = dataHashMap.get(fieldCardExpiry).getViewType();
 
-        int cardNoStrippedID = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewId();
-        String cardNoStripped = dataHashMap.get(RaveConstants.fieldcardNoStripped).getData().replaceAll(" ", "");
-        dataHashMap.get(RaveConstants.fieldcardNoStripped).setData(cardNoStripped);
+        int cardNoStrippedID = dataHashMap.get(fieldcardNoStripped).getViewId();
+        String cardNoStripped = dataHashMap.get(fieldcardNoStripped).getData().replaceAll(" ", "");
+        dataHashMap.get(fieldcardNoStripped).setData(cardNoStripped);
 
-        Class cardNoStrippedViewType = dataHashMap.get(RaveConstants.fieldcardNoStripped).getViewType();
+        Class cardNoStrippedViewType = dataHashMap.get(fieldcardNoStripped).getViewType();
 
-             try{
-              boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
-                 if (!isAmountValidated) {
-                        valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    valid = false; mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
-                }
+        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isEmailValidated = emailValidator.isEmailValid(email);
+        boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
+        boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
+        boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
 
-                boolean isEmailValidated = emailValidator.isEmailValid(email);
-                if (!isEmailValidated) {
-                    valid = false; mView.showFieldError(emailID, RaveConstants.validPhonePrompt, emailViewType);
-                }
+        if (!isAmountValidated) {
+            valid = false;
+            mView.showFieldError(amountID, validAmountPrompt, amountViewType);
+        }
 
-                boolean isCVVValidated = cvvValidator.isCvvValid(cvv);
-                if (!isCVVValidated) {
-                    valid = false; mView.showFieldError(cvvID, RaveConstants.validCvvPrompt, cvvViewType);
-                }
+        if (!isEmailValidated) {
+            valid = false;
+            mView.showFieldError(emailID, validPhonePrompt, emailViewType);
+        }
 
-                boolean isCardExpiryValidated = cardExpiryValidator.isCardExpiryValid(cardExpiry);
+        if (!isCVVValidated) {
+            valid = false;
+            mView.showFieldError(cvvID, validCvvPrompt, cvvViewType);
+        }
 
-                if (!isCardExpiryValidated) {
-                    valid = false;  mView.showFieldError(cardExpiryID, RaveConstants.validExpiryDatePrompt, cardExpiryViewType);
-                }
+        if (!isCardExpiryValidated) {
+            valid = false;
+            mView.showFieldError(cardExpiryID, validExpiryDatePrompt, cardExpiryViewType);
+        }
 
-                boolean isCardNoValidator = cardNoValidator.isCardNoStrippedValid(cardNoStripped);
-                if (!isCardNoValidator) {
-                    valid = false; mView.showFieldError(cardNoStrippedID, RaveConstants.validCreditCardPrompt, cardNoStrippedViewType);
-                }
+        if (!isCardNoValidator) {
+            valid = false;
+            mView.showFieldError(cardNoStrippedID, validCreditCardPrompt, cardNoStrippedViewType);
+        }
 
-                if (valid) {
-                    mView.onValidationSuccessful(dataHashMap);
-                }
+        if (valid) {
+            mView.onValidationSuccessful(dataHashMap);
+        }
 
     }
 
@@ -266,20 +263,20 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         if (ravePayInitializer!=null) {
 
-            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setCardno(dataHashMap.get(RaveConstants.fieldcardNoStripped).getData())
+            builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
+                    .setCardno(dataHashMap.get(fieldcardNoStripped).getData())
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
-                    .setCvv(dataHashMap.get(RaveConstants.fieldCvv).getData())
-                    .setEmail(dataHashMap.get(RaveConstants.fieldEmail).getData())
+                    .setCvv(dataHashMap.get(fieldCvv).getData())
+                    .setEmail(dataHashMap.get(fieldEmail).getData())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
                     .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
-                    .setExpiryyear(dataHashMap.get(RaveConstants.fieldCardExpiry).getData().substring(3, 5))
-                    .setExpirymonth(dataHashMap.get(RaveConstants.fieldCardExpiry).getData().substring(0, 2))
+                    .setExpiryyear(dataHashMap.get(fieldCardExpiry).getData().substring(3, 5))
+                    .setExpirymonth(dataHashMap.get(fieldCardExpiry).getData().substring(0, 2))
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
@@ -293,7 +290,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             Payload body = builder.createPayload();
 
             if (ravePayInitializer.getIsDisplayFee()) {
-                fetchFee(body, RaveConstants.MANUAL_CARD_CHARGE);
+                fetchFee(body, MANUAL_CARD_CHARGE);
             } else {
                 chargeCard(body, ravePayInitializer.getEncryptionKey());
             }
@@ -316,8 +313,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
-//        Log.d("encrypted", encryptedCardRequestBody);
-
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
         body.setPBFPubKey(payload.getPBFPubKey());
@@ -335,31 +330,35 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String chargeResponseCode = response.getData().getChargeResponseCode();
 
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
-//                        mView.showToast("Payment successful");
                         mView.onChargeCardSuccessful(response);
                     }
+
                     else if (chargeResponseCode.equalsIgnoreCase("02")) {
+
                         String authModelUsed = response.getData().getAuthModelUsed();
-                        if (authModelUsed.equalsIgnoreCase(RaveConstants.PIN)) {
+
+                        if (authModelUsed.equalsIgnoreCase(PIN)) {
                             String flwRef = response.getData().getFlwRef();
                             String chargeResponseMessage = response.getData().getChargeResponseMessage();
                             chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
                             mView.showOTPLayout(flwRef, chargeResponseMessage);
                         }
-                        else if (authModelUsed.equalsIgnoreCase(RaveConstants.AVS_VBVSECURECODE)){
+
+                        else if (authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)){
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
                         }
+
                         else {
-                            mView.onPaymentError(RaveConstants.unknownAuthmsg);
+                            mView.onPaymentError(unknownAuthmsg);
                         }
                     }
                     else {
-                        mView.onPaymentError(RaveConstants.unknownResCodemsg);
+                        mView.onPaymentError(unknownResCodemsg);
                     }
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.invalidChargeCode);
+                    mView.onPaymentError(invalidChargeCode);
                 }
 
             }
@@ -392,7 +391,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String status = response.getStatus();
                     String message = response.getMessage();
 
-                    if (status.equalsIgnoreCase(RaveConstants.success)) {
+                    if (status.equalsIgnoreCase(success)) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
                     }
                     else {
@@ -452,16 +451,18 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Override
     public void fetchFee(final Payload payload, final int reason) {
 
+        boolean isCardnoValid = cardNoValidator.isCardNoStrippedValid(payload.getCardno());
+
         FeeCheckRequestBody body = new FeeCheckRequestBody();
         body.setAmount(payload.getAmount());
         body.setCurrency(payload.getCurrency());
         body.setPBFPubKey(payload.getPBFPubKey());
 
-        if (payload.getCardno() == null || payload.getCardno().length() == 0) {
-            body.setCard6(payload.getCardBIN());
-        }
-        else  {
+        if (isCardnoValid){
             body.setCard6(payload.getCardno().substring(0, 6));
+        }
+        else {
+            body.setCard6(payload.getCardBIN());
         }
 
         mView.showProgressIndicator(true);
@@ -476,15 +477,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(transactionError);
                 }
              }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
 
@@ -498,7 +499,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         new NetworkRequestImpl().chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
-
                 mView.showProgressIndicator(false);
                 mView.onChargeTokenComplete(response);
 
@@ -508,17 +508,15 @@ public class CardPresenter implements CardContract.UserActionsListener {
             public void onError(String message, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
 
-
-                if (responseAsJSONString.contains(RaveConstants.tokenNotFound)) {
-                    mView.onPaymentError(RaveConstants.tokenNotFound);
+                if (responseAsJSONString.contains(tokenNotFound)) {
+                    mView.onPaymentError(tokenNotFound);
                 }
-                else if (responseAsJSONString.contains(RaveConstants.expired)) {
-                    mView.onPaymentError(RaveConstants.tokenExpired);
+                else if (responseAsJSONString.contains(expired)) {
+                    mView.onPaymentError(tokenExpired);
                 }
                 else {
                     mView.onPaymentError(message);
                 }
-
 
             }
         });
@@ -542,6 +540,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+
             if (isEmailValid) {
                 mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
             } else {

@@ -119,10 +119,11 @@
     <string name="expired">expired</string>
     <string name="tokenExpired">Token expired</string>
     <string name="no_authurl_was_returnedmsg">No authUrl was returned</string>
-    <string name="no_response_data_was_returnedmsg">No response data was returned</string>
     <string name="unknownAuthmsg">Unknown Auth Model</string>
     <string name="unknownResCodemsg">Unknown charge response code</string>
     <string name="checkStatus">Check Status</string>
+    <string name="defaultCardExpiry">12</string>
+    <string name="ok">OK</string>
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>
         <item>MTN</item>

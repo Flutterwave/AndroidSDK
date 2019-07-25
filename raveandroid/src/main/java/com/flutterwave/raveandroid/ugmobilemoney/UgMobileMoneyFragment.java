@@ -35,18 +35,20 @@ import static android.view.View.GONE;
  */
 public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private TextView instructionsTv;
+    private TextInputLayout phoneTil;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    UgMobileMoneyPresenter presenter;
-    TextView instructionsTv;
-    Button payButton;
-    String validateInstructions;
+
+
+    private String validateInstructions;
+    private UgMobileMoneyPresenter presenter;
+    private RavePayInitializer ravePayInitializer;
 
 
     @Override

@@ -89,7 +89,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(
-                    RaveConstants.RAVEPAY, Context.MODE_PRIVATE);
+                    RAVEPAY, Context.MODE_PRIVATE);
             editor = sharedPreferences.edit();
         }
     }

@@ -6,8 +6,6 @@ import android.util.Log;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -22,6 +20,8 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
+
+import static com.flutterwave.raveandroid.RaveConstants.*;
 
 /**
  * Created by hfetuga on 28/06/2018.
@@ -58,15 +58,15 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }
@@ -75,8 +75,6 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     public void chargeGhMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -99,7 +97,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError("No response data was returned");
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -154,7 +152,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         if (ravePayInitializer!=null) {
 
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
+            builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
@@ -164,9 +162,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork(dataHashMap.get("network").getData())
-                    .setVoucher(dataHashMap.get("voucher").getData())
-                    .setPhonenumber(dataHashMap.get("phone").getData())
+                    .setNetwork(dataHashMap.get(fieldNetwork).getData())
+                    .setVoucher(dataHashMap.get(fieldVoucher).getData())
+                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(context));
@@ -190,38 +188,41 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
-        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+        int phoneID = dataHashMap.get(fieldPhone).getViewId();
+        String phone = dataHashMap.get(fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        int voucherID = dataHashMap.get(RaveConstants.fieldVoucher).getViewId();
-        String voucher = dataHashMap.get(RaveConstants.fieldVoucher).getData();
-        Class voucherViewType = dataHashMap.get(RaveConstants.fieldVoucher).getViewType();
+        int voucherID = dataHashMap.get(fieldVoucher).getViewId();
+        String voucher = dataHashMap.get(fieldVoucher).getData();
+        Class voucherViewType = dataHashMap.get(fieldVoucher).getViewType();
 
-        int network = Integer.valueOf(dataHashMap.get(RaveConstants.fieldNetwork).getData());
+        int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
 
-                if (!amountValidator.isAmountValid(Double.valueOf(amount))) {
+        boolean isAmountValidated = amountValidator.isAmountValid(Double.valueOf(amount));
+        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+
+                if (!isAmountValidated) {
                     valid = false;
-                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+                    mView.showFieldError(amountID, validAmountPrompt, amountViewType);
                 }
 
-                if (!phoneValidator.isPhoneValid(phone)) {
+                if (!isPhoneValid) {
                     valid = false;
-                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+                    mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
                 }
 
                 if (network == 0) {
                     valid = false;
-                    mView.showToast(RaveConstants.validNetworkPrompt);
+                    mView.showToast(validNetworkPrompt);
                 }
 
                 if (!voucher.isEmpty()) {
                     valid = false;
-                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
+                    mView.showFieldError(voucherID, validVoucherPrompt, voucherViewType);
                 }
 
                 if (valid) {

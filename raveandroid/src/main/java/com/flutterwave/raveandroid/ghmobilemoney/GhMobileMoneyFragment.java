@@ -37,22 +37,23 @@ import static android.view.View.GONE;
  */
 public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private Spinner networkSpinner;
+    private TextView instructionsTv;
+    private TextInputLayout phoneTil;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
+    private TextInputLayout voucherTil;
+    private TextInputEditText voucherEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    GhMobileMoneyPresenter presenter;
-    Spinner networkSpinner;
-    TextView instructionsTv;
-    TextInputEditText voucherEt;
-    TextInputLayout voucherTil;
-    Button payButton;
-    String validateInstructions;
-    String network;
+
+    private String network;
+    private String validateInstructions;
+    private GhMobileMoneyPresenter presenter;
+    private RavePayInitializer ravePayInitializer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

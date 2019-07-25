@@ -17,9 +17,13 @@ public class RaveConstants {
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";
+    public static String NG = "NG";
+    public static String NGN = "NGN";
+    public static String UGX = "UGX";
     public static String NOAUTH = "NOAUTH";
     public static String PIN = "PIN";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
+    public static String enterOTP = "Enter your one time password (OTP)";
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";
     public static String RAVE_PARAMS = "raveparams";
@@ -44,6 +48,8 @@ public class RaveConstants {
 
     public static String success = "success";
     public static String noResponse = "No response data was returned";
+    public static String accounNumberPrompt = "Enter a valid account number";
+    public static String defaultAccounNumber = "0000000000";
 
     public static String response = "response";
     public static String mtn = "mtn";
@@ -74,7 +80,6 @@ public class RaveConstants {
     public static String unknownAuthmsg = "Unknown Auth Model";
     public static String unknownResCodemsg = "Unknown charge response code";
     public static String no_authurl_was_returnedmsg = "No authUrl was returned";
-    public static String no_response_data_was_returnedmsg = "No response data was returned";
     public static String wait = "Please wait...";
     public static String cancelPayment = "CANCEL PAYMENT";
 }

@@ -15,6 +15,7 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
 
 
 public class AchPresenter implements AchContract.UserActionsListener {
@@ -22,17 +23,20 @@ public class AchPresenter implements AchContract.UserActionsListener {
     private Context context;
     private AchContract.View mView;
     private SharedPrefsRequestImpl sharedMgr;
+    private AmountValidator amountValidator;
 
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
         sharedMgr = new SharedPrefsRequestImpl(context);
+        amountValidator = new AmountValidator();
     }
 
     @Override
     public void onStartAchPayment(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer.getAmount() > 0 || ravePayInitializer.toString().isEmpty()) {
+        boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        if (isAmountValid){
             mView.showAmountField(false);
             mView.showRedirectMessage(true);
         }
@@ -48,25 +52,14 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showAmountError(null);
 
-        if (ravePayInitializer.getAmount() > 0) {
+        boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+
+        if (isAmountValid){
+            ravePayInitializer.setAmount(ravePayInitializer.getAmount());
             initiatePayment(ravePayInitializer);
         }
         else {
-            try {
-                double amnt = Double.parseDouble(amount);
-
-                if (amnt <= 0) {
-                    mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
-                }
-                else {
-                    ravePayInitializer.setAmount(amnt);
-                    initiatePayment(ravePayInitializer);
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
-            }
+            mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
         }
 
     }
@@ -110,6 +103,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
         mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -137,7 +131,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.no_response_data_was_returnedmsg);
+                    mView.onPaymentError(RaveConstants.noResponse);
                 }
 
             }

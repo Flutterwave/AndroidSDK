@@ -29,14 +29,15 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
  */
 public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener {
 
+    private View v;
+    private Button payButton;
+    private AchPresenter presenter;
+    private TextInputLayout amountTil;
+    private TextInputEditText amountEt;
+    private TextView payInstructionsTv;
     private ProgressDialog progressDialog;
-    AchPresenter presenter;
-    View v;
     private RavePayInitializer ravePayInitializer;
-    Button payButton;
-    TextInputLayout amountTil;
-    TextInputEditText amountEt;
-    TextView payInstructionsTv;
+
     public static final int FOR_ACH = 892;
 
     @Override
@@ -48,13 +49,20 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         v = inflater.inflate(R.layout.fragment_ach, container, false);
 
         initializeViews();
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+
+        initializeRavePay();
 
         presenter.onStartAchPayment(ravePayInitializer);
 
         setListeners();
 
         return v;
+    }
+
+    private void initializeRavePay() {
+        if (getActivity() != null ){
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+        }
     }
 
     private void setListeners() {
@@ -215,7 +223,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
-
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
