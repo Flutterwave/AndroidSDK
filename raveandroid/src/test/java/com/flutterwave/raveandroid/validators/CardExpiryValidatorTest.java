@@ -23,12 +23,17 @@ public class CardExpiryValidatorTest {
     }
 
     @Test
-    public void isValidCardExpiry_IsNumbersCardExpiryPassed_returnsTrue(){
+    public void isValidCardExpiry_IsLettersCardExpiryPassed_returnsFalse(){
         String cardExpiry = "as/11";
         boolean isCardExpiryValid = SUT.isCardExpiryValid(cardExpiry);
         assertThat(false, is(isCardExpiryValid));
     }
 
-
+    @Test
+    public void isValidCardExpiry_IsEmptyCardExpiryPassed_returnsFalse(){
+        String cardExpiry = "";
+        boolean isCardExpiryValid = SUT.isCardExpiryValid(cardExpiry);
+        assertThat(false, is(isCardExpiryValid));
+    }
 
 }
