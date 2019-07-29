@@ -29,7 +29,7 @@ public interface AchContract {
     }
 
     interface UserActionsListener {
-        void onStartAchPayment(RavePayInitializer ravePayInitializer);
+        void init(RavePayInitializer ravePayInitializer);
 
         void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
 

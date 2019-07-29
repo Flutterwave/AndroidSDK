@@ -19,21 +19,21 @@ public class AmountValidatorTest {
     }
 
     @Test
-    public void isAmountvalid_isCorrectAmountPassed_returnsTrue(){
+    public void isAmountValid_isCorrectAmountPassed_returnsTrue() {
         Double amount = 1.0;
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(true, is(isAmountValid));
     }
 
     @Test
-    public void isAmountvalid_isNegativeAmountPassed_returnsFalse(){
+    public void isAmountValid_isNegativeAmountPassed_returnsFalse() {
         Double amount = -1.0;
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(false, is(isAmountValid));
     }
 
     @Test
-    public void isAmountvalid_isEmptyAmountPassed_returnsFalse() {
+    public void isAmountValid_isEmptyAmountPassed_returnsFalse() {
         String amount = "";
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(false, is(isAmountValid));

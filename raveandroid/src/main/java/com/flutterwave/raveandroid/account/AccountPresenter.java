@@ -294,19 +294,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     account = defaultAccounNumber;
                 }
 
-                try {
-                    double amnt = Double.parseDouble(amount);
-
-                    if (amnt <= 0) {
-                        valid = false;
-                        mView.showToast(validAmountPrompt);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    valid = false;
-                    mView.showToast(validAmountPrompt);
-                }
-
                 if (valid){
                     mView.onValidationSuccessful(dataHashMap);
                 }

@@ -52,7 +52,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
         initializeRavePay();
 
-        presenter.onStartAchPayment(ravePayInitializer);
+        presenter.init(ravePayInitializer);
 
         setListeners();
 

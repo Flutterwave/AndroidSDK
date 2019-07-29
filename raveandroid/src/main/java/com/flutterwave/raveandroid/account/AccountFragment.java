@@ -30,7 +30,6 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
@@ -42,8 +41,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldBVN;
+import static com.flutterwave.raveandroid.RaveConstants.fieldBankCode;
+import static com.flutterwave.raveandroid.RaveConstants.fieldDOB;
+import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.isInternetBanking;
 
 
 /**
@@ -95,11 +100,11 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         initializeViews();
 
+        pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
+
         setListeners();
 
         initializePresenter();
-
-        pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         return v;
     }
@@ -205,12 +210,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
 
         if (accountNumberTil.getVisibility() == View.VISIBLE) {
-            if (accountNumberEt.getText().toString().length() != 10) {
-                dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), "", TextInputLayout.class));
-            }
-            else{
                 dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
-            }
          }
 
         presenter.onDataCollected(dataHashMap);
@@ -223,18 +223,18 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void showInternetBankingSelected(int whatToShow) {
-        accountNumberTil.setVisibility(whatToShow);
+    public void showInternetBankingSelected(int isVisible) {
+        accountNumberTil.setVisibility(isVisible);
     }
 
     @Override
-    public void showDateOfBirth(int whatToShow) {
-        dateOfBirthEt.setVisibility(whatToShow);
+    public void showDateOfBirth(int isVisible) {
+        dateOfBirthEt.setVisibility(isVisible);
     }
 
     @Override
-    public void showBVN(int whatToShow) {
-        rave_bvnTil.setVisibility(whatToShow);
+    public void showBVN(int isVisible) {
+        rave_bvnTil.setVisibility(isVisible);
     }
 
     @Override

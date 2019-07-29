@@ -59,17 +59,26 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        presenter = new GhMobileMoneyPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
-        initilaizeViews();
-
-        presenter.init(ravePayInitializer);
+        initializeViews();
 
         setUpNetworks();
 
         setListeners();
 
+        initializePresenter();
+
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
@@ -131,9 +140,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         });
     }
 
-    private void initilaizeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        presenter = new GhMobileMoneyPresenter(getActivity(), this);
+    private void initializeViews() {
         networkSpinner =  v.findViewById(R.id.rave_networkSpinner);
         instructionsTv =  v.findViewById(R.id.instructionsTv);
         voucherTil =  v.findViewById(R.id.rave_voucherTil);

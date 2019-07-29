@@ -26,7 +26,9 @@ import com.flutterwave.raveandroid.ViewObject;
 import java.util.HashMap;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,16 +48,13 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private int rave_phoneEtInt;
     private RavePayInitializer ravePayInitializer;
 
-    public MpesaFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this v
+        presenter = new MpesaPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
         initializeViews();
@@ -108,7 +107,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void initializeViews() {
         amountEt =  v.findViewById(R.id.rave_amountTV);
         rave_phoneEtInt = amountEt.getId();
-        presenter = new MpesaPresenter(getActivity(), this);
         payButton =  v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4.class)
 public class EmailValidatorTest {
@@ -40,14 +40,14 @@ public class EmailValidatorTest {
     }
 
     @Test
-    public void isEmailValid_isTopLevelLessthan2DomainPassed_returnsFalse(){
+    public void isEmailValid_isTopLevelLessThan2DomainPassed_returnsFalse() {
         String email = "test@flutterwave.c";
         boolean isEmailValid = SUT.isEmailValid(email);
         assertThat(false, is(isEmailValid));
     }
 
     @Test
-    public void isEmailValid_isTopLevelMorethan6DomainPassed_returnsFalse(){
+    public void isEmailValid_isTopLevelMoreThan6DomainPassed_returnsFalse() {
         String email = "test@flutterwave.commmmm";
         boolean isEmailValid = SUT.isEmailValid(email);
         assertThat(false, is(isEmailValid));

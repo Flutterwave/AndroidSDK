@@ -33,16 +33,18 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
     @Override
-    public void onStartAchPayment(RavePayInitializer ravePayInitializer) {
+    public void init(RavePayInitializer ravePayInitializer) {
 
-        boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
-        if (isAmountValid){
-            mView.showAmountField(false);
-            mView.showRedirectMessage(true);
-        }
-        else {
-            mView.showAmountField(true);
-            mView.showRedirectMessage(false);
+        if (ravePayInitializer != null) {
+
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isAmountValid) {
+                mView.showAmountField(false);
+                mView.showRedirectMessage(true);
+            } else {
+                mView.showAmountField(true);
+                mView.showRedirectMessage(false);
+            }
         }
 
     }

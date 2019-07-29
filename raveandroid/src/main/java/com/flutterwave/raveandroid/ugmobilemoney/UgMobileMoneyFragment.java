@@ -55,21 +55,26 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        presenter = new UgMobileMoneyPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
         initializeViews();
 
-        setListeners();
-
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter = new UgMobileMoneyPresenter(getActivity(), this);
-
-        presenter.init(ravePayInitializer);
-
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
+        setListeners();
+
+        initializePresenter();
+
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void initializeViews() {

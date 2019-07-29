@@ -29,7 +29,6 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -46,7 +45,15 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.RaveConstants.*;
+import static com.flutterwave.raveandroid.RaveConstants.MANUAL_CARD_CHARGE;
+import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.RaveConstants.PIN;
+import static com.flutterwave.raveandroid.RaveConstants.TOKEN_CHARGE;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
+import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
+import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 
 
 /**
@@ -88,16 +95,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public static final String INTENT_SENDER = "cardFrag";
 
 
-    public CardFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         presenter = new CardPresenter(getActivity(), this);
 
-        // Inflate the layout for this v
         v = inflater.inflate(R.layout.fragment_card, container, false);
 
         initializeViews();
@@ -106,11 +109,16 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         setListeners();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
