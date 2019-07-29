@@ -162,6 +162,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
             pollingProgressDialog.show();
@@ -181,10 +182,20 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
 
+    @Override
+    public void onPollingCanceled(String flwRef, String txRef, final String responseAsJSONString) {
+        showBackToApp(getString(R.string.bant_transfer_polling_cancelled_message), responseAsJSONString);
+    }
+
+
 
     @Override
     public void onPollingTimeout(String flwRef, String txRef, final String responseAsJSONString) {
-        transferStatusTv.setText(getString(R.string.pay_with_bank_timeout_notification));
+        showBackToApp(getString(R.string.pay_with_bank_timeout_notification), responseAsJSONString);
+    }
+
+    private void showBackToApp(String transferStatusMessage, final String responseAsJSONString) {
+        transferStatusTv.setText(transferStatusMessage);
         transferStatusTv.setVisibility(View.VISIBLE);
 
         verifyPaymentButton.setText(getString(R.string.back_to_app));

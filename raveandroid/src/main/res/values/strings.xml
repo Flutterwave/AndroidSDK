@@ -137,6 +137,7 @@
     <string name="currency_placeholder">NGN</string>
     <string name="account_number_placeholder">0690000031</string>
     <string name="pay_with_bank_timeout_notification">Payments are currently slow at your bank. Slow payments are usually confirmed within 30 minutes. You will get a receipt once your payment is confirmed.</string>
+    <string name="bant_transfer_polling_cancelled_message">You will get a receipt once your payment is confirmed.</string>
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>
         <item>MTN</item>

@@ -10,7 +10,6 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.banktransfer.BankTransferContract;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -32,6 +31,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private AmountValidator amountValidator = new AmountValidator();
     private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
+    private boolean pollingCancelled = false;
 
     BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.context = context;
@@ -124,6 +124,11 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     }
 
     @Override
+    public void cancelPolling() {
+        pollingCancelled = true;
+    }
+
+    @Override
     public void requeryTx() {
 
         RequeryRequestBody body = new RequeryRequestBody();
@@ -136,14 +141,17 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("01")) {
-
-                    if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
-                        requeryTx();
-                    } else {
+                    if (pollingCancelled) {
                         mView.showPollingIndicator(false);
-                        mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
+                        mView.onPollingCanceled(flwRef, txRef, responseAsJSONString);
+                    } else {
+                        if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
+                            requeryTx();
+                        } else {
+                            mView.showPollingIndicator(false);
+                            mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
+                        }
                     }
-
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
                     mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
