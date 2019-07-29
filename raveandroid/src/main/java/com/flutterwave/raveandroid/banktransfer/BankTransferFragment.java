@@ -270,7 +270,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         bankNameTv.setText(bankName);
         accountNumberTv.setText(accountNumber);
         transferInstructionTv.setText(
-                transferInstructionTv.getText() + " " + beneficiaryName
+                String.format("%s %s", getString(R.string.bank_transfer_instructions_placeholder), beneficiaryName)
         );
 
         initiateChargeLayout.setVisibility(GONE);
