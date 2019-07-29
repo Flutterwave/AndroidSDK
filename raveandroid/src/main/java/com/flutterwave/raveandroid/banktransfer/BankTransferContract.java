@@ -3,7 +3,6 @@ package com.flutterwave.raveandroid.banktransfer;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 
 import java.util.HashMap;
 
@@ -25,6 +24,8 @@ public interface BankTransferContract {
         void showFieldError(int viewID, String message, Class<?> viewType);
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
         void onAmountValidationFailed();
+
+        void onPollingCanceled(String flwRef, String txRef, final String responseAsJSONString);
     }
 
     interface UserActionsListener {
@@ -35,5 +36,7 @@ public interface BankTransferContract {
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
         void onDataCollected(HashMap<String, ViewObject> dataHashMap);
         void startPaymentVerification();
+
+        void cancelPolling();
     }
 }
