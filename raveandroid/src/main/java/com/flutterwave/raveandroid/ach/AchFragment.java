@@ -50,23 +50,29 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
         initializeViews();
 
-        initializeRavePay();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         setListeners();
 
         return v;
     }
 
-    private void initializeRavePay() {
+    private void initializePresenter() {
         if (getActivity() != null ){
             ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
         }
     }
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+    }
+
+    private void initializeViews() {
+        payInstructionsTv = v.findViewById(R.id.paymentInstructionsTv);
+        payButton = v.findViewById(R.id.rave_payButton);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        amountEt = v.findViewById(R.id.rave_amountTV);
     }
 
     @Override
@@ -78,12 +84,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         }
     }
 
-    private void initializeViews() {
-        payInstructionsTv =  v.findViewById(R.id.paymentInstructionsTv);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-    }
 
     @Override
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
@@ -171,9 +171,12 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showProgressIndicator(boolean active) {
 
         try {
-            if (getActivity().isFinishing()) {
-                return;
+            if (getActivity() != null) {
+                if (getActivity().isFinishing()) {
+                    return;
+                }
             }
+
             if (progressDialog == null) {
                 progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setCanceledOnTouchOutside(false);
@@ -188,6 +191,18 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         }
         catch (NullPointerException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
+        dismissDialog();
+
+        Intent intent = new Intent();
+        intent.putExtra("response", responseAsJSONString);
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
         }
     }
 
@@ -217,16 +232,5 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         presenter.verifyRequeryResponse(response, responseAsJSONString, ravePayInitializer, flwRef);
     }
 
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
-        dismissDialog();
-
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
-    }
 
 }

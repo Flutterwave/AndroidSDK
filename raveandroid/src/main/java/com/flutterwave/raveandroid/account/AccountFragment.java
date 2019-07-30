@@ -123,20 +123,20 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     private void initializeViews() {
-        bvnEt =  v.findViewById(R.id.rave_bvnEt);
-        phoneEt =  v.findViewById(R.id.rave_phoneEt);
-        emailEt =  v.findViewById(R.id.rave_emailEt);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-        emailTil =  v.findViewById(R.id.rave_emailTil);
-        phoneTil =  v.findViewById(R.id.rave_phoneTil);
-        rave_bvnTil =  v.findViewById(R.id.rave_bvnTil);
+        accountNumberTil = v.findViewById(R.id.rave_accountNumberTil);
+        accountNumberEt = v.findViewById(R.id.rave_accountNumberEt);
+        pcidss_tv = v.findViewById(R.id.rave_pcidss_compliant_tv);
+        dateOfBirthEt = v.findViewById(R.id.rave_dobEditText);
+        bankEt = v.findViewById(R.id.rave_bankEditText);
+        amountTil = v.findViewById(R.id.rave_amountTil);
         payButton =  v.findViewById(R.id.rave_payButton);
-        bankEt =  v.findViewById(R.id.rave_bankEditText);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        dateOfBirthEt =  v.findViewById(R.id.rave_dobEditText);
-        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
-        accountNumberEt =  v.findViewById(R.id.rave_accountNumberEt);
-        accountNumberTil =  v.findViewById(R.id.rave_accountNumberTil);
+        rave_bvnTil = v.findViewById(R.id.rave_bvnTil);
+        amountEt = v.findViewById(R.id.rave_amountTV);
+        emailTil = v.findViewById(R.id.rave_emailTil);
+        phoneTil = v.findViewById(R.id.rave_phoneTil);
+        phoneEt = v.findViewById(R.id.rave_phoneEt);
+        emailEt = v.findViewById(R.id.rave_emailEt);
+        bvnEt = v.findViewById(R.id.rave_bvnEt);
     }
 
     @Override
@@ -155,6 +155,35 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                         calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         }
+    }
+
+    private void clearErrors() {
+        accountNumberTil.setErrorEnabled(false);
+        rave_bvnTil.setErrorEnabled(false);
+        emailTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+        accountNumberTil.setError(null);
+        dateOfBirthEt.setError(null);
+        rave_bvnTil.setError(null);
+        phoneTil.setError(null);
+        emailTil.setError(null);
+        bankEt.setError(null);
+        bankEt.setError(null);
+    }
+
+    private void collectData() {
+
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+
+        dataHashMap.put(fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+
+        if (accountNumberTil.getVisibility() == View.VISIBLE) {
+            dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
+        }
+
+        presenter.onDataCollected(dataHashMap);
     }
 
     @Override
@@ -186,40 +215,98 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         amountEt.setText(amountToSet);
     }
 
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
-    private void clearErrors(){
-        bankEt.setError(null);
-        bankEt.setError(null);
-        phoneTil.setError(null);
-        emailTil.setError(null);
-        rave_bvnTil.setError(null);
-        dateOfBirthEt.setError(null);
-        accountNumberTil.setError(null);
-        emailTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-        rave_bvnTil.setErrorEnabled(false);
-        accountNumberTil.setErrorEnabled(false);
+        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
+
+        dataHashMap.put(fieldBVN, new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldDOB, new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldBankCode, new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
+        dataHashMap.put(isInternetBanking, new ViewObject(bankEt.getId(), selectedBank.isInternetbanking() + "", TextInputLayout.class));
+
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+
     }
 
-    private void collectData() {
-
-        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
-
-        dataHashMap.put(fieldEmail, new ViewObject(emailTil.getId(), emailEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-
-        if (accountNumberTil.getVisibility() == View.VISIBLE) {
-                dataHashMap.put(fieldAccount, new ViewObject(accountNumberTil.getId(), accountNumberEt.getText().toString(), TextInputLayout.class));
-         }
-
-        presenter.onDataCollected(dataHashMap);
+    @Override
+    public void onValidateError(String message, String responseAsJSonString) {
+        showToast(message);
     }
 
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
+            view.setError(message);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
+            view.setError(message);
+        }
+    }
+
+    @Override
+    public void onValidationSuccessful(String flwRef, String responseAsJsonString) {
+        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+    }
+
+    @Override
+    public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
+
+        if (getActivity() != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
+                }
+            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+
+    }
+
+    @Override
+    public void showFetchFeeFailed(String s) {
+        showToast(s);
+    }
 
     @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String responseAsJSONString) {
+        Intent intent = new Intent();
+        intent.putExtra("response", responseAsJSONString);
+
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onPaymentFailed(String status, String responseAsJSONString) {
+        Intent intent = new Intent();
+        intent.putExtra("response", responseAsJSONString);
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onPaymentError(String message) {
+        showToast(message);
     }
 
     @Override
@@ -347,73 +434,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
 
     @Override
-    public void onPaymentSuccessful(String status, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void onPaymentFailed(String status, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void onValidateSuccessful(String flwRef, String responseAsJsonString) {
-        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
-    }
-
-    @Override
-    public void onValidateError(String message, String responseAsJSonString) {
-        showToast(message);
-    }
-
-    @Override
-    public void onPaymentError(String message) {
-        showToast(message);
-    }
-
-    @Override
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
         presenter.verifyRequeryResponseStatus(response, responseAsJSONString, ravePayInitializer);
-    }
-
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
-
-        if (getActivity() != null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
-                }
-            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.show();
-        }
-
-    }
-
-    @Override
-    public void showFetchFeeFailed(String s) {
-
     }
 
     @Override
@@ -458,34 +480,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
 
         dateOfBirthEt.setText(formattedDay + "/" + formattedMonth + "/" + year);
-    }
-
-
-
-    @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
-
-        dataHashMap.put(fieldBVN, new ViewObject(bvnEt.getId(), bvnEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(fieldDOB, new ViewObject(dateOfBirthEt.getId(), dateOfBirthEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(fieldBankCode, new ViewObject(bankEt.getId(), selectedBank.getBankcode(), TextInputLayout.class));
-        dataHashMap.put(isInternetBanking, new ViewObject(bankEt.getId(), selectedBank.isInternetbanking()+"", TextInputLayout.class));
-
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-
-    }
-
-    @Override
-    public void showFieldError(int viewID, String message, Class<?> viewType) {
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
     }
 
 

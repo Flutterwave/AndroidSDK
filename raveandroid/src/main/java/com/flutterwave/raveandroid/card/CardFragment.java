@@ -149,7 +149,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onClick(View view) {
-
         int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();

@@ -32,7 +32,6 @@ import static com.flutterwave.raveandroid.RaveConstants.NGN;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.accounNumberPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.date_of_birth;
-import static com.flutterwave.raveandroid.RaveConstants.defaultAccounNumber;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldBVN;
@@ -90,8 +89,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-
-//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -155,7 +152,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase(success)) {
-                        mView.onValidateSuccessful(flwRef, responseAsJSONString);
+                        mView.onValidationSuccessful(flwRef, responseAsJSONString);
                     }
                     else {
                         mView.onValidateError(status, responseAsJSONString);
@@ -290,8 +287,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 if (account.isEmpty()) {
                         valid = false;
                         mView.showFieldError(accountID, accounNumberPrompt, phoneViewType);
-                } else {
-                    account = defaultAccounNumber;
                 }
 
                 if (valid){

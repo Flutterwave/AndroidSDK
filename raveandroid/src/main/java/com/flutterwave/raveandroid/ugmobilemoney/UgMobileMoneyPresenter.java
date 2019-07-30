@@ -6,7 +6,6 @@ import android.util.Log;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -23,7 +22,14 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 import java.util.HashMap;
 
 import static com.flutterwave.raveandroid.RaveConstants.NG;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.UGX;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by Jeremiah on 10/12/2018.
@@ -60,15 +66,15 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(RaveConstants.transactionError);
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(RaveConstants.transactionError);
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }
@@ -99,7 +105,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.noResponse);
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -153,25 +159,25 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
          boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
-        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+        int phoneID = dataHashMap.get(fieldPhone).getViewId();
+        String phone = dataHashMap.get(fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
         if (!isAmountValidated) {
             valid = false;
-            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+            mView.showFieldError(amountID, validAmountPrompt, amountViewType);
         }
 
          if (!isPhoneValid) {
                 valid = false;
-                mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
          if (valid) {
@@ -198,7 +204,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setNetwork(UGX)
-                    .setPhonenumber(dataHashMap.get(RaveConstants.fieldPhone).getData())
+                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(context));

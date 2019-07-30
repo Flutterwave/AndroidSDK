@@ -62,7 +62,7 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void onValidateSuccessful(String flwRef, String responseAsJSONString) {
+    public void onValidationSuccessful(String flwRef, String responseAsJSONString) {
 
     }
 
