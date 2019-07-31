@@ -1,14 +1,14 @@
 package com.flutterwave.raveandroid.validators;
 
+import java.util.regex.Pattern;
+
 public class BvnValidator {
 
     public boolean isBvnValid(String bvn) {
-        boolean isValid = true;
-
-        if (!(bvn != null && bvn.length() == 11)) {
-            isValid = false;
+        if (bvn != null) {
+            return Pattern.matches("\\d{11}", bvn);
+        } else {
+            return false;
         }
-
-        return isValid;
     }
 }

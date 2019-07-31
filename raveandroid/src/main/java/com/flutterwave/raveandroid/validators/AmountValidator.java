@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.validators;
 
+import java.util.regex.Pattern;
+
 public class AmountValidator {
 
     public boolean isAmountValid(Double amount) {
@@ -8,11 +10,9 @@ public class AmountValidator {
 
     public boolean isAmountValid(String amount) {
 
-        try {
-            Double.parseDouble(amount);
-            return true;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+        if (amount != null && !amount.isEmpty()) {
+            return Pattern.matches("^[0-9]*$", amount);
+        } else {
             return false;
         }
 

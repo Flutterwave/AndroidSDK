@@ -5,6 +5,11 @@ import java.util.regex.Pattern;
 public class CardExpiryValidator {
 
     public boolean isCardExpiryValid(String cardExpiry) {
-        return Pattern.matches("\\d\\d/\\d\\d", cardExpiry);
+        if (cardExpiry != null) {
+            return Pattern.matches("\\d\\d/\\d\\d", cardExpiry);
+        } else {
+            return false;
+        }
+
     }
 }

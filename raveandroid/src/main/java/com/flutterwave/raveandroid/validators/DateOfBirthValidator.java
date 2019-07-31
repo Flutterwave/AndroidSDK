@@ -1,14 +1,14 @@
 package com.flutterwave.raveandroid.validators;
 
+import java.util.regex.Pattern;
+
 public class DateOfBirthValidator {
 
     public boolean isDateValid(String dateOfBirth) {
-
-        boolean isValid = true;
-
-        if (!(dateOfBirth != null && dateOfBirth.length() == 10)) {
+        if (dateOfBirth != null) {
+            return Pattern.matches("\\d\\d/\\d\\d/\\d\\d\\d\\d", dateOfBirth);
+        } else {
             return false;
         }
-        return isValid;
     }
 }

@@ -33,8 +33,15 @@ public class AmountValidatorTest {
     }
 
     @Test
-    public void isAmountValid_isEmptyAmountPassed_returnsFalse() {
+    public void isAmountValid_isLetterPassed_returnsFalse() {
         String amount = "accd";
+        boolean isAmountValid = SUT.isAmountValid(amount);
+        assertThat(false, is(isAmountValid));
+    }
+
+    @Test
+    public void isAmountValid_isEmptyAmountPassed_returnsFalse() {
+        String amount = "";
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(false, is(isAmountValid));
     }
