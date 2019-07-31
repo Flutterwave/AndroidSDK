@@ -3,22 +3,18 @@ package com.flutterwave.raveandroid.validators;
 public class AmountValidator {
 
     public boolean isAmountValid(Double amount) {
-        if (amount != null && !amount.toString().isEmpty()){
-            return amount > 0;
-        }
-        else
-        {
-            return false;
-        }
+        return amount > 0;
     }
 
     public boolean isAmountValid(String amount) {
-        if (amount != null && !amount.isEmpty()) {
-            return Double.valueOf(amount) > 0;
-        }
-        else
-        {
+
+        try {
+            Double.parseDouble(amount);
+            return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
             return false;
         }
+
     }
 }

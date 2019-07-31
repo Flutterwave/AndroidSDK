@@ -1,8 +1,6 @@
 package com.flutterwave.raveandroid.account;
 
 
-import android.app.Activity;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -35,7 +33,7 @@ public interface AccountContract {
 
         void onPaymentFailed(String status, String responseAsJSONString);
 
-        void onValidateSuccessful(String flwRef, String responseAsJSONString);
+        void onValidationSuccessful(String flwRef, String responseAsJSONString);
 
         void onValidateError(String message, String responseAsJSONString);
 
@@ -57,11 +55,11 @@ public interface AccountContract {
 
         void onAmountValidated(String amountToSet, int visibility);
 
-        void showDateOfBirth(int whatToShow);
+        void showDateOfBirth(int isVisible);
 
-        void showBVN(int whatToShow);
+        void showBVN(int isVisible);
 
-        void showInternetBankingSelected(int whatToShow);
+        void showAccountNumberField(int isVisible);
     }
 
     interface UserActionsListener {
@@ -85,7 +83,7 @@ public interface AccountContract {
 
         void init(RavePayInitializer ravePayInitializer);
 
-        void onInternetBankingValidated(Bank bank);
+        void onBankSelected(Bank bank);
     }
 
 }

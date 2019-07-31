@@ -37,59 +37,65 @@ import static android.view.View.GONE;
  */
 public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private Spinner networkSpinner;
+    private TextView instructionsTv;
+    private TextInputLayout phoneTil;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
+    private TextInputLayout voucherTil;
+    private TextInputEditText voucherEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    GhMobileMoneyPresenter presenter;
-    Spinner networkSpinner;
-    TextView instructionsTv;
-    TextInputEditText voucherEt;
-    TextInputLayout voucherTil;
-    Button payButton;
-    String validateInstructions;
-    String network;
+
+    private String network;
+    private String validateInstructions;
+    private GhMobileMoneyPresenter presenter;
+    private RavePayInitializer ravePayInitializer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        presenter = new GhMobileMoneyPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
-        initilaizeViews();
-
-        presenter.init(ravePayInitializer);
+        initializeViews();
 
         setUpNetworks();
 
         setListeners();
 
+        initializePresenter();
+
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
         payButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
-        int i = view.getId();
-        if (i == R.id.rave_payButton) {
-            clearErrors();
-            collectData();
-        }
+    private void initializeViews() {
+        networkSpinner = v.findViewById(R.id.rave_networkSpinner);
+        instructionsTv = v.findViewById(R.id.instructionsTv);
+        voucherTil = v.findViewById(R.id.rave_voucherTil);
+        voucherEt = v.findViewById(R.id.rave_voucherEt);
+        payButton = v.findViewById(R.id.rave_payButton);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        phoneTil = v.findViewById(R.id.rave_phoneTil);
+        amountEt = v.findViewById(R.id.rave_amountTV);
+        phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
-
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-        voucherTil.setError(null);
-    }
-
     private void setUpNetworks() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
@@ -100,7 +106,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position < getResources().getStringArray(R.array.gh_mobile_money_networks).length) {
-                     network = getResources().getStringArray(R.array.gh_mobile_money_networks)[position];
+                    network = getResources().getStringArray(R.array.gh_mobile_money_networks)[position];
 
                     if (position == 0) {
                         showInstructionsAndVoucher(false);
@@ -130,18 +136,19 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         });
     }
 
-    private void initilaizeViews() {
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-        presenter = new GhMobileMoneyPresenter(getActivity(), this);
-        networkSpinner =  v.findViewById(R.id.rave_networkSpinner);
-        instructionsTv =  v.findViewById(R.id.instructionsTv);
-        voucherTil =  v.findViewById(R.id.rave_voucherTil);
-        voucherEt =  v.findViewById(R.id.rave_voucherEt);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        phoneTil =  v.findViewById(R.id.rave_phoneTil);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-        phoneEt =  v.findViewById(R.id.rave_phoneEt);
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.rave_payButton) {
+            clearErrors();
+            collectData();
+        }
+    }
+
+    private void clearErrors() {
+        amountTil.setError(null);
+        phoneTil.setError(null);
+        voucherTil.setError(null);
     }
 
     private void collectData() {
@@ -150,25 +157,15 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldVoucher, new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+        dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItemPosition()), Spinner.class));
 
-        if (voucherTil.getVisibility() == View.VISIBLE && voucherEt.getText().toString().length() == 0){
-            dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), "", Spinner.class));
-        }else{
-            dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), networkSpinner.getSelectedItemPosition()+"", Spinner.class));
+        if (voucherTil.getVisibility() == View.VISIBLE) {
+            dataHashMap.put(RaveConstants.fieldVoucher, new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
         }
 
         presenter.onDataCollected(dataHashMap);
     }
 
-
-    @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-
-    }
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
@@ -184,6 +181,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     }
 
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay) {
+        amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+    }
+
     private void showInstructionsAndVoucher(boolean show) {
 
         if (show) {
@@ -196,11 +199,15 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
-
     @Override
     public void showProgressIndicator(boolean active) {
 
-        if (getActivity().isFinishing()) { return; }
+        if (getActivity() != null) {
+            if (getActivity().isFinishing()) {
+                return;
+            }
+        }
+
         if(progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
@@ -215,67 +222,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
-    @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
-        amountTil.setVisibility(GONE);
-        amountEt.setText(amountToPay);
-    }
 
     @Override
-    public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) { return; }
-
-        if(pollingProgressDialog == null) {
-            pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setCanceledOnTouchOutside(false);
-            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
-        }
-
-        if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    pollingProgressDialog.dismiss();
-                }
-            });
-
-            pollingProgressDialog.show();
-        }
-        else if (active && pollingProgressDialog.isShowing()) {
-            //pass
-        }
-        else {
-            pollingProgressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-    }
-
-    @Override
-    public void onPaymentError(String message) {
-//        dismissDialog();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
     @Override
@@ -307,6 +257,22 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+        Intent intent = new Intent();
+        intent.putExtra(RaveConstants.response, responseAsString);
+
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
         if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) {
@@ -320,5 +286,44 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         }
     }
 
+    @Override
+    public void onPaymentError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void showPollingIndicator(boolean active) {
+        if (getActivity().isFinishing()) {
+            return;
+        }
+
+        if (pollingProgressDialog == null) {
+            pollingProgressDialog = new ProgressDialog(getActivity());
+            pollingProgressDialog.setCanceledOnTouchOutside(false);
+            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
+        }
+
+        if (active && !pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    pollingProgressDialog.dismiss();
+                }
+            });
+
+            pollingProgressDialog.show();
+        } else if (active && pollingProgressDialog.isShowing()) {
+            //pass
+        } else {
+            pollingProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            presenter.requeryTx(flwRef, txRef, publicKey);
+        }
+    }
 }
 

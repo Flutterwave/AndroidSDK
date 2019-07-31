@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.ghmobilemoney;
 
-import android.app.Activity;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
 /**
  * Created by hamzafetuga on 25/07/2017.
@@ -89,7 +90,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(
-                    RaveConstants.RAVEPAY, Context.MODE_PRIVATE);
+                    RAVEPAY, Context.MODE_PRIVATE);
             editor = sharedPreferences.edit();
         }
     }

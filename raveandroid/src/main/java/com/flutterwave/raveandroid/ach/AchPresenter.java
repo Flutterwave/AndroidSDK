@@ -15,6 +15,7 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.validators.AmountValidator;
 
 
 public class AchPresenter implements AchContract.UserActionsListener {
@@ -22,23 +23,28 @@ public class AchPresenter implements AchContract.UserActionsListener {
     private Context context;
     private AchContract.View mView;
     private SharedPrefsRequestImpl sharedMgr;
+    private AmountValidator amountValidator;
 
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
         sharedMgr = new SharedPrefsRequestImpl(context);
+        amountValidator = new AmountValidator();
     }
 
     @Override
-    public void onStartAchPayment(RavePayInitializer ravePayInitializer) {
+    public void init(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer.getAmount() > 0 || ravePayInitializer.toString().isEmpty()) {
-            mView.showAmountField(false);
-            mView.showRedirectMessage(true);
-        }
-        else {
-            mView.showAmountField(true);
-            mView.showRedirectMessage(false);
+        if (ravePayInitializer != null) {
+
+            boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            if (isAmountValid) {
+                mView.showAmountField(false);
+                mView.showRedirectMessage(true);
+            } else {
+                mView.showAmountField(true);
+                mView.showRedirectMessage(false);
+            }
         }
 
     }
@@ -48,31 +54,20 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showAmountError(null);
 
-        if (ravePayInitializer.getAmount() > 0) {
-            initiatePayment(ravePayInitializer);
-        }
-        else {
-            try {
-                double amnt = Double.parseDouble(amount);
+        boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
 
-                if (amnt <= 0) {
-                    mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
-                }
-                else {
-                    ravePayInitializer.setAmount(amnt);
-                    initiatePayment(ravePayInitializer);
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
-            }
+        if (isAmountValid) {
+            mView.onValidationSuccessful(amount);
+        } else {
+            mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
         }
 
     }
 
-    private void initiatePayment(RavePayInitializer ravePayInitializer) {
+    @Override
+    public void processTransaction(String amount, RavePayInitializer ravePayInitializer) {
 
+        ravePayInitializer.setAmount(ravePayInitializer.getAmount());
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(ravePayInitializer.getAmount() + "")
                 .setCountry(ravePayInitializer.getCountry())
@@ -96,6 +91,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
         chargeAccount(body, ravePayInitializer.getEncryptionKey(), ravePayInitializer.getIsDisplayFee());
     }
 
+
     @Override
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
@@ -110,6 +106,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
         mView.showProgressIndicator(true);
 
         new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -137,7 +134,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.no_response_data_was_returnedmsg);
+                    mView.onPaymentError(RaveConstants.noResponse);
                 }
 
             }

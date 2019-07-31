@@ -1,8 +1,14 @@
 package com.flutterwave.raveandroid.validators;
 
+import java.util.regex.Pattern;
+
 public class PhoneValidator {
 
     public boolean isPhoneValid(String phone) {
-        return phone.length() >= 1;
+        if (phone.length() > 1) {
+            return Pattern.matches("^[0-9]*$", phone);
+        } else {
+            return false;
+        }
     }
 }

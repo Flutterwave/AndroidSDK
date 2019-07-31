@@ -62,7 +62,7 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void onValidateSuccessful(String flwRef, String responseAsJSONString) {
+    public void onValidationSuccessful(String flwRef, String responseAsJSONString) {
 
     }
 
@@ -117,17 +117,17 @@ public class NullAccountView extends Fragment implements AccountContract.View {
     }
 
     @Override
-    public void showDateOfBirth(int whatToShow) {
+    public void showDateOfBirth(int isVisible) {
 
     }
 
     @Override
-    public void showBVN(int whatToShow) {
+    public void showBVN(int isVisible) {
 
     }
 
     @Override
-    public void showInternetBankingSelected(int whatToShow) {
+    public void showAccountNumberField(int isVisible) {
 
     }
 }

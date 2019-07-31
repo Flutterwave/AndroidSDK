@@ -15,47 +15,73 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OTPFragment extends Fragment {
+public class OTPFragment extends Fragment implements View.OnClickListener {
+
     public static final String EXTRA_OTP = "extraOTP";
-    public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
-    String otp;
+    TextInputEditText otpEt;
+    TextInputLayout otpTil;
+    TextView chargeMessage;
     Button otpButton;
 
+    public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
+    View v;
+    String otp;
 
     public OTPFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View v = inflater.inflate(R.layout.fragment_ot, container, false);
-        final TextInputLayout otpTil = (TextInputLayout) v.findViewById(R.id.otpTil);
-        final TextInputEditText otpEt = (TextInputEditText) v.findViewById(R.id.otpEv);
-        otpButton = (Button) v.findViewById(R.id.otpButton);
-        TextView chargeMessage = (TextView) v.findViewById(R.id.otpChargeMessage);
-        if(getArguments().containsKey(EXTRA_CHARGE_MESSAGE)){
-            chargeMessage.setText(getArguments().getString(EXTRA_CHARGE_MESSAGE));
-        }
-        otpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                otp = otpEt.getText().toString();
 
-                otpTil.setError(null);
-                otpTil.setErrorEnabled(false);
+        v = inflater.inflate(R.layout.fragment_ot, container, false);
 
-                if (otp.length() < 1) {
-                    otpTil.setError("Enter a valid one time password");
-                } else {
-                    goBack();
-                }
-            }
-        });
+        initializeViews();
+
+        setChargeMessage();
+
+        setListeners();
 
         return v;
+    }
+
+    private void setListeners() {
+        otpButton.setOnClickListener(this);
+    }
+
+    private void initializeViews() {
+        otpTil = v.findViewById(R.id.otpTil);
+        otpEt = v.findViewById(R.id.otpEv);
+        otpButton = v.findViewById(R.id.otpButton);
+        chargeMessage = v.findViewById(R.id.otpChargeMessage);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.otpButton) {
+            clearErrors();
+            otp = otpEt.getText().toString();
+            if (otp.length() < 1) {
+                otpTil.setError("Enter a valid one time password");
+            } else {
+                goBack();
+            }
+        }
+    }
+
+    private void clearErrors() {
+        otpTil.setErrorEnabled(false);
+        otpTil.setError(null);
+    }
+
+    private void setChargeMessage() {
+        if (getArguments() != null) {
+            if (getArguments().containsKey(EXTRA_CHARGE_MESSAGE)) {
+                chargeMessage.setText(getArguments().getString(EXTRA_CHARGE_MESSAGE));
+            }
+        }
     }
 
     public void goBack(){
@@ -66,7 +92,6 @@ public class OTPFragment extends Fragment {
             getActivity().finish();
         }
     }
-
 
 
 }
