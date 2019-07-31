@@ -168,10 +168,10 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        boolean isAmountValidated = amountValidator.isAmountValid(amount);
+        boolean isAmountValid = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
-        if (!isAmountValidated) {
+        if (!isAmountValid) {
             valid = false;
             mView.showFieldError(amountID, validAmountPrompt, amountViewType);
         }
@@ -195,7 +195,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
+            builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())

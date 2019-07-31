@@ -20,7 +20,7 @@ public class AmountValidatorTest {
 
     @Test
     public void isAmountValid_isCorrectAmountPassed_returnsTrue() {
-        Double amount = 1.0;
+        Double amount = 123.0;
         boolean isAmountValid = SUT.isAmountValid(amount);
         assertThat(true, is(isAmountValid));
     }

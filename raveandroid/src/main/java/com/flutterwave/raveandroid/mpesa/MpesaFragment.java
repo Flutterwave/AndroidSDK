@@ -20,6 +20,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 
 import java.util.HashMap;
@@ -90,8 +91,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.rave_payButton) {
-            clearErrors();
-            collectData();
+            if (getActivity() != null) {
+                Utils.hide_keyboard(getActivity());
+                clearErrors();
+                collectData();
+            }
         }
     }
 
