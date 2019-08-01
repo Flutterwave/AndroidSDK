@@ -35,5 +35,9 @@ public interface GhMobileMoneyContract {
         void requeryTx(String flwRef, String txRef, String publicKey);
         void chargeGhMobileMoney(Payload payload, String encryptionKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 }

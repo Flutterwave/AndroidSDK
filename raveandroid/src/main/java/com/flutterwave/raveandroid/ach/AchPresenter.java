@@ -188,4 +188,14 @@ public class AchPresenter implements AchContract.UserActionsListener {
             mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
         }
     }
+
+    @Override
+    public void onAttachView(AchContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullAchView();
+    }
 }

@@ -236,6 +236,17 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }
         }
+
+    }
+
+    @Override
+    public void onAttachView(UgMobileMoneyContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullUgMobileMoneyView();
     }
 }
 

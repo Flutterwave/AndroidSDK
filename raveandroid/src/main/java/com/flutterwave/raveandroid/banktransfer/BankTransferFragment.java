@@ -327,4 +327,21 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         amountTil.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter = new BankTransferPresenter(getActivity(), this);
+        }
+        assert presenter != null;
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
 }

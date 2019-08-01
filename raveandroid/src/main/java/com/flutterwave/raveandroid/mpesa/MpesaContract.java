@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.mpesa;
 
-import android.app.Activity;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -36,5 +34,9 @@ public interface MpesaContract {
         void chargeMpesa(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 }

@@ -258,5 +258,22 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter = new MpesaPresenter(getActivity(), this);
+        }
+        assert presenter != null;
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
 
 }

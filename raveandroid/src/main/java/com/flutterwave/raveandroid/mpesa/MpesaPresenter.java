@@ -235,4 +235,14 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             }
         }
     }
+
+    @Override
+    public void onAttachView(MpesaContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullMpesaView();
+    }
 }

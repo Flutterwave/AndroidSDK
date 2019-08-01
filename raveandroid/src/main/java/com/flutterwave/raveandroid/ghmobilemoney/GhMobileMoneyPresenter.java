@@ -258,6 +258,18 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             }
         }
     }
+
+
+    @Override
+    public void onAttachView(GhMobileMoneyContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullGhMobileMoneyView();
+    }
+
 }
 
 
