@@ -38,5 +38,9 @@ public interface BankTransferContract {
         void startPaymentVerification();
 
         void cancelPolling();
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 }

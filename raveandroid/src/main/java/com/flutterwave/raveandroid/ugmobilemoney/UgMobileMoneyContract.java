@@ -34,5 +34,9 @@ public interface UgMobileMoneyContract {
         void requeryTx(String flwRef, String txRef, String publicKey);
         void chargeUgMobileMoney(Payload payload, String encryptionKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 }

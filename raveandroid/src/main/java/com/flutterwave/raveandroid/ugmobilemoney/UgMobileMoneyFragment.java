@@ -264,7 +264,22 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new UgMobileMoneyPresenter(getActivity(), this);
+        }
+        presenter.onAttachView(this);
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
 
 }
 

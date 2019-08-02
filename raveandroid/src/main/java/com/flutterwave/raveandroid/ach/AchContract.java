@@ -42,6 +42,10 @@ public interface AchContract {
         void onFeeConfirmed(String authUrl, String flwRef);
 
         void processTransaction(String amount, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 
 }

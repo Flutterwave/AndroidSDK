@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.account;
 
-import android.support.v4.app.Fragment;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
@@ -14,7 +12,7 @@ import java.util.List;
  * Created by hfetuga on 06/02/2018.
  */
 
-public class NullAccountView extends Fragment implements AccountContract.View {
+public class NullAccountView implements AccountContract.View {
 
     @Override
     public void showToast(String message) {

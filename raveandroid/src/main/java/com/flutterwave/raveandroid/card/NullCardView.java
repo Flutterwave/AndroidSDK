@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.card;
 
-import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.flutterwave.raveandroid.Payload;
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by hfetuga on 06/02/2018.
  */
 
-public class NullCardView extends Fragment implements View.OnClickListener, CardContract.View {
+public class NullCardView implements View.OnClickListener, CardContract.View {
 
     @Override
     public void onClick(View v) {

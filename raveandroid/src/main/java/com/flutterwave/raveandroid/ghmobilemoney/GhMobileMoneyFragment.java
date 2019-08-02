@@ -325,5 +325,22 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             presenter.requeryTx(flwRef, txRef, publicKey);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new GhMobileMoneyPresenter(getActivity(), this);
+        }
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
 }
 

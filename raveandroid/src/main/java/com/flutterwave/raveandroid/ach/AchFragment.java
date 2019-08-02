@@ -237,5 +237,21 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         presenter.verifyRequeryResponse(response, responseAsJSONString, ravePayInitializer, flwRef);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new AchPresenter(getActivity(), this);
+        }
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
 
 }

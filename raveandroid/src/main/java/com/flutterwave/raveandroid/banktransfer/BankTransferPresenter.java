@@ -227,7 +227,6 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     .setDevice_fingerprint(Utils.getDeviceImei(context))
                     .setNarration(ravePayInitializer.getNarration());
 
-
             Payload body = builder.createBankTransferPayload();
 
             if (ravePayInitializer.getIsDisplayFee()) {
@@ -237,5 +236,16 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
             }
         }
     }
+
+    @Override
+    public void onAttachView(BankTransferContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullBankTransferView();
+    }
+
 
 }
