@@ -437,10 +437,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
+        if (presenter == null) {
             presenter = new AccountPresenter(getActivity(), this);
         }
-        assert presenter != null;
         presenter.onAttachView(this);
     }
 

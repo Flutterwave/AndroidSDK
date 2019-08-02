@@ -240,10 +240,9 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
+        if (presenter == null) {
             presenter = new AchPresenter(getActivity(), this);
         }
-        assert presenter != null;
         presenter.onAttachView(this);
     }
 

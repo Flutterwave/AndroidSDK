@@ -329,10 +329,9 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
+        if (presenter == null) {
             presenter = new GhMobileMoneyPresenter(getActivity(), this);
         }
-        assert presenter != null;
         presenter.onAttachView(this);
     }
 

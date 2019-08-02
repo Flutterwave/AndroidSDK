@@ -267,10 +267,9 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
+        if (presenter == null) {
             presenter = new UgMobileMoneyPresenter(getActivity(), this);
         }
-        assert presenter != null;
         presenter.onAttachView(this);
     }
 
