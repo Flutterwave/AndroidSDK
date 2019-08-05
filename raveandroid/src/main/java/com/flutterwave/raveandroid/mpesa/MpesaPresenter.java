@@ -21,6 +21,8 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
@@ -34,11 +36,13 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
  */
 
 public class MpesaPresenter implements MpesaContract.UserActionsListener {
+
     private Context context;
     private MpesaContract.View mView;
     private AmountValidator amountValidator = new AmountValidator();
     private PhoneValidator phoneValidator = new PhoneValidator();
 
+    @Inject
     public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
         this.mView = mView;

@@ -22,8 +22,13 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.components.ApplicationComponents;
+import com.flutterwave.raveandroid.components.DaggerApplicationComponents;
+import com.flutterwave.raveandroid.modules.MpesaModule;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
@@ -38,7 +43,8 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private View v;
     private Button payButton;
     private TextInputLayout phoneTil;
-    private MpesaPresenter presenter;
+    @Inject
+    MpesaPresenter presenter;
     private TextInputLayout amountTil;
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
@@ -53,7 +59,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new MpesaPresenter(getActivity(), this);
+//        presenter = new MpesaPresenter(getActivity(), this);
+        ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
+                .mpesaModule(new MpesaModule(getActivity(), this)).build();
+
+        applicationComponents.inject(this);
 
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
