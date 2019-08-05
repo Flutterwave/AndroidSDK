@@ -23,6 +23,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -38,9 +40,19 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
-    private Retrofit retrofit;
-    private ApiService service;
+    Retrofit retrofit;
+    ApiService service;
     private String errorParsingError = "An error occurred parsing the error response";
+
+    @Inject
+    public NetworkRequestImpl(Retrofit retrofit, ApiService service) {
+        this.retrofit = retrofit;
+        this.service = service;
+    }
+
+    public NetworkRequestImpl() {
+
+    }
 
     private ErrorBody parseErrorJson(String errorStr) {
 
@@ -60,7 +72,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeCard(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -97,7 +108,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeGhanaMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -134,7 +144,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void validateChargeCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.validateCardCharge(body);
 
@@ -170,7 +179,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void validateAccountCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.validateAccountCharge(body);
 
@@ -206,7 +214,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, final Callbacks.OnRequeryRequestv2Complete callback) {
 
-        createService();
 
         Call<String> call = service.requeryTx_v2(requeryRequestBody);
 
@@ -252,7 +259,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.requeryPayWithBankTx(requeryRequestBody);
 
@@ -298,7 +304,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.requeryTx(requeryRequestBody);
 
@@ -343,7 +348,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void getBanks(final Callbacks.OnGetBanksRequestComplete callback) {
 
-        createService();
 
         Call<List<Bank>> call = service.getBanks();
 
@@ -377,7 +381,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeAccount(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -413,7 +416,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeToken(Payload payload, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.chargeToken(payload);
 
@@ -458,7 +460,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void getFee(FeeCheckRequestBody body, final Callbacks.OnGetFeeRequestComplete callback) {
 
-        createService();
 
         Call<FeeCheckResponse> call = service.checkFee(body);
 

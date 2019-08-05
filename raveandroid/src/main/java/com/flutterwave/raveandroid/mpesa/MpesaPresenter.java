@@ -35,17 +35,24 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
  * Created by hfetuga on 27/06/2018.
  */
 
+
 public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
     private Context context;
     private MpesaContract.View mView;
-    private AmountValidator amountValidator = new AmountValidator();
-    private PhoneValidator phoneValidator = new PhoneValidator();
+    @Inject
+    NetworkRequestImpl networkRequest;
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    PhoneValidator phoneValidator;
 
     @Inject
-    public MpesaPresenter(Context context, MpesaContract.View mView) {
+    public MpesaPresenter(Context context, MpesaContract.View mView, AmountValidator amountValidator, PhoneValidator phoneValidator) {
         this.context = context;
         this.mView = mView;
+        this.amountValidator = amountValidator;
+        this.phoneValidator = phoneValidator;
     }
 
     @Override
@@ -58,7 +65,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -95,7 +102,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -133,7 +140,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showPollingIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {

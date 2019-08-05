@@ -24,11 +24,15 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.components.ApplicationComponents;
 import com.flutterwave.raveandroid.components.DaggerApplicationComponents;
+import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.modules.MpesaModule;
+import com.flutterwave.raveandroid.modules.NetworkModule;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
+
+import retrofit2.Retrofit;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
@@ -45,6 +49,10 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private TextInputLayout phoneTil;
     @Inject
     MpesaPresenter presenter;
+    @Inject
+    Retrofit retrofit;
+    @Inject
+    ApiService service;
     private TextInputLayout amountTil;
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
@@ -59,9 +67,10 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        presenter = new MpesaPresenter(getActivity(), this);
         ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
-                .mpesaModule(new MpesaModule(getActivity(), this)).build();
+                .mpesaModule(new MpesaModule(getActivity(), this))
+                .networkModule(new NetworkModule(retrofit, service))
+                .build();
 
         applicationComponents.inject(this);
 
@@ -271,9 +280,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new MpesaPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

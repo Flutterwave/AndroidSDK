@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.flutterwave.raveandroid.mpesa.MpesaContract;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -23,6 +24,7 @@ public class MpesaModule {
         this.view = view;
     }
 
+    @Inject
     public MpesaModule(Context context, MpesaContract.View view) {
         this.context = context;
         this.view = view;
