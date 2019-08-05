@@ -44,15 +44,17 @@ import static com.flutterwave.raveandroid.RaveConstants.response;
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
-    private View v;
-    private Button payButton;
-    private TextInputLayout phoneTil;
+
     @Inject
     MpesaPresenter presenter;
     @Inject
     Retrofit retrofit;
     @Inject
     ApiService service;
+
+    private View v;
+    private Button payButton;
+    private TextInputLayout phoneTil;
     private TextInputLayout amountTil;
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
@@ -67,12 +69,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
-                .mpesaModule(new MpesaModule(getActivity(), this))
-                .networkModule(new NetworkModule(retrofit, service))
-                .build();
-
-        applicationComponents.inject(this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
@@ -83,6 +80,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         initializePresenter();
 
         return v;
+    }
+
+
+    private void injectComponents() {
+        ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
+                .mpesaModule(new MpesaModule(getActivity(), this))
+                .networkModule(new NetworkModule(retrofit, service))
+                .build();
+        applicationComponents.inject(this);
     }
 
     private void initializePresenter() {

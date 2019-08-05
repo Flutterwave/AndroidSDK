@@ -40,6 +40,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
     private Context context;
     private MpesaContract.View mView;
+
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject

@@ -16,14 +16,6 @@ public class MpesaModule {
     private Context context;
     private MpesaContract.View view;
 
-    public MpesaModule(Context context) {
-        this.context = context;
-    }
-
-    public MpesaModule(MpesaContract.View view) {
-        this.view = view;
-    }
-
     @Inject
     public MpesaModule(Context context, MpesaContract.View view) {
         this.context = context;
@@ -32,7 +24,7 @@ public class MpesaModule {
 
     @Singleton
     @Provides
-    public Context providesGetContext() {
+    public Context providesContext() {
         return context;
     }
 
