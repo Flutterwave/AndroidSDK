@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.modules;
+package com.flutterwave.raveandroid.di.modules;
 
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.data.ApiService;

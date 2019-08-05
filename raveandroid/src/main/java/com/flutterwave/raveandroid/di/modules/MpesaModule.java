@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.modules;
+package com.flutterwave.raveandroid.di.modules;
 
 import android.content.Context;
 
