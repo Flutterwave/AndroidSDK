@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -62,6 +63,9 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         presenter = new BankTransferPresenter(getActivity(), this);
+        if (savedInstanceState != null) {
+            presenter.restoreState(savedInstanceState);
+        }
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_bank_transfer, container, false);
@@ -212,6 +216,11 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         });
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putAll(presenter.getState());
+    }
 
     @Override
     public void showProgressIndicator(boolean active) {
@@ -274,14 +283,12 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     private void showTransferDetails(String amount, String accountNumber, String bankName, String beneficiaryName) {
-
-
         amountTv.setText(amount);
         beneficiaryNameTv.setText(beneficiaryName);
         bankNameTv.setText(bankName);
         accountNumberTv.setText(accountNumber);
         transferInstructionTv.setText(
-                transferInstructionTv.getText() + " " + beneficiaryName
+                getString(R.string.bank_transfer_instructions_placeholder) + " " + beneficiaryName
         );
 
         initiateChargeLayout.setVisibility(GONE);

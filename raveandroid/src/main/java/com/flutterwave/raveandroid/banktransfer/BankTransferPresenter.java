@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.banktransfer;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -21,17 +22,22 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
 
-/**
- * Created by hfetuga on 27/06/2018.
- */
-
 public class BankTransferPresenter implements BankTransferContract.UserActionsListener {
+    private static final String ACCOUNT_NUMBER = "account_number";
+    private static final String BANK_NAME = "bank_name";
+    private static final String BENEFICIARY_NAME = "benef_name";
+    private static final String AMOUNT = "amount";
+    private static final String TX_REF = "txref";
+    private static final String FLW_REF = "flwref";
+    private static final String PUBLIC_KEY = "pbfkey";
     private Context context;
     private BankTransferContract.View mView;
     private AmountValidator amountValidator = new AmountValidator();
     private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
     private boolean pollingCancelled = false;
+    private String beneficiaryName, accountNumber, amount, bankName;
+    private boolean hasTransferDetails = false;
 
     BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.context = context;
@@ -90,17 +96,21 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
 
                 if (response.getData() != null) {
                     Log.d("resp", responseAsJSONString);
+                    hasTransferDetails = true;
 
                     flwRef = response.getData().getFlw_reference();
                     txRef = response.getData().getTx_ref();
                     publicKey = payload.getPBFPubKey();
-                    String beneficiaryName = response.getData().getNote().substring(
+                    beneficiaryName = response.getData().getNote().substring(
                             response.getData().getNote().indexOf("to ") + 3
                     );
+                    amount = response.getData().getAmount();
+                    accountNumber = response.getData().getAccountnumber();
+                    bankName = response.getData().getBankname();
                     mView.onTransferDetailsReceived(
-                            response.getData().getAmount(),
-                            response.getData().getAccountnumber(),
-                            response.getData().getBankname(),
+                            amount,
+                            accountNumber,
+                            bankName,
                             beneficiaryName);
                 } else {
                     mView.onPaymentError("No response data was returned");
@@ -126,6 +136,38 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     @Override
     public void cancelPolling() {
         pollingCancelled = true;
+    }
+
+    @Override
+    public Bundle getState() {
+        if (hasTransferDetails) {
+            Bundle state = new Bundle();
+            state.putString(ACCOUNT_NUMBER, accountNumber);
+            state.putString(BANK_NAME, bankName);
+            state.putString(BENEFICIARY_NAME, beneficiaryName);
+            state.putString(AMOUNT, amount);
+            state.putString(TX_REF, txRef);
+            state.putString(FLW_REF, flwRef);
+            state.putString(PUBLIC_KEY, publicKey);
+            return state;
+        } else return null;
+    }
+
+    @Override
+    public void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            hasTransferDetails = true;
+            accountNumber = savedInstanceState.getString(ACCOUNT_NUMBER);
+            bankName = savedInstanceState.getString(BANK_NAME);
+            beneficiaryName = savedInstanceState.getString(BENEFICIARY_NAME);
+            amount = savedInstanceState.getString(AMOUNT);
+            txRef = savedInstanceState.getString(TX_REF);
+            flwRef = savedInstanceState.getString(FLW_REF);
+            publicKey = savedInstanceState.getString(PUBLIC_KEY);
+
+            mView.onTransferDetailsReceived(amount, accountNumber, bankName, beneficiaryName);
+        }
+
     }
 
     @Override
