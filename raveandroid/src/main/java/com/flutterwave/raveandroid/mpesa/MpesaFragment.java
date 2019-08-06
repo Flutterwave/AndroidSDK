@@ -25,6 +25,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.di.components.ApplicationComponents;
 import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents;
+import com.flutterwave.raveandroid.di.modules.AppModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 
@@ -84,11 +85,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
 
     private void injectComponents() {
-        ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
-                .mpesaModule(new MpesaModule(getActivity(), this))
-                .networkModule(new NetworkModule(retrofit, service))
-                .build();
-        applicationComponents.inject(this);
+
+        if (getActivity() != null) {
+            ApplicationComponents applicationComponents = DaggerApplicationComponents.builder()
+                    .appModule(new AppModule(getActivity().getApplicationContext()))
+                    .mpesaModule(new MpesaModule(this))
+                    .networkModule(new NetworkModule(retrofit, service))
+                    .build();
+            applicationComponents.inject(this);
+        }
     }
 
     private void initializePresenter() {

@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.mpesa.MpesaContract;
 
 import javax.inject.Inject;
@@ -13,19 +11,11 @@ import dagger.Provides;
 @Module
 public class MpesaModule {
 
-    private Context context;
     private MpesaContract.View view;
 
     @Inject
-    public MpesaModule(Context context, MpesaContract.View view) {
-        this.context = context;
+    public MpesaModule(MpesaContract.View view) {
         this.view = view;
-    }
-
-    @Singleton
-    @Provides
-    public Context providesContext() {
-        return context;
     }
 
     @Singleton
