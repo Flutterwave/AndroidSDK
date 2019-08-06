@@ -24,8 +24,18 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.ApiService;
+import com.flutterwave.raveandroid.di.components.ApplicationComponents;
+import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_UgandaComponents;
+import com.flutterwave.raveandroid.di.modules.AppModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
+import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
+
+import retrofit2.Retrofit;
 
 import static android.view.View.GONE;
 
@@ -45,16 +55,20 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private ProgressDialog pollingProgressDialog ;
 
 
+    @Inject
+    UgMobileMoneyPresenter presenter;
+    @Inject
+    Retrofit retrofit;
+    @Inject
+    ApiService service;
     private String validateInstructions;
-    private UgMobileMoneyPresenter presenter;
     private RavePayInitializer ravePayInitializer;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new UgMobileMoneyPresenter(getActivity(), this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
@@ -67,6 +81,18 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         initializePresenter();
 
         return v;
+    }
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ApplicationComponents.UgandaComponents ugandaComponents = DaggerApplicationComponents_UgandaComponents.builder()
+                    .appModule(new AppModule(getActivity().getApplicationContext()))
+                    .ugandaModule(new UgandaModule(this))
+                    .networkModule(new NetworkModule(retrofit, service))
+                    .build();
+            ugandaComponents.inject(this);
+        }
     }
 
     private void initializePresenter() {
@@ -267,9 +293,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new UgMobileMoneyPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

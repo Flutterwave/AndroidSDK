@@ -22,6 +22,9 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.flutterwave.raveandroid.RaveConstants.NG;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.UGX;
@@ -36,13 +39,22 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
  * Created by Jeremiah on 10/12/2018.
  */
 
+@Singleton
 public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
+
     private Context context;
     private UgMobileMoneyContract.View mView;
-    private AmountValidator amountValidator = new AmountValidator();
-    private PhoneValidator phoneValidator = new PhoneValidator();
+    @Inject
+    NetworkRequestImpl networkRequest;
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    PhoneValidator phoneValidator;
 
-     UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
+    @Inject
+    UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView, AmountValidator amountValidator, PhoneValidator phoneValidator) {
+        this.amountValidator = amountValidator;
+        this.phoneValidator = phoneValidator;
         this.context = context;
         this.mView = mView;
     }
@@ -57,7 +69,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -92,7 +104,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
+        networkRequest.chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(GhChargeResponse response, String responseAsJSONString) {
 
@@ -128,7 +140,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         mView.showPollingIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
