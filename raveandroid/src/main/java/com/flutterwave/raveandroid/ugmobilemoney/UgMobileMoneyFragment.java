@@ -23,7 +23,6 @@ import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 
 import java.util.HashMap;
@@ -35,52 +34,60 @@ import static android.view.View.GONE;
  */
 public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private TextView instructionsTv;
+    private TextInputLayout phoneTil;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    UgMobileMoneyPresenter presenter;
-    TextView instructionsTv;
-    Button payButton;
-    String validateInstructions;
+
+
+    private String validateInstructions;
+    private UgMobileMoneyPresenter presenter;
+    private RavePayInitializer ravePayInitializer;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        presenter = new UgMobileMoneyPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
         initializeViews();
 
-        setListeners();
-
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter = new UgMobileMoneyPresenter(getActivity(), this);
-
-        presenter.init(ravePayInitializer);
-
         validateInstructions = getResources().getString(R.string.ugx_validate_instructions);
 
+        setListeners();
+
+        initializePresenter();
+
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
+    }
+
+
+    private void setListeners() {
+        payButton.setOnClickListener(this);
     }
 
     private void initializeViews() {
         instructionsTv =  v.findViewById(R.id.instructionsTv);
         amountTil =  v.findViewById(R.id.rave_amountTil);
+        payButton = v.findViewById(R.id.rave_payButton);
         phoneTil =  v.findViewById(R.id.rave_phoneTil);
         amountEt =  v.findViewById(R.id.rave_amountTV);
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
-        payButton = v.findViewById(R.id.rave_payButton);
-    }
-
-    private void setListeners() {
-        payButton.setOnClickListener(this);
     }
 
     @Override
@@ -88,7 +95,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         int i = view.getId();
         if (i == R.id.rave_payButton) {
             clearErrors();
-            Utils.hide_keyboard(getActivity());
             collectData();
         }
     }
@@ -108,7 +114,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         phoneTil.setError(null);
         amountTil.setErrorEnabled(false);
         phoneTil.setErrorEnabled(false);
-
     }
 
     private void collectData() {
@@ -118,6 +123,19 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         presenter.onDataCollected(dataHashMap);
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
+            view.setError(message);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
+            view.setError(message);
+        }
+
     }
 
     @Override
@@ -145,60 +163,8 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) { return; }
-
-        if(pollingProgressDialog == null) {
-            pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setCanceledOnTouchOutside(false);
-            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
-        }
-
-        if (active && !pollingProgressDialog.isShowing()) {
-            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    pollingProgressDialog.dismiss();
-                }
-            });
-
-            pollingProgressDialog.show();
-        }
-        else if (active && pollingProgressDialog.isShowing()) {
-            //pass
-        }
-        else {
-            pollingProgressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-    }
-
-    @Override
-    public void onPaymentError(String message) {
-//        dismissDialog();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
     @Override
@@ -228,6 +194,23 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         showToast(s);
     }
 
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+        Intent intent = new Intent();
+        intent.putExtra(RaveConstants.response, responseAsString);
+
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
@@ -241,25 +224,61 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-
+    public void onPaymentError(String message) {
+//        dismissDialog();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
-            view.setError(message);
+    public void showPollingIndicator(boolean active) {
+        if (getActivity().isFinishing()) {
+            return;
         }
 
+        if (pollingProgressDialog == null) {
+            pollingProgressDialog = new ProgressDialog(getActivity());
+            pollingProgressDialog.setCanceledOnTouchOutside(false);
+            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
+        }
+
+        if (active && !pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    pollingProgressDialog.dismiss();
+                }
+            });
+
+            pollingProgressDialog.show();
+        } else if (active && pollingProgressDialog.isShowing()) {
+            //pass
+        } else {
+            pollingProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            presenter.requeryTx(flwRef, txRef, publicKey);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new UgMobileMoneyPresenter(getActivity(), this);
+        }
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
     }
 
 }

@@ -26,10 +26,12 @@ public interface AchContract {
         void showAmountError(String msg);
 
         void showFee(String authUrl, String flwRef, String chargedAmount, String currency);
+
+        void onValidationSuccessful(String amount);
     }
 
     interface UserActionsListener {
-        void onStartAchPayment(RavePayInitializer ravePayInitializer);
+        void init(RavePayInitializer ravePayInitializer);
 
         void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
 
@@ -38,6 +40,12 @@ public interface AchContract {
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
         void onFeeConfirmed(String authUrl, String flwRef);
+
+        void processTransaction(String amount, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 
 }

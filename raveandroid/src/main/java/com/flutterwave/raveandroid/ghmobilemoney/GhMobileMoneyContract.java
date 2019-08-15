@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.ghmobilemoney;
 
-import android.app.Activity;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -37,5 +35,9 @@ public interface GhMobileMoneyContract {
         void requeryTx(String flwRef, String txRef, String publicKey);
         void chargeGhMobileMoney(Payload payload, String encryptionKey);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void onAttachView(View view);
+
+        void onDetachView();
     }
 }

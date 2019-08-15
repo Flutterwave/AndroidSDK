@@ -12,14 +12,22 @@ public class RaveConstants {
     public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test
 //    public static String ENCRYPTION_KEY = "FLWSECK-bb971402072265fb156e90a3578fe5e6-X"; //test
     public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";
-    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
-    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
+    //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
+//    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
+    //Todo: change back BAse URL
+    public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
+    public static String LIVE_URL = "https://api.ravepay.co";
+
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";
+    public static String NG = "NG";
+    public static String NGN = "NGN";
+    public static String UGX = "UGX";
     public static String NOAUTH = "NOAUTH";
     public static String PIN = "PIN";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
+    public static String enterOTP = "Enter your one time password (OTP)";
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";
     public static String RAVE_PARAMS = "raveparams";
@@ -44,6 +52,11 @@ public class RaveConstants {
 
     public static String success = "success";
     public static String noResponse = "No response data was returned";
+    public static String invalidAccountNoMessage = "Enter a valid account number";
+    public static String invalidDateOfBirthMessage = "Enter a valid date of birth";
+    public static String invalidBvnMessage = "Enter a valid BVN";
+    public static String invalidBankCodeMessage = "You need to select bank";
+    public static String defaultAccounNumber = "0000000000";
 
     public static String response = "response";
     public static String mtn = "mtn";
@@ -74,7 +87,6 @@ public class RaveConstants {
     public static String unknownAuthmsg = "Unknown Auth Model";
     public static String unknownResCodemsg = "Unknown charge response code";
     public static String no_authurl_was_returnedmsg = "No authUrl was returned";
-    public static String no_response_data_was_returnedmsg = "No response data was returned";
     public static String wait = "Please wait...";
     public static String cancelPayment = "CANCEL PAYMENT";
 }

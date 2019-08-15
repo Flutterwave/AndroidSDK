@@ -97,7 +97,7 @@
     <string name="wait">Please wait...</string>
     <string name="cancelPayment">CANCEL PAYMENT</string>
     <string name="response">response</string>
-    <string name="charge">You will be charged a total of</string>
+    <string name="charge">You will be charged a total of </string>
     <string name="askToContinue">. Do you want to continue?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
@@ -119,10 +119,28 @@
     <string name="expired">expired</string>
     <string name="tokenExpired">Token expired</string>
     <string name="no_authurl_was_returnedmsg">No authUrl was returned</string>
-    <string name="no_response_data_was_returnedmsg">No response data was returned</string>
     <string name="unknownAuthmsg">Unknown Auth Model</string>
     <string name="unknownResCodemsg">Unknown charge response code</string>
-    <string name="checkStatus">Check Status</string>
+    <string name="checkStatus">Checking the status of your payment</string>
+    <string name="defaultCardExpiry">12</string>
+    <string name="ok">OK</string>
+
+    <string name="back_to_app">Back to App</string>
+    <string name="payment_failed">Payment failed</string>
+    <string name="proceed">Proceed</string>
+    <string name="transfer_received_successfully">Transfer received successfully</string>
+    <string name="beneficiary_name_placeholder">Victor</string>
+    <string name="i_have_made_the_transfer">I have made the transfer</string>
+    <string name="beneficiary_name">Beneficiary Name</string>
+    <string name="bank_name_placeholder">Access Bank Plc</string>
+    <string name="bank_name">Bank Name</string>
+    <string name="bank_transfer_instructions_placeholder">Please make a bank transfer to</string>
+    <string name="amount_placeholder">80,000</string>
+    <string name="currency_placeholder">NGN</string>
+    <string name="account_number_placeholder">0690000031</string>
+    <string name="pay_with_bank_timeout_notification">Payments are currently slow at your bank. Slow payments are usually confirmed within 30 minutes. You will get a receipt once your payment is confirmed.</string>
+    <string name="bant_transfer_polling_cancelled_message">You will get a receipt once your payment is confirmed.</string>
+
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>
         <item>MTN</item>

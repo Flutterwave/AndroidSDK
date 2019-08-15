@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -27,61 +26,108 @@ import com.flutterwave.raveandroid.ViewObject;
 import java.util.HashMap;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
-    View v;
-    TextInputEditText amountEt;
-    TextInputLayout amountTil;
-    TextInputEditText phoneEt;
-    TextInputLayout phoneTil;
-    RavePayInitializer ravePayInitializer;
+    private View v;
+    private Button payButton;
+    private TextInputLayout phoneTil;
+    private MpesaPresenter presenter;
+    private TextInputLayout amountTil;
+    private TextInputEditText phoneEt;
+    private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog ;
-    MpesaPresenter presenter;
-    Button payButton;
-    int rave_phoneEtInt;
 
-    public MpesaFragment() {
-        // Required empty public constructor
-    }
+    private int rave_phoneEtInt;
+    private RavePayInitializer ravePayInitializer;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this v
+        presenter = new MpesaPresenter(getActivity(), this);
+
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
         initializeViews();
 
         setListeners();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         return v;
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
         payButton.setOnClickListener(this);
     }
 
+    private void initializeViews() {
+        payButton = v.findViewById(R.id.rave_payButton);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        amountEt = v.findViewById(R.id.rave_amountTV);
+        phoneTil = v.findViewById(R.id.rave_phoneTil);
+        phoneEt = v.findViewById(R.id.rave_phoneEt);
+        rave_phoneEtInt = amountEt.getId();
+    }
+
+
     @Override
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.rave_payButton) {
-            clearErrors();
-            Utils.hide_keyboard(getActivity());
-            collectData();
+            if (getActivity() != null) {
+                Utils.hide_keyboard(getActivity());
+                clearErrors();
+                collectData();
+            }
         }
     }
 
+    private void clearErrors() {
+        amountTil.setErrorEnabled(false);
+        phoneTil.setErrorEnabled(false);
+        amountTil.setError(null);
+        phoneTil.setError(null);
+    }
+
+    private void collectData() {
+
+        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+
+        dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
+
+        presenter.onDataCollected(dataHashMap);
+    }
+
+    @Override
+    public void showFieldError(int viewID, String message, Class<?> viewType) {
+
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
+            view.setError(message);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
+            view.setError(message);
+        }
+
+    }
 
     @Override
     public void onAmountValidationSuccessful(String amountToPay) {
@@ -89,38 +135,100 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         amountEt.setText(amountToPay);
     }
 
-    private void collectData() {
-        HashMap<String, ViewObject> dataHashMap = new HashMap<>();
+    @Override
+    public void showProgressIndicator(boolean active) {
 
-        dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        presenter.onDataCollected(dataHashMap);
-    }
+        if (getActivity().isFinishing()) {
+            return;
+        }
 
-    private void initializeViews() {
-        rave_phoneEtInt = v.findViewById(R.id.rave_amountTV).getId();
-        presenter = new MpesaPresenter(getActivity(), this);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-        phoneTil = v.findViewById(R.id.rave_phoneTil);
-        phoneEt =  v.findViewById(R.id.rave_phoneEt);
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setMessage(getResources().getString(R.string.wait));
+        }
+
+        if (active && !progressDialog.isShowing()) {
+            progressDialog.show();
+        } else if (active && progressDialog.isShowing()) {
+            //pass
+        } else {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+    }
 
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
+    @Override
+    public void displayFee(String charge_amount, final Payload payload) {
+        if (getActivity() != null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
+
+                }
+            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
         }
+    }
 
+    @Override
+    public void showFetchFeeFailed(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+        Intent intent = new Intent();
+        intent.putExtra(response, responseAsString);
+
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onPaymentFailed(String message, String responseAsJSONString) {
+        Intent intent = new Intent();
+        intent.putExtra(response, responseAsJSONString);
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onPaymentError(String message) {
+        showToast(message);
     }
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) { return; }
+        if (getActivity().isFinishing()) {
+            return;
+        }
 
-        if(pollingProgressDialog == null) {
+        if (pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
             pollingProgressDialog.setMessage(getResources().getString(R.string.checkStatus));
         }
@@ -134,122 +242,37 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
             });
 
             pollingProgressDialog.show();
-        }
-        else if (active && pollingProgressDialog.isShowing()) {
+        } else if (active && pollingProgressDialog.isShowing()) {
             //pass
-        }
-        else {
+        } else {
             pollingProgressDialog.dismiss();
         }
     }
 
     @Override
-    public void showProgressIndicator(boolean active) {
+    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
 
-        if (getActivity().isFinishing()) { return; }
-
-        if(progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage(getResources().getString(R.string.wait));
-        }
-
-        if (active && !progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-        else if (active && progressDialog.isShowing()) {
-            //pass
-        }
-        else {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onPaymentError(String message) {
-//        dismissDialog();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
-        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-        dialog.dismiss();
-        presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
-
-            }
-        }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
-    }
-
-    @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
-    }
-
-    @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-        ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
-
-    }
-
-    @Override
-    public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
-            view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
-            view.setError(message);
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            presenter.requeryTx(flwRef, txRef, publicKey);
         }
 
     }
 
-    private void clearErrors() {
-        amountTil.setError(null);
-        phoneTil.setError(null);
-        amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new MpesaPresenter(getActivity(), this);
+        }
+        presenter.onAttachView(this);
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
 }

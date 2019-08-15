@@ -18,8 +18,19 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.GhChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
+
+import static com.flutterwave.raveandroid.RaveConstants.NG;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.UGX;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by Jeremiah on 10/12/2018.
@@ -29,6 +40,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     private Context context;
     private UgMobileMoneyContract.View mView;
     private AmountValidator amountValidator = new AmountValidator();
+    private PhoneValidator phoneValidator = new PhoneValidator();
 
      UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
@@ -55,15 +67,15 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed(RaveConstants.transactionError);
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(RaveConstants.transactionError);
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }
@@ -94,7 +106,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
                 else {
-                    mView.onPaymentError(RaveConstants.noResponse);
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -148,22 +160,25 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
          boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
-        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+        int phoneID = dataHashMap.get(fieldPhone).getViewId();
+        String phone = dataHashMap.get(fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        if (!amountValidator.isAmountValid(amount)) {
+        boolean isAmountValidated = amountValidator.isAmountValid(amount);
+        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+
+        if (!isAmountValidated) {
             valid = false;
-            mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
+            mView.showFieldError(amountID, validAmountPrompt, amountViewType);
         }
 
-         if (phone.length() < 1) {
+        if (!isPhoneValid) {
                 valid = false;
-                mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
+            mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
          if (valid) {
@@ -177,10 +192,12 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         if (ravePayInitializer!=null) {
 
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
 //                    .setCountry(ravePayInitializer.getCountry())
-                    .setCountry("NG") //Country has to be set to NG for UGX payments (as at 10/12/2018)
+                    .setCountry(NG) //Country has to be set to NG for UGX payments (as at 10/12/2018)
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
@@ -189,8 +206,8 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork("UGX")
-                    .setPhonenumber(dataHashMap.get(RaveConstants.fieldPhone).getData())
+                    .setNetwork(UGX)
+                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(context));
@@ -219,6 +236,17 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }
         }
+
+    }
+
+    @Override
+    public void onAttachView(UgMobileMoneyContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullUgMobileMoneyView();
     }
 }
 

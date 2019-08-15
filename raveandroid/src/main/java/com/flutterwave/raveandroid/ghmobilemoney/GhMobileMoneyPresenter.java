@@ -22,6 +22,18 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.fieldVoucher;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validNetworkPrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
+import static com.flutterwave.raveandroid.RaveConstants.validVoucherPrompt;
+
 /**
  * Created by hfetuga on 28/06/2018.
  */
@@ -54,18 +66,17 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                Log.e(RAVEPAY, message);
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }
@@ -74,8 +85,6 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     public void chargeGhMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -96,9 +105,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     String flwRef = response.getData().getFlwRef();
                     String txRef = response.getData().getTx_ref();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                }
-                else {
-                    mView.onPaymentError("No response data was returned");
+                } else {
+                    mView.onPaymentError(noResponse);
                 }
 
             }
@@ -125,15 +133,12 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
-                else if (response.getData().getChargeResponseCode().equals("02")){
+                } else if (response.getData().getChargeResponseCode().equals("02")) {
                     mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                }
-                else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
                     mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
-                }
-                else {
+                } else {
                     mView.showProgressIndicator(false);
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 }
@@ -150,10 +155,12 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     @Override
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
+
+            ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
             PayloadBuilder builder = new PayloadBuilder();
-            builder.setAmount(ravePayInitializer.getAmount() + "")
+            builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
@@ -163,12 +170,15 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setNetwork(dataHashMap.get("network").getData())
-                    .setVoucher(dataHashMap.get("voucher").getData())
-                    .setPhonenumber(dataHashMap.get("phone").getData())
+                    .setNetwork(dataHashMap.get(fieldNetwork).getData())
+                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(Utils.getDeviceImei(context));
+
+            if (dataHashMap.get(fieldVoucher) != null) {
+                builder.setVoucher(dataHashMap.get(fieldVoucher).getData());
+            }
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
@@ -189,50 +199,58 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         boolean valid = true;
 
-        int amountID = dataHashMap.get(RaveConstants.fieldAmount).getViewId();
-        String amount = dataHashMap.get(RaveConstants.fieldAmount).getData();
-        Class amountViewType = dataHashMap.get(RaveConstants.fieldAmount).getViewType();
+        int amountID = dataHashMap.get(fieldAmount).getViewId();
+        String amount = dataHashMap.get(fieldAmount).getData();
+        Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(RaveConstants.fieldPhone).getViewId();
-        String phone = dataHashMap.get(RaveConstants.fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(RaveConstants.fieldPhone).getViewType();
+        int phoneID = dataHashMap.get(fieldPhone).getViewId();
+        String phone = dataHashMap.get(fieldPhone).getData();
+        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        int voucherID = dataHashMap.get(RaveConstants.fieldVoucher).getViewId();
-        String voucher = dataHashMap.get(RaveConstants.fieldVoucher).getData();
-        Class voucherViewType = dataHashMap.get(RaveConstants.fieldVoucher).getViewType();
+        ViewObject voucherViewObject = dataHashMap.get(fieldVoucher);
 
-        int network = Integer.valueOf(dataHashMap.get(RaveConstants.fieldNetwork).getData());
+        if (voucherViewObject != null) {
+            int voucherID = dataHashMap.get(fieldVoucher).getViewId();
+            String voucher = dataHashMap.get(fieldVoucher).getData();
+            Class voucherViewType = dataHashMap.get(fieldVoucher).getViewType();
 
-                if (!amountValidator.isAmountValid(amount)) {
-                    valid = false;
-                    mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
-                }
+            if (voucher.isEmpty()) {
+                valid = false;
+                mView.showFieldError(voucherID, validVoucherPrompt, voucherViewType);
+            }
 
-                if (!phoneValidator.isPhoneValid(phone)) {
-                    valid = false;
-                    mView.showFieldError(phoneID, RaveConstants.validPhonePrompt, phoneViewType);
-                }
+        }
 
-                if (network == 0) {
-                    valid = false;
-                    mView.showToast(RaveConstants.validNetworkPrompt);
-                }
+        int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
 
-                if (!voucher.isEmpty()) {
-                    valid = false;
-                    mView.showFieldError(voucherID, RaveConstants.validVoucherPrompt, voucherViewType);
-                }
+        boolean isAmountValidated = amountValidator.isAmountValid(amount);
+        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
-                if (valid) {
-                    mView.onValidationSuccessful(dataHashMap);
-                }
+        if (!isAmountValidated) {
+            valid = false;
+            mView.showFieldError(amountID, validAmountPrompt, amountViewType);
+        }
+
+        if (!isPhoneValid) {
+            valid = false;
+            mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
+        }
+
+        if (network == 0) {
+            valid = false;
+            mView.showToast(validNetworkPrompt);
+        }
+
+        if (valid) {
+            mView.onValidationSuccessful(dataHashMap);
+        }
 
     }
 
     @Override
     public void init(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -240,6 +258,18 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             }
         }
     }
+
+
+    @Override
+    public void onAttachView(GhMobileMoneyContract.View view) {
+        this.mView = view;
+    }
+
+    @Override
+    public void onDetachView() {
+        this.mView = new NullGhMobileMoneyView();
+    }
+
 }
 
 

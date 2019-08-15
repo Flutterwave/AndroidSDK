@@ -193,10 +193,13 @@ public class Utils {
     }
 
     public static String getEncryptedData(String unEncryptedString, String encryptionKey) {
-        try {
-            return encrypt(unEncryptedString, encryptionKey);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (unEncryptedString != null && encryptionKey != null) {
+            try {
+                return encrypt(unEncryptedString, encryptionKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

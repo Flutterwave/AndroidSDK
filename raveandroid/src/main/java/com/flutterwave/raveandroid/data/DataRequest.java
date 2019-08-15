@@ -18,11 +18,13 @@ public interface DataRequest {
         void validateChargeCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void validateAccountCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void requeryTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);
+        void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);
         void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, Callbacks.OnRequeryRequestv2Complete callback);
         void getBanks(Callbacks.OnGetBanksRequestComplete callback);
         void chargeAccount(ChargeRequestBody accountRequestBody, Callbacks.OnChargeRequestComplete callback);
         void chargeToken(Payload payload, Callbacks.OnChargeRequestComplete callback);
         void getFee(FeeCheckRequestBody body, Callbacks.OnGetFeeRequestComplete callback);
+
     }
 
     interface SharedPrefsRequest {
