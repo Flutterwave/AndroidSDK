@@ -5,7 +5,6 @@ import com.flutterwave.raveandroid.data.ApiService;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -21,12 +20,6 @@ public class NetworkModule {
 
     private Retrofit retrofit;
     private ApiService apiService;
-
-    @Inject
-    public NetworkModule(Retrofit retrofit, ApiService apiService) {
-        this.retrofit = retrofit;
-        this.apiService = apiService;
-    }
 
     @Singleton
     @Provides

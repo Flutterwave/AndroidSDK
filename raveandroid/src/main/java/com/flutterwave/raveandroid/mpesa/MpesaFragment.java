@@ -18,16 +18,13 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.ApiService;
-import com.flutterwave.raveandroid.di.components.ApplicationComponents;
-import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_MpesaComponents;
-import com.flutterwave.raveandroid.di.modules.AppModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
-import com.flutterwave.raveandroid.di.modules.NetworkModule;
 
 import java.util.HashMap;
 
@@ -39,6 +36,8 @@ import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.response;
+
+//import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_MpesaComponents;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,12 +86,9 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ApplicationComponents.MpesaComponents applicationComponents = DaggerApplicationComponents_MpesaComponents.builder()
-                    .appModule(new AppModule(getActivity().getApplicationContext()))
-                    .mpesaModule(new MpesaModule(this))
-                    .networkModule(new NetworkModule(retrofit, service))
-                    .build();
-            applicationComponents.inject(this);
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new MpesaModule(this))
+                    .inject(this);
         }
     }
 

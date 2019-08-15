@@ -9,12 +9,12 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class AppModule {
+public class AndroidModule {
 
     private Context context;
 
     @Inject
-    public AppModule(Context context) {
+    public AndroidModule(Context context) {
         this.context = context;
     }
 
