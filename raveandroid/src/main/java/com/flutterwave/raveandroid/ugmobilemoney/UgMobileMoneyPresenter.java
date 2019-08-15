@@ -23,7 +23,6 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 import java.util.HashMap;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import static com.flutterwave.raveandroid.RaveConstants.NG;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
@@ -39,7 +38,7 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
  * Created by Jeremiah on 10/12/2018.
  */
 
-@Singleton
+
 public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
 
     private Context context;

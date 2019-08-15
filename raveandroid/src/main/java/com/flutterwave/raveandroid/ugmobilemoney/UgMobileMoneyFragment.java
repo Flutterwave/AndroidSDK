@@ -20,11 +20,13 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.ApiService;
+import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import java.util.HashMap;
 
@@ -34,7 +36,6 @@ import retrofit2.Retrofit;
 
 import static android.view.View.GONE;
 
-//import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_UgandaComponents;
 
 /**
  * Created by Jeremiah on 10/12/2018.
@@ -83,12 +84,9 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-//            AppComponent.UgandaComponents ugandaComponents = DaggerApplicationComponents_UgandaComponents.builder()
-//                    .androidModule(new AndroidModule(getActivity().getApplicationContext()))
-//                    .ugandaModule(new UgandaModule(this))
-//                    .networkModule(new NetworkModule(retrofit, service))
-//                    .build();
-//            ugandaComponents.inject(this);
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new UgandaModule(this))
+                    .inject(this);
         }
     }
 

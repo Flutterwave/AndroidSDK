@@ -19,7 +19,7 @@ public class RaveApp extends Application {
                 .androidModule(new AndroidModule(this))
                 .networkModule(new NetworkModule())
                 .build();
-
+        appComponent.inject(this);
     }
 
     public AppComponent getAppComponent() {
