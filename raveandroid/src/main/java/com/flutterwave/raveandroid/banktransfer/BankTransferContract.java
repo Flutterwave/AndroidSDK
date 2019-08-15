@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.banktransfer;
 
+import android.os.Bundle;
+
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -38,6 +40,10 @@ public interface BankTransferContract {
         void startPaymentVerification();
 
         void cancelPolling();
+
+        Bundle getState();
+
+        void restoreState(Bundle savedInstanceState);
 
         void onAttachView(View view);
 
