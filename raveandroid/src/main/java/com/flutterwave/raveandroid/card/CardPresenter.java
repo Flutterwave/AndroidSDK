@@ -56,7 +56,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validCvvPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validExpiryDatePrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
-
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
