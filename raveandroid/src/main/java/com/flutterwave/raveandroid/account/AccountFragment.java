@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -84,16 +83,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private TextInputLayout emailTil, rave_bvnTil;
     private Calendar calendar = Calendar.getInstance();
 
-
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new AccountPresenter(getActivity(), this);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

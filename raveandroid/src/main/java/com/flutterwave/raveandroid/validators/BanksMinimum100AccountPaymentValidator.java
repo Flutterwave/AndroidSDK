@@ -7,11 +7,14 @@ public class BanksMinimum100AccountPaymentValidator {
     @Inject
     BankCodeValidator bankCodeValidator;
 
+    public BanksMinimum100AccountPaymentValidator() {
+    }
+
     @Inject
     public BanksMinimum100AccountPaymentValidator(BankCodeValidator bankCodeValidator) {
         this.bankCodeValidator = bankCodeValidator;
     }
-    
+
     public boolean isPaymentValid(String bankCode, Double amount) {
 
         boolean isBankCodeValid = bankCodeValidator.isBankCodeValid(bankCode);

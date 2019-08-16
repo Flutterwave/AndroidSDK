@@ -49,11 +49,9 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     PhoneValidator phoneValidator;
 
     @Inject
-    public MpesaPresenter(Context context, MpesaContract.View mView, AmountValidator amountValidator, PhoneValidator phoneValidator) {
+    public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
         this.mView = mView;
-        this.amountValidator = amountValidator;
-        this.phoneValidator = phoneValidator;
     }
 
     @Override

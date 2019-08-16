@@ -8,11 +8,15 @@ import static org.junit.Assert.assertThat;
 
 public class BanksMinimum100AccountPaymentValidatorTest {
 
+
     BanksMinimum100AccountPaymentValidator SUT;
+    BankCodeValidator bankCodeValidator;
+
 
     @Before
     public void setUp() throws Exception {
-        SUT = new BanksMinimum100AccountPaymentValidator();
+        bankCodeValidator = new BankCodeValidator();
+        SUT = new BanksMinimum100AccountPaymentValidator(bankCodeValidator);
     }
 
     @Test

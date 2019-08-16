@@ -51,9 +51,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     PhoneValidator phoneValidator;
 
     @Inject
-    UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView, AmountValidator amountValidator, PhoneValidator phoneValidator) {
-        this.amountValidator = amountValidator;
-        this.phoneValidator = phoneValidator;
+    UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }

@@ -12,7 +12,6 @@ public class AchModule {
 
     private AchContract.View view;
 
-
     @Inject
     public AchModule(AchContract.View view) {
         this.view = view;

@@ -12,7 +12,6 @@ public class UgandaModule {
 
     private UgMobileMoneyContract.View view;
 
-
     @Inject
     public UgandaModule(UgMobileMoneyContract.View view) {
         this.view = view;

@@ -12,7 +12,6 @@ public class AccountModule {
 
     private AccountContract.View view;
 
-
     @Inject
     public AccountModule(AccountContract.View view) {
         this.view = view;
