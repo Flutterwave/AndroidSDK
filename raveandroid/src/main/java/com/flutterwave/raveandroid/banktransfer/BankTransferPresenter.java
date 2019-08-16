@@ -80,19 +80,11 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
 
     @Override
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
-//        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-//        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-//        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
-//
-//        ChargeRequestBody body = new ChargeRequestBody();
-//        body.setAlg("3DES-24");
-//        body.setPBFPubKey(payload.getPBFPubKey());
-//        body.setClient(encryptedCardRequestBody);
-
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
 
-        final ChargeRequestBody body = new ChargeRequestBody();
+        ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
         body.setPBFPubKey(payload.getPBFPubKey());
         body.setClient(encryptedCardRequestBody);
