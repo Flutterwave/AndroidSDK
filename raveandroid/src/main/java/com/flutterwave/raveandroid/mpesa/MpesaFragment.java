@@ -23,14 +23,11 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
-
-import retrofit2.Retrofit;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
@@ -47,10 +44,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     @Inject
     MpesaPresenter presenter;
-    @Inject
-    Retrofit retrofit;
-    @Inject
-    ApiService service;
 
     private View v;
     private Button payButton;

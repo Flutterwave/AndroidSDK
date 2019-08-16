@@ -25,14 +25,11 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
-
-import retrofit2.Retrofit;
 
 import static android.view.View.GONE;
 
@@ -55,10 +52,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
     @Inject
     UgMobileMoneyPresenter presenter;
-    @Inject
-    Retrofit retrofit;
-    @Inject
-    ApiService service;
+
     private String validateInstructions;
     private RavePayInitializer ravePayInitializer;
 
