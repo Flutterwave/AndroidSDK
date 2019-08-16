@@ -3,7 +3,13 @@ package com.flutterwave.raveandroid.validators;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 public class EmailValidator {
+
+    @Inject
+    public EmailValidator() {
+    }
 
     public boolean isEmailValid(String email) {
         if (email != null) {

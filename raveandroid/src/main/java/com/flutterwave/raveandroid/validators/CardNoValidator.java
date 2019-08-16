@@ -2,7 +2,13 @@ package com.flutterwave.raveandroid.validators;
 
 import com.flutterwave.raveandroid.Utils;
 
+import javax.inject.Inject;
+
 public class CardNoValidator {
+
+    @Inject
+    public CardNoValidator() {
+    }
 
     public boolean isCardNoStrippedValid(String cardNoStripped) {
         try {

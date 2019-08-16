@@ -4,6 +4,10 @@ import java.util.regex.Pattern;
 
 public class AccountNoValidator {
 
+    public AccountNoValidator() {
+
+    }
+
     public boolean isAccountNumberValid(String accountNo) {
         if (accountNo != null) {
             return Pattern.matches("\\d{10}", accountNo);
