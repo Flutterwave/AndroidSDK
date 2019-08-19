@@ -129,6 +129,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private void initializePresenter() {
         if (getActivity() != null) {
             ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            Log.d("okh", ravePayInitializer.isStaging() + "");
             presenter.init(ravePayInitializer);
         }
     }

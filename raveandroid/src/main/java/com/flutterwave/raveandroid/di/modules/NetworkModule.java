@@ -20,6 +20,14 @@ public class NetworkModule {
 
     private Retrofit retrofit;
     private ApiService apiService;
+    private String baseUrl = RaveConstants.STAGING_URL;
+
+    public NetworkModule() {
+    }
+
+    public NetworkModule(String url) {
+        baseUrl = url;
+    }
 
     @Singleton
     @Provides
@@ -34,7 +42,7 @@ public class NetworkModule {
                 .writeTimeout(60, TimeUnit.SECONDS).build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(RaveConstants.LIVE_URL)
+                .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

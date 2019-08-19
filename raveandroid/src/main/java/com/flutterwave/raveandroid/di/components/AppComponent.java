@@ -28,5 +28,6 @@ public interface AppComponent {
     BankTransferComponent plus(BankTransferModule bankTransferModule);
     AccountComponent plus(AccountModule accountModule);
     AchComponent plus(AchModule achModule);
+//    ActivityComponent plus(NetworkModule networkModule);
 }
 
