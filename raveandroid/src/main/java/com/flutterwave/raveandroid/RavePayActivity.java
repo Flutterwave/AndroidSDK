@@ -19,8 +19,9 @@ import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
-import com.flutterwave.raveandroid.di.components.ActivityComponent;
-import com.flutterwave.raveandroid.di.components.DaggerActivityComponent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
@@ -32,9 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ_PHONE_STATE;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -52,7 +55,7 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
 
-    ActivityComponent activityComponent;
+    AppComponent appComponent;
     String baseUrl;
 
     @Override
@@ -80,8 +83,6 @@ public class RavePayActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_rave_pay);
 
-        injectComponents();
-
         if (ravePayInitializer.isStaging()) {
             baseUrl = RaveConstants.STAGING_URL;
             if(ravePayInitializer.getShowStagingLabel()){
@@ -91,6 +92,9 @@ public class RavePayActivity extends AppCompatActivity {
         else {
             baseUrl = RaveConstants.LIVE_URL;
         }
+
+
+        injectComponents();
 
         tabLayout = findViewById(R.id.sliding_tabs);
         pager = findViewById(R.id.pager);
@@ -132,12 +136,6 @@ public class RavePayActivity extends AppCompatActivity {
             }
         }
 
-        if (ravePayInitializer.isStaging()) {
-
-        } else {
-
-        }
-
         mainPagerAdapter.setFragments(raveFragments);
         pager.setAdapter(mainPagerAdapter);
 
@@ -160,10 +158,22 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void injectComponents() {
-        activityComponent = DaggerActivityComponent.builder()
+        if (ravePayInitializer.isStaging()) {
+            baseUrl = STAGING_URL;
+        } else {
+            baseUrl = LIVE_URL;
+        }
+
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(this))
                 .networkModule(new NetworkModule(baseUrl))
                 .build();
-        activityComponent.inject(this);
+        appComponent.inject(this);
+
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override

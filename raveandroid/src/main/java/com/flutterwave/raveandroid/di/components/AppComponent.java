@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.di.components;
 
 import com.flutterwave.raveandroid.RaveApp;
+import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
@@ -21,6 +22,8 @@ public interface AppComponent {
 
     void inject(RaveApp raveApp);
 
+    void inject(RavePayActivity ravePayActivity);
+
     MpesaComponent plus(MpesaModule mpesaModule);
     UgandaComponent plus(UgandaModule ugandaModule);
     GhanaComponent plus(GhanaModule ghanaModule);
@@ -28,6 +31,5 @@ public interface AppComponent {
     BankTransferComponent plus(BankTransferModule bankTransferModule);
     AccountComponent plus(AccountModule accountModule);
     AchComponent plus(AchModule achModule);
-//    ActivityComponent plus(NetworkModule networkModule);
 }
 

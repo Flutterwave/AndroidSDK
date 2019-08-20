@@ -1,10 +1,11 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.RaveConstants;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.data.ApiService;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -20,16 +21,21 @@ public class NetworkModule {
 
     private Retrofit retrofit;
     private ApiService apiService;
-    private String baseUrl = RaveConstants.STAGING_URL;
+
+    @Inject
+    String baseUrl;
+
+    @Inject
+    RaveApp raveApp;
 
     public NetworkModule() {
     }
 
+    @Inject
     public NetworkModule(String url) {
         baseUrl = url;
     }
 
-    @Singleton
     @Provides
     public Retrofit providesRetrofit() {
 

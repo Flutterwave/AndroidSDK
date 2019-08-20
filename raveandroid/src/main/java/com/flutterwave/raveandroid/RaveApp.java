@@ -11,18 +11,21 @@ public class RaveApp extends Application {
 
     AppComponent appComponent;
 
+    public String baseUrl;
+
+    public RaveApp() {
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
+        baseUrl = RaveConstants.STAGING_URL;
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
-                .networkModule(new NetworkModule())
+                .networkModule(new NetworkModule(baseUrl))
                 .build();
         appComponent.inject(this);
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
+
 }
