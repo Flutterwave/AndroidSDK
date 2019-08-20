@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -84,7 +85,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
                     .plus(new GhanaModule(this))
                     .inject(this);
         }

@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -119,7 +120,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
                     .plus(new CardModule(this))
                     .inject(this);
         }

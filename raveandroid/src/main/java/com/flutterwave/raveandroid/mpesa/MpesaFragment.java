@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -78,7 +79,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
                     .plus(new MpesaModule(this))
                     .inject(this);
         }
