@@ -23,12 +23,16 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static android.view.View.GONE;
 
@@ -36,6 +40,10 @@ import static android.view.View.GONE;
  * A simple {@link Fragment} subclass.
  */
 public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
+
+
+    @Inject
+    GhMobileMoneyPresenter presenter;
 
     private View v;
     private Button payButton;
@@ -52,14 +60,14 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     private String network;
     private String validateInstructions;
-    private GhMobileMoneyPresenter presenter;
+
     private RavePayInitializer ravePayInitializer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new GhMobileMoneyPresenter(getActivity(), this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
 
@@ -72,6 +80,15 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         initializePresenter();
 
         return v;
+    }
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new GhanaModule(this))
+                    .inject(this);
+        }
     }
 
     private void initializePresenter() {

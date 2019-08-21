@@ -18,27 +18,36 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.di.modules.MpesaModule;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.response;
 
+//import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_MpesaComponents;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
 
+
+    @Inject
+    MpesaPresenter presenter;
+
     private View v;
     private Button payButton;
     private TextInputLayout phoneTil;
-    private MpesaPresenter presenter;
     private TextInputLayout amountTil;
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
@@ -53,7 +62,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new MpesaPresenter(getActivity(), this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_mpesa, container, false);
 
@@ -64,6 +73,16 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         initializePresenter();
 
         return v;
+    }
+
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new MpesaModule(this))
+                    .inject(this);
+        }
     }
 
     private void initializePresenter() {
@@ -261,9 +280,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new MpesaPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

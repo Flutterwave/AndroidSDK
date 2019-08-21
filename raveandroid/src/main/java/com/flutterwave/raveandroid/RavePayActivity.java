@@ -5,11 +5,11 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +19,10 @@ import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
@@ -29,9 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ_PHONE_STATE;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -43,11 +49,11 @@ public class RavePayActivity extends AppCompatActivity {
     int theme;
     RavePayInitializer ravePayInitializer;
     MainPagerAdapter mainPagerAdapter;
-    static String secretKey;
-    public static String BASE_URL;
     public static int RESULT_SUCCESS = 111;
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
+
+    AppComponent appComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,8 @@ public class RavePayActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
+
+        buildGraph();
 
         theme = ravePayInitializer.getTheme();
 
@@ -74,21 +82,16 @@ public class RavePayActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_rave_pay);
 
-        if (ravePayInitializer.isStaging()) {
-            BASE_URL = RaveConstants.STAGING_URL;
-            if(ravePayInitializer.getShowStagingLabel()){
-                findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
-            }
-        }
-        else {
-            BASE_URL = RaveConstants.LIVE_URL;
+        if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
+            findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
         }
 
-        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        pager = (ViewPager) findViewById(R.id.pager);
-        permissionsRequiredLayout = (RelativeLayout) findViewById(R.id.rave_permission_required_layout);
+
+        tabLayout = findViewById(R.id.sliding_tabs);
+        pager = findViewById(R.id.pager);
+        permissionsRequiredLayout = findViewById(R.id.rave_permission_required_layout);
         mainContent = findViewById(R.id.main_content);
-        requestPermsBtn = (Button) findViewById(R.id.requestPermsBtn);
+        requestPermsBtn = findViewById(R.id.requestPermsBtn);
 
         mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         List<RaveFragment> raveFragments = new ArrayList<>();
@@ -145,6 +148,24 @@ public class RavePayActivity extends AppCompatActivity {
 
     }
 
+    private void buildGraph() {
+
+        String baseUrl;
+
+        if (ravePayInitializer.isStaging()) {
+            baseUrl = STAGING_URL;
+        } else {
+            baseUrl = LIVE_URL;
+        }
+
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .networkModule(new NetworkModule(baseUrl))
+                .build();
+
+        ((RaveApp) getApplication()).setAppComponent(appComponent);
+
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

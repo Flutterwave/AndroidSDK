@@ -20,14 +20,19 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import static android.view.View.GONE;
+
 
 /**
  * Created by Jeremiah on 10/12/2018.
@@ -45,16 +50,17 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private ProgressDialog pollingProgressDialog ;
 
 
-    private String validateInstructions;
-    private UgMobileMoneyPresenter presenter;
-    private RavePayInitializer ravePayInitializer;
+    @Inject
+    UgMobileMoneyPresenter presenter;
 
+    private String validateInstructions;
+    private RavePayInitializer ravePayInitializer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new UgMobileMoneyPresenter(getActivity(), this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
 
@@ -67,6 +73,15 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         initializePresenter();
 
         return v;
+    }
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new UgandaModule(this))
+                    .inject(this);
+        }
     }
 
     private void initializePresenter() {
@@ -267,9 +282,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new UgMobileMoneyPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

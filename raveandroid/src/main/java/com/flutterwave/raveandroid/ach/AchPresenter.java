@@ -17,19 +17,25 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
+import javax.inject.Inject;
+
 
 public class AchPresenter implements AchContract.UserActionsListener {
 
     private Context context;
     private AchContract.View mView;
     private SharedPrefsRequestImpl sharedMgr;
-    private AmountValidator amountValidator;
 
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    NetworkRequestImpl networkRequest;
+
+    @Inject
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
         sharedMgr = new SharedPrefsRequestImpl(context);
-        amountValidator = new AmountValidator();
     }
 
     @Override
@@ -105,7 +111,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
 
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -163,7 +169,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);

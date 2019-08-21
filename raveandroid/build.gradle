@@ -39,5 +39,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
     implementation 'com.scottyab:aescrypt:0.0.1'
     testImplementation 'junit:junit:4.12'
+    // dagger 2
+    implementation 'com.google.dagger:dagger:2.17'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

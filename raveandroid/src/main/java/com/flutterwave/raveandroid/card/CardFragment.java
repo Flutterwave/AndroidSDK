@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -36,6 +37,7 @@ import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -44,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
@@ -60,6 +64,9 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
  * A simple {@link Fragment} subclass.
  */
 public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
+
+    @Inject
+    CardPresenter presenter;
 
     public static final int FOR_PIN = 444;
     public static final int FOR_OTP = 666;
@@ -88,7 +95,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private TextInputEditText cardExpiryTv;
     private SwitchCompat saveCardSwitch;
     private FrameLayout progressContainer;
-    private CardPresenter presenter;
     private RavePayInitializer ravePayInitializer;
     private boolean shouldISaveThisCard = false;
 
@@ -96,7 +102,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        presenter = new CardPresenter(getActivity(), this);
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_card, container, false);
 
@@ -111,9 +117,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         return v;
     }
 
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new CardModule(this))
+                    .inject(this);
+        }
+    }
+
     private void initializePresenter() {
         if (getActivity() != null) {
             ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            Log.d("okh", ravePayInitializer.isStaging() + " staging");
             presenter.init(ravePayInitializer);
         }
     }

@@ -21,13 +21,17 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static android.view.View.GONE;
 
@@ -35,6 +39,9 @@ import static android.view.View.GONE;
  * A simple {@link Fragment} subclass.
  */
 public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener {
+
+    @Inject
+    BankTransferPresenter presenter;
 
     View v;
     TextInputEditText amountEt;
@@ -52,7 +59,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     RavePayInitializer ravePayInitializer;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog;
-    BankTransferPresenter presenter;
 
     public BankTransferFragment() {
         // Required empty public constructor
@@ -60,26 +66,41 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        presenter = new BankTransferPresenter(getActivity(), this);
+
+        injectComponents();
+
         if (savedInstanceState != null) {
             presenter.restoreState(savedInstanceState);
         }
 
-        // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_bank_transfer, container, false);
-
 
         initializeViews();
 
         setListeners();
 
-        ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
-
-        presenter.init(ravePayInitializer);
+        initializePresenter();
 
         return v;
+    }
+
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new BankTransferModule(this))
+                    .inject(this);
+        }
+    }
+
+    private void initializePresenter() {
+        if (getActivity() != null) {
+            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            presenter.init(ravePayInitializer);
+        }
     }
 
     private void setListeners() {
@@ -285,7 +306,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         bankNameTv.setText(bankName);
         accountNumberTv.setText(accountNumber);
         transferInstructionTv.setText(
-                getString(R.string.bank_transfer_instructions_placeholder) + " " + beneficiaryName
+                String.format("%s %s", getString(R.string.bank_transfer_instructions_placeholder), beneficiaryName)
         );
 
         initiateChargeLayout.setVisibility(GONE);
@@ -337,9 +358,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new BankTransferPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

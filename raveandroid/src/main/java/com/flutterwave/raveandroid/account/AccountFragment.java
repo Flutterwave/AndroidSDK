@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -28,6 +27,7 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -36,11 +36,14 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
@@ -56,6 +59,9 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
  */
 public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
+    @Inject
+    AccountPresenter presenter;
+
     public static final int FOR_0TP = 222;
     public static final int FOR_INTERNET_BANKING = 111;
     private View v;
@@ -67,7 +73,6 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private TextView pcidss_tv;
     private TextInputEditText phoneEt;
     private TextInputLayout phoneTil;
-    private AccountPresenter presenter;
     private TextInputEditText amountEt;
     private EditText dateOfBirthEt, bvnEt;
     private ProgressDialog progessDialog;
@@ -79,19 +84,11 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private Calendar calendar = Calendar.getInstance();
 
 
-    public AccountFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new AccountPresenter(getActivity(), this);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        injectComponents();
 
         v = inflater.inflate(R.layout.fragment_account, container, false);
 
@@ -104,6 +101,15 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         initializePresenter();
 
         return v;
+    }
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new AccountModule(this))
+                    .inject(this);
+        }
     }
 
     private void initializePresenter() {

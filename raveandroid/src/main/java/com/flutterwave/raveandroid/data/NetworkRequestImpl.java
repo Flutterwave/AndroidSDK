@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -21,16 +20,13 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import javax.inject.Inject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -38,9 +34,19 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
-    private Retrofit retrofit;
-    private ApiService service;
+    Retrofit retrofit;
+    ApiService service;
     private String errorParsingError = "An error occurred parsing the error response";
+
+    @Inject
+    public NetworkRequestImpl(Retrofit retrofit, ApiService service) {
+        this.retrofit = retrofit;
+        this.service = service;
+    }
+
+    public NetworkRequestImpl() {
+
+    }
 
     private ErrorBody parseErrorJson(String errorStr) {
 
@@ -60,7 +66,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeCard(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -97,7 +102,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeGhanaMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -134,7 +138,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void validateChargeCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.validateCardCharge(body);
 
@@ -170,7 +173,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void validateAccountCard(ValidateChargeBody body, final Callbacks.OnValidateChargeCardRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.validateAccountCharge(body);
 
@@ -206,7 +208,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, final Callbacks.OnRequeryRequestv2Complete callback) {
 
-        createService();
 
         Call<String> call = service.requeryTx_v2(requeryRequestBody);
 
@@ -252,7 +253,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.requeryPayWithBankTx(requeryRequestBody);
 
@@ -298,7 +298,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.requeryTx(requeryRequestBody);
 
@@ -343,7 +342,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void getBanks(final Callbacks.OnGetBanksRequestComplete callback) {
 
-        createService();
 
         Call<List<Bank>> call = service.getBanks();
 
@@ -377,7 +375,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeAccount(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.charge(body);
 
@@ -413,7 +410,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void chargeToken(Payload payload, final Callbacks.OnChargeRequestComplete callback) {
 
-        createService();
 
         Call<String> call = service.chargeToken(payload);
 
@@ -458,7 +454,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     @Override
     public void getFee(FeeCheckRequestBody body, final Callbacks.OnGetFeeRequestComplete callback) {
 
-        createService();
 
         Call<FeeCheckResponse> call = service.checkFee(body);
 
@@ -488,28 +483,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                 callback.onError(t.getMessage());
             }
         });
-    }
-
-    private void createService() {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS).build();
-
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(RavePayActivity.BASE_URL)
-                    .client(okHttpClient)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-
-        service = retrofit.create(ApiService.class);
     }
 
 }
