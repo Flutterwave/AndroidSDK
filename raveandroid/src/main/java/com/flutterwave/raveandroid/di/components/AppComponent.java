@@ -21,7 +21,6 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(RaveApp raveApp);
-
     void inject(RavePayActivity ravePayActivity);
 
     MpesaComponent plus(MpesaModule mpesaModule);

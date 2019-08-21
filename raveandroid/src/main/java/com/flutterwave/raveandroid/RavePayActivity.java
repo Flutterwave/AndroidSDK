@@ -20,6 +20,9 @@ import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
 import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
@@ -52,7 +55,6 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
 
-    RaveApp raveApp;
     AppComponent appComponent;
     String baseUrl;
 
@@ -60,7 +62,6 @@ public class RavePayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        raveApp = (RaveApp) this.getApplicationContext();
         try {
             ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
         }
@@ -156,12 +157,6 @@ public class RavePayActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        raveApp.setCurrentActivity(this);
-        super.onResume();
-    }
-
     private void injectComponents() {
         if (ravePayInitializer.isStaging()) {
             baseUrl = STAGING_URL;
@@ -169,10 +164,16 @@ public class RavePayActivity extends AppCompatActivity {
             baseUrl = LIVE_URL;
         }
 
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .networkModule(new NetworkModule(baseUrl))
+                .build();
+        appComponent.inject(this);
+
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override

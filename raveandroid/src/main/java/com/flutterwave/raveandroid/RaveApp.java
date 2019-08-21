@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid;
 
-import android.app.Activity;
 import android.app.Application;
 
 import com.flutterwave.raveandroid.di.components.AppComponent;
@@ -11,7 +10,6 @@ import com.flutterwave.raveandroid.di.modules.NetworkModule;
 public class RaveApp extends Application {
 
     AppComponent appComponent;
-    Activity activity;
 
     public String baseUrl;
 
@@ -21,20 +19,13 @@ public class RaveApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-    }
-
-    public AppComponent getAppComponent() {
-        baseUrl = ((RavePayActivity) activity).getBaseUrl();
+        baseUrl = RaveConstants.STAGING_URL;
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
                 .networkModule(new NetworkModule(baseUrl))
                 .build();
         appComponent.inject(this);
-        return appComponent;
     }
 
-    public void setCurrentActivity(Activity mCurrentActivity) {
-        this.activity = mCurrentActivity;
-    }
 
 }
