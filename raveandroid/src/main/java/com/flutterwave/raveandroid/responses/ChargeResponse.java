@@ -58,6 +58,32 @@ public class ChargeResponse {
         String note;
         String amount;
 
+        public Data() {
+        }
+
+        public Data(String suggested_auth, String chargeResponseCode, String authModelUsed, String flwRef, String flw_reference, String response_code, String response_message, String accountnumber, String bankname, String note, String amount, AccountValidateInstructions validateInstructions, String validateInstruction, String txRef, String chargeResponseMessage, String authurl, String appFee, String currency, String charged_amount, String redirectUrl) {
+            this.suggested_auth = suggested_auth;
+            this.chargeResponseCode = chargeResponseCode;
+            this.authModelUsed = authModelUsed;
+            this.flwRef = flwRef;
+            this.flw_reference = flw_reference;
+            this.response_code = response_code;
+            this.response_message = response_message;
+            this.accountnumber = accountnumber;
+            this.bankname = bankname;
+            this.note = note;
+            this.amount = amount;
+            this.validateInstructions = validateInstructions;
+            this.validateInstruction = validateInstruction;
+            this.txRef = txRef;
+            this.chargeResponseMessage = chargeResponseMessage;
+            this.authurl = authurl;
+            this.appFee = appFee;
+            this.currency = currency;
+            this.charged_amount = charged_amount;
+            this.redirectUrl = redirectUrl;
+        }
+
         public String getFlw_reference() {
             return flw_reference;
         }

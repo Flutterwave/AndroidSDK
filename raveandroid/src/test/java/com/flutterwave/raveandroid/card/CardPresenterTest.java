@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
+import com.flutterwave.raveandroid.Encrypt;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.Meta;
+import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -13,7 +16,8 @@ import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
-import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.SubAccount;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
 import com.flutterwave.raveandroid.validators.CardNoValidator;
@@ -34,6 +38,9 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
+import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
@@ -69,10 +76,14 @@ public class CardPresenterTest {
     RavePayInitializer ravePayInitializer;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    Encrypt encrypt;
     @Mock
     NetworkRequestImpl networkRequest;
     @Mock
     Callbacks.OnGetFeeRequestComplete onGetFeeRequestComplete;
+    @Inject
+    Callbacks.OnChargeRequestComplete OnChargeRequestComplete;
 
     @Before
     public void setUp() {
@@ -162,30 +173,46 @@ public class CardPresenterTest {
     @Test
     public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsFailed() {
 
-        processTransaction_displayFeeIsEnabled_progressDialogShown();
-
-        //assert
-        networkRequest
-                .chargeCard(any(ChargeRequestBody.class),
-                        any(Callbacks.OnChargeRequestComplete.class));
-
-        Boolean status = generateRandomResponse(false);
-        assertEquals(status, false);
+        presenter.chargeCard(generatePayload(),
+                generateRandomString());
 
     }
 
     @Test
     public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsSuccessful() {
 
-        processTransaction_displayFeeIsEnabled_progressDialogShown();
-
         //assert
-        networkRequest
-                .chargeCard(any(ChargeRequestBody.class),
-                        any(Callbacks.OnChargeRequestComplete.class));
+        presenter.chargeCard(generatePayload(),
+                generateRandomString());
+    }
 
-        Boolean status = generateRandomResponse(true);
-        assertEquals(status, true);
+    private Payload generatePayload() {
+        List<Meta> metas = new ArrayList<>();
+        List<SubAccount> subAccounts = new ArrayList<>();
+        return new Payload(generateRandomString(), metas, subAccounts, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
+    }
+
+    @Test
+    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsSuccessful_ifSuggestedAuthIsPin() {
+
+        presenter.chargeCard(generatePayload(),
+                generateRandomString());
+
+        verify(view).showProgressIndicator(true);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
+
+        generateRandomResponse(true);
+
+        verify(view).onPinAuthModelSuggested(any(Payload.class));
+    }
+
+    private ChargeRequestBody generateChargeRequestBody() {
+        return new ChargeRequestBody(generateRandomString(), generateRandomString(), generateRandomString());
+    }
+
+    private Callbacks.OnChargeRequestComplete generateCallbacksOnChargeRequestComplete() {
+        OnChargeRequestComplete.onSuccess(generateValidResponse(), generateRandomString());
+        return OnChargeRequestComplete;
     }
 
     private void generateViewValidation(int failedValidations) {
@@ -220,33 +247,64 @@ public class CardPresenterTest {
         return viewData;
     }
 
-    private FeeCheckResponse generateValidResponse() {
-        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
-        feeCheckResponse.setStatus(generateRandomString());
-        feeCheckResponse.setMessage(generateRandomString());
-        feeCheckResponse.setData(new FeeCheckResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
-        return feeCheckResponse;
+    private ChargeResponse generateValidResponse() {
+        ChargeResponse chargeResponse = new ChargeResponse();
+        chargeResponse.setStatus(generateRandomString());
+        chargeResponse.setMessage(generateRandomString());
+        chargeResponse.setData(new ChargeResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateAccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+        return chargeResponse;
     }
 
-    private FeeCheckResponse generateInvalidResponse() {
-        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
-        feeCheckResponse.setStatus(generateRandomString());
-        feeCheckResponse.setMessage(generateRandomString());
-        feeCheckResponse.setData(null);
-        return feeCheckResponse;
+    private ChargeResponse.AccountValidateInstructions generateAccountValidateInstructions() {
+
+        return new ChargeResponse.AccountValidateInstructions();
     }
 
-    private Boolean generateRandomResponse(boolean isValid) {
+    private ChargeResponse generateInvalidResponse() {
+        ChargeResponse chargeResponse = new ChargeResponse();
+        chargeResponse.setStatus(generateRandomString());
+        chargeResponse.setMessage(generateRandomString());
+        chargeResponse.setData(null);
+        return chargeResponse;
+    }
 
-        FeeCheckResponse feeCheckResponse;
+    private String generateRandomResponse(boolean isValid) {
+
+        ChargeResponse chargeResponse;
 
         if (isValid) {
-            feeCheckResponse = generateValidResponse();
+            chargeResponse = generateValidResponse();
+            return getSuggestedAuth();
+
         } else {
-            feeCheckResponse = generateInvalidResponse();
+            chargeResponse = generateInvalidResponse();
+            return getSuggestedAuth();
         }
 
-        return feeCheckResponse.getData() != null;
+    }
+
+    private String getSuggestedAuth() {
+        String suggestAuth = "";
+
+        //suggestAuth();
+        suggestAuth = PIN;
+
+        if (suggestAuth.equalsIgnoreCase(PIN)) {
+            suggestAuth = PIN;
+        } else if (suggestAuth.equalsIgnoreCase(AVS_VBVSECURECODE)) {
+            suggestAuth = AVS_VBVSECURECODE;
+        } else if (suggestAuth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
+            suggestAuth = NOAUTH_INTERNATIONAL;
+        } else {
+            verify(view).onPaymentError(anyString());
+        }
+
+        return suggestAuth;
+    }
+
+    private String suggestAuth() {
+        String[] auth = {PIN, AVS_VBVSECURECODE, NOAUTH_INTERNATIONAL, ""};
+        return auth[new Random().nextInt(3)];
     }
 
 

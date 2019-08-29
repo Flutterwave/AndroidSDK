@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.di;
 
+import com.flutterwave.raveandroid.Encrypt;
 import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -36,6 +37,18 @@ public class TestNetworkModule {
     @Provides
     public Callbacks.OnGetFeeRequestComplete providesOnGetFeeRequestComplete() {
         return Mockito.mock(Callbacks.OnGetFeeRequestComplete.class);
+    }
+
+    @Singleton
+    @Provides
+    public Encrypt providesEncrpyt() {
+        return Mockito.mock(Encrypt.class);
+    }
+
+    @Singleton
+    @Provides
+    public Callbacks.OnChargeRequestComplete providesCallbacksOnChargeRequestComplete() {
+        return Mockito.mock(Callbacks.OnChargeRequestComplete.class);
     }
 
 
