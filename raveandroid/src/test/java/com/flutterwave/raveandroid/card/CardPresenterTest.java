@@ -199,11 +199,29 @@ public class CardPresenterTest {
                 generateRandomString());
 
         verify(view).showProgressIndicator(true);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
-
+        ChargeRequestBody chargeRequestBody = generateChargeRequestBody();
+        verify(networkRequest).chargeCard(chargeRequestBody, OnChargeRequestComplete);
+        OnChargeRequestComplete.onSuccess(generateValidResponse(), generateRandomString());
         generateRandomResponse(true);
 
-        verify(view).onPinAuthModelSuggested(any(Payload.class));
+        verify(view).onPinAuthModelSuggested(generatePayload());
+    }
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel() {
+        Payload payload = generatePayload();
+        presenter.chargeCardWithSuggestedAuthModel(payload, generateRandomString(), generateAuthModel_returnPIN(), generateRandomString());
+        verify(view).showProgressIndicator(true);
+    }
+
+    private String generateAuthModel_returnAVS_VBVSECURECODE() {
+
+        return AVS_VBVSECURECODE;
+    }
+
+    private String generateAuthModel_returnPIN() {
+
+        return PIN;
     }
 
     private ChargeRequestBody generateChargeRequestBody() {
@@ -214,6 +232,7 @@ public class CardPresenterTest {
         OnChargeRequestComplete.onSuccess(generateValidResponse(), generateRandomString());
         return OnChargeRequestComplete;
     }
+
 
     private void generateViewValidation(int failedValidations) {
 

@@ -201,7 +201,7 @@ public class Utils {
                 e.printStackTrace();
             }
         }
-        return null;
+        return "";
     }
 
     public static String encryptRef(String key, String ref) {
