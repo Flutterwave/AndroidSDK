@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -77,6 +78,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardExpiryValidator cardExpiryValidator;
     @Inject
     CardNoValidator cardNoValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     @Inject
     CardPresenter(Context context, CardContract.View mView) {
@@ -307,14 +310,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     .setEmail(dataHashMap.get(fieldEmail).getData())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
+                    .setIP(deviceIdGetter.getDeviceId()).setTxRef(ravePayInitializer.getTxRef())
                     .setExpiryyear(dataHashMap.get(fieldCardExpiry).getData().substring(3, 5))
                     .setExpirymonth(dataHashMap.get(fieldCardExpiry).getData().substring(0, 2))
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
