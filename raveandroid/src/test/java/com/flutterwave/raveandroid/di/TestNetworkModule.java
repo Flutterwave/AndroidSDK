@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.di;
 
 import com.flutterwave.raveandroid.data.ApiService;
+import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 
 import org.mockito.Mockito;
@@ -30,4 +31,12 @@ public class TestNetworkModule {
     public NetworkRequestImpl providesNetworkRequestImpl() {
         return Mockito.mock(NetworkRequestImpl.class);
     }
+
+    @Singleton
+    @Provides
+    public Callbacks.OnGetFeeRequestComplete providesOnGetFeeRequestComplete() {
+        return Mockito.mock(Callbacks.OnGetFeeRequestComplete.class);
+    }
+
+
 }

@@ -90,5 +90,12 @@ public class FeeCheckResponse {
         {
             this.ravefee = ravefee;
         }
+
+        public Data(String fee, String charge_amount, String merchantfee, String ravefee) {
+            this.fee = fee;
+            this.charge_amount = charge_amount;
+            this.merchantfee = merchantfee;
+            this.ravefee = ravefee;
+        }
     }
 }

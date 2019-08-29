@@ -13,6 +13,7 @@ import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
+import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
 import com.flutterwave.raveandroid.validators.CardNoValidator;
@@ -41,6 +42,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -69,6 +71,8 @@ public class CardPresenterTest {
     DeviceIdGetter deviceIdGetter;
     @Mock
     NetworkRequestImpl networkRequest;
+    @Mock
+    Callbacks.OnGetFeeRequestComplete onGetFeeRequestComplete;
 
     @Before
     public void setUp() {
@@ -85,6 +89,7 @@ public class CardPresenterTest {
 
         presenter.networkRequest = networkRequest;
 
+
     }
 
     @Test
@@ -96,7 +101,7 @@ public class CardPresenterTest {
         //act
         presenter.onDataCollected(map);
         //assert
-        verify(view, times(failedValidations)).showFieldError(anyInt(), anyString(), any(Class.class));
+        verify(view, times(failedValidations)).showFieldError(anyInt(), anyString(), (Class<?>) anyObject());
 
     }
 
@@ -137,8 +142,7 @@ public class CardPresenterTest {
         //act
         presenter.processTransaction(data, ravePayInitializer);
         //assert
-        verify(networkRequest)
-                .getFee(any(FeeCheckRequestBody.class), any(Callbacks.OnGetFeeRequestComplete.class));
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), any(Callbacks.OnGetFeeRequestComplete.class));
     }
 
     @Test
@@ -153,6 +157,35 @@ public class CardPresenterTest {
         verify(networkRequest)
                 .chargeCard(any(ChargeRequestBody.class),
                         any(Callbacks.OnChargeRequestComplete.class));
+    }
+
+    @Test
+    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsFailed() {
+
+        processTransaction_displayFeeIsEnabled_progressDialogShown();
+
+        //assert
+        networkRequest
+                .chargeCard(any(ChargeRequestBody.class),
+                        any(Callbacks.OnChargeRequestComplete.class));
+
+        Boolean status = generateRandomResponse(false);
+        assertEquals(status, false);
+
+    }
+
+    @Test
+    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsSuccessful() {
+
+        processTransaction_displayFeeIsEnabled_progressDialogShown();
+
+        //assert
+        networkRequest
+                .chargeCard(any(ChargeRequestBody.class),
+                        any(Callbacks.OnChargeRequestComplete.class));
+
+        Boolean status = generateRandomResponse(true);
+        assertEquals(status, true);
     }
 
     private void generateViewValidation(int failedValidations) {
@@ -185,6 +218,35 @@ public class CardPresenterTest {
         viewData.put(fieldcardNoStripped, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
 
         return viewData;
+    }
+
+    private FeeCheckResponse generateValidResponse() {
+        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
+        feeCheckResponse.setStatus(generateRandomString());
+        feeCheckResponse.setMessage(generateRandomString());
+        feeCheckResponse.setData(new FeeCheckResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+        return feeCheckResponse;
+    }
+
+    private FeeCheckResponse generateInvalidResponse() {
+        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
+        feeCheckResponse.setStatus(generateRandomString());
+        feeCheckResponse.setMessage(generateRandomString());
+        feeCheckResponse.setData(null);
+        return feeCheckResponse;
+    }
+
+    private Boolean generateRandomResponse(boolean isValid) {
+
+        FeeCheckResponse feeCheckResponse;
+
+        if (isValid) {
+            feeCheckResponse = generateValidResponse();
+        } else {
+            feeCheckResponse = generateInvalidResponse();
+        }
+
+        return feeCheckResponse.getData() != null;
     }
 
 

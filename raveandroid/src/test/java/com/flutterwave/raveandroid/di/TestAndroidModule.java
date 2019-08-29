@@ -44,13 +44,11 @@ public class TestAndroidModule {
     public EmailValidator providesEmailValidator() {
         return Mockito.mock(EmailValidator.class);
     }
-
     @Provides
     @Singleton
     public CardNoValidator providesCardNoValidator() {
         return Mockito.mock(CardNoValidator.class);
     }
-
     @Provides
     @Singleton
     public CardExpiryValidator providesCardExpiryValidator() {
