@@ -42,15 +42,6 @@ public class FeeCheckResponse {
         this.data = data;
     }
 
-    public FeeCheckResponse() {
-    }
-
-    public FeeCheckResponse(String message, String status, Data data) {
-        this.message = message;
-        this.status = status;
-        this.data = data;
-    }
-
     public static class Data {
         private String fee;
 
@@ -97,13 +88,6 @@ public class FeeCheckResponse {
 
         public void setRavefee (String ravefee)
         {
-            this.ravefee = ravefee;
-        }
-
-        public Data(String fee, String charge_amount, String merchantfee, String ravefee) {
-            this.fee = fee;
-            this.charge_amount = charge_amount;
-            this.merchantfee = merchantfee;
             this.ravefee = ravefee;
         }
     }

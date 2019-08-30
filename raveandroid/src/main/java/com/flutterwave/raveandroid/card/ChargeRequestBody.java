@@ -9,15 +9,6 @@ public class ChargeRequestBody {
     String client;
     String alg;
 
-    public ChargeRequestBody() {
-    }
-
-    public ChargeRequestBody(String PBFPubKey, String client, String alg) {
-        this.PBFPubKey = PBFPubKey;
-        this.client = client;
-        this.alg = alg;
-    }
-
     public String getPBFPubKey() {
         return PBFPubKey;
     }

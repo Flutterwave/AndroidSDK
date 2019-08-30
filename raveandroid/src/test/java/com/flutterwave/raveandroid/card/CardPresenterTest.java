@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.Encrypt;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
@@ -27,7 +26,6 @@ import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -63,7 +61,7 @@ import static org.mockito.Mockito.when;
 
 public class CardPresenterTest {
 
-    CardPresenter presenter;
+    private CardPresenter presenter;
     @Mock
     CardContract.View view;
     @Inject
@@ -82,18 +80,8 @@ public class CardPresenterTest {
     RavePayInitializer ravePayInitializer;
     @Inject
     DeviceIdGetter deviceIdGetter;
-    @Inject
-    Encrypt encrypt;
     @Mock
     NetworkRequestImpl networkRequest;
-    @Mock
-    Callbacks.OnGetFeeRequestComplete onGetFeeRequestComplete;
-    @Inject
-    Callbacks.OnChargeRequestComplete OnChargeRequestComplete;
-    @Inject
-    RequeryResponse requeryResponse;
-    @Mock
-    JSONObject jsonObject;
 
     @Before
     public void setUp() {
@@ -285,7 +273,7 @@ public class CardPresenterTest {
         presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateInvalidChargeResponse(), generateRandomString());
+        captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
         verify(view).onPaymentError(unknownResCodemsg);
 
     }
@@ -342,7 +330,7 @@ public class CardPresenterTest {
         presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateInvalidChargeResponse(), generateRandomString());
+        captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
         verify(view).onPaymentError(unknownResCodemsg);
 
     }
@@ -410,27 +398,51 @@ public class CardPresenterTest {
     }
 
     private FeeCheckResponse generateFeeCheckResponse() {
-        return new FeeCheckResponse(generateRandomString(), generateRandomString(), new FeeCheckResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
+        FeeCheckResponse.Data feeCheckResponseData = new FeeCheckResponse.Data();
+
+        feeCheckResponseData.setCharge_amount(generateRandomString());
+        feeCheckResponse.setData(feeCheckResponseData);
+
+        return feeCheckResponse;
     }
 
-    private ChargeResponse generateInvalidChargeResponse() {
-        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+    private ChargeResponse generateRandomChargeResponse() {
+        ChargeResponse chargeResponse = new ChargeResponse();
+        ChargeResponse.Data chargeResponseData = new ChargeResponse.Data();
+
+        chargeResponseData.setChargeResponseCode(generateRandomString());
+
+        chargeResponse.setData(chargeResponseData);
+
+        return chargeResponse;
     }
 
     private ChargeResponse generateNullChargeResponse() {
-        return new ChargeResponse(generateRandomString(), generateRandomString(), null);
+        ChargeResponse chargeResponse = new ChargeResponse();
+        chargeResponse.setData(null);
+
+        return chargeResponse;
     }
 
     private ChargeResponse generateValidChargeResponseNoAuth() {
-        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(generateRandomString(), "00", generateRandomString(), generateRandomString(), generateRandomString(), "00", generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+        ChargeResponse chargeResponse = generateRandomChargeResponse();
+        chargeResponse.getData().setChargeResponseCode("00");
+        return chargeResponse;
     }
 
     private RequeryResponse generateRequerySuccessful() {
-        return new RequeryResponse(generateRandomString(), new RequeryResponse.Data());
+        return new RequeryResponse();
     }
 
     private ChargeResponse generateValidChargeResponseWithAuth(String auth) {
-        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(auth, "02", auth, generateRandomString(), generateRandomString(), "02", generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+        ChargeResponse chargeResponse = generateRandomChargeResponse();
+        chargeResponse.getData().setAuthModelUsed(auth);
+        chargeResponse.getData().setSuggested_auth(auth);
+        chargeResponse.getData().setAuthurl(generateRandomString());
+        chargeResponse.getData().setFlwRef(generateRandomString());
+        chargeResponse.getData().setChargeResponseCode("02");
+        return chargeResponse;
     }
 
     private Payload generatePayload() {
