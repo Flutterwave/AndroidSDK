@@ -12,11 +12,14 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
+import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.SubAccount;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
@@ -24,6 +27,7 @@ import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -46,6 +50,9 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
+import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
+import static com.flutterwave.raveandroid.RaveConstants.unknownAuthmsg;
+import static com.flutterwave.raveandroid.RaveConstants.unknownResCodemsg;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -84,6 +91,10 @@ public class CardPresenterTest {
     Callbacks.OnGetFeeRequestComplete onGetFeeRequestComplete;
     @Inject
     Callbacks.OnChargeRequestComplete OnChargeRequestComplete;
+    @Inject
+    RequeryResponse requeryResponse;
+    @Mock
+    JSONObject jsonObject;
 
     @Before
     public void setUp() {
@@ -99,7 +110,6 @@ public class CardPresenterTest {
         component.inject(presenter);
 
         presenter.networkRequest = networkRequest;
-
 
     }
 
@@ -171,6 +181,246 @@ public class CardPresenterTest {
     }
 
     @Test
+    public void getFee_networkError_showFetchFeeFailedCalled() {
+
+        presenter.fetchFee(generatePayload(), generateRandomInt());
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+
+        captor.getAllValues().get(0).onError(generateRandomString());
+
+        verify(view).showFetchFeeFailed(anyString());
+
+    }
+
+    @Test
+    public void getFee_networkError_showFetchFeeFailedSuccessful() {
+
+        presenter.fetchFee(generatePayload(), generateRandomInt());
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view).displayFee(anyString(), any(Payload.class), anyInt());
+
+    }
+
+    @Test
+    public void chargeCard_onSuccess_onPinAuthModelSuggested_showonPinAuthModelSuggested() {
+
+        presenter.chargeCard(generatePayload(), generateRandomString());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(PIN), generateRandomString());
+
+        verify(view).showProgressIndicator(false);
+        verify(view).onPinAuthModelSuggested(any(Payload.class));
+
+    }
+
+    @Test
+    public void chargeCard_onSuccess_onPinAuthModelSuggested_showonAVS_VBVSECURECODEModelSuggested() {
+
+        presenter.chargeCard(generatePayload(), generateRandomString());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(AVS_VBVSECURECODE), generateRandomString());
+
+        verify(view).showProgressIndicator(false);
+        verify(view).onAVS_VBVSECURECODEModelSuggested(any(Payload.class));
+
+    }
+
+    @Test
+    public void chargeCard_onError_onPinAuthModelSuggested_showonAVS_VBVSECURECODEModelSuggested() {
+
+        presenter.chargeCard(generatePayload(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
+        verify(view).onPaymentError(anyString());
+
+    }
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel_onSuccess_onPinAuthModelSuggested_showonAVS_VBVSECURECODEModelSuggested() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseNoAuth(), generateRandomString());
+        verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
+
+    }
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel_onSuccess_onPinAuthModelSuggested_showOTP() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(PIN), generateRandomString());
+        verify(view).showOTPLayout(anyString(), anyString());
+
+    }
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel_onSuccess_onAVS_VBVSECURECODESuggested_showAVS_VBVSECURECODE() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(AVS_VBVSECURECODE), generateRandomString());
+        verify(view).onAVSVBVSecureCodeModelUsed(anyString(), anyString());
+
+    }
+
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel_onSuccess_onAVS_VBVSECURECODESuggested_showAVS_VBVSECURECODES() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateInvalidChargeResponse(), generateRandomString());
+        verify(view).onPaymentError(unknownResCodemsg);
+
+    }
+
+    @Test
+    public void chargeCardWithSuggestedAuthModel_onSuccess_onUnknownAuthModelUsed_showUnknownAuthModelUsed() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth("unknown Auth"), generateRandomString());
+        verify(view).onPaymentError(unknownAuthmsg);
+
+    }
+
+    @Test
+    public void chargeCard_onError_unknownResponse() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
+        verify(view).onPaymentError(invalidChargeCode);
+
+    }
+
+    @Test
+    public void chargeCardWithOTP_onValidateSuccessful_onOTPSuggested_showOTP() {
+
+        presenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseNoAuth(), generateRandomString());
+        verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
+
+    }
+
+    @Test
+    public void chargeCardWithOTP_onVaidateError_onOTPSuggested_showOTP() {
+
+        presenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseNoAuth(), generateRandomString());
+        verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
+
+    }
+
+    @Test
+    public void chargeCardWithAVSModel_onSuccess_onAVS_VBVSECURECODESuggested_showAVS_VBVSECURECODES() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateInvalidChargeResponse(), generateRandomString());
+        verify(view).onPaymentError(unknownResCodemsg);
+
+    }
+
+    @Test
+    public void chargeCardWithAVSModel_onSuccess_onUnknownAuthModelUsed_showUnknownAuthModelUsed() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth("unknown Auth"), generateRandomString());
+        verify(view).onPaymentError(unknownAuthmsg);
+
+    }
+
+    @Test
+    public void chargeCardWithAVSModel_chargeCard_onError_unknownResponse() {
+
+        presenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
+        verify(view).onPaymentError(invalidChargeCode);
+
+    }
+
+    @Test
+    public void requeryTx_onQuerySuccessful_returnOnPaymentSuccessful() {
+
+        presenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomBoolean());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
+        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful(), generateRandomString());
+        verify(view).onRequerySuccessful(any(RequeryResponse.class), anyString(), anyString());
+
+    }
+
+
+    @Test
+    public void requeryTx_onQueryError_returnOnPaymentSuccessful() {
+
+        presenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomBoolean());
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
+        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
+        verify(view).onPaymentFailed(anyString(), anyString());
+
+    }
+
+
+    private FeeCheckResponse generateFeeCheckResponse() {
+        return new FeeCheckResponse(generateRandomString(), generateRandomString(), new FeeCheckResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+    }
+
+    private ChargeResponse generateInvalidChargeResponse() {
+        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+    }
+
+    private ChargeResponse generateNullChargeResponse() {
+        return new ChargeResponse(generateRandomString(), generateRandomString(), null);
+    }
+
+    private ChargeResponse generateValidChargeResponseNoAuth() {
+        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(generateRandomString(), "00", generateRandomString(), generateRandomString(), generateRandomString(), "00", generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+    }
+
+    private RequeryResponse generateRequerySuccessful() {
+        return new RequeryResponse(generateRandomString(), new RequeryResponse.Data());
+    }
+
+    private ChargeResponse generateValidChargeResponseWithAuth(String auth) {
+        return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(auth, "02", auth, generateRandomString(), generateRandomString(), "02", generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
+    }
+
+    @Test
     public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsFailed() {
 
         presenter.chargeCard(generatePayload(),
@@ -213,6 +463,34 @@ public class CardPresenterTest {
         presenter.chargeCardWithSuggestedAuthModel(payload, generateRandomString(), generateAuthModel_returnPIN(), generateRandomString());
         verify(view).showProgressIndicator(true);
     }
+
+    @Test
+    public void init() {
+
+        presenter.init(ravePayInitializer);
+        if (validEmail()) {
+            verify(view).onEmailValidated(generateRandomString(), generateRandomInt());
+        }
+
+        if (amountValid()) {
+            verify(view).onAmountValidated(generateRandomString(), generateRandomInt());
+        }
+
+    }
+
+
+    private String generateRandomJSONObject() {
+        return "{\"name\": \"flutter\",\"surname\": \"wave\",\"age\": \"2yrs\",\"time\": \"00:00\"}";
+    }
+
+    private Boolean validEmail() {
+        return emailValidator.isEmailValid("sd@ss.dds");
+    }
+
+    private Boolean amountValid() {
+        return amountValidator.isAmountValid("20");
+    }
+
 
     private String generateAuthModel_returnAVS_VBVSECURECODE() {
 
@@ -329,6 +607,11 @@ public class CardPresenterTest {
 
     private String generateRandomString() {
         return UUID.randomUUID().toString();
+    }
+
+    private Boolean generateRandomBoolean() {
+        return new Random().nextBoolean();
+
     }
 
     private int generateRandomInt() {

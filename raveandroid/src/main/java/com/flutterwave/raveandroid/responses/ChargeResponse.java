@@ -42,6 +42,14 @@ public class ChargeResponse {
 
     }
 
+    public ChargeResponse() {
+    }
+
+    public ChargeResponse(String status, String message, Data data) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
+    }
 
     public static class Data {
         String suggested_auth;

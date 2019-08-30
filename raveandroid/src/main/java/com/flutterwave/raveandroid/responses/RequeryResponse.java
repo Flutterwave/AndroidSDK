@@ -2,6 +2,8 @@ package com.flutterwave.raveandroid.responses;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by hamzafetuga on 20/07/2017.
  */
@@ -18,6 +20,15 @@ public class RequeryResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    @Inject
+    public RequeryResponse(String status, Data data) {
+        this.status = status;
+        this.data = data;
+    }
+
+    public RequeryResponse() {
     }
 
     public static class Data {

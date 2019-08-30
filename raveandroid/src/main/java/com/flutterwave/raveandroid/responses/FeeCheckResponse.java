@@ -42,6 +42,15 @@ public class FeeCheckResponse {
         this.data = data;
     }
 
+    public FeeCheckResponse() {
+    }
+
+    public FeeCheckResponse(String message, String status, Data data) {
+        this.message = message;
+        this.status = status;
+        this.data = data;
+    }
+
     public static class Data {
         private String fee;
 
