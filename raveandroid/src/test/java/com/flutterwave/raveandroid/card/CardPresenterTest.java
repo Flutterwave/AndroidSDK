@@ -43,7 +43,6 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
-import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
@@ -396,6 +395,20 @@ public class CardPresenterTest {
     }
 
 
+    @Test
+    public void init() {
+
+        presenter.init(ravePayInitializer);
+        if (validEmail()) {
+            verify(view).onEmailValidated(generateRandomString(), generateRandomInt());
+        }
+
+        if (amountValid()) {
+            verify(view).onAmountValidated(generateRandomString(), generateRandomInt());
+        }
+
+    }
+
     private FeeCheckResponse generateFeeCheckResponse() {
         return new FeeCheckResponse(generateRandomString(), generateRandomString(), new FeeCheckResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
     }
@@ -420,67 +433,10 @@ public class CardPresenterTest {
         return new ChargeResponse(generateRandomString(), generateRandomString(), new ChargeResponse.Data(auth, "02", auth, generateRandomString(), generateRandomString(), "02", generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), new ChargeResponse.AccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
     }
 
-    @Test
-    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsFailed() {
-
-        presenter.chargeCard(generatePayload(),
-                generateRandomString());
-
-    }
-
-    @Test
-    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsSuccessful() {
-
-        //assert
-        presenter.chargeCard(generatePayload(),
-                generateRandomString());
-    }
-
     private Payload generatePayload() {
         List<Meta> metas = new ArrayList<>();
         List<SubAccount> subAccounts = new ArrayList<>();
         return new Payload(generateRandomString(), metas, subAccounts, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
-    }
-
-//    @Test
-//    public void processTransaction_feeDisplayFlagEnabled_displaysGetFeeLoadingDialog_callsGetFee_returnsSuccessful_ifSuggestedAuthIsPin() {
-//
-//        presenter.chargeCard(generatePayload(),
-//                generateRandomString());
-//
-//        verify(view).showProgressIndicator(true);
-//        ChargeRequestBody chargeRequestBody = generateChargeRequestBody();
-//        verify(networkRequest).chargeCard(chargeRequestBody, OnChargeRequestComplete);
-//        OnChargeRequestComplete.onSuccess(generateValidResponse(), generateRandomString());
-//        generateRandomResponse(true);
-//
-//        verify(view).onPinAuthModelSuggested(generatePayload());
-//    }
-
-    @Test
-    public void chargeCardWithSuggestedAuthModel() {
-        Payload payload = generatePayload();
-        presenter.chargeCardWithSuggestedAuthModel(payload, generateRandomString(), generateAuthModel_returnPIN(), generateRandomString());
-        verify(view).showProgressIndicator(true);
-    }
-
-    @Test
-    public void init() {
-
-        presenter.init(ravePayInitializer);
-        if (validEmail()) {
-            verify(view).onEmailValidated(generateRandomString(), generateRandomInt());
-        }
-
-        if (amountValid()) {
-            verify(view).onAmountValidated(generateRandomString(), generateRandomInt());
-        }
-
-    }
-
-
-    private String generateRandomJSONObject() {
-        return "{\"name\": \"flutter\",\"surname\": \"wave\",\"age\": \"2yrs\",\"time\": \"00:00\"}";
     }
 
     private Boolean validEmail() {
@@ -490,27 +446,6 @@ public class CardPresenterTest {
     private Boolean amountValid() {
         return amountValidator.isAmountValid("20");
     }
-
-
-    private String generateAuthModel_returnAVS_VBVSECURECODE() {
-
-        return AVS_VBVSECURECODE;
-    }
-
-    private String generateAuthModel_returnPIN() {
-
-        return PIN;
-    }
-
-    private ChargeRequestBody generateChargeRequestBody() {
-        return new ChargeRequestBody(generateRandomString(), generateRandomString(), generateRandomString());
-    }
-
-    private Callbacks.OnChargeRequestComplete generateCallbacksOnChargeRequestComplete() {
-        OnChargeRequestComplete.onSuccess(generateValidResponse(), generateRandomString());
-        return OnChargeRequestComplete;
-    }
-
 
     private void generateViewValidation(int failedValidations) {
 
@@ -543,67 +478,6 @@ public class CardPresenterTest {
 
         return viewData;
     }
-
-    private ChargeResponse generateValidResponse() {
-        ChargeResponse chargeResponse = new ChargeResponse();
-        chargeResponse.setStatus(generateRandomString());
-        chargeResponse.setMessage(generateRandomString());
-        chargeResponse.setData(new ChargeResponse.Data(generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateAccountValidateInstructions(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString()));
-        return chargeResponse;
-    }
-
-    private ChargeResponse.AccountValidateInstructions generateAccountValidateInstructions() {
-
-        return new ChargeResponse.AccountValidateInstructions();
-    }
-
-    private ChargeResponse generateInvalidResponse() {
-        ChargeResponse chargeResponse = new ChargeResponse();
-        chargeResponse.setStatus(generateRandomString());
-        chargeResponse.setMessage(generateRandomString());
-        chargeResponse.setData(null);
-        return chargeResponse;
-    }
-
-    private String generateRandomResponse(boolean isValid) {
-
-        ChargeResponse chargeResponse;
-
-        if (isValid) {
-            chargeResponse = generateValidResponse();
-            return getSuggestedAuth();
-
-        } else {
-            chargeResponse = generateInvalidResponse();
-            return getSuggestedAuth();
-        }
-
-    }
-
-    private String getSuggestedAuth() {
-        String suggestAuth = "";
-
-        //suggestAuth();
-        suggestAuth = PIN;
-
-        if (suggestAuth.equalsIgnoreCase(PIN)) {
-            suggestAuth = PIN;
-        } else if (suggestAuth.equalsIgnoreCase(AVS_VBVSECURECODE)) {
-            suggestAuth = AVS_VBVSECURECODE;
-        } else if (suggestAuth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
-            suggestAuth = NOAUTH_INTERNATIONAL;
-        } else {
-            verify(view).onPaymentError(anyString());
-        }
-
-        return suggestAuth;
-    }
-
-    private String suggestAuth() {
-        String[] auth = {PIN, AVS_VBVSECURECODE, NOAUTH_INTERNATIONAL, ""};
-        return auth[new Random().nextInt(3)];
-    }
-
 
     private String generateRandomString() {
         return UUID.randomUUID().toString();
