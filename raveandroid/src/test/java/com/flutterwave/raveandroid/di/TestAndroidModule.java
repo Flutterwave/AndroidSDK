@@ -5,11 +5,18 @@ import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.BankCodeValidator;
+import com.flutterwave.raveandroid.validators.BanksMinimum100AccountPaymentValidator;
+import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
 import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
+import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
+import com.flutterwave.raveandroid.validators.PhoneValidator;
+import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import org.mockito.Mockito;
 
@@ -44,16 +51,65 @@ public class TestAndroidModule {
     public EmailValidator providesEmailValidator() {
         return Mockito.mock(EmailValidator.class);
     }
+
+
     @Provides
     @Singleton
+    public PhoneValidator providesPhoneValidator() {
+        return Mockito.mock(PhoneValidator.class);
+    }
 
+
+    @Provides
+    @Singleton
+    public DateOfBirthValidator providesDateOfBirthValidator() {
+        return Mockito.mock(DateOfBirthValidator.class);
+    }
+
+
+    @Provides
+    @Singleton
+    public BvnValidator providesBvnValidator() {
+        return Mockito.mock(BvnValidator.class);
+    }
+
+
+    @Provides
+    @Singleton
+    public AccountNoValidator providesAccountNoValidator() {
+        return Mockito.mock(AccountNoValidator.class);
+    }
+
+
+    @Provides
+    @Singleton
+    public BankCodeValidator providesBankCodeValidator() {
+        return Mockito.mock(BankCodeValidator.class);
+    }
+
+    @Provides
+    @Singleton
+    public BanksMinimum100AccountPaymentValidator providesBanksMinimum100AccountPaymentValidator() {
+        return Mockito.mock(BanksMinimum100AccountPaymentValidator.class);
+    }
+
+
+    @Provides
+    @Singleton
     public CardNoValidator providesCardNoValidator() {
         return Mockito.mock(CardNoValidator.class);
     }
+
     @Provides
     @Singleton
     public CardExpiryValidator providesCardExpiryValidator() {
         return Mockito.mock(CardExpiryValidator.class);
+    }
+
+    @Provides
+    @Singleton
+    public UrlValidator providesUrlValidator() {
+        return Mockito.mock(UrlValidator.class);
     }
 
     @Provides

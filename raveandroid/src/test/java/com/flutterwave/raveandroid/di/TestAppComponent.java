@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.di;
 
+import com.flutterwave.raveandroid.account.AccountPresenter;
+import com.flutterwave.raveandroid.account.AccountPresenterTest;
 import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.card.CardPresenterTest;
 import com.flutterwave.raveandroid.di.components.AppComponent;
@@ -14,6 +16,10 @@ public interface TestAppComponent extends AppComponent {
 
     void inject(CardPresenterTest cardPresenterTest);
 
+    void inject(AccountPresenterTest accountPresenterTest);
+
     void inject(CardPresenter cardPresenter);
+
+    void inject(AccountPresenter accountPresenter);
 
 }
