@@ -22,6 +22,8 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
@@ -41,9 +43,15 @@ import static com.flutterwave.raveandroid.RaveConstants.validVoucherPrompt;
 public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActionsListener {
     private Context context;
     private GhMobileMoneyContract.View mView;
-    private AmountValidator amountValidator = new AmountValidator();
-    private PhoneValidator phoneValidator = new PhoneValidator();
 
+    @Inject
+    NetworkRequestImpl networkRequest;
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    PhoneValidator phoneValidator;
+
+    @Inject
     GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
@@ -59,7 +67,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -93,7 +101,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
+        networkRequest.chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(GhChargeResponse response, String responseAsJSONString) {
 
@@ -128,7 +136,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showPollingIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {

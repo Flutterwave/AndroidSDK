@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -24,6 +25,8 @@ import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.ACCESS_OTP;
 import static com.flutterwave.raveandroid.RaveConstants.AVS_VBVSECURECODE;
@@ -54,7 +57,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validCvvPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validExpiryDatePrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
-
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -63,13 +65,24 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     private Context context;
     private CardContract.View mView;
-    private EmailValidator emailValidator = new EmailValidator();
-    private AmountValidator amountValidator = new AmountValidator();
-    private CvvValidator cvvValidator = new CvvValidator();
-    private CardExpiryValidator cardExpiryValidator = new CardExpiryValidator();
-    private CardNoValidator cardNoValidator = new CardNoValidator();
 
-     CardPresenter(Context context, CardContract.View mView) {
+    @Inject
+    NetworkRequestImpl networkRequest;
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    CvvValidator cvvValidator;
+    @Inject
+    EmailValidator emailValidator;
+    @Inject
+    CardExpiryValidator cardExpiryValidator;
+    @Inject
+    CardNoValidator cardNoValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
+
+    @Inject
+    CardPresenter(Context context, CardContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -87,7 +100,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -169,7 +182,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -297,14 +310,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     .setEmail(dataHashMap.get(fieldEmail).getData())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context)).setTxRef(ravePayInitializer.getTxRef())
+                    .setIP(deviceIdGetter.getDeviceId()).setTxRef(ravePayInitializer.getTxRef())
                     .setExpiryyear(dataHashMap.get(fieldCardExpiry).getData().substring(3, 5))
                     .setExpirymonth(dataHashMap.get(fieldCardExpiry).getData().substring(0, 2))
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
@@ -343,7 +356,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -403,7 +416,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        networkRequest.validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
@@ -442,7 +455,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
@@ -487,7 +500,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -516,7 +529,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);

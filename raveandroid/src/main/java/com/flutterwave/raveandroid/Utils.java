@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
@@ -14,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -76,9 +76,8 @@ public class Utils {
                 Log.d("RAVE TX V", "true");
                 return true;
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.d("RAVE TX V", "false");
             return false;
         }
 
@@ -201,7 +200,7 @@ public class Utils {
                 e.printStackTrace();
             }
         }
-        return null;
+        return "";
     }
 
     public static String encryptRef(String key, String ref) {
@@ -221,14 +220,19 @@ public class Utils {
     }
 
     private static String encrypt(String data, String key) throws Exception {
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
-        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
-        cipher.init(Cipher.ENCRYPT_MODE, skey);
-        byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
-        byte[] buf = cipher.doFinal(plainTextBytes);
-        return Base64.encodeToString(buf, Base64.DEFAULT);
+        try {
+            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+            SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+
+            cipher.init(Cipher.ENCRYPT_MODE, skey);
+            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
+            byte[] buf = cipher.doFinal(plainTextBytes);
+            return Base64.encodeToString(buf, Base64.DEFAULT);
+        } catch (Exception e) {
+            return "";
+        }
 
     }
 

@@ -22,6 +22,12 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
+/**
+ * Created by hfetuga on 27/06/2018.
+ */
+
 public class BankTransferPresenter implements BankTransferContract.UserActionsListener {
     private static final String ACCOUNT_NUMBER = "account_number";
     private static final String BANK_NAME = "bank_name";
@@ -30,15 +36,21 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private static final String TX_REF = "txref";
     private static final String FLW_REF = "flwref";
     private static final String PUBLIC_KEY = "pbfkey";
+
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    NetworkRequestImpl networkRequest;
+
     private Context context;
     private BankTransferContract.View mView;
-    private AmountValidator amountValidator = new AmountValidator();
     private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
     private boolean pollingCancelled = false;
     private String beneficiaryName, accountNumber, amount, bankName;
     private boolean hasTransferDetails = false;
 
+    @Inject
     BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.context = context;
         this.mView = mView;
@@ -54,7 +66,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -79,7 +91,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     @Override
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -88,7 +101,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -177,7 +190,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
 
-        new NetworkRequestImpl().requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {

@@ -42,7 +42,6 @@ public class ChargeResponse {
 
     }
 
-
     public static class Data {
         String suggested_auth;
         String chargeResponseCode;
@@ -166,6 +165,26 @@ public class ChargeResponse {
 
         public void setChargedAmount(String charged_amount) {
             this.charged_amount = charged_amount;
+        }
+
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
+        }
+
+        public void setAuthModelUsed(String authModelUsed) {
+            this.authModelUsed = authModelUsed;
+        }
+
+        public void setSuggested_auth(String suggested_auth) {
+            this.suggested_auth = suggested_auth;
+        }
+
+        public void setAuthurl(String authurl) {
+            this.authurl = authurl;
+        }
+
+        public void setFlwRef(String flwRef) {
+            this.flwRef = flwRef;
         }
     }
 }

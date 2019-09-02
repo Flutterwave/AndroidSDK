@@ -1,10 +1,17 @@
 package com.flutterwave.raveandroid.validators;
 
+import javax.inject.Inject;
+
 public class AmountValidator {
+
+    @Inject
+    public AmountValidator() {
+    }
 
     public boolean isAmountValid(Double amount) {
         return amount > 0;
     }
+
 
     public boolean isAmountValid(String amount) {
 

@@ -1,6 +1,12 @@
 package com.flutterwave.raveandroid.validators;
 
+import javax.inject.Inject;
+
 public class CvvValidator {
+
+    @Inject
+    public CvvValidator() {
+    }
 
     public boolean isCvvValid(String cvv) {
 

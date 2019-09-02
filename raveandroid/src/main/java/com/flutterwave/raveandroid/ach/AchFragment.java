@@ -17,11 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+
+import javax.inject.Inject;
 
 
 /**
@@ -29,9 +33,11 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
  */
 public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener {
 
+    @Inject
+    AchPresenter presenter;
+
     private View v;
     private Button payButton;
-    private AchPresenter presenter;
     private TextInputLayout amountTil;
     private TextInputEditText amountEt;
     private TextView payInstructionsTv;
@@ -43,18 +49,28 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        presenter = new AchPresenter(getActivity(), this);
 
-        // Inflate the layout for this fragment
+        injectComponents();
+
         v = inflater.inflate(R.layout.fragment_ach, container, false);
 
         initializeViews();
 
-        initializePresenter();
-
         setListeners();
 
+        initializePresenter();
+
         return v;
+    }
+
+
+    private void injectComponents() {
+
+        if (getActivity() != null) {
+            ((RaveApp) getActivity().getApplication()).getAppComponent()
+                    .plus(new AchModule(this))
+                    .inject(this);
+        }
     }
 
     private void initializePresenter() {
@@ -240,9 +256,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter == null) {
-            presenter = new AchPresenter(getActivity(), this);
-        }
         presenter.onAttachView(this);
     }
 

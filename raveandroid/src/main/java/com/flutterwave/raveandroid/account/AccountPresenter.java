@@ -32,6 +32,8 @@ import com.flutterwave.raveandroid.validators.PhoneValidator;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.flutterwave.raveandroid.RaveConstants.NG;
 import static com.flutterwave.raveandroid.RaveConstants.NGN;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
@@ -60,15 +62,27 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
     private Context context;
     private AccountContract.View mView;
-    private EmailValidator emailValidator = new EmailValidator();
-    private AmountValidator amountValidator = new AmountValidator();
-    private PhoneValidator phoneValidator = new PhoneValidator();
-    private DateOfBirthValidator dateOfBirthValidator = new DateOfBirthValidator();
-    private BvnValidator bvnValidator = new BvnValidator();
-    private AccountNoValidator accountNoValidator = new AccountNoValidator();
-    private BankCodeValidator bankCodeValidator = new BankCodeValidator();
-    private BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator = new BanksMinimum100AccountPaymentValidator();
 
+    @Inject
+    EmailValidator emailValidator;
+    @Inject
+    AmountValidator amountValidator;
+    @Inject
+    PhoneValidator phoneValidator;
+    @Inject
+    DateOfBirthValidator dateOfBirthValidator;
+    @Inject
+    BvnValidator bvnValidator;
+    @Inject
+    AccountNoValidator accountNoValidator;
+    @Inject
+    BankCodeValidator bankCodeValidator;
+    @Inject
+    BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator;
+    @Inject
+    NetworkRequestImpl networkRequest;
+
+    @Inject
     AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
         this.mView = mView;
@@ -79,7 +93,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getBanks(new Callbacks.OnGetBanksRequestComplete() {
+        networkRequest.getBanks(new Callbacks.OnGetBanksRequestComplete() {
             @Override
             public void onSuccess(List<Bank> banks) {
                 mView.showProgressIndicator(false);
@@ -108,7 +122,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().chargeAccount(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeAccount(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
@@ -150,7 +164,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        networkRequest.validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
@@ -190,7 +204,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -219,7 +233,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        new NetworkRequestImpl().requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
