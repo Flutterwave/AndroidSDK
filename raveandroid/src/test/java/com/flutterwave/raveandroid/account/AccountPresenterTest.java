@@ -14,6 +14,7 @@ import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
@@ -30,6 +31,7 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
+import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +54,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldBankCode;
 import static com.flutterwave.raveandroid.RaveConstants.fieldDOB;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.success;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -85,6 +88,8 @@ public class AccountPresenterTest {
     @Inject
     BankCodeValidator bankCodeValidator;
     @Inject
+    UrlValidator urlValidator;
+    @Inject
     BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
@@ -109,6 +114,20 @@ public class AccountPresenterTest {
         accountPresenter.networkRequest = networkRequest;
     }
 
+    @Test
+    public void chargeAccount_onSuccess_onDisplayInternetBankingPageCalled() {
+
+        accountPresenter.chargeAccount(generatePayload(), generateRandomString(), generateRandomBoolean());
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+
+        verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+
+        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
+        onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
+        verify(view).onDisplayInternetBankingPage(anyString(), anyString());
+
+    }
+
 
     @Test
     public void chargeAccount_onError_onChargeAccountFailedCalled() {
@@ -118,26 +137,63 @@ public class AccountPresenterTest {
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
+        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
         verify(view).onChargeAccountFailed(anyString(), anyString());
 
     }
 
     @Test
-    public void chargeAccount_onSuccess_onDisplayInternetBankingPageCalled() {
+    public void chargeAccount_onSuccess_noAuthUrl_onChargeAccountFailedCalled() {
 
         accountPresenter.chargeAccount(generatePayload(), generateRandomString(), generateRandomBoolean());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
-        onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
-        verify(view).onDisplayInternetBankingPage(anyString(), anyString());
+        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
+        onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateInValidChargeResponse(), generateRandomString());
+        verify(view).validateAccountCharge(anyString(), anyString(), String.valueOf(anyObject()));
 
     }
 
     @Test
-    public void validateAccountCharge() {
+    public void validateAccountCharge_onSuccess_onValidationSuccessfulCalled() {
+        accountPresenter.validateAccountCharge(generateRandomString(), generateRandomString(), generateRandomString());
+        generateValidChargeResponse();
+
+        ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
+        verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
+
+        onValidateChargeCardRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
+
+        verify(view).onValidationSuccessful(anyString(), anyString());
+    }
+
+    @Test
+    public void validateAccountCharge_onError_onValidationSuccessfulCalled() {
+        accountPresenter.validateAccountCharge(generateRandomString(), generateRandomString(), generateRandomString());
+        generateValidChargeResponse();
+
+        ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
+        verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
+
+        onValidateChargeCardRequestCompleteArgumentCaptor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
+
+        verify(view).onPaymentError(anyString());
+    }
+
+    @Test
+    public void validateAccountCharge_onError_onValidateErrorCalled() {
+        accountPresenter.validateAccountCharge(generateRandomString(), generateRandomString(), generateRandomString());
+        generateValidChargeResponse();
+
+        ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
+        verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
+
+        onValidateChargeCardRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateInValidChargeResponse(), generateRandomString());
+
+        verify(view).onValidateError(anyString(), anyString());
     }
 
     @Test
@@ -219,9 +275,10 @@ public class AccountPresenterTest {
     }
 
     @Test
-    public void verifyRequeryResponseStatus() {
-        accountPresenter.verifyRequeryResponseStatus(any(RequeryResponse.class), generateRandomString(), ravePayInitializer);
-        verify(view).onPaymentSuccessful(generateRandomString(), generateRandomString());
+    public void verifyRequeryResponseStatus_onPaymentFailedCalled() {
+        //this needs to be reviewed
+        accountPresenter.verifyRequeryResponseStatus(generateRequerySuccessful(), generateJSONResponse(), ravePayInitializer);
+        verify(view).onPaymentFailed(String.valueOf(anyObject()), anyString());
     }
 
     @Test
@@ -399,17 +456,22 @@ public class AccountPresenterTest {
         return chargeResponse;
     }
 
-    private ChargeResponse generateNullChargeResponse() {
-        ChargeResponse chargeResponse = new ChargeResponse();
-        chargeResponse.setData(null);
-
-        return chargeResponse;
-    }
-
     private ChargeResponse generateValidChargeResponse() {
         ChargeResponse chargeResponse = generateRandomChargeResponse();
         chargeResponse.getData().setChargeResponseCode("00");
+        chargeResponse.setStatus(success);
         chargeResponse.getData().setAuthurl("http://www.rave.com");
+        chargeResponse.getData().setFlwRef(generateRandomString());
+        return chargeResponse;
+    }
+
+    private ChargeResponse generateInValidChargeResponse() {
+        ChargeResponse chargeResponse = generateRandomChargeResponse();
+        chargeResponse.getData().setChargeResponseCode("00");
+        chargeResponse.setStatus("pending");
+        ChargeResponse.AccountValidateInstructions instructions = new ChargeResponse.AccountValidateInstructions();
+        instructions.setInstruction(generateRandomString());
+        chargeResponse.getData().setValidateInstructions(instructions);
         chargeResponse.getData().setFlwRef(generateRandomString());
         return chargeResponse;
     }
@@ -430,5 +492,9 @@ public class AccountPresenterTest {
         bank.setInternetbanking(true);
         bank.setBankcode("033");
         return bank;
+    }
+
+    private String generateJSONResponse() {
+        return "{\"data\":{\"status\": \"success\",\"amount\": \"100\",\"currency\": \"NGN\",\"chargeResponseCode\": \"00\"}}";
     }
 }

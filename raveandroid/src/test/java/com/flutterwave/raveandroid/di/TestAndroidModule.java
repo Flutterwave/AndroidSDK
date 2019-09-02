@@ -80,7 +80,6 @@ public class TestAndroidModule {
         return Mockito.mock(AccountNoValidator.class);
     }
 
-
     @Provides
     @Singleton
     public BankCodeValidator providesBankCodeValidator() {
@@ -123,5 +122,6 @@ public class TestAndroidModule {
     public DeviceIdGetter providesDeviceIdGetter() {
         return Mockito.mock(DeviceIdGetter.class);
     }
+
 
 }

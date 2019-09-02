@@ -46,7 +46,7 @@ public class Utils {
     public static String getDeviceImei(Context c) {
 
         TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        String ip = mTelephonyManager.getDeviceId();
+        @SuppressLint("MissingPermission") String ip = mTelephonyManager.getDeviceId();
 
         if (ip == null) {
             ip = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);

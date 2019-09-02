@@ -3,13 +3,13 @@ package com.flutterwave.raveandroid.account;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.webkit.URLUtil;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.TransactionSuccessful;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -86,6 +86,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
+    TransactionSuccessful transactionSuccessful;
+    @Inject
     NetworkRequestImpl networkRequest;
 
     @Inject
@@ -136,8 +138,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 if (response.getData() != null) {
                     String authUrlCrude = response.getData().getAuthurl();
                     String flwRef = response.getData().getFlwRef();
-//                    boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
-                    boolean isValidUrl = URLUtil.isValidUrl(authUrlCrude);
+                    boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
                     if (authUrlCrude != null && isValidUrl) {
                         mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
                     } else {
@@ -259,7 +260,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         mView.showProgressIndicator(true);
-        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+
+        boolean wasTxSuccessful = transactionSuccessful.getTransactionStatus(ravePayInitializer, responseAsJSONString);
 
         mView.showProgressIndicator(false);
 

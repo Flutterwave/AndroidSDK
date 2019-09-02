@@ -38,6 +38,10 @@ public class ChargeResponse {
             return instruction;
         }
 
+        public void setInstruction(String instruction) {
+            this.instruction = instruction;
+        }
+
         String instruction;
 
     }
@@ -124,6 +128,10 @@ public class ChargeResponse {
 
         public String getFlwRef() {
             return flwRef;
+        }
+
+        public void setValidateInstructions(AccountValidateInstructions validateInstructions) {
+            this.validateInstructions = validateInstructions;
         }
 
         public String getChargeResponseMessage() {
