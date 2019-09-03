@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.mpesa;
 import android.content.Context;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -47,6 +48,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     @Inject
     public MpesaPresenter(Context context, MpesaContract.View mView) {
@@ -211,14 +214,14 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context))
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setPhonenumber(dataHashMap.get(fieldAmount).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
