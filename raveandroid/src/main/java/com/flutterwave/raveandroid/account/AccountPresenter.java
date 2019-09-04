@@ -9,7 +9,7 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionSuccessful;
+import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -86,7 +86,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
-    TransactionSuccessful transactionSuccessful;
+    TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
 
@@ -261,7 +261,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         mView.showProgressIndicator(true);
 
-        boolean wasTxSuccessful = transactionSuccessful.getTransactionStatus(ravePayInitializer, responseAsJSONString);
+        boolean wasTxSuccessful = transactionStatusChecker.getTransactionStatus(ravePayInitializer, responseAsJSONString);
 
         mView.showProgressIndicator(false);
 

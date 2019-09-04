@@ -4,10 +4,10 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-public class TransactionSuccessful {
+public class TransactionStatusChecker {
 
     @Inject
-    public TransactionSuccessful() {
+    public TransactionStatusChecker() {
     }
 
     private static boolean areAmountsSame(String amount1, String amount2) {

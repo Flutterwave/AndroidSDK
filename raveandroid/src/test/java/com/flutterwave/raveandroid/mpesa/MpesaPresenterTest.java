@@ -40,6 +40,7 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -143,7 +144,7 @@ public class MpesaPresenterTest {
     }
 
     @Test
-    public void chargeMpesa_onSuccessWithNullData_onPaymentErrorCalled() {
+    public void chargeMpesa_onSuccessWithNullData_onPaymentError_noResponse_Called() {
 
         mpesaPresenter.chargeMpesa(generatePayload(), generateRandomString());
 
@@ -152,7 +153,7 @@ public class MpesaPresenterTest {
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
 
-        verify(view).onPaymentError(anyString());
+        verify(view).onPaymentError(noResponse);
 
     }
 
@@ -165,23 +166,70 @@ public class MpesaPresenterTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        captor.getAllValues().get(0).onSuccess(generateNullQuery(), generateRandomString());
+        RequeryResponse requeryResponse = generateNullQuery();
+        String jsonResponse = generateJSONResponse();
 
-        verify(view).onPaymentFailed(String.valueOf(anyObject()), anyString());
+        captor.getAllValues().get(0).onSuccess(requeryResponse, generateRandomString());
+
+        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
 
     }
 
     @Test
-    public void requeryTx_onSuccess_validData_onPaymentSuccessfulCalled() {
+    public void requeryTx_onSuccess_validData_onPaymentSuccessful_00_Called() {
+
+        String flwRef = generateRandomString();
+        String txRef = generateRandomString();
+
+        mpesaPresenter.requeryTx(flwRef, txRef, generateRandomString());
+
+        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
+        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+
+        RequeryResponse requeryResponse = generateRequerySuccessful_00();
+        String jsonResponse = generateJSONResponse();
+
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
+
+        verify(view).onPaymentSuccessful(flwRef, txRef, jsonResponse);
+
+    }
+
+    @Test
+    public void requeryTx_onSuccess_validData_onPaymentSuccessful_02_Called() {
+
+        String flwRef = generateRandomString();
+        String txRef = generateRandomString();
+        String encryptionKey = generateRandomString();
+
+        mpesaPresenter.requeryTx(flwRef, txRef, encryptionKey);
+
+        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
+        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+
+        RequeryResponse requeryResponse = generateRequerySuccessful_02();
+        String jsonResponse = generateJSONResponse();
+
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
+
+        verify(view).onPollingRoundComplete(flwRef, txRef, encryptionKey);
+
+    }
+
+    @Test
+    public void requeryTx_onSuccess_not00or02_onPaymentFailedCalled() {
 
         mpesaPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful(), generateRandomString());
+        RequeryResponse requeryResponse = generateRandomRequerySuccessful();
+        String jsonResponse = generateJSONResponse();
 
-        verify(view).onPaymentSuccessful(anyString(), anyString(), anyString());
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
+
+        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
 
     }
 
@@ -194,9 +242,23 @@ public class MpesaPresenterTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
+        String message = generateRandomString();
+        String jsonResponse = generateJSONResponse();
 
-        verify(view).onPaymentFailed(anyString(), anyString());
+        captor.getAllValues().get(0).onError(message, jsonResponse);
+
+        verify(view).onPaymentFailed(message, jsonResponse);
+
+    }
+
+    @Test
+    public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
+        mpesaPresenter.init(ravePayInitializer);
+        boolean isAmountValid = amountValidator.isAmountValid("100");
+
+        if (isAmountValid) {
+            verify(view).onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
+        }
 
     }
 
@@ -308,10 +370,26 @@ public class MpesaPresenterTest {
         return new RequeryResponse();
     }
 
-    private RequeryResponse generateRequerySuccessful() {
+    private RequeryResponse generateRequerySuccessful_00() {
         RequeryResponse requeryResponse = new RequeryResponse();
         RequeryResponse.Data data = new RequeryResponse.Data();
         data.setChargeResponseCode("00");
+        requeryResponse.setData(data);
+        return requeryResponse;
+    }
+
+    private RequeryResponse generateRequerySuccessful_02() {
+        RequeryResponse requeryResponse = new RequeryResponse();
+        RequeryResponse.Data data = new RequeryResponse.Data();
+        data.setChargeResponseCode("02");
+        requeryResponse.setData(data);
+        return requeryResponse;
+    }
+
+    private RequeryResponse generateRandomRequerySuccessful() {
+        RequeryResponse requeryResponse = new RequeryResponse();
+        RequeryResponse.Data data = new RequeryResponse.Data();
+        data.setChargeResponseCode("03");
         requeryResponse.setData(data);
         return requeryResponse;
     }
@@ -344,6 +422,10 @@ public class MpesaPresenterTest {
         chargeResponse.getData().setFlwRef(generateRandomString());
         chargeResponse.getData().setTx_ref(generateRandomString());
         return chargeResponse;
+    }
+
+    private String generateJSONResponse() {
+        return "{\"data\":{\"status\": \"success\",\"amount\": \"100\",\"currency\": \"NGN\",\"chargeResponseCode\": \"00\"}}";
     }
 
     private String generateRandomString() {

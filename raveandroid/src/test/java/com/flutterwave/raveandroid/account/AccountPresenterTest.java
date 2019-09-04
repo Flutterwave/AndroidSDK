@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.account;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
+import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -33,6 +34,7 @@ import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 import com.flutterwave.raveandroid.validators.UrlValidator;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -122,7 +124,7 @@ public class AccountPresenterTest {
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
-        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
+        when(urlValidator.isUrlValid(anyString())).thenReturn(true);
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
         verify(view).onDisplayInternetBankingPage(anyString(), anyString());
 
@@ -137,7 +139,7 @@ public class AccountPresenterTest {
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
-        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
+        when(urlValidator.isUrlValid(anyString())).thenReturn(true);
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
         verify(view).onChargeAccountFailed(anyString(), anyString());
 
@@ -151,7 +153,7 @@ public class AccountPresenterTest {
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
-        when(urlValidator.isUrlValid("http://www.rave.com")).thenReturn(true);
+        when(urlValidator.isUrlValid(anyString())).thenReturn(true);
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateInValidChargeResponse(), generateRandomString());
         verify(view).validateAccountCharge(anyString(), anyString(), String.valueOf(anyObject()));
 
@@ -275,7 +277,7 @@ public class AccountPresenterTest {
     }
 
     @Test
-    public void verifyRequeryResponseStatus_onPaymentFailedCalled() {
+    public void verifyRequeryResponseStatus_transactionUnsuccessful_onPaymentFailedCalled() {
         //this needs to be reviewed
         accountPresenter.verifyRequeryResponseStatus(generateRequerySuccessful(), generateJSONResponse(), ravePayInitializer);
         verify(view).onPaymentFailed(String.valueOf(anyObject()), anyString());
@@ -355,25 +357,128 @@ public class AccountPresenterTest {
 
 
     @Test
-    public void onBankSelected_isInternetBanking_bankCode057_showAccountNumberFieldCalled() {
-        accountPresenter.onBankSelected(generateBank_057());
-        boolean isInternetBanking = generateRandomBoolean();
+    public void onBankSelected_isInternetBanking_showAccountNumberField_Gone_Called() {
+        accountPresenter.onBankSelected(generateBank_033());
+        boolean isInternetBanking = generateBank_033().isInternetbanking();
 
         if (isInternetBanking) {
-            verify(view).showAccountNumberField(anyInt());
+            verify(view).showAccountNumberField(View.GONE);
         }
     }
 
     @Test
-    public void onBankSelected_isInternetBanking_bankCode033_showAccountNumberFieldCalled() {
-        accountPresenter.onBankSelected(generateBank_033());
-        boolean isInternetBanking = generateRandomBoolean();
+    public void onBankSelected_isNotInternetBanking_showAccountNumberField_Visible_Called() {
+        accountPresenter.onBankSelected(generateBank_noInternetBanking());
+        boolean isInternetBanking = generateBank_noInternetBanking().isInternetbanking();
 
         if (isInternetBanking) {
-            verify(view).showAccountNumberField(anyInt());
+            verify(view).showAccountNumberField(View.VISIBLE);
         }
     }
 
+
+    @Test
+    public void onBankSelected_bankCode057_showDateOfBirth_Visible_Called() {
+        accountPresenter.onBankSelected(generateBank_057());
+        boolean isInternetBanking = generateBank_057().isInternetbanking();
+
+        if (isInternetBanking) {
+            verify(view).showDateOfBirth(View.VISIBLE);
+        }
+    }
+
+    @Test
+    public void onBankSelected_bankCode033_showDateOfBirth_Visible_Called() {
+        accountPresenter.onBankSelected(generateBank_033());
+        boolean isInternetBanking = generateBank_033().isInternetbanking();
+
+        if (isInternetBanking) {
+            verify(view).showDateOfBirth(View.VISIBLE);
+
+        }
+    }
+
+    @Test
+    public void onBankSelected_isNot033or057_hideAccountNumberFieldCalled() {
+        accountPresenter.onBankSelected(generateRandomBank());
+        verify(view).showDateOfBirth(View.GONE);
+
+    }
+
+    @Test
+    public void onBankSelected_bankCode033_showBVN_Visible_Called() {
+        accountPresenter.onBankSelected(generateBank_033());
+        String bankcode = generateBank_033().getBankcode();
+
+        if (bankcode.equals("033")) {
+            verify(view).showBVN(View.VISIBLE);
+
+        }
+    }
+
+    @Test
+    public void onBankSelected_bankCodeNot033_showBVN_Gone_Called() {
+        accountPresenter.onBankSelected(generateRandomBank());
+        String bankcode = generateRandomBank().getBankcode();
+
+        if (!bankcode.equals("033")) {
+            verify(view).showBVN(View.GONE);
+
+        }
+    }
+
+
+    @Test
+    public void init_validEmail_onEmailValidatedCalledWithValidEmail() {
+        accountPresenter.init(ravePayInitializer);
+        boolean isEmailValid = emailValidator.isEmailValid("rave@flutterwavego.com");
+
+        if (isEmailValid) {
+            verify(view).onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
+        }
+
+    }
+
+    @Test
+    public void init_inValidEmail_onEmailValidatedCalledWithEmptyEmail() {
+        accountPresenter.init(ravePayInitializer);
+        boolean isEmailValid = emailValidator.isEmailValid("rave");
+
+        if (isEmailValid) {
+            verify(view).onEmailValidated("", View.VISIBLE);
+        }
+
+    }
+
+    @Test
+    public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
+        accountPresenter.init(ravePayInitializer);
+        boolean isAmountValid = amountValidator.isAmountValid("100");
+
+        if (isAmountValid) {
+            verify(view).onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
+        }
+
+    }
+
+    @Test
+    public void init_inValidAmount_onAmountValidatedCalledWithEmptyAmount() {
+        accountPresenter.init(ravePayInitializer);
+        boolean isAmountValid = amountValidator.isAmountValid("100");
+
+        if (isAmountValid) {
+            verify(view).onAmountValidated("", View.VISIBLE);
+        }
+
+    }
+
+    @Test
+    public void verifyRequeryResponseStatus_transactionSuccessful_onPaymentSuccessfulCalled() {
+
+        //issue with jsonobject
+        accountPresenter.verifyRequeryResponseStatus(generateRequerySuccessful(), generateJSONResponses(), ravePayInitializer);
+        verify(view).onPaymentSuccessful(String.valueOf(anyObject()), anyString());
+    }
 
     private void generateViewValidation(int failedValidations) {
 
@@ -494,7 +599,42 @@ public class AccountPresenterTest {
         return bank;
     }
 
+    private Bank generateBank_noInternetBanking() {
+        Bank bank = new Bank();
+        bank.setInternetbanking(false);
+        bank.setBankcode("033");
+        return bank;
+    }
+
+    private Bank generateRandomBank() {
+        Bank bank = new Bank();
+        bank.setInternetbanking(true);
+        bank.setBankcode("000");
+        return bank;
+    }
+
     private String generateJSONResponse() {
         return "{\"data\":{\"status\": \"success\",\"amount\": \"100\",\"currency\": \"NGN\",\"chargeResponseCode\": \"00\"}}";
+    }
+
+    private String generateJSONResponses() {
+        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonData = new JSONObject();
+
+        try {
+            jsonData.put("status", "success");
+            jsonData.put("amount", "100");
+            jsonData.put("currency", "NGN");
+            jsonData.put("chargeResponseCode", "00");
+            jsonObject.put("data", jsonData);
+            System.out.println(jsonData.getString("status"));
+            System.out.println(jsonData.getString("amount"));
+            System.out.println(jsonObject.toString());
+
+        } catch (Exception e) {
+
+        }
+
+        return jsonObject.toString();
     }
 }
