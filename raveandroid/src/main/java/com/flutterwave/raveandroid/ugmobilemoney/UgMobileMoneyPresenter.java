@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.ugmobilemoney;
 import android.content.Context;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -15,7 +16,7 @@ import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.responses.GhChargeResponse;
+import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
@@ -49,6 +50,8 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     @Inject
     UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
@@ -101,9 +104,9 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        networkRequest.chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
+        networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
-            public void onSuccess(GhChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
 
                 mView.showProgressIndicator(false);
 
@@ -211,7 +214,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context))
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -219,7 +222,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
