@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.ugmobilemoney;
+package com.flutterwave.raveandroid.ghmobilemoney;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
@@ -39,7 +39,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.fieldVoucher;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static org.junit.Assert.assertEquals;
@@ -51,11 +53,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class UgMobileMoneyPresenterTest {
+public class GhMobileMoneyPresenterTest {
 
-    UgMobileMoneyPresenter ugMobileMoneyPresenter;
+    GhMobileMoneyPresenter ghMobileMoneyPresenter;
     @Mock
-    UgMobileMoneyContract.View view;
+    GhMobileMoneyContract.View view;
     @Inject
     Context context;
     @Inject
@@ -72,7 +74,7 @@ public class UgMobileMoneyPresenterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ugMobileMoneyPresenter = new UgMobileMoneyPresenter(context, view);
+        ghMobileMoneyPresenter = new GhMobileMoneyPresenter(context, view);
 
         TestAppComponent component = DaggerTestAppComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
@@ -80,16 +82,16 @@ public class UgMobileMoneyPresenterTest {
                 .build();
 
         component.inject(this);
-        component.inject(ugMobileMoneyPresenter);
+        component.inject(ghMobileMoneyPresenter);
 
-        ugMobileMoneyPresenter.networkRequest = networkRequest;
+        ghMobileMoneyPresenter.networkRequest = networkRequest;
 
     }
 
     @Test
     public void fetchFee_onError_showFetchFeeFailedCalled() {
 
-        ugMobileMoneyPresenter.fetchFee(generatePayload());
+        ghMobileMoneyPresenter.fetchFee(generatePayload());
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
@@ -103,7 +105,7 @@ public class UgMobileMoneyPresenterTest {
     @Test
     public void fetchFee_onSuccess_displayFeeCalled() {
 
-        ugMobileMoneyPresenter.fetchFee(generatePayload());
+        ghMobileMoneyPresenter.fetchFee(generatePayload());
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
@@ -115,23 +117,23 @@ public class UgMobileMoneyPresenterTest {
 
 
     @Test
-    public void chargeUgMobileMoney_onSuccess_requeryTxCalled() {
+    public void chargeGhMobileMoney_onSuccess_requeryTxCalled() {
 
-        ugMobileMoneyPresenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        ghMobileMoneyPresenter.chargeGhMobileMoney(generatePayload(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> onGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         verify(networkRequest).chargeMobileMoneyWallet(any(ChargeRequestBody.class), onGhanaChargeRequestCompleteArgumentCaptor.capture());
 
         onGhanaChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidGhChargeResponse(), generateRandomString());
 
-        ugMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
+        ghMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
     }
 
     @Test
-    public void chargeUgMobileMoney_onError_onPaymentErrorCalled() {
+    public void chargeGhMobileMoney_onError_onPaymentErrorCalled() {
 
-        ugMobileMoneyPresenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        ghMobileMoneyPresenter.chargeGhMobileMoney(generatePayload(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> OnGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         String message = generateRandomString();
@@ -144,9 +146,9 @@ public class UgMobileMoneyPresenterTest {
     }
 
     @Test
-    public void chargeUgMobileMoney_onSuccessWithNullData_onPaymentError_noResponse_Called() {
+    public void chargeGhMobileMoney_onSuccessWithNullData_onPaymentError_noResponse_Called() {
 
-        ugMobileMoneyPresenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        ghMobileMoneyPresenter.chargeGhMobileMoney(generatePayload(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> onGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         verify(networkRequest).chargeMobileMoneyWallet(any(ChargeRequestBody.class), onGhanaChargeRequestCompleteArgumentCaptor.capture());
@@ -161,7 +163,7 @@ public class UgMobileMoneyPresenterTest {
     @Test
     public void requeryTx_onSuccess_nullData_onPaymentFailedCalled() {
 
-        ugMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
+        ghMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -181,7 +183,7 @@ public class UgMobileMoneyPresenterTest {
         String flwRef = generateRandomString();
         String txRef = generateRandomString();
 
-        ugMobileMoneyPresenter.requeryTx(flwRef, txRef, generateRandomString());
+        ghMobileMoneyPresenter.requeryTx(flwRef, txRef, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -202,7 +204,7 @@ public class UgMobileMoneyPresenterTest {
         String txRef = generateRandomString();
         String encryptionKey = generateRandomString();
 
-        ugMobileMoneyPresenter.requeryTx(flwRef, txRef, encryptionKey);
+        ghMobileMoneyPresenter.requeryTx(flwRef, txRef, encryptionKey);
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -219,7 +221,7 @@ public class UgMobileMoneyPresenterTest {
     @Test
     public void requeryTx_onSuccess_not00or02_onPaymentFailedCalled() {
 
-        ugMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
+        ghMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -237,7 +239,7 @@ public class UgMobileMoneyPresenterTest {
     @Test
     public void requeryTx_onError_onPaymentFailedCalled() {
 
-        ugMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
+        ghMobileMoneyPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -258,7 +260,7 @@ public class UgMobileMoneyPresenterTest {
         when(ravePayInitializer.getAmount()).thenReturn(amount);
         when(amountValidator.isAmountValid(amount)).thenReturn(true);
 
-        ugMobileMoneyPresenter.init(ravePayInitializer);
+        ghMobileMoneyPresenter.init(ravePayInitializer);
 
         verify(view).onAmountValidationSuccessful(amount.toString());
 
@@ -272,7 +274,7 @@ public class UgMobileMoneyPresenterTest {
         int failedValidations = 2;
         generateViewValidation(failedValidations);
         //act
-        ugMobileMoneyPresenter.onDataCollected(map);
+        ghMobileMoneyPresenter.onDataCollected(map);
         //assert
         verify(view, times(failedValidations)).showFieldError(anyInt(), anyString(), (Class<?>) anyObject());
 
@@ -285,7 +287,7 @@ public class UgMobileMoneyPresenterTest {
         int failedValidations = 0;
         generateViewValidation(failedValidations);
         //act
-        ugMobileMoneyPresenter.onDataCollected(map);
+        ghMobileMoneyPresenter.onDataCollected(map);
         //assert
         verify(view).onValidationSuccessful(any(HashMap.class));
 
@@ -300,7 +302,7 @@ public class UgMobileMoneyPresenterTest {
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(true);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         //act
-        ugMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
+        ghMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
         //assert
         verify(view).showProgressIndicator(booleanArgumentCaptor.capture());
 
@@ -315,21 +317,21 @@ public class UgMobileMoneyPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         //act
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
-        ugMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
+        ghMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
         //assert
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), any(Callbacks.OnGetFeeRequestComplete.class));
     }
 
     @Test
-    public void processTransaction_displayFeeIsDisabled_chargeUgMobileMoneyCalled() {
+    public void processTransaction_displayFeeIsDisabled_chargeGhMobileMoneyCalled() {
         //arrange
         HashMap<String, ViewObject> data = generateViewData();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         //act
-        ugMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
+        ghMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        ugMobileMoneyPresenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        ghMobileMoneyPresenter.chargeGhMobileMoney(generatePayload(), generateRandomString());
     }
 
 
@@ -338,6 +340,8 @@ public class UgMobileMoneyPresenterTest {
         HashMap<String, ViewObject> viewData = new HashMap<>();
         viewData.put(fieldAmount, new ViewObject(generateRandomInt(), generateRandomDouble().toString(), TextInputLayout.class));
         viewData.put(fieldPhone, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
+        viewData.put(fieldNetwork, new ViewObject(generateRandomInt(), String.valueOf(generateRandomInt()), TextInputLayout.class));
+        viewData.put(fieldVoucher, new ViewObject(generateRandomInt(), String.valueOf(generateRandomInt()), TextInputLayout.class));
         return viewData;
     }
 

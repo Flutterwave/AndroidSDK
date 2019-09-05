@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.ghmobilemoney;
 import android.content.Context;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -50,6 +51,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     @Inject
     GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
@@ -174,7 +177,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context))
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -182,7 +185,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context));
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (dataHashMap.get(fieldVoucher) != null) {
                 builder.setVoucher(dataHashMap.get(fieldVoucher).getData());
