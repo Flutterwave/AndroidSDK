@@ -253,12 +253,14 @@ public class UgMobileMoneyPresenterTest {
 
     @Test
     public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
-        UgMobileMoneyPresenter.init(ravePayInitializer);
-        boolean isAmountValid = amountValidator.isAmountValid("100");
 
-        if (isAmountValid) {
-            verify(view).onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
-        }
+        Double amount = generateRandomDouble();
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+
+        UgMobileMoneyPresenter.init(ravePayInitializer);
+
+        verify(view).onAmountValidationSuccessful(amount.toString());
 
     }
 

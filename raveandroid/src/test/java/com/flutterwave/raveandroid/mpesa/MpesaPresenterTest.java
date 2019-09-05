@@ -169,7 +169,7 @@ public class MpesaPresenterTest {
         RequeryResponse requeryResponse = generateNullQuery();
         String jsonResponse = generateJSONResponse();
 
-        captor.getAllValues().get(0).onSuccess(requeryResponse, generateRandomString());
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
         verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
 
@@ -186,7 +186,7 @@ public class MpesaPresenterTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        RequeryResponse requeryResponse = generateRequerySuccessful_00();
+        RequeryResponse requeryResponse = generateRequerySuccessful("00");
         String jsonResponse = generateJSONResponse();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
@@ -207,7 +207,7 @@ public class MpesaPresenterTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        RequeryResponse requeryResponse = generateRequerySuccessful_02();
+        RequeryResponse requeryResponse = generateRequerySuccessful("02");
         String jsonResponse = generateJSONResponse();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
@@ -224,7 +224,7 @@ public class MpesaPresenterTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
-        RequeryResponse requeryResponse = generateRandomRequerySuccessful();
+        RequeryResponse requeryResponse = generateRequerySuccessful("03");
         String jsonResponse = generateJSONResponse();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
@@ -253,12 +253,14 @@ public class MpesaPresenterTest {
 
     @Test
     public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
-        mpesaPresenter.init(ravePayInitializer);
-        boolean isAmountValid = amountValidator.isAmountValid("100");
 
-        if (isAmountValid) {
-            verify(view).onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
-        }
+        Double amount = generateRandomDouble();
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+
+        mpesaPresenter.init(ravePayInitializer);
+
+        verify(view).onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
 
     }
 
@@ -370,26 +372,10 @@ public class MpesaPresenterTest {
         return new RequeryResponse();
     }
 
-    private RequeryResponse generateRequerySuccessful_00() {
+    private RequeryResponse generateRequerySuccessful(String chargeResponseCode) {
         RequeryResponse requeryResponse = new RequeryResponse();
         RequeryResponse.Data data = new RequeryResponse.Data();
-        data.setChargeResponseCode("00");
-        requeryResponse.setData(data);
-        return requeryResponse;
-    }
-
-    private RequeryResponse generateRequerySuccessful_02() {
-        RequeryResponse requeryResponse = new RequeryResponse();
-        RequeryResponse.Data data = new RequeryResponse.Data();
-        data.setChargeResponseCode("02");
-        requeryResponse.setData(data);
-        return requeryResponse;
-    }
-
-    private RequeryResponse generateRandomRequerySuccessful() {
-        RequeryResponse requeryResponse = new RequeryResponse();
-        RequeryResponse.Data data = new RequeryResponse.Data();
-        data.setChargeResponseCode("03");
+        data.setChargeResponseCode(chargeResponseCode);
         requeryResponse.setData(data);
         return requeryResponse;
     }

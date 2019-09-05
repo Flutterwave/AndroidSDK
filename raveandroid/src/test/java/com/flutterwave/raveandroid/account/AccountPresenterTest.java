@@ -358,117 +358,121 @@ public class AccountPresenterTest {
 
     @Test
     public void onBankSelected_isInternetBanking_showAccountNumberField_Gone_Called() {
-        accountPresenter.onBankSelected(generateBank_033());
-        boolean isInternetBanking = generateBank_033().isInternetbanking();
 
-        if (isInternetBanking) {
-            verify(view).showAccountNumberField(View.GONE);
-        }
+        Bank bank = generateBank(true, "034");
+
+        accountPresenter.onBankSelected(bank);
+
+        verify(view).showAccountNumberField(View.GONE);
     }
 
     @Test
     public void onBankSelected_isNotInternetBanking_showAccountNumberField_Visible_Called() {
-        accountPresenter.onBankSelected(generateBank_noInternetBanking());
-        boolean isInternetBanking = generateBank_noInternetBanking().isInternetbanking();
 
-        if (isInternetBanking) {
-            verify(view).showAccountNumberField(View.VISIBLE);
-        }
+        Bank bank = generateBank(false, "057");
+
+        accountPresenter.onBankSelected(bank);
+
+        verify(view).showAccountNumberField(View.VISIBLE);
     }
 
 
     @Test
     public void onBankSelected_bankCode057_showDateOfBirth_Visible_Called() {
-        accountPresenter.onBankSelected(generateBank_057());
-        boolean isInternetBanking = generateBank_057().isInternetbanking();
 
-        if (isInternetBanking) {
-            verify(view).showDateOfBirth(View.VISIBLE);
-        }
+        Bank bank = generateBank(true, "057");
+
+        accountPresenter.onBankSelected(bank);
+
+        verify(view).showDateOfBirth(View.VISIBLE);
     }
 
     @Test
     public void onBankSelected_bankCode033_showDateOfBirth_Visible_Called() {
-        accountPresenter.onBankSelected(generateBank_033());
-        boolean isInternetBanking = generateBank_033().isInternetbanking();
 
-        if (isInternetBanking) {
-            verify(view).showDateOfBirth(View.VISIBLE);
+        Bank bank = generateBank(true, "033");
 
-        }
+        accountPresenter.onBankSelected(bank);
+
+        verify(view).showDateOfBirth(View.VISIBLE);
+
     }
 
     @Test
     public void onBankSelected_isNot033or057_hideAccountNumberFieldCalled() {
-        accountPresenter.onBankSelected(generateRandomBank());
+        accountPresenter.onBankSelected(generateBank(true, "034"));
         verify(view).showDateOfBirth(View.GONE);
 
     }
 
     @Test
     public void onBankSelected_bankCode033_showBVN_Visible_Called() {
-        accountPresenter.onBankSelected(generateBank_033());
-        String bankcode = generateBank_033().getBankcode();
+        Bank bank = generateBank(true, "033");
 
-        if (bankcode.equals("033")) {
-            verify(view).showBVN(View.VISIBLE);
+        accountPresenter.onBankSelected(bank);
 
-        }
+        verify(view).showBVN(View.VISIBLE);
+
     }
 
     @Test
     public void onBankSelected_bankCodeNot033_showBVN_Gone_Called() {
-        accountPresenter.onBankSelected(generateRandomBank());
-        String bankcode = generateRandomBank().getBankcode();
 
-        if (!bankcode.equals("033")) {
-            verify(view).showBVN(View.GONE);
+        Bank bank = generateBank(true, "055");
+        accountPresenter.onBankSelected(bank);
 
-        }
+        verify(view).showBVN(View.GONE);
+
     }
 
 
     @Test
     public void init_validEmail_onEmailValidatedCalledWithValidEmail() {
-        accountPresenter.init(ravePayInitializer);
-        boolean isEmailValid = emailValidator.isEmailValid("rave@flutterwavego.com");
+        String email = generateRandomString();
+        when(ravePayInitializer.getEmail()).thenReturn(email);
+        when(emailValidator.isEmailValid(anyString())).thenReturn(true);
 
-        if (isEmailValid) {
-            verify(view).onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
-        }
+        accountPresenter.init(ravePayInitializer);
+
+        verify(view).onEmailValidated(email, View.GONE);
 
     }
 
     @Test
     public void init_inValidEmail_onEmailValidatedCalledWithEmptyEmail() {
-        accountPresenter.init(ravePayInitializer);
-        boolean isEmailValid = emailValidator.isEmailValid("rave");
+        String email = generateRandomString();
+        when(ravePayInitializer.getEmail()).thenReturn(email);
+        when(emailValidator.isEmailValid(anyString())).thenReturn(false);
 
-        if (isEmailValid) {
-            verify(view).onEmailValidated("", View.VISIBLE);
-        }
+        accountPresenter.init(ravePayInitializer);
+
+        verify(view).onEmailValidated("", View.VISIBLE);
 
     }
 
     @Test
     public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
-        accountPresenter.init(ravePayInitializer);
-        boolean isAmountValid = amountValidator.isAmountValid("100");
 
-        if (isAmountValid) {
-            verify(view).onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
-        }
+        Double amount = generateRandomDouble();
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+
+        accountPresenter.init(ravePayInitializer);
+
+        verify(view).onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
 
     }
 
     @Test
     public void init_inValidAmount_onAmountValidatedCalledWithEmptyAmount() {
-        accountPresenter.init(ravePayInitializer);
-        boolean isAmountValid = amountValidator.isAmountValid("100");
 
-        if (isAmountValid) {
-            verify(view).onAmountValidated("", View.VISIBLE);
-        }
+        Double amount = generateRandomDouble();
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+        when(amountValidator.isAmountValid(amount)).thenReturn(false);
+
+        accountPresenter.init(ravePayInitializer);
+
+        verify(view).onAmountValidated("", View.VISIBLE);
 
     }
 
@@ -585,31 +589,10 @@ public class AccountPresenterTest {
         return new RequeryResponse();
     }
 
-    private Bank generateBank_057() {
+    private Bank generateBank(boolean isInternetbanking, String bankCode) {
         Bank bank = new Bank();
-        bank.setInternetbanking(true);
-        bank.setBankcode("057");
-        return bank;
-    }
-
-    private Bank generateBank_033() {
-        Bank bank = new Bank();
-        bank.setInternetbanking(true);
-        bank.setBankcode("033");
-        return bank;
-    }
-
-    private Bank generateBank_noInternetBanking() {
-        Bank bank = new Bank();
-        bank.setInternetbanking(false);
-        bank.setBankcode("033");
-        return bank;
-    }
-
-    private Bank generateRandomBank() {
-        Bank bank = new Bank();
-        bank.setInternetbanking(true);
-        bank.setBankcode("000");
+        bank.setInternetbanking(isInternetbanking);
+        bank.setBankcode(bankCode);
         return bank;
     }
 
