@@ -261,7 +261,12 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         mView.showProgressIndicator(true);
 
-        boolean wasTxSuccessful = transactionStatusChecker.getTransactionStatus(ravePayInitializer, responseAsJSONString);
+        boolean wasTxSuccessful = transactionStatusChecker
+                .getTransactionStatus(
+                        String.valueOf(ravePayInitializer.getAmount()),
+                        ravePayInitializer.getCurrency(),
+                        responseAsJSONString
+                );
 
         mView.showProgressIndicator(false);
 
