@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.di;
 
 import com.flutterwave.raveandroid.data.ApiService;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
+import com.google.gson.Gson;
 
 import org.mockito.Mockito;
 
@@ -13,6 +14,12 @@ import retrofit2.Retrofit;
 
 @Module
 public class TestNetworkModule {
+
+    @Singleton
+    @Provides
+    public Gson gson() {
+        return Mockito.mock(Gson.class);
+    }
 
     @Provides
     public Retrofit providesRetrofit() {
