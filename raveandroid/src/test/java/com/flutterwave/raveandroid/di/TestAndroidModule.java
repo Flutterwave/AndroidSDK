@@ -5,6 +5,7 @@ import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -115,6 +116,12 @@ public class TestAndroidModule {
     @Singleton
     public RavePayInitializer providesRavePayInitializer() {
         return Mockito.mock(RavePayInitializer.class);
+    }
+
+    @Provides
+    @Singleton
+    public TransactionStatusChecker providesTransactionStatusChecker() {
+        return Mockito.mock(TransactionStatusChecker.class);
     }
 
     @Provides
