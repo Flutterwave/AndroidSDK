@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.card;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
+import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
@@ -80,7 +81,7 @@ public class CardPresenterTest {
     RavePayInitializer ravePayInitializer;
     @Inject
     DeviceIdGetter deviceIdGetter;
-    @Mock
+    @Inject
     NetworkRequestImpl networkRequest;
 
     @Before
@@ -96,7 +97,50 @@ public class CardPresenterTest {
         component.inject(this);
         component.inject(cardPresenter);
 
-        cardPresenter.networkRequest = networkRequest;
+    }
+
+    @Test
+    public void init_validEmail_onEmailValidatedCalledWithValidEmailCorrectParamsPassed() {
+        String email = generateEmail(true);
+        when(ravePayInitializer.getEmail()).thenReturn(email);
+        when(emailValidator.isEmailValid(anyString())).thenReturn(true);
+        cardPresenter.init(ravePayInitializer);
+
+        verify(view).onEmailValidated(email, View.GONE);
+
+    }
+
+    @Test
+    public void init_inValidEmail_onEmailValidatedCalledWithEmptyEmail() {
+
+        String email = generateEmail(false);
+        when(emailValidator.isEmailValid(email)).thenReturn(false);
+        cardPresenter.init(ravePayInitializer);
+
+        verify(view).onEmailValidated("", View.VISIBLE);
+    }
+
+    @Test
+    public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
+
+        Double amount = generateRandomDouble();
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+
+        cardPresenter.init(ravePayInitializer);
+
+        verify(view).onAmountValidated(amount.toString(), View.GONE);
+
+    }
+
+    @Test
+    public void init_inValidAmount_onAmountValidatedCalledWithEmptyAmount() {
+
+        Double amount = generateRandomDouble();
+        when(amountValidator.isAmountValid(amount)).thenReturn(false);
+
+        cardPresenter.init(ravePayInitializer);
+        verify(view).onAmountValidated("", View.VISIBLE);
 
     }
 
@@ -454,6 +498,15 @@ public class CardPresenterTest {
         viewData.put(fieldcardNoStripped, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
 
         return viewData;
+    }
+
+    private String generateEmail(boolean isValid) {
+        if (isValid) {
+            return "rave@rave.com";
+        } else {
+            return generateRandomString();
+        }
+
     }
 
     private String generateRandomString() {
