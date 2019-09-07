@@ -66,7 +66,7 @@ public class MpesaPresenterTest {
     RavePayInitializer ravePayInitializer;
     @Inject
     DeviceIdGetter deviceIdGetter;
-    @Mock
+    @Inject
     NetworkRequestImpl networkRequest;
 
     @Before
@@ -81,9 +81,6 @@ public class MpesaPresenterTest {
 
         component.inject(this);
         component.inject(mpesaPresenter);
-
-        mpesaPresenter.networkRequest = networkRequest;
-
     }
 
     @Test
@@ -167,16 +164,16 @@ public class MpesaPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateNullQuery();
-        String jsonResponse = generateJSONResponse();
+        String jsonResponse = generateRandomString();
 
-        captor.getAllValues().get(0).onSuccess(requeryResponse, generateRandomString());
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
         verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
 
     }
 
     @Test
-    public void requeryTx_onSuccess_validData_onPaymentSuccessful_00_Called() {
+    public void requeryTx_onSuccessWithChargeResponseCode00_onPaymentSuccessfulCalled() {
 
         String flwRef = generateRandomString();
         String txRef = generateRandomString();
@@ -187,7 +184,7 @@ public class MpesaPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRequerySuccessful_00();
-        String jsonResponse = generateJSONResponse();
+        String jsonResponse = generateRandomString();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
@@ -196,7 +193,7 @@ public class MpesaPresenterTest {
     }
 
     @Test
-    public void requeryTx_onSuccess_validData_onPaymentSuccessful_02_Called() {
+    public void requeryTx_onSuccessWithChargeResponseCode02_onPollingRoundComplete() {
 
         String flwRef = generateRandomString();
         String txRef = generateRandomString();
@@ -208,7 +205,7 @@ public class MpesaPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRequerySuccessful_02();
-        String jsonResponse = generateJSONResponse();
+        String jsonResponse = generateRandomString();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
@@ -217,7 +214,7 @@ public class MpesaPresenterTest {
     }
 
     @Test
-    public void requeryTx_onSuccess_not00or02_onPaymentFailedCalled() {
+    public void requeryTx_onSuccessWithChargeResponseCodeNot00or02_onPaymentFailedCalled() {
 
         mpesaPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
@@ -225,7 +222,7 @@ public class MpesaPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRandomRequerySuccessful();
-        String jsonResponse = generateJSONResponse();
+        String jsonResponse = generateRandomString();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
@@ -243,7 +240,7 @@ public class MpesaPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
 
         String message = generateRandomString();
-        String jsonResponse = generateJSONResponse();
+        String jsonResponse = generateRandomString();
 
         captor.getAllValues().get(0).onError(message, jsonResponse);
 
@@ -253,13 +250,13 @@ public class MpesaPresenterTest {
 
     @Test
     public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
+        Double amount = generateRandomDouble();
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
+
         mpesaPresenter.init(ravePayInitializer);
-        boolean isAmountValid = amountValidator.isAmountValid("100");
 
-        if (isAmountValid) {
-            verify(view).onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
-        }
-
+        verify(view).onAmountValidationSuccessful(String.valueOf(amount));
     }
 
 
@@ -422,10 +419,6 @@ public class MpesaPresenterTest {
         chargeResponse.getData().setFlwRef(generateRandomString());
         chargeResponse.getData().setTx_ref(generateRandomString());
         return chargeResponse;
-    }
-
-    private String generateJSONResponse() {
-        return "{\"data\":{\"status\": \"success\",\"amount\": \"100\",\"currency\": \"NGN\",\"chargeResponseCode\": \"00\"}}";
     }
 
     private String generateRandomString() {
