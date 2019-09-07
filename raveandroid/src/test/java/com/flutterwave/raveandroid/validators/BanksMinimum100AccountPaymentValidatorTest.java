@@ -47,8 +47,8 @@ public class BanksMinimum100AccountPaymentValidatorTest {
     }
 
     @Test
-    public void isPaymentValid_isAmountEqualTo100CodePassed_returnsFalse() {
-        String bankCode = "123";
+    public void isPaymentValid_isAmountEqualTo100ValidCodePassed_returnsFalse() {
+        String bankCode = "058";
         Double amount = 100.0;
 
         boolean isPaymentValid = SUT.isPaymentValid(bankCode, amount);
@@ -56,8 +56,8 @@ public class BanksMinimum100AccountPaymentValidatorTest {
     }
 
     @Test
-    public void isPaymentValid_isAmountLessThan100CodePassed_returnsFalse() {
-        String bankCode = "123";
+    public void isPaymentValid_isAmountLessThan100ValidCodePassed_returnsFalse() {
+        String bankCode = "058";
         Double amount = 1.0;
 
         boolean isPaymentValid = SUT.isPaymentValid(bankCode, amount);

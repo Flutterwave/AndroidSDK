@@ -10,7 +10,7 @@ public class BanksMinimum100AccountPaymentValidator {
     @Inject
     BankCodeValidator bankCodeValidator;
 
-    List banksInFocus = Arrays.asList("058", "011");
+    private List<String> banksInFocus = Arrays.asList("058", "011");
 
     public BanksMinimum100AccountPaymentValidator() {
     }
