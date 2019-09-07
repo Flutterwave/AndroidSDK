@@ -15,7 +15,7 @@ import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.responses.GhChargeResponse;
+import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
@@ -101,9 +101,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        networkRequest.chargeGhanaMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
+        networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
-            public void onSuccess(GhChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
 
                 mView.showProgressIndicator(false);
 

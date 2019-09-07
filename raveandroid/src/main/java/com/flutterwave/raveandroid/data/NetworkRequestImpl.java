@@ -7,7 +7,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.responses.GhChargeResponse;
+import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
 import com.google.gson.Gson;
@@ -100,7 +100,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
-    public void chargeGhanaMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
+    public void chargeMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
 
 
         Call<String> call = service.charge(body);
@@ -111,8 +111,9 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
                 if (response.isSuccessful()) {
                     Gson gson = new Gson();
-                    Type type = new TypeToken<GhChargeResponse>() {}.getType();
-                    GhChargeResponse chargeResponse = gson.fromJson(response.body(), type);
+                    Type type = new TypeToken<MobileMoneyChargeResponse>() {
+                    }.getType();
+                    MobileMoneyChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
                 }
                 else {
