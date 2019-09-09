@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 public class TransactionStatusChecker {
 
-    private Gson gson;
+    public Gson gson;
 
     @Inject
     public TransactionStatusChecker(Gson gson) {

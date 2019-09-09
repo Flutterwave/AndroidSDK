@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.di;
 
+import com.flutterwave.raveandroid.TransactionStatusCheckerTest;
 import com.flutterwave.raveandroid.account.AccountPresenter;
 import com.flutterwave.raveandroid.account.AccountPresenterTest;
 import com.flutterwave.raveandroid.card.CardPresenter;
@@ -29,6 +30,8 @@ public interface TestAppComponent extends AppComponent {
     void inject(UgMobileMoneyPresenterTest ugMobileMoneyPresenterTest);
 
     void inject(GhMobileMoneyPresenterTest ghMobileMoneyPresenterTest);
+
+    void inject(TransactionStatusCheckerTest transactionStatusCheckerTest);
 
     void inject(CardPresenter cardPresenter);
 
