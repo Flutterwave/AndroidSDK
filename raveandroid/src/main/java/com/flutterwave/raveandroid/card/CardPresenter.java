@@ -9,6 +9,7 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -80,6 +81,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardNoValidator cardNoValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    TransactionStatusChecker transactionStatusChecker;
 
     @Inject
     CardPresenter(Context context, CardContract.View mView) {
@@ -472,7 +475,12 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Override
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
 
-        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+        boolean wasTxSuccessful = transactionStatusChecker
+                .getTransactionStatus(
+                        String.valueOf(ravePayInitializer.getAmount()),
+                        ravePayInitializer.getCurrency(),
+                        responseAsJSONString
+                );
 
         if (wasTxSuccessful) {
             mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);

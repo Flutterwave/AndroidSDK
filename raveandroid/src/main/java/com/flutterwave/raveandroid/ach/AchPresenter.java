@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -30,6 +31,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     AmountValidator amountValidator;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    TransactionStatusChecker transactionStatusChecker;
 
     @Inject
     public AchPresenter(Context context, AchContract.View mView) {
@@ -185,7 +188,13 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     @Override
     public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
-        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+
+        boolean wasTxSuccessful = transactionStatusChecker
+                .getTransactionStatus(
+                        String.valueOf(ravePayInitializer.getAmount()),
+                        ravePayInitializer.getCurrency(),
+                        responseAsJSONString
+                );
 
         if (wasTxSuccessful) {
             mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
