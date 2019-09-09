@@ -81,7 +81,7 @@ public class TransactionStatusCheckerTest {
 
 
     private JsonObject generateJSONObjectResponse(String amount, String currency, boolean isValidJson) {
-        String jsonString = "";
+        String jsonString;
         if (isValidJson) {
             jsonString = "{\"data\":{\"status\": \"success\",\"amount\": \"" + amount + "\",\"currency\": \"" + currency + "\",\"chargeResponseCode\": \"00\"}}";
         } else {

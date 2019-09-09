@@ -64,7 +64,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class CardPresenter implements CardContract.UserActionsListener {
 
-    private Context context;
     private CardContract.View mView;
 
     @Inject
@@ -86,7 +85,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     @Inject
     CardPresenter(Context context, CardContract.View mView) {
-        this.context = context;
         this.mView = mView;
     }
 
