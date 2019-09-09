@@ -52,23 +52,6 @@ public class Utils {
         return ip;
     }
 
-    private static boolean areAmountsSame(String amount1, String amount2) {
-        Double number1 = Double.parseDouble(amount1);
-        Double number2 = Double.parseDouble(amount2);
-
-        return Math.abs(number1 - number2) < 0.0001;
-    }
-
-    public static String unNullify(String text) {
-
-        if (text == null) {
-            return "";
-        }
-
-        return text;
-
-    }
-
     public static void hide_keyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
