@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
 /**
@@ -25,6 +27,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     SharedPreferences.Editor editor;
     String FLW_REF_KEY = "flw_ref_key";
 
+    @Inject
     public SharedPrefsRequestImpl(Context context) {
         this.context = context;
     }

@@ -25,7 +25,9 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     private Context context;
     private AchContract.View mView;
-    private SharedPrefsRequestImpl sharedMgr;
+
+    @Inject
+    SharedPrefsRequestImpl sharedMgr;
 
     @Inject
     AmountValidator amountValidator;
@@ -38,7 +40,6 @@ public class AchPresenter implements AchContract.UserActionsListener {
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
-        sharedMgr = new SharedPrefsRequestImpl(context);
     }
 
     @Override
