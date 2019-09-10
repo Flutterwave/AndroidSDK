@@ -35,6 +35,7 @@ public class NetworkModule {
         baseUrl = url;
     }
 
+    @Singleton
     @Provides
     public Retrofit providesRetrofit() {
 

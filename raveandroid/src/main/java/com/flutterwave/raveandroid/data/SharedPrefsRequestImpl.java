@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
@@ -20,6 +21,7 @@ import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
  * Created by hamzafetuga on 25/07/2017.
  */
 
+@Singleton
 public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
     Context context;
