@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +32,7 @@ import retrofit2.Retrofit;
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
-
+@Singleton
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
     Retrofit retrofit;
