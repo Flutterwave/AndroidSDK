@@ -26,10 +26,12 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String FLW_REF_KEY = "flw_ref_key";
+    Gson gson;
 
     @Inject
-    public SharedPrefsRequestImpl(Context context) {
+    public SharedPrefsRequestImpl(Context context, Gson gson) {
         this.context = context;
+        this.gson = gson;
     }
 
     @Override
@@ -63,7 +65,6 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         savedCards.add(card);
 
         init();
-        Gson gson = new Gson();
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
         String json = gson.toJson(savedCards, type);
 
