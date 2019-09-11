@@ -37,12 +37,14 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
     Retrofit retrofit;
     ApiService service;
+    Gson gson;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
-    public NetworkRequestImpl(Retrofit retrofit, ApiService service) {
+    public NetworkRequestImpl(Retrofit retrofit, ApiService service, Gson gson) {
         this.retrofit = retrofit;
         this.service = service;
+        this.gson = gson;
     }
 
     public NetworkRequestImpl() {
@@ -52,7 +54,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     private ErrorBody parseErrorJson(String errorStr) {
 
         try {
-            Gson gson = new Gson();
             Type type = new TypeToken<ErrorBody>() {
             }.getType();
             return gson.fromJson(errorStr, type);
@@ -75,7 +76,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(Call<String> call, Response<String> response) {
 
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
@@ -111,7 +111,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(Call<String> call, Response<String> response) {
 
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
                     Type type = new TypeToken<MobileMoneyChargeResponse>() {
                     }.getType();
                     MobileMoneyChargeResponse chargeResponse = gson.fromJson(response.body(), type);
@@ -147,7 +146,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
@@ -182,7 +180,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());                }
@@ -228,7 +225,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Gson gson = new Gson();
                     Type type = new TypeToken<RequeryResponsev2>() {}.getType();
                     RequeryResponsev2 requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
@@ -273,7 +269,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Gson gson = new Gson();
                     Type type = new TypeToken<RequeryResponse>() {}.getType();
                     RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
@@ -318,7 +313,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Gson gson = new Gson();
                     Type type = new TypeToken<RequeryResponse>() {}.getType();
                     RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
@@ -384,7 +378,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
@@ -420,7 +413,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(Call<String> call, Response<String> response) {
 
                 if (response.isSuccessful()) {
-                    Gson gson = new Gson();
+
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
