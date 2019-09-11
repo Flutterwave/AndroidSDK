@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
@@ -41,6 +42,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     AmountValidator amountValidator;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     private Context context;
     private BankTransferContract.View mView;
@@ -273,13 +276,13 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context))
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context))
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId())
                     .setNarration(ravePayInitializer.getNarration());
 
             Payload body = builder.createBankTransferPayload();
