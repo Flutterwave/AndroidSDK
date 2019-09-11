@@ -6,6 +6,7 @@ import android.test.mock.MockContext;
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
+import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -33,6 +34,12 @@ public class TestAndroidModule {
     @Singleton
     public Context providesContext() {
         return new MockContext();
+    }
+
+    @Provides
+    @Singleton
+    public SharedPrefsRequestImpl providesSharedPrefsRequestImpl() {
+        return Mockito.mock(SharedPrefsRequestImpl.class);
     }
 
     @Provides

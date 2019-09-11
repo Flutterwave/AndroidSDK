@@ -3,6 +3,8 @@ package com.flutterwave.raveandroid.di;
 import com.flutterwave.raveandroid.TransactionStatusCheckerTest;
 import com.flutterwave.raveandroid.account.AccountPresenter;
 import com.flutterwave.raveandroid.account.AccountPresenterTest;
+import com.flutterwave.raveandroid.ach.AchPresenter;
+import com.flutterwave.raveandroid.ach.AchPresenterTest;
 import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.card.CardPresenterTest;
 import com.flutterwave.raveandroid.di.components.AppComponent;
@@ -33,6 +35,8 @@ public interface TestAppComponent extends AppComponent {
 
     void inject(TransactionStatusCheckerTest transactionStatusCheckerTest);
 
+    void inject(AchPresenterTest achPresenterTest);
+
     void inject(CardPresenter cardPresenter);
 
     void inject(AccountPresenter accountPresenter);
@@ -42,5 +46,7 @@ public interface TestAppComponent extends AppComponent {
     void inject(UgMobileMoneyPresenter ugMobileMoneyPresenter);
 
     void inject(GhMobileMoneyPresenter ghMobileMoneyPresenter);
+
+    void inject(AchPresenter achPresenter);
 
 }

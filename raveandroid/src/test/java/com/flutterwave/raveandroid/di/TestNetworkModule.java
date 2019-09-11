@@ -17,7 +17,7 @@ public class TestNetworkModule {
 
     @Singleton
     @Provides
-    public Gson gson() {
+    public Gson provideGson() {
         return Mockito.mock(Gson.class);
     }
 

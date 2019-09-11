@@ -2,9 +2,9 @@ package com.flutterwave.raveandroid.ach;
 
 import android.content.Context;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 public class AchPresenter implements AchContract.UserActionsListener {
 
-    private Context context;
+    Context context;
     private AchContract.View mView;
 
     @Inject
@@ -35,6 +35,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     NetworkRequestImpl networkRequest;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
 
     @Inject
     public AchPresenter(Context context, AchContract.View mView) {
@@ -69,7 +71,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
         if (isAmountValid) {
             mView.onValidationSuccessful(amount);
         } else {
-            mView.showAmountError(context.getResources().getString(R.string.validAmountPrompt));
+            mView.showAmountError(RaveConstants.validAmountPrompt);
         }
 
     }
@@ -85,12 +87,12 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 .setEmail(ravePayInitializer.getEmail())
                 .setFirstname(ravePayInitializer.getfName())
                 .setLastname(ravePayInitializer.getlName())
-                .setIP(Utils.getDeviceImei(context))
+                .setIP(deviceIdGetter.getDeviceId())
                 .setTxRef(ravePayInitializer.getTxRef())
                 .setMeta(ravePayInitializer.getMeta())
                 .setPBFPubKey(ravePayInitializer.getPublicKey())
                 .setIsUsBankCharge(ravePayInitializer.isWithAch())
-                .setDevice_fingerprint(Utils.getDeviceImei(context));
+                .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
         if (ravePayInitializer.getPayment_plan() != null) {
             builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
@@ -139,7 +141,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                         }
                     }
                     else {
-                        mView.onPaymentError(context.getResources().getString(R.string.no_authurl_was_returnedmsg));
+                        mView.onPaymentError(RaveConstants.no_authurl_was_returnedmsg);
                     }
 
                 }
