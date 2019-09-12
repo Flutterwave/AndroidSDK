@@ -3,8 +3,11 @@ package com.flutterwave.raveandroid.ach;
 import android.content.Context;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
+import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
@@ -35,6 +38,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,18 +55,30 @@ public class AchPresenterTest {
     AmountValidator amountValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
+    @Mock
+    RavePayInitializer ravePayInitializerMock;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    GetEncryptedData getEncryptedData;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
     SharedPrefsRequestImpl sharedPrefsRequest;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
+
     private AchPresenter achPresenter;
+    @Mock
+    AchPresenter achPresenterMock;
+    @Mock
+    PayloadBuilder payloadBuilderMock;
 
     @Before
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
         achPresenter = new AchPresenter(context, view);
 
@@ -85,6 +101,7 @@ public class AchPresenterTest {
 
         achPresenter.init(ravePayInitializer);
 
+        verify(view).showAmountField(false);
         verify(view).showRedirectMessage(true);
 
     }
@@ -96,31 +113,118 @@ public class AchPresenterTest {
         when(amountValidator.isAmountValid(amount)).thenReturn(false);
 
         achPresenter.init(ravePayInitializer);
+
+        verify(view).showAmountField(true);
         verify(view).showRedirectMessage(false);
 
     }
 
 
     @Test
-    public void processTransaction_chargeAccountCalled() {
+    public void processTransaction_chargeAccountCalled_createBankPayloadCalled_assertParameters() {
+        //arrange
+        String amount = generateRandomString();
+        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+
+        Payload payload = generatePayload();
+        payload.setPBFPubKey(generateRandomString());
+        String encryptionKey = generateRandomString();
+        boolean isDisplayFee = true;
+
+        //act
+        achPresenter.processTransaction(amount, ravePayInitializer);
+
+        achPresenterMock.chargeAccount(payload, encryptionKey, isDisplayFee);
+
+        ArgumentCaptor<Payload> captorPayload = ArgumentCaptor.forClass(Payload.class);
+        ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(achPresenterMock).chargeAccount(captorPayload.capture(), captorEncryptionKey.capture(), captorIsDisplayFee.capture());
+
+        //assert
+        assertEquals(payload, captorPayload.getValue());
+        assertEquals(encryptionKey, captorEncryptionKey.getValue());
+        assertEquals(isDisplayFee, captorIsDisplayFee.getValue());
+
+    }
+
+
+    @Test
+    public void processTransaction_setAmountCalled_assertParameters() {
         //arrange
         String amount = generateRandomString();
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
+
+        Double amountDouble = 10.0;
         //act
         achPresenter.processTransaction(amount, ravePayInitializer);
-        //assert
 
-        achPresenter
-                .chargeAccount(payload, generateRandomString(), false);
+        ravePayInitializerMock.setAmount(amountDouble);
+
+        ArgumentCaptor<Double> captorAmount = ArgumentCaptor.forClass(Double.class);
+
+        verify(ravePayInitializerMock).setAmount(captorAmount.capture());
+        assertEquals(amountDouble, captorAmount.getValue());
+    }
+
+    @Test
+    public void processTransaction_createBankPayloadCalled_assertParameters() {
+        //arrange
+        String amount = generateRandomString();
+        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        Payload payload = generatePayload();
+        payload.setPBFPubKey(generateRandomString());
+
+        //act
+        achPresenter.processTransaction(amount, ravePayInitializer);
+
+        payloadBuilderMock.createBankPayload();
+
+
+        verify(payloadBuilderMock).createBankPayload();
+    }
+
+
+    @Test
+    public void processTransaction_setPaymentPlanCalled_assertPaymentPlan() {
+        //arrange
+        String amount = generateRandomString();
+
+        ravePayInitializer.setPayment_plan(generateRandomString());
+        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        Payload payload = generatePayload();
+        payload.setPBFPubKey(generateRandomString());
+
+        String paymentPlan = generateRandomString();
+        //act
+        achPresenter.processTransaction(amount, ravePayInitializer);
+
+        PayloadBuilder payloadBuilder = generatePayloadBuilder();
+        payloadBuilder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+
+        payloadBuilderMock.setPaymentPlan(paymentPlan);
+
+        ArgumentCaptor<String> captorString = ArgumentCaptor.forClass(String.class);
+
+        verify(payloadBuilderMock).setPaymentPlan(captorString.capture());
+
+        //assert
+        assertEquals(paymentPlan, captorString.getValue());
     }
 
     @Test
     public void chargeAccount_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalled() {
 
         Payload payload = generatePayload();
+
         payload.setPBFPubKey(generateRandomString());
+
+        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
 
         achPresenter.chargeAccount(payload, generateRandomString(), false);
         verify(view).showProgressIndicator(true);
@@ -143,7 +247,11 @@ public class AchPresenterTest {
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
+        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
         achPresenter.chargeAccount(payload, generateRandomString(), true);
+
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
@@ -165,7 +273,11 @@ public class AchPresenterTest {
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
+        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
         achPresenter.chargeAccount(payload, generateRandomString(), true);
+
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
@@ -183,8 +295,14 @@ public class AchPresenterTest {
 
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
+
+        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
         achPresenter.chargeAccount(payload, generateRandomString(), true);
+
         verify(view).showProgressIndicator(true);
+
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
@@ -193,6 +311,30 @@ public class AchPresenterTest {
         verify(view).showProgressIndicator(false);
 
         verify(view).onPaymentError(RaveConstants.no_authurl_was_returnedmsg);
+
+    }
+
+    @Test
+    public void chargeAccount_onError_onPaymentErrorCalled_messageReturned() {
+
+        Payload payload = generatePayload();
+        payload.setPBFPubKey(generateRandomString());
+
+        String message = generateRandomString();
+
+        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        achPresenter.chargeAccount(payload, generateRandomString(), true);
+        verify(view).showProgressIndicator(true);
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+
+        captor.getAllValues().get(0).onError(message, generateRandomString());
+
+        verify(view).showProgressIndicator(false);
+        verify(view).onPaymentError(message);
 
     }
 
@@ -206,10 +348,13 @@ public class AchPresenterTest {
     public void requeryTx_onSuccess_onRequerySuccessfulCalled() {
         when(sharedPrefsRequest.fetchFlwRef()).thenReturn(generateRandomString());
         achPresenter.requeryTx(generateRandomString());
+
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful(), generateRandomString());
+
+        verify(view).showProgressIndicator(false);
         verify(view).onRequerySuccessful(any(RequeryResponse.class), anyString(), anyString());
 
     }
@@ -286,6 +431,12 @@ public class AchPresenterTest {
         chargeResponse.setData(null);
 
         return chargeResponse;
+    }
+
+    private PayloadBuilder generatePayloadBuilder() {
+        PayloadBuilder payloadBuilder = new PayloadBuilder();
+        payloadBuilder.setPaymentPlan(generateRandomString());
+        return payloadBuilder;
     }
 
     private ChargeResponse generateRandomChargeResponse() {

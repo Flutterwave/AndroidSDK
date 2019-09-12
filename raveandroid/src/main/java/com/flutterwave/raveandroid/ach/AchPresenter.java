@@ -3,12 +3,13 @@ package com.flutterwave.raveandroid.ach;
 import android.content.Context;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
+import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
@@ -37,6 +38,10 @@ public class AchPresenter implements AchContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    GetEncryptedData getEncryptedData;
 
     @Inject
     public AchPresenter(Context context, AchContract.View mView) {
@@ -107,8 +112,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
-        String requestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = Utils.getEncryptedData(requestBodyAsString, encryptionKey);
+        String requestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
+        String accountRequestBody = getEncryptedData.getEncryptedData(requestBodyAsString, encryptionKey);
 
         final ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
