@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.di;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
@@ -130,5 +131,10 @@ public class TestAndroidModule {
         return Mockito.mock(DeviceIdGetter.class);
     }
 
+    @Provides
+    @Singleton
+    public Bundle providesBundle() {
+        return Mockito.mock(Bundle.class);
+    }
 
 }
