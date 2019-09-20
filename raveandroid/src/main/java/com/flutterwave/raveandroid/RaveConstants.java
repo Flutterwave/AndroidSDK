@@ -21,6 +21,7 @@ public class RaveConstants {
     public static String NG = "NG";
     public static String NGN = "NGN";
     public static String UGX = "UGX";
+    public static String RWF = "RWF";
     public static String NOAUTH = "NOAUTH";
     public static String PIN = "PIN";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";

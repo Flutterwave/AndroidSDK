@@ -75,6 +75,11 @@
         <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
         ]]>
     </string>
+    <string name="rwf_validate_instructions">
+        <![CDATA[
+        <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
+        ]]>
+    </string>
     <string name="mtn">mtn</string>
     <string name="tigo">tigo</string>
     <string name="vodafone">vodafone</string>

@@ -27,6 +27,7 @@ public class RavePayInitializer {
     boolean withAccount = true;
     boolean withGHMobileMoney = false;
     boolean withUgMobileMoney = false;
+    boolean withRwfMobileMoney = false;
     boolean withBankTransfer = false;
     int theme;
     boolean staging = true;
@@ -39,7 +40,7 @@ public class RavePayInitializer {
                               String currency, String country, String fName,
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
-                              boolean withUgMobileMoney,
+                              boolean withUgMobileMoney, boolean withRwfMobileMoney,
                               boolean withAch, boolean withBankTransfer, int theme,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee) {
@@ -56,6 +57,7 @@ public class RavePayInitializer {
         this.withAccount = withAccount;
         this.withGHMobileMoney = withGHMobileMoney;
         this.withUgMobileMoney = withUgMobileMoney;
+        this.withRwfMobileMoney = withRwfMobileMoney;
         this.withBankTransfer = withBankTransfer;
         this.withMpesa = withMpesa;
         this.withCard = withCard;
@@ -131,6 +133,10 @@ public class RavePayInitializer {
 
     public boolean isWithUgMobileMoney() {
         return withUgMobileMoney;
+    }
+
+    public boolean isWithRwfMobileMoney() {
+        return withRwfMobileMoney;
     }
 
 
