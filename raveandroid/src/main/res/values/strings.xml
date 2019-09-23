@@ -151,8 +151,6 @@
     <string-array name="zm_mobile_money_networks">
         <item>Select network</item>
         <item>MTN</item>
-        <item>Tigo</item>
-        <item>Vodafone</item>
     </string-array>
 
 </resources>

@@ -69,7 +69,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_gh_mobile_money, container, false);
+        v = inflater.inflate(R.layout.fragment_zm_mobile_money, container, false);
 
         initializeViews();
 
