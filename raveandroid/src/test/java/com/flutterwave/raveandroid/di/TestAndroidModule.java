@@ -16,6 +16,7 @@ import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 import com.flutterwave.raveandroid.validators.UrlValidator;
 
@@ -53,11 +54,16 @@ public class TestAndroidModule {
         return Mockito.mock(EmailValidator.class);
     }
 
-
     @Provides
     @Singleton
     public PhoneValidator providesPhoneValidator() {
         return Mockito.mock(PhoneValidator.class);
+    }
+
+    @Provides
+    @Singleton
+    public NetworkValidator providesNetworkValidator() {
+        return Mockito.mock(NetworkValidator.class);
     }
 
 

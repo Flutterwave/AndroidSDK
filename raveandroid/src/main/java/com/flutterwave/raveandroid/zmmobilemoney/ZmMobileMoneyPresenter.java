@@ -19,6 +19,7 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
@@ -35,7 +36,6 @@ import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validNetworkPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
-import static com.flutterwave.raveandroid.RaveConstants.validVoucherPrompt;
 
 /**
  * Created by hfetuga on 28/06/2018.
@@ -48,6 +48,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    NetworkValidator networkValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
     private Context context;
@@ -217,24 +219,11 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
-        ViewObject voucherViewObject = dataHashMap.get(fieldVoucher);
-
-        if (voucherViewObject != null) {
-            int voucherID = dataHashMap.get(fieldVoucher).getViewId();
-            String voucher = dataHashMap.get(fieldVoucher).getData();
-            Class voucherViewType = dataHashMap.get(fieldVoucher).getViewType();
-
-            if (voucher.isEmpty()) {
-                valid = false;
-                mView.showFieldError(voucherID, validVoucherPrompt, voucherViewType);
-            }
-
-        }
-
         String network = dataHashMap.get(fieldNetwork).getData();
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+        boolean isNetworkValid = networkValidator.isNetworkValid(network);
 
         if (!isAmountValidated) {
             valid = false;
@@ -246,7 +235,7 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-        if (network.equals(RaveConstants.selectNetwork)) {
+        if (!isNetworkValid) {
             valid = false;
             mView.showToast(validNetworkPrompt);
         }

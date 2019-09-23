@@ -12,6 +12,8 @@ import com.flutterwave.raveandroid.mpesa.MpesaPresenter;
 import com.flutterwave.raveandroid.mpesa.MpesaPresenterTest;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenter;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenterTest;
+import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyPresenter;
+import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyPresenterTest;
 
 import javax.inject.Singleton;
 
@@ -31,6 +33,8 @@ public interface TestAppComponent extends AppComponent {
 
     void inject(GhMobileMoneyPresenterTest ghMobileMoneyPresenterTest);
 
+    void inject(ZmMobileMoneyPresenterTest zmMobileMoneyPresenterTest);
+
     void inject(TransactionStatusCheckerTest transactionStatusCheckerTest);
 
     void inject(CardPresenter cardPresenter);
@@ -42,5 +46,7 @@ public interface TestAppComponent extends AppComponent {
     void inject(UgMobileMoneyPresenter ugMobileMoneyPresenter);
 
     void inject(GhMobileMoneyPresenter ghMobileMoneyPresenter);
+
+    void inject(ZmMobileMoneyPresenter zmMobileMoneyPresenter);
 
 }
