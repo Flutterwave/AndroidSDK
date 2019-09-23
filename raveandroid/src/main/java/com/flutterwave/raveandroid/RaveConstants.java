@@ -23,6 +23,7 @@ public class RaveConstants {
     public static String UGX = "UGX";
     public static String NOAUTH = "NOAUTH";
     public static String PIN = "PIN";
+    public static String selectNetwork = "Select network";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String enterOTP = "Enter your one time password (OTP)";
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";

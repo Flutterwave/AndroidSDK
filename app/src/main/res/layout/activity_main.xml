@@ -95,6 +95,14 @@
                     />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountZmMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="Accept ZM Mobile money payments" />
+
+                <android.support.v7.widget.SwitchCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
