@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
@@ -21,10 +20,9 @@ import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
  * Created by hamzafetuga on 25/07/2017.
  */
 
-@Singleton
 public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
-    Context context;
+    public Context context;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String FLW_REF_KEY = "flw_ref_key";
@@ -81,7 +79,6 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         String json = sharedPreferences.getString("SAVED_CARDS" + email, "[]");
 
         try {
-            Gson gson = new Gson();
             Type type = new TypeToken<List<SavedCard>>() {
             }.getType();
             return gson.fromJson(json, type);

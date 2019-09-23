@@ -4,8 +4,11 @@ import android.content.Context;
 import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
+import com.flutterwave.raveandroid.GetEncryptedData;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
+import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -33,6 +36,12 @@ public class TestAndroidModule {
     @Singleton
     public Context providesContext() {
         return new MockContext();
+    }
+
+    @Provides
+    @Singleton
+    public SharedPrefsRequestImpl providesSharedPrefsRequestImpl() {
+        return Mockito.mock(SharedPrefsRequestImpl.class);
     }
 
     @Provides
@@ -128,6 +137,18 @@ public class TestAndroidModule {
     @Singleton
     public DeviceIdGetter providesDeviceIdGetter() {
         return Mockito.mock(DeviceIdGetter.class);
+    }
+
+    @Provides
+    @Singleton
+    public PayloadToJson providesPayloadToJson() {
+        return Mockito.mock(PayloadToJson.class);
+    }
+
+    @Provides
+    @Singleton
+    public GetEncryptedData providesGetEncryptedData() {
+        return Mockito.mock(GetEncryptedData.class);
     }
 
 
