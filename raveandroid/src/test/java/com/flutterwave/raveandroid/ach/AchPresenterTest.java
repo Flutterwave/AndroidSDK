@@ -42,6 +42,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,8 +57,6 @@ public class AchPresenterTest {
     AmountValidator amountValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
-    @Mock
-    RavePayInitializer ravePayInitializerMock;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
@@ -71,8 +71,6 @@ public class AchPresenterTest {
     TransactionStatusChecker transactionStatusChecker;
     @Mock
     AchPresenter achPresenterMock;
-    @Mock
-    PayloadBuilder payloadBuilderMock;
     private AchPresenter achPresenter;
 
     @Before
@@ -120,99 +118,86 @@ public class AchPresenterTest {
 
 
     @Test
-    public void processTransaction_chargeAccountCalled_createBankPayloadCalled_assertParameters() {
+    public void processTransaction_chargeAccountCalledWithCorrectParams() {
         //arrange
-        String amount = generateRandomString();
-        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
-        Payload payload = generatePayload();
-        payload.setPBFPubKey(generateRandomString());
+        boolean isDisplayFee = generateRandomBoolean();
         String encryptionKey = generateRandomString();
-        boolean isDisplayFee = true;
+        String amount = generateRandomDouble().toString();
+        String country = generateRandomString();
+        String currency = generateRandomString();
+        String email = generateRandomString();
+        String firstName = generateRandomString();
+        String lastName = generateRandomString();
+        String deviceId = generateRandomString();
+        String txRef = generateRandomString();
+        String meta = generateRandomString();
+        String pubKey = generateRandomString();
+        boolean isAch = generateRandomBoolean();
+        String fingerPrint = deviceId;
+
+        achPresenterMock.deviceIdGetter = deviceIdGetter;
+        when(deviceIdGetter.getDeviceId()).thenReturn(deviceId);
+        when(ravePayInitializer.getIsDisplayFee()).thenReturn(isDisplayFee);
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(encryptionKey);
+        when(ravePayInitializer.getAmount()).thenReturn(Double.parseDouble(amount));
+        when(ravePayInitializer.getCountry()).thenReturn(country);
+        when(ravePayInitializer.getCurrency()).thenReturn(currency);
+        when(ravePayInitializer.getEmail()).thenReturn(email);
+        when(ravePayInitializer.getfName()).thenReturn(firstName);
+        when(ravePayInitializer.getlName()).thenReturn(lastName);
+        when(ravePayInitializer.getTxRef()).thenReturn(txRef);
+        when(ravePayInitializer.getMeta()).thenReturn(meta);
+        when(ravePayInitializer.isWithAch()).thenReturn(isAch);
+        when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
 
         //act
-        achPresenter.processTransaction(amount, ravePayInitializer);
+        doCallRealMethod().when(achPresenterMock).processTransaction(any(String.class), any(RavePayInitializer.class));
+        achPresenterMock.processTransaction(amount, ravePayInitializer);
 
-        achPresenterMock.chargeAccount(payload, encryptionKey, isDisplayFee);
-
-        ArgumentCaptor<Payload> captorPayload = ArgumentCaptor.forClass(Payload.class);
         ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Payload> payloadCaptor = ArgumentCaptor.forClass(Payload.class);
 
-        verify(achPresenterMock).chargeAccount(captorPayload.capture(), captorEncryptionKey.capture(), captorIsDisplayFee.capture());
+        verify(achPresenterMock).chargeAccount(payloadCaptor.capture(),
+                captorEncryptionKey.capture(),
+                captorIsDisplayFee.capture());
 
         //assert
-        assertEquals(payload, captorPayload.getValue());
         assertEquals(encryptionKey, captorEncryptionKey.getValue());
         assertEquals(isDisplayFee, captorIsDisplayFee.getValue());
 
+        Payload capturedPayload = payloadCaptor.getValue();
+        assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
+        assertEquals(amount, capturedPayload.getAmount());
+        assertEquals(country, capturedPayload.getCountry());
+        assertEquals(currency, capturedPayload.getCurrency());
+        assertEquals(email, capturedPayload.getEmail());
+        assertEquals(firstName, capturedPayload.getFirstname());
+        assertEquals(lastName, capturedPayload.getLastname());
+        assertEquals(fingerPrint, capturedPayload.getIP());
+        assertEquals(txRef, capturedPayload.getTxRef());
+        assertEquals(pubKey, capturedPayload.getPBFPubKey());
+        assertEquals(isAch, capturedPayload.isIs_us_bank_charge());
+        assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
+
     }
 
 
     @Test
-    public void processTransaction_setAmountCalled_assertParameters() {
+    public void processTransaction_setAmountCalledOnRavePayInitializerWithCorrectParam() {
         //arrange
-        String amount = generateRandomString();
+        String amount = generateRandomDouble().toString();
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
-        Payload payload = generatePayload();
-        payload.setPBFPubKey(generateRandomString());
-
-        Double amountDouble = 10.0;
-        //act
-        achPresenter.processTransaction(amount, ravePayInitializer);
-
-        ravePayInitializerMock.setAmount(amountDouble);
-
-        ArgumentCaptor<Double> captorAmount = ArgumentCaptor.forClass(Double.class);
-
-        verify(ravePayInitializerMock).setAmount(captorAmount.capture());
-        assertEquals(amountDouble, captorAmount.getValue());
-    }
-
-    @Test
-    public void processTransaction_createBankPayloadCalled_assertParameters() {
-        //arrange
-        String amount = generateRandomString();
-        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
-        Payload payload = generatePayload();
-        payload.setPBFPubKey(generateRandomString());
 
         //act
         achPresenter.processTransaction(amount, ravePayInitializer);
-
-        payloadBuilderMock.createBankPayload();
-
-
-        verify(payloadBuilderMock).createBankPayload();
-    }
-
-
-    @Test
-    public void processTransaction_setPaymentPlanCalled_assertPaymentPlan() {
-        //arrange
-        String amount = generateRandomString();
-
-        ravePayInitializer.setPayment_plan(generateRandomString());
-        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
-        Payload payload = generatePayload();
-        payload.setPBFPubKey(generateRandomString());
-
-        String paymentPlan = generateRandomString();
-        //act
-        achPresenter.processTransaction(amount, ravePayInitializer);
-
-        PayloadBuilder payloadBuilder = generatePayloadBuilder();
-        payloadBuilder.setPaymentPlan(ravePayInitializer.getPayment_plan());
-
-        payloadBuilderMock.setPaymentPlan(paymentPlan);
-
-        ArgumentCaptor<String> captorString = ArgumentCaptor.forClass(String.class);
-
-        verify(payloadBuilderMock).setPaymentPlan(captorString.capture());
 
         //assert
-        assertEquals(paymentPlan, captorString.getValue());
+        verify(ravePayInitializer).setAmount(Double.parseDouble(amount));
+
     }
+
 
     @Test
     public void chargeAccount_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalled() {
@@ -224,7 +209,6 @@ public class AchPresenterTest {
         when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
         when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-
         achPresenter.chargeAccount(payload, generateRandomString(), false);
         verify(view).showProgressIndicator(true);
 
@@ -235,13 +219,13 @@ public class AchPresenterTest {
 
         verify(sharedPrefsRequest).saveFlwRef(any(String.class));
         verify(view).showProgressIndicator(false);
-
+        verify(view, never()).showFee(any(String.class), any(String.class), any(String.class), any(String.class));
         verify(view).showWebView(any(String.class), any(String.class));
 
     }
 
     @Test
-    public void chargeAccount_displayFee_chargeCard_onSuccess_saveFlwRef_validResponseReturned_showFeeCalled() {
+    public void chargeAccount_displayFee_chargeCard_onSuccess_validResponseReturned_showFeeCalled() {
 
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
@@ -261,6 +245,7 @@ public class AchPresenterTest {
         verify(sharedPrefsRequest).saveFlwRef(any(String.class));
         verify(view).showProgressIndicator(false);
 
+        verify(view, never()).showWebView(any(String.class), any(String.class));
         verify(view).showFee(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
@@ -338,36 +323,45 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void onFeeConfirmed_showWebViewCalled() {
-        achPresenter.onFeeConfirmed(anyString(), anyString());
-        verify(view).showWebView(anyString(), anyString());
+    public void onFeeConfirmed_showWebViewCalledWithCorrectParams() {
+        String authUrl = generateRandomString();
+        String flwRef = generateRandomString();
+        achPresenter.onFeeConfirmed(authUrl, flwRef);
+        verify(view).showWebView(authUrl, flwRef);
     }
 
     @Test
-    public void requeryTx_onSuccess_onRequerySuccessfulCalled() {
-        when(sharedPrefsRequest.fetchFlwRef()).thenReturn(generateRandomString());
+    public void requeryTx_onSuccess_onRequerySuccessfulCalledWithCorrectParams() {
+        String flwRef = generateRandomString();
+        RequeryResponse requeryResponse = generateRequerySuccessful();
+        String jsonResponse = generateRandomString();
+
+        when(sharedPrefsRequest.fetchFlwRef()).thenReturn(flwRef);
         achPresenter.requeryTx(generateRandomString());
 
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful(), generateRandomString());
+        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
         verify(view).showProgressIndicator(false);
-        verify(view).onRequerySuccessful(any(RequeryResponse.class), anyString(), anyString());
+        verify(view).onRequerySuccessful(requeryResponse, jsonResponse, flwRef);
 
     }
 
 
     @Test
-    public void requeryTx_onError_onPaymentFailedCalled() {
+    public void requeryTx_onError_onPaymentFailedCalledWithCorrectParams() {
+
+        String message = generateRandomString();
+        String jsonResponse = generateRandomString();
 
         achPresenter.requeryTx(generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
-        verify(view).onPaymentFailed(anyString(), anyString());
+        captor.getAllValues().get(0).onError(message, jsonResponse);
+        verify(view).onPaymentFailed(message, jsonResponse);
 
     }
 
@@ -400,7 +394,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void onPayButtonClicked_inValidAmount_showAmountError_onValidationSuccessfulCalled() {
+    public void onPayButtonClicked_inValidAmount_showAmountErrorWithCorrectParams() {
         when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(false);
         achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
         verify(view).showAmountError(null);
@@ -409,6 +403,10 @@ public class AchPresenterTest {
 
     private Double generateRandomDouble() {
         return new Random().nextDouble();
+    }
+
+    private boolean generateRandomBoolean() {
+        return new Random().nextBoolean();
     }
 
     private String generateRandomString() {

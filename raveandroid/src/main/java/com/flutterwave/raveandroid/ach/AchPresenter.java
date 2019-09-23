@@ -84,7 +84,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void processTransaction(String amount, RavePayInitializer ravePayInitializer) {
 
-        ravePayInitializer.setAmount(ravePayInitializer.getAmount());
+        ravePayInitializer.setAmount(Double.parseDouble(amount));
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(ravePayInitializer.getAmount() + "")
                 .setCountry(ravePayInitializer.getCountry())
