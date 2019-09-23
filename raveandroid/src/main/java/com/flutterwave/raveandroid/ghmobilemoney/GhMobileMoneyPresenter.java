@@ -19,6 +19,7 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
@@ -51,6 +52,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    NetworkValidator networkValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
 
@@ -232,10 +235,11 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         }
 
-        int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
+        String network = dataHashMap.get(fieldNetwork).getData();
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+        boolean isNetworkValid = networkValidator.isNetworkValid(network);
 
         if (!isAmountValidated) {
             valid = false;
@@ -247,7 +251,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-        if (network == 0) {
+        if (!isNetworkValid) {
             valid = false;
             mView.showToast(validNetworkPrompt);
         }
