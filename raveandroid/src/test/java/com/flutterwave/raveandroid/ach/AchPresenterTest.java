@@ -401,7 +401,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void onPayButtonClicked_inValidAmount_showAmountError_onValidationSuccessfulCalled() {
+    public void onPayButtonClicked_inValidAmount_showAmountErrorWithCorrectParamsCalled() {
         when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(false);
         achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
         verify(view).showAmountError(null);
