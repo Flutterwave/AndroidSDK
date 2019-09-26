@@ -57,4 +57,9 @@ public class NullAchView implements AchContract.View {
     public void onValidationSuccessful(String amount) {
 
     }
+
+    @Override
+    public void onAmountValidated(String amountToSet, int visibility) {
+
+    }
 }

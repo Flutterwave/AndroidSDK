@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.ach;
 
 import android.content.Context;
+import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.GetEncryptedData;
@@ -55,11 +56,12 @@ public class AchPresenter implements AchContract.UserActionsListener {
         if (ravePayInitializer != null) {
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+
             if (isAmountValid) {
-                mView.showAmountField(false);
+                mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
                 mView.showRedirectMessage(true);
             } else {
-                mView.showAmountField(true);
+                mView.onAmountValidated("", View.VISIBLE);
                 mView.showRedirectMessage(false);
             }
         }
@@ -82,7 +84,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
     @Override
-    public void processTransaction(String amount, RavePayInitializer ravePayInitializer) {
+    public void processTransaction(String amount, final RavePayInitializer ravePayInitializer, final boolean isDisplayFee) {
 
         ravePayInitializer.setAmount(Double.parseDouble(amount));
         PayloadBuilder builder = new PayloadBuilder();
@@ -103,21 +105,14 @@ public class AchPresenter implements AchContract.UserActionsListener {
             builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
         }
 
-        Payload body = builder.createBankPayload();
+        Payload bankPayload = builder.createBankPayload();
 
-        chargeAccount(body, ravePayInitializer.getEncryptionKey(), ravePayInitializer.getIsDisplayFee());
-    }
-
-
-    @Override
-    public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
-
-        String requestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = getEncryptedData.getEncryptedData(requestBodyAsString, encryptionKey);
+        String requestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(bankPayload);
+        String accountRequestBody = getEncryptedData.getEncryptedData(requestBodyAsString, ravePayInitializer.getEncryptionKey());
 
         final ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setPBFPubKey(bankPayload.getPBFPubKey());
         body.setClient(accountRequestBody);
 
         mView.showProgressIndicator(true);
@@ -140,17 +135,14 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
                         if (isDisplayFee) {
                             mView.showFee(authUrl, flwRef, chargedAmount, currency);
-                        }
-                        else {
+                        } else {
                             mView.showWebView(authUrl, flwRef);
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError(RaveConstants.no_authurl_was_returnedmsg);
                     }
 
-                }
-                else {
+                } else {
                     mView.onPaymentError(RaveConstants.noResponse);
                 }
 
