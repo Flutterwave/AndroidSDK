@@ -99,6 +99,10 @@ public class ChargeResponse {
             return validateInstruction;
         }
 
+        public void setValidateInstruction(String validateInstruction) {
+            this.validateInstruction = validateInstruction;
+        }
+
         String validateInstruction;
 
         public String getTx_ref() {

@@ -4,6 +4,10 @@ import com.flutterwave.raveandroid.responses.SubAccount;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class PayloadBuilder {
 
     private String expirymonth;
@@ -26,6 +30,10 @@ public class PayloadBuilder {
     private boolean isPreAuth = false;
     private boolean is_us_bank_charge = false;
     private boolean is_bank_transfer= false;
+
+    @Inject
+    public PayloadBuilder() {
+    }
 
     public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
         this.is_mobile_money_gh = is_mobile_money_gh;
@@ -254,7 +262,6 @@ public class PayloadBuilder {
         payload.setNetwork(network);
         return payload;
     }
-
 
 
     public PayloadBuilder setMeta(String meta) {

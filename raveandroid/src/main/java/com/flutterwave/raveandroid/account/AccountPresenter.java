@@ -6,11 +6,12 @@ import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Bank;
@@ -89,6 +90,10 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    GetEncryptedData getEncryptedData;
 
     @Inject
     AccountPresenter(Context context, AccountContract.View mView) {
@@ -120,8 +125,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void chargeAccount(final Payload payload, String encryptionKey, final boolean internetBanking) {
 
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = getEncryptedData.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -200,39 +205,6 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         });
 
-    }
-
-    @Override
-    public void fetchFee(final Payload payload, final boolean internetbanking) {
-
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPtype("2");
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload, internetbanking);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(transactionError);
-            }
-        });
     }
 
     public void requeryTx(String flwRef, String publicKey) {
@@ -402,16 +374,86 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 builder.setAccountnumber(dataHashMap.get(fieldAccount).getData());
             }
 
-            Payload body = builder.createBankPayload();
+            final Payload body = builder.createBankPayload();
             body.setPasscode(dataHashMap.get(fieldDOB).getData());
             body.setPhonenumber(dataHashMap.get(fieldPhone).getData());
 
+            final boolean isInternetBanking = dataHashMap.get(fieldAccount) == null;
 
-            boolean isInternetBanking = dataHashMap.get(fieldAccount) == null;
             if (ravePayInitializer.getIsDisplayFee()) {
-                fetchFee(body, isInternetBanking);
+
+                final FeeCheckRequestBody feeCheckRequestBody = new FeeCheckRequestBody();
+                feeCheckRequestBody.setAmount(body.getAmount());
+                feeCheckRequestBody.setCurrency(body.getCurrency());
+                feeCheckRequestBody.setPtype("2");
+                feeCheckRequestBody.setPBFPubKey(body.getPBFPubKey());
+
+                mView.showProgressIndicator(true);
+
+                networkRequest.getFee(feeCheckRequestBody, new Callbacks.OnGetFeeRequestComplete() {
+                    @Override
+                    public void onSuccess(FeeCheckResponse response) {
+                        mView.showProgressIndicator(false);
+
+                        try {
+                            mView.displayFee(response.getData().getCharge_amount(), body, isInternetBanking);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.showFetchFeeFailed(transactionError);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        mView.showProgressIndicator(false);
+                        Log.e(RAVEPAY, message);
+                        mView.showFetchFeeFailed(transactionError);
+                    }
+                });
             } else {
-                chargeAccount(body, ravePayInitializer.getEncryptionKey(), isInternetBanking);
+
+                String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(body);
+                String encryptedCardRequestBody = getEncryptedData.getEncryptedData(cardRequestBodyAsString, ravePayInitializer.getEncryptionKey());
+
+                ChargeRequestBody chargeRequestBody = new ChargeRequestBody();
+                chargeRequestBody.setAlg("3DES-24");
+                chargeRequestBody.setPBFPubKey(chargeRequestBody.getPBFPubKey());
+                chargeRequestBody.setClient(encryptedCardRequestBody);
+
+                mView.showProgressIndicator(true);
+
+                networkRequest.chargeAccount(chargeRequestBody, new Callbacks.OnChargeRequestComplete() {
+                    @Override
+                    public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+                        mView.showProgressIndicator(false);
+
+                        if (response.getData() != null) {
+                            String authUrlCrude = response.getData().getAuthurl();
+                            String flwRef = response.getData().getFlwRef();
+                            boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
+
+                            if (authUrlCrude != null && isValidUrl) {
+                                mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
+                            } else {
+                                if (response.getData().getValidateInstruction() != null) {
+                                    mView.validateAccountCharge(body.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
+                                } else if (response.getData().getValidateInstructions() != null &&
+                                        response.getData().getValidateInstructions().getInstruction() != null) {
+                                    mView.validateAccountCharge(body.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
+                                } else {
+                                    mView.validateAccountCharge(body.getPBFPubKey(), flwRef, null);
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(String message, String responseAsJSONString) {
+                        mView.showProgressIndicator(false);
+                        mView.onChargeAccountFailed(message, responseAsJSONString);
+                    }
+                });
             }
 
         }

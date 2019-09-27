@@ -151,5 +151,4 @@ public class TestAndroidModule {
         return Mockito.mock(GetEncryptedData.class);
     }
 
-
 }

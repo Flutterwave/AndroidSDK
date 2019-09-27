@@ -69,8 +69,6 @@ public interface AccountContract {
 
         void validateAccountCharge(String flwRef, String otp, String publicKey);
 
-        void fetchFee(Payload body, boolean internetbanking);
-
         void onAttachView(AccountContract.View view);
 
         void onDetachView();
