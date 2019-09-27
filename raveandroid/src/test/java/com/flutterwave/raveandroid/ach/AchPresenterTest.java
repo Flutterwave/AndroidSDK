@@ -7,7 +7,6 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -134,7 +133,7 @@ public class AchPresenterTest {
 
 
     @Test
-    public void chargeAccount_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalledWithCorrectParams() {
+    public void processTransaction_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalledWithCorrectParams() {
 
         //arrange
         Payload payload = generatePayload();
@@ -165,7 +164,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void chargeAccount_displayFee_chargeCard_onSuccess_validResponseReturned_showFeeCalledWithCorrectParams() {
+    public void processTransaction_displayFee_chargeCard_onSuccess_validResponseReturned_showFeeCalledWithCorrectParams() {
 
         //arrange
         Payload payload = generatePayload();
@@ -199,7 +198,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void chargeAccount_onSuccess_nullChargeResponseReturned_onPaymentErrorCalledWithCorrectParams() {
+    public void processTransaction_onSuccess_nullChargeResponseReturned_onPaymentErrorCalledWithCorrectParams() {
 
         //arrange
         Payload payload = generatePayload();
@@ -227,7 +226,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void chargeAccount_onSuccess_inValidResponseReturned_onPaymentErrorCalledWithCorrectParams() {
+    public void processTransaction_onSuccess_inValidResponseReturned_onPaymentErrorCalledWithCorrectParams() {
 
         //arrange
         Payload payload = generatePayload();
@@ -254,7 +253,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void chargeAccount_onError_onPaymentErrorCalledWithCorrectParams() {
+    public void processTransaction_onError_onPaymentErrorCalledWithCorrectParams() {
 
         //arrange
         Payload payload = generatePayload();
@@ -381,6 +380,7 @@ public class AchPresenterTest {
         //assert
         verify(view).showAmountError(null);
         verify(view).onValidationSuccessful(amount);
+        verify(view, never()).showAmountError(RaveConstants.validAmountPrompt);
     }
 
     @Test
@@ -395,6 +395,7 @@ public class AchPresenterTest {
         //assert
         verify(view).showAmountError(null);
         verify(view).showAmountError(RaveConstants.validAmountPrompt);
+        verify(view, never()).onValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
     }
 
     private Double generateRandomDouble() {
@@ -420,12 +421,6 @@ public class AchPresenterTest {
         chargeResponse.setData(null);
 
         return chargeResponse;
-    }
-
-    private PayloadBuilder generatePayloadBuilder() {
-        PayloadBuilder payloadBuilder = new PayloadBuilder();
-        payloadBuilder.setPaymentPlan(generateRandomString());
-        return payloadBuilder;
     }
 
     private ChargeResponse generateRandomChargeResponse() {
