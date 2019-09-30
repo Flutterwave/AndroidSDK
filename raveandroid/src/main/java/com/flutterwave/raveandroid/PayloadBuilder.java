@@ -4,10 +4,7 @@ import com.flutterwave.raveandroid.responses.SubAccount;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class PayloadBuilder {
 
     private String expirymonth;
@@ -31,7 +28,7 @@ public class PayloadBuilder {
     private boolean is_us_bank_charge = false;
     private boolean is_bank_transfer= false;
 
-    @Inject
+
     public PayloadBuilder() {
     }
 
