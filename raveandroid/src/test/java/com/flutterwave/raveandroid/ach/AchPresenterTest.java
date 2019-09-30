@@ -388,17 +388,20 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void onPayButtonClicked_validAmount_showAmountError_onValidationSuccessfulCalled() {
-        when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(true);
-        achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
+    public void onDataCollected_validAmount_showAmountError_onValidationSuccessfulCalledWithCorrectParams() {
+
+        String amount = generateRandomDouble().toString();
+
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+        achPresenter.onDataCollected(ravePayInitializer, amount);
         verify(view).showAmountError(null);
-        verify(view).onValidationSuccessful(any(String.class));
+        verify(view).onValidationSuccessful(amount);
     }
 
     @Test
-    public void onPayButtonClicked_inValidAmount_showAmountErrorWithCorrectParams() {
+    public void onDataCollected_inValidAmount_showAmountErrorWithCorrectParams() {
         when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(false);
-        achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
+        achPresenter.onDataCollected(ravePayInitializer, anyString());
         verify(view).showAmountError(null);
         verify(view).showAmountError(RaveConstants.validAmountPrompt);
     }
