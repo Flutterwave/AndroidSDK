@@ -1,13 +1,14 @@
 package com.flutterwave.raveandroid.ach;
 
 import android.content.Context;
+import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadToJson;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
@@ -60,9 +61,9 @@ public class AchPresenterTest {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
-    PayloadToJson payloadToJson;
+    PayloadToJsonConverter payloadToJsonConverter;
     @Inject
-    GetEncryptedData getEncryptedData;
+    PayloadEncryptor payloadEncryptor;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -90,7 +91,7 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void init_validAmount_showRedirectMessageTrue() {
+    public void init_validAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageTrue() {
 
         Double amount = generateRandomDouble();
         when(amountValidator.isAmountValid(amount)).thenReturn(true);
@@ -98,20 +99,21 @@ public class AchPresenterTest {
 
         achPresenter.init(ravePayInitializer);
 
-        verify(view).showAmountField(false);
+        verify(view).onAmountValidated(String.valueOf(amount), View.GONE);
         verify(view).showRedirectMessage(true);
 
     }
 
     @Test
-    public void init_inValidAmount_showRedirectMessageFalse() {
+    public void init_inValidAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageFalse() {
 
         Double amount = generateRandomDouble();
         when(amountValidator.isAmountValid(amount)).thenReturn(false);
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
 
         achPresenter.init(ravePayInitializer);
 
-        verify(view).showAmountField(true);
+        verify(view).onAmountValidated(String.valueOf(amount), View.VISIBLE);
         verify(view).showRedirectMessage(false);
 
     }
@@ -206,8 +208,8 @@ public class AchPresenterTest {
 
         payload.setPBFPubKey(generateRandomString());
 
-        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
-        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         achPresenter.chargeAccount(payload, generateRandomString(), false);
         verify(view).showProgressIndicator(true);
@@ -230,8 +232,8 @@ public class AchPresenterTest {
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
-        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
-        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         achPresenter.chargeAccount(payload, generateRandomString(), true);
 
@@ -257,8 +259,8 @@ public class AchPresenterTest {
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
-        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
-        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         achPresenter.chargeAccount(payload, generateRandomString(), true);
 
@@ -280,8 +282,8 @@ public class AchPresenterTest {
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
-        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
-        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         achPresenter.chargeAccount(payload, generateRandomString(), true);
 
@@ -306,8 +308,8 @@ public class AchPresenterTest {
 
         String message = generateRandomString();
 
-        when(payloadToJson.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
-        when(getEncryptedData.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         achPresenter.chargeAccount(payload, generateRandomString(), true);
         verify(view).showProgressIndicator(true);

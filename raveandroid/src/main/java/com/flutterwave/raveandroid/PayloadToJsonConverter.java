@@ -9,12 +9,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class PayloadToJson {
+public class PayloadToJsonConverter {
 
     public Gson gson;
 
     @Inject
-    public PayloadToJson(Gson gson) {
+    public PayloadToJsonConverter(Gson gson) {
         this.gson = gson;
     }
 

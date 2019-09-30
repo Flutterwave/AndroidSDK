@@ -9,7 +9,7 @@ public interface AchContract {
     interface View {
         void showProgressIndicator(boolean active);
 
-        void showAmountField(boolean active);
+        void onAmountValidated(String amountToSet, int visibility);
 
         void showRedirectMessage(boolean b);
 

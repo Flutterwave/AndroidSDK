@@ -126,6 +126,12 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     }
 
     @Override
+    public void onAmountValidated(String amountToSet, int visibility) {
+        amountTil.setVisibility(visibility);
+        amountEt.setText(amountToSet);
+    }
+
+    @Override
     public void onValidationSuccessful(String amount) {
         presenter.processTransaction(amount, ravePayInitializer);
     }
@@ -138,17 +144,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         }
         else {
             payInstructionsTv.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void showAmountField(boolean active) {
-
-        if (active) {
-            amountTil.setVisibility(View.VISIBLE);
-        }
-        else {
-            amountTil.setVisibility(View.GONE);
         }
     }
 

@@ -6,10 +6,10 @@ import javax.inject.Singleton;
 import static com.scottyab.aescrypt.AESCrypt.encrypt;
 
 @Singleton
-public class GetEncryptedData {
+public class PayloadEncryptor {
 
     @Inject
-    public GetEncryptedData() {
+    public PayloadEncryptor() {
     }
 
     public String getEncryptedData(String unEncryptedString, String encryptionKey) {

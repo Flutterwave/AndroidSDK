@@ -1,12 +1,13 @@
 package com.flutterwave.raveandroid.ach;
 
 import android.content.Context;
+import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadToJson;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
@@ -29,7 +30,6 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     @Inject
     SharedPrefsRequestImpl sharedMgr;
-
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -39,9 +39,9 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
-    PayloadToJson payloadToJson;
+    PayloadToJsonConverter payloadToJsonConverter;
     @Inject
-    GetEncryptedData getEncryptedData;
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
     public AchPresenter(Context context, AchContract.View mView) {
@@ -56,10 +56,10 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
-                mView.showAmountField(false);
+                mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
                 mView.showRedirectMessage(true);
             } else {
-                mView.showAmountField(true);
+                mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.VISIBLE);
                 mView.showRedirectMessage(false);
             }
         }
@@ -112,8 +112,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
-        String requestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = getEncryptedData.getEncryptedData(requestBodyAsString, encryptionKey);
+        String requestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
+        String accountRequestBody = payloadEncryptor.getEncryptedData(requestBodyAsString, encryptionKey);
 
         final ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
