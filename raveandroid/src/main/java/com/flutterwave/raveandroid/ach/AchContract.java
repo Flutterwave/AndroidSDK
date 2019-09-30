@@ -33,7 +33,7 @@ public interface AchContract {
     interface UserActionsListener {
         void init(RavePayInitializer ravePayInitializer);
 
-        void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
+        void onDataCollected(RavePayInitializer ravePayInitializer, String amount);
 
         void chargeAccount(Payload payload, String encryptionKey, boolean isDisplayFee);
 

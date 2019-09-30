@@ -96,7 +96,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         int i = view.getId();
         if (i == R.id.rave_payButton) {
             String amount = amountEt.getText().toString();
-            presenter.onPayButtonClicked(ravePayInitializer, amount);
+            presenter.onDataCollected(ravePayInitializer, amount);
         }
     }
 
