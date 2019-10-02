@@ -185,7 +185,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

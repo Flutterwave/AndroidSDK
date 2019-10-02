@@ -105,7 +105,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + currency + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + currency + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
