@@ -51,6 +51,7 @@ dependencies {
     testImplementation 'com.google.dagger:dagger:2.17'
     testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.17'
     testImplementation 'org.mockito:mockito-core:2.25.0'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
 
 
 }

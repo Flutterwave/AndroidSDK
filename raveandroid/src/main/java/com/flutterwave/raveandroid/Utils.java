@@ -6,7 +6,6 @@ import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -14,8 +13,6 @@ import com.flutterwave.raveandroid.responses.SubAccount;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;
-
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -46,59 +43,13 @@ public class Utils {
     public static String getDeviceImei(Context c) {
 
         TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        String ip = mTelephonyManager.getDeviceId();
+        @SuppressLint("MissingPermission") String ip = mTelephonyManager.getDeviceId();
 
         if (ip == null) {
             ip = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
         }
 
         return ip;
-    }
-
-    public static boolean wasTxSuccessful(RavePayInitializer ravePayInitializer, String responseAsJSONString) {
-
-        String amount = ravePayInitializer.getAmount() + "";
-        String currency = ravePayInitializer.getCurrency();
-
-        try {
-            JSONObject jsonObject = new JSONObject(responseAsJSONString);
-            JSONObject jsonData = jsonObject.getJSONObject("data");
-            String status = jsonData.getString("status");
-            String txAmount = jsonData.getString("amount");
-            String txCurrency = jsonData.getString("currency");
-            String chargeResponse = jsonData.getString("chargeResponseCode");
-
-            if (areAmountsSame(amount, txAmount) &&
-                    chargeResponse.equalsIgnoreCase("00") &&
-                    (status.contains("success") |
-                            status.contains("pending-capture")) &&
-                    currency.equalsIgnoreCase(txCurrency)) {
-                Log.d("RAVE TX V", "true");
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return false;
-    }
-
-    private static boolean areAmountsSame(String amount1, String amount2) {
-        Double number1 = Double.parseDouble(amount1);
-        Double number2 = Double.parseDouble(amount2);
-
-        return Math.abs(number1 - number2) < 0.0001;
-    }
-
-    public static String unNullify(String text) {
-
-        if (text == null) {
-            return "";
-        }
-
-        return text;
-
     }
 
     public static void hide_keyboard(Activity activity) {

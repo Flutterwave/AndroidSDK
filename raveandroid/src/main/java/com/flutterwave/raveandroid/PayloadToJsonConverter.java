@@ -1,0 +1,28 @@
+package com.flutterwave.raveandroid;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class PayloadToJsonConverter {
+
+    public Gson gson;
+
+    @Inject
+    public PayloadToJsonConverter(Gson gson) {
+        this.gson = gson;
+    }
+
+    public String convertChargeRequestPayloadToJson(Payload body) {
+
+        Type type = new TypeToken<Payload>() {
+        }.getType();
+        return gson.toJson(body, type);
+    }
+
+}

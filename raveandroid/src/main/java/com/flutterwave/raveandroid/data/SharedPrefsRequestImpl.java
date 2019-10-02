@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
 /**
@@ -20,13 +22,16 @@ import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 
 public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
-    Context context;
+    public Context context;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String FLW_REF_KEY = "flw_ref_key";
+    Gson gson;
 
-    public SharedPrefsRequestImpl(Context context) {
+    @Inject
+    public SharedPrefsRequestImpl(Context context, Gson gson) {
         this.context = context;
+        this.gson = gson;
     }
 
     @Override
@@ -60,7 +65,6 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         savedCards.add(card);
 
         init();
-        Gson gson = new Gson();
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
         String json = gson.toJson(savedCards, type);
 
@@ -75,7 +79,6 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         String json = sharedPreferences.getString("SAVED_CARDS" + email, "[]");
 
         try {
-            Gson gson = new Gson();
             Type type = new TypeToken<List<SavedCard>>() {
             }.getType();
             return gson.fromJson(json, type);

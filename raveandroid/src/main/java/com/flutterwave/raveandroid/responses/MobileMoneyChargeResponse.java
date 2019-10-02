@@ -4,7 +4,7 @@ package com.flutterwave.raveandroid.responses;
  * Created by hamzafetuga on 18/07/2017.
  */
 
-public class GhChargeResponse {
+public class MobileMoneyChargeResponse {
     String status;
     String message;
     Data data;
@@ -39,6 +39,14 @@ public class GhChargeResponse {
         String authModelUsed;
         String flwRef;
 
+        public void setFlwRef(String flwRef) {
+            this.flwRef = flwRef;
+        }
+
+        public void setAuthurl(String authurl) {
+            this.authurl = authurl;
+        }
+
         public String getTx_ref() {
             return txRef;
         }
@@ -53,6 +61,10 @@ public class GhChargeResponse {
 
         public String getRedirectUrl() {
             return redirectUrl;
+        }
+
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
         }
 
         String redirectUrl;

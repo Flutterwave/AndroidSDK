@@ -5,6 +5,7 @@ import com.flutterwave.raveandroid.responses.SubAccount;
 import java.util.List;
 
 public class PayloadBuilder {
+
     private String expirymonth;
     private String pbfPubKey;
     private String ip;
@@ -276,5 +277,127 @@ public class PayloadBuilder {
         return this;
     }
 
+    public String getExpirymonth() {
+        return expirymonth;
+    }
 
+    public String getPbfPubKey() {
+        return pbfPubKey;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getExpiryyear() {
+        return expiryyear;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public String getDevice_fingerprint() {
+        return device_fingerprint;
+    }
+
+    public String getCardno() {
+        return cardno;
+    }
+
+    public String getPayment_plan() {
+        return payment_plan;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public String getBvn() {
+        return bvn;
+    }
+
+    public String getVoucher() {
+        return voucher;
+    }
+
+    public boolean isPreAuth() {
+        return isPreAuth;
+    }
+
+    public boolean isIs_us_bank_charge() {
+        return is_us_bank_charge;
+    }
+
+    public boolean isIs_bank_transfer() {
+        return is_bank_transfer;
+    }
+
+    public String getIs_mobile_money_gh() {
+        return is_mobile_money_gh;
+    }
+
+    public String getIs_mobile_money_ug() {
+        return is_mobile_money_ug;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public String getTxRef() {
+        return txRef;
+    }
+
+    public String getMeta() {
+        return meta;
+    }
+
+    public String getSubAccounts() {
+        return subAccounts;
+    }
+
+    public String getCustomer_phone() {
+        return customer_phone;
+    }
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public String getAccountbank() {
+        return accountbank;
+    }
+
+    public String getAccountnumber() {
+        return accountnumber;
+    }
 }

@@ -20,6 +20,11 @@ public class RequeryResponse {
         return status;
     }
 
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
     public static class Data {
 
         String chargeResponseCode;
@@ -38,6 +43,13 @@ public class RequeryResponse {
             return status;
         }
 
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
+        }
     }
 
     public static class Card_tokens

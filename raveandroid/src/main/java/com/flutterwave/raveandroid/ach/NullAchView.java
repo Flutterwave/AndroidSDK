@@ -9,7 +9,7 @@ public class NullAchView implements AchContract.View {
     }
 
     @Override
-    public void showAmountField(boolean active) {
+    public void onAmountValidated(String amountToSet, int visibility) {
 
     }
 

@@ -3,12 +3,13 @@ package com.flutterwave.raveandroid.account;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.webkit.URLUtil;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -28,6 +29,7 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
+import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +80,13 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Inject
     BankCodeValidator bankCodeValidator;
     @Inject
+    UrlValidator urlValidator;
+    @Inject
     BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
+    @Inject
+    TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
 
@@ -130,7 +138,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                 if (response.getData() != null) {
                     String authUrlCrude = response.getData().getAuthurl();
                     String flwRef = response.getData().getFlwRef();
-                    if (authUrlCrude != null && URLUtil.isValidUrl(authUrlCrude)) {
+                    boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
+                    if (authUrlCrude != null && isValidUrl) {
                         mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
                     } else {
                         if (response.getData().getValidateInstruction() != null) {
@@ -251,7 +260,13 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         mView.showProgressIndicator(true);
-        boolean wasTxSuccessful = Utils.wasTxSuccessful(ravePayInitializer, responseAsJSONString);
+
+        boolean wasTxSuccessful = transactionStatusChecker
+                .getTransactionStatus(
+                        String.valueOf(ravePayInitializer.getAmount()),
+                        ravePayInitializer.getCurrency(),
+                        responseAsJSONString
+                );
 
         mView.showProgressIndicator(false);
 
@@ -373,8 +388,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     .setCountry(NG)
                     .setCurrency(NGN)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context))
-                    .setIP(Utils.getDeviceImei(context))
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId())
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setAccountbank(dataHashMap.get(fieldBankCode).getData())
                     .setMeta(ravePayInitializer.getMeta())

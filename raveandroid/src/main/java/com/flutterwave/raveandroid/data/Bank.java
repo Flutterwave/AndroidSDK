@@ -22,4 +22,11 @@ public class Bank {
         return internetbanking;
     }
 
+    public void setInternetbanking(boolean internetbanking) {
+        this.internetbanking = internetbanking;
+    }
+
+    public void setBankcode(String bankcode) {
+        this.bankcode = bankcode;
+    }
 }

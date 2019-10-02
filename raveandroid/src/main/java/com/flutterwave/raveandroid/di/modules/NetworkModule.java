@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.di.modules;
 
 import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.data.ApiService;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,7 @@ public class NetworkModule {
         baseUrl = url;
     }
 
+    @Singleton
     @Provides
     public Retrofit providesRetrofit() {
 
@@ -52,6 +54,12 @@ public class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit;
+    }
+
+    @Singleton
+    @Provides
+    public Gson gson() {
+        return new Gson();
     }
 
     @Singleton
