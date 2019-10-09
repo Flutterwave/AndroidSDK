@@ -235,12 +235,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putAll(presenter.getState());
-    }
-
-    @Override
     public void showProgressIndicator(boolean active) {
 
         if (getActivity().isFinishing()) {
