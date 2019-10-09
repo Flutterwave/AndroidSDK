@@ -100,7 +100,6 @@ public class TestAndroidModule {
         return Mockito.mock(BanksMinimum100AccountPaymentValidator.class);
     }
 
-
     @Provides
     @Singleton
     public CardNoValidator providesCardNoValidator() {
