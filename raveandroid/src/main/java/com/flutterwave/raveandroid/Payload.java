@@ -20,7 +20,7 @@ public class Payload
 
     private boolean is_us_bank_charge;
 
-    private boolean is_uk_bank_charge;
+    private boolean is_uk_bank_charge2;
 
     private String remember_device_mobile_key;
 
@@ -622,11 +622,11 @@ public class Payload
     }
 
     public boolean getIs_uk_bank_charge() {
-        return is_uk_bank_charge;
+        return is_uk_bank_charge2;
     }
 
-    public void setIs_uk_bank_charge(boolean is_uk_bank_charge) {
-        this.is_uk_bank_charge = is_uk_bank_charge;
+    public void setIs_uk_bank_charge2(boolean is_uk_bank_charge2) {
+        this.is_uk_bank_charge2 = is_uk_bank_charge2;
     }
 
     public String getAccountname() {

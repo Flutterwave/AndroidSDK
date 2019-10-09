@@ -11,6 +11,7 @@ import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
+import com.flutterwave.raveandroid.di.modules.UkModule;
 
 import javax.inject.Singleton;
 
@@ -37,5 +38,7 @@ public interface AppComponent {
     AccountComponent plus(AccountModule accountModule);
 
     AchComponent plus(AchModule achModule);
+
+    UkComponent plus(UkModule ukModule);
 }
 

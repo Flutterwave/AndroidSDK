@@ -221,6 +221,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         transferStatusTv.setVisibility(View.VISIBLE);
 
         verifyPaymentButton.setText(getString(R.string.back_to_app));
+
         verifyPaymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

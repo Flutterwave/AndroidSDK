@@ -101,6 +101,40 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
+    public void chargeUK(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
+
+        Call<String> call = service.chargeUK(body);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.isSuccessful()) {
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
+                    ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
+                    callback.onSuccess(chargeResponse, response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+
+    }
+
+    @Override
     public void chargeMobileMoneyWallet(ChargeRequestBody body, final Callbacks.OnGhanaChargeRequestComplete callback) {
 
 

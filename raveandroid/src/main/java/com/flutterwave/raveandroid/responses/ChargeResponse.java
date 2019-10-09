@@ -5,10 +5,10 @@ package com.flutterwave.raveandroid.responses;
  */
 
 public class ChargeResponse {
+
     String status;
     String message;
     Data data;
-
 
     public String getStatus() {
         return status;
@@ -49,6 +49,8 @@ public class ChargeResponse {
     }
 
     public static class Data {
+
+        Data data;
         String suggested_auth;
         String chargeResponseCode;
         String authModelUsed;
@@ -63,6 +65,24 @@ public class ChargeResponse {
         String note;
         String amount;
         String validateInstruction;
+        String transaction_reference;
+        String payment_code;
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        public String getPayment_code() {
+            return payment_code;
+        }
+
+        public String getTransaction_reference() {
+            return transaction_reference;
+        }
 
         public void setValidateInstruction(String validateInstruction) {
             this.validateInstruction = validateInstruction;

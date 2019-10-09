@@ -69,13 +69,11 @@ public class TestAndroidModule {
         return Mockito.mock(PhoneValidator.class);
     }
 
-
     @Provides
     @Singleton
     public DateOfBirthValidator providesDateOfBirthValidator() {
         return Mockito.mock(DateOfBirthValidator.class);
     }
-
 
     @Provides
     @Singleton
