@@ -28,7 +28,7 @@ dependencies {
     })
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.github.mikelis135:rave-android:1.0.39'
+    implementation 'com.github.mikelis135:rave-android:1.0.40'
     testImplementation 'junit:junit:4.12'
 //    implementation project(':raveandroid')
 }
