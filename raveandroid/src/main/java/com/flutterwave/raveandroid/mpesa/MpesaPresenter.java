@@ -218,7 +218,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(dataHashMap.get(fieldAmount).getData())
+                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId());

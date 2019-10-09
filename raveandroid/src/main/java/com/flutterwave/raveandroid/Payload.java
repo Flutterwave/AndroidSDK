@@ -20,6 +20,8 @@ public class Payload
 
     private boolean is_us_bank_charge;
 
+    private boolean is_uk_bank_charge;
+
     private String remember_device_mobile_key;
 
     private String remember_device_email;
@@ -385,6 +387,8 @@ public class Payload
 
     private String accountnumber;
 
+    private String accountname;
+
     public String getAccountnumber() {
         return accountnumber;
     }
@@ -615,6 +619,22 @@ public class Payload
 
     public void setIs_bank_transfer(boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
+    }
+
+    public boolean getIs_uk_bank_charge() {
+        return is_uk_bank_charge;
+    }
+
+    public void setIs_uk_bank_charge(boolean is_uk_bank_charge) {
+        this.is_uk_bank_charge = is_uk_bank_charge;
+    }
+
+    public String getAccountname() {
+        return accountname;
+    }
+
+    public void setAccountname(String accountname) {
+        this.accountname = accountname;
     }
 }
 

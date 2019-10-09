@@ -226,9 +226,14 @@ public class PayloadBuilder {
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
         Payload payload = new Payload(phonenumber, metaObj,subaccountsObj, narration, ip, lastname,
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
-        payload.setPayment_type("mpesa");
-        payload.setIs_mpesa("1");
-        payload.setIs_mpesa_lipa("1");
+//        payload.setPayment_type("mpesa");
+        payload.setPayment_type("account");
+        payload.setAccountnumber("00000000");
+        payload.setAccountname("test");
+        payload.setAccountbank("00000000");
+        payload.setIs_uk_bank_charge(true);
+//        payload.setIs_mpesa("1");
+//        payload.setIs_mpesa_lipa("1");
         return payload;
     }
 

@@ -18,7 +18,8 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    @POST("/flwv3-pug/getpaidx/api/charge")
+    //    @POST("/flwv3-pug/getpaidx/api/charge")
+    @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> charge(@Body ChargeRequestBody body);
 
