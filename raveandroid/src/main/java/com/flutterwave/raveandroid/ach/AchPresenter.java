@@ -30,6 +30,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
     @Inject
     SharedPrefsRequestImpl sharedMgr;
+
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -55,11 +56,12 @@ public class AchPresenter implements AchContract.UserActionsListener {
         if (ravePayInitializer != null) {
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+
             if (isAmountValid) {
                 mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
                 mView.showRedirectMessage(true);
             } else {
-                mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.VISIBLE);
+                mView.onAmountValidated("", View.VISIBLE);
                 mView.showRedirectMessage(false);
             }
         }
@@ -82,7 +84,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
     @Override
-    public void processTransaction(String amount, RavePayInitializer ravePayInitializer) {
+    public void processTransaction(String amount, final RavePayInitializer ravePayInitializer, final boolean isDisplayFee) {
 
         ravePayInitializer.setAmount(Double.parseDouble(amount));
         PayloadBuilder builder = new PayloadBuilder();
@@ -109,7 +111,6 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
 
-    @Override
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
         String requestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);

@@ -133,7 +133,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     @Override
     public void onValidationSuccessful(String amount) {
-        presenter.processTransaction(amount, ravePayInitializer);
+        presenter.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
     }
 
     @Override

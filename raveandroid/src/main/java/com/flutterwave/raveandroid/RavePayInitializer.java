@@ -265,7 +265,7 @@ public class RavePayInitializer {
         return displayFee;
     }
 
-    public void setIsDisplayFee() {
+    public void setIsDisplayFee(boolean displayFee) {
         this.displayFee = displayFee;
     }
 }
