@@ -32,7 +32,7 @@ public interface AchContract {
     interface UserActionsListener {
         void init(RavePayInitializer ravePayInitializer);
 
-        void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
+        void onDataCollected(RavePayInitializer ravePayInitializer, String amount);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 

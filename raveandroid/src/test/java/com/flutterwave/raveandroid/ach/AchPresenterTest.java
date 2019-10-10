@@ -6,6 +6,7 @@ import android.view.View;
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RaveConstants;
@@ -38,8 +39,12 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,6 +71,8 @@ public class AchPresenterTest {
     SharedPrefsRequestImpl sharedPrefsRequest;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
+    @Mock
+    AchPresenter achPresenterMock;
     private AchPresenter achPresenter;
 
     @Before
@@ -85,37 +92,100 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void init_validAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageCalledWithCorrectParams() {
+    public void init_validAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageTrue() {
 
-        //arrange
         Double amount = generateRandomDouble();
         when(amountValidator.isAmountValid(amount)).thenReturn(true);
         when(ravePayInitializer.getAmount()).thenReturn(amount);
 
-        //act
         achPresenter.init(ravePayInitializer);
 
-        //assert
-        verify(view).onAmountValidated(amount.toString(), View.GONE);
+        verify(view).onAmountValidated(String.valueOf(amount), View.GONE);
         verify(view).showRedirectMessage(true);
 
     }
 
     @Test
-    public void init_inValidAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageCalledWithCorrectParams() {
+    public void init_inValidAmount_onAmountValidatedCalledWithCorrectParams_showRedirectMessageFalse() {
 
-        //arrange
         Double amount = generateRandomDouble();
         when(amountValidator.isAmountValid(amount)).thenReturn(false);
+        when(ravePayInitializer.getAmount()).thenReturn(amount);
 
-        //act
         achPresenter.init(ravePayInitializer);
 
-        //assert
         verify(view).onAmountValidated("", View.VISIBLE);
         verify(view).showRedirectMessage(false);
 
     }
+
+
+    @Test
+    public void processTransaction_chargeAccountCalledWithCorrectParams() {
+        //arrange
+
+        boolean isDisplayFee = generateRandomBoolean();
+        String encryptionKey = generateRandomString();
+        String amount = generateRandomDouble().toString();
+        String country = generateRandomString();
+        String currency = generateRandomString();
+        String email = generateRandomString();
+        String firstName = generateRandomString();
+        String lastName = generateRandomString();
+        String deviceId = generateRandomString();
+        String txRef = generateRandomString();
+        String meta = generateRandomString();
+        String pubKey = generateRandomString();
+        boolean isAch = generateRandomBoolean();
+        String fingerPrint = deviceId;
+
+        achPresenterMock.deviceIdGetter = deviceIdGetter;
+        when(deviceIdGetter.getDeviceId()).thenReturn(deviceId);
+        when(ravePayInitializer.getIsDisplayFee()).thenReturn(isDisplayFee);
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(encryptionKey);
+        when(ravePayInitializer.getAmount()).thenReturn(Double.parseDouble(amount));
+        when(ravePayInitializer.getCountry()).thenReturn(country);
+        when(ravePayInitializer.getCurrency()).thenReturn(currency);
+        when(ravePayInitializer.getEmail()).thenReturn(email);
+        when(ravePayInitializer.getfName()).thenReturn(firstName);
+        when(ravePayInitializer.getlName()).thenReturn(lastName);
+        when(ravePayInitializer.getTxRef()).thenReturn(txRef);
+        when(ravePayInitializer.getMeta()).thenReturn(meta);
+        when(ravePayInitializer.isWithAch()).thenReturn(isAch);
+        when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
+
+        //act
+        doCallRealMethod().when(achPresenterMock).processTransaction(any(String.class), any(RavePayInitializer.class), anyBoolean());
+        achPresenterMock.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
+
+        ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Payload> payloadCaptor = ArgumentCaptor.forClass(Payload.class);
+
+        verify(achPresenterMock).chargeAccount(payloadCaptor.capture(),
+                captorEncryptionKey.capture(),
+                captorIsDisplayFee.capture());
+
+        //assert
+        assertEquals(encryptionKey, captorEncryptionKey.getValue());
+        assertEquals(isDisplayFee, captorIsDisplayFee.getValue());
+
+        Payload capturedPayload = payloadCaptor.getValue();
+        assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
+        assertEquals(amount, capturedPayload.getAmount());
+        assertEquals(country, capturedPayload.getCountry());
+        assertEquals(currency, capturedPayload.getCurrency());
+        assertEquals(email, capturedPayload.getEmail());
+        assertEquals(firstName, capturedPayload.getFirstname());
+        assertEquals(lastName, capturedPayload.getLastname());
+        assertEquals(fingerPrint, capturedPayload.getIP());
+        assertEquals(txRef, capturedPayload.getTxRef());
+        assertEquals(pubKey, capturedPayload.getPBFPubKey());
+        assertEquals(isAch, capturedPayload.isIs_us_bank_charge());
+        assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
+
+    }
+
 
     @Test
     public void processTransaction_setAmountCalledOnRavePayInitializerWithCorrectParam() {
@@ -124,7 +194,7 @@ public class AchPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        achPresenter.processTransaction(amount, ravePayInitializer, false);
+        achPresenter.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
 
         //assert
         verify(ravePayInitializer).setAmount(Double.parseDouble(amount));
@@ -133,95 +203,74 @@ public class AchPresenterTest {
 
 
     @Test
-    public void processTransaction_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalledWithCorrectParams() {
+    public void chargeAccount_noDisplayFee_onSuccess_validResponseReturned_showWebViewCalled() {
 
-        //arrange
         Payload payload = generatePayload();
 
         payload.setPBFPubKey(generateRandomString());
-
-        ChargeResponse chargeResponse = generateValidChargeResponse();
-
-        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class)))
-                .thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class)))
-                .thenReturn(generateRandomString());
-
-        //act
-        achPresenter.processTransaction(generateRandomDouble().toString(), ravePayInitializer, false);
-        verify(view).showProgressIndicator(true);
-
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
-
-        //assert
-        verify(sharedPrefsRequest).saveFlwRef(any(String.class));
-        verify(view).showProgressIndicator(false);
-
-        verify(view, never()).showFee(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getChargedAmount(), chargeResponse.getData().getCurrency());
-        verify(view).showWebView(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef());
-
-    }
-
-    @Test
-    public void processTransaction_displayFee_chargeCard_onSuccess_validResponseReturned_showFeeCalledWithCorrectParams() {
-
-        //arrange
-        Payload payload = generatePayload();
-        payload.setPBFPubKey(generateRandomString());
-
-        ChargeResponse chargeResponse = generateValidChargeResponse();
-
-        when(ravePayInitializer.getIsDisplayFee()).thenReturn(true);
-        when(ravePayInitializer.getPublicKey()).thenReturn(generateRandomString());
 
         when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
         when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        //act
-        achPresenter.processTransaction(generateRandomDouble().toString(), ravePayInitializer, true);
-
+        achPresenter.chargeAccount(payload, generateRandomString(), false);
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
-
-        captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
 
         verify(sharedPrefsRequest).saveFlwRef(any(String.class));
         verify(view).showProgressIndicator(false);
-
-        //assert
-        verify(view).showFee(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getChargedAmount(), chargeResponse.getData().getCurrency());
-        verify(view, never()).showWebView(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef());
+        verify(view, never()).showFee(any(String.class), any(String.class), any(String.class), any(String.class));
+        verify(view).showWebView(any(String.class), any(String.class));
 
     }
 
     @Test
-    public void processTransaction_onSuccess_nullChargeResponseReturned_onPaymentErrorCalledWithCorrectParams() {
+    public void chargeAccount_displayFee_chargeCard_onSuccess_validResponseReturned_showFeeCalled() {
 
-        //arrange
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
         when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
         when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        //act
-        achPresenter.processTransaction(generateRandomDouble().toString(), ravePayInitializer, false);
+        achPresenter.chargeAccount(payload, generateRandomString(), true);
 
         verify(view).showProgressIndicator(true);
 
+        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
+
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
+
+        verify(sharedPrefsRequest).saveFlwRef(any(String.class));
+        verify(view).showProgressIndicator(false);
+
+        verify(view, never()).showWebView(any(String.class), any(String.class));
+        verify(view).showFee(any(String.class), any(String.class), any(String.class), any(String.class));
+
+    }
+
+
+    @Test
+    public void chargeAccount_onSuccess_nullChargeResponseReturned_onPaymentErrorCalled_noResponseMessage() {
+
+        Payload payload = generatePayload();
+        payload.setPBFPubKey(generateRandomString());
+
+        when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        achPresenter.chargeAccount(payload, generateRandomString(), true);
+
+        verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), any(String.class));
-
-        //assert
         verify(view).showProgressIndicator(false);
 
         verify(view).onPaymentError(RaveConstants.noResponse);
@@ -229,17 +278,15 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void processTransaction_onSuccess_inValidResponseReturned_onPaymentErrorCalledWithCorrectParams() {
+    public void chargeAccount_onSuccess_inValidResponseReturned_onPaymentErrorCalled_noAuthUrlMessage() {
 
-        //arrange
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
         when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
         when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        //act
-        achPresenter.processTransaction(generateRandomDouble().toString(), ravePayInitializer, false);
+        achPresenter.chargeAccount(payload, generateRandomString(), true);
 
         verify(view).showProgressIndicator(true);
 
@@ -248,17 +295,15 @@ public class AchPresenterTest {
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
-
-        //assert
         verify(view).showProgressIndicator(false);
+
         verify(view).onPaymentError(RaveConstants.no_authurl_was_returnedmsg);
 
     }
 
     @Test
-    public void processTransaction_onError_onPaymentErrorCalledWithCorrectParams() {
+    public void chargeAccount_onError_onPaymentErrorCalled_messageReturned() {
 
-        //arrange
         Payload payload = generatePayload();
         payload.setPBFPubKey(generateRandomString());
 
@@ -267,9 +312,7 @@ public class AchPresenterTest {
         when(payloadToJsonConverter.convertChargeRequestPayloadToJson(any(Payload.class))).thenReturn(generateRandomString());
         when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        //act
-        achPresenter.processTransaction(generateRandomDouble().toString(), ravePayInitializer, false);
-
+        achPresenter.chargeAccount(payload, generateRandomString(), true);
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
@@ -277,7 +320,6 @@ public class AchPresenterTest {
 
         captor.getAllValues().get(0).onError(message, generateRandomString());
 
-        //assert
         verify(view).showProgressIndicator(false);
         verify(view).onPaymentError(message);
 
@@ -293,15 +335,11 @@ public class AchPresenterTest {
 
     @Test
     public void requeryTx_onSuccess_onRequerySuccessfulCalledWithCorrectParams() {
-
-        //arrange
         String flwRef = generateRandomString();
         RequeryResponse requeryResponse = generateRequerySuccessful();
         String jsonResponse = generateRandomString();
 
         when(sharedPrefsRequest.fetchFlwRef()).thenReturn(flwRef);
-
-        //act
         achPresenter.requeryTx(generateRandomString());
 
         verify(view).showProgressIndicator(true);
@@ -309,7 +347,6 @@ public class AchPresenterTest {
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
-        //assert
         verify(view).showProgressIndicator(false);
         verify(view).onRequerySuccessful(requeryResponse, jsonResponse, flwRef);
 
@@ -319,90 +356,63 @@ public class AchPresenterTest {
     @Test
     public void requeryTx_onError_onPaymentFailedCalledWithCorrectParams() {
 
-        //arrange
         String message = generateRandomString();
         String jsonResponse = generateRandomString();
 
-        //act
         achPresenter.requeryTx(generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, jsonResponse);
-
-        //assert
         verify(view).onPaymentFailed(message, jsonResponse);
 
     }
 
     @Test
-    public void verifyRequeryResponseStatus_transactionUnsuccessful_onPaymentFailedCalledWithCorrectParams() {
-
-        //arrange
-        RequeryResponse requeryResponse = generateRequerySuccessful();
-        String responseAsJsonString = generateRandomString();
+    public void verifyRequeryResponseStatus_transactionUnsuccessful_onPaymentFailedCalled() {
         when(transactionStatusChecker.getTransactionStatus(anyString(), anyString(), anyString())).thenReturn(false);
-
-        //act
-        achPresenter.verifyRequeryResponse(requeryResponse, responseAsJsonString, ravePayInitializer, generateRandomString());
-
-        //assert
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), responseAsJsonString);
+        achPresenter.verifyRequeryResponse(generateRequerySuccessful(), generateRandomString(), ravePayInitializer, generateRandomString());
+        verify(view).onPaymentFailed(String.valueOf(anyObject()), anyString());
     }
 
     @Test
-    public void verifyRequeryResponseStatus_transactionSuccessful_onPaymentSuccessfulCalledWithCorrectParams() {
+    public void verifyRequeryResponseStatus_transactionSuccessful_onPaymentSuccessfulCalled() {
 
-        //arrange
-        RequeryResponse requeryResponse = generateRequerySuccessful();
-        String responseAsJsonString = generateRandomString();
-        String flwRef = generateRandomString();
         when(transactionStatusChecker.getTransactionStatus(any(String.class), any(String.class), any(String.class)))
                 .thenReturn(true);
 
         when(ravePayInitializer.getAmount()).thenReturn(generateRandomDouble());
         when(ravePayInitializer.getCurrency()).thenReturn(generateRandomString());
 
-        //act
-        achPresenter.verifyRequeryResponse(requeryResponse, responseAsJsonString, ravePayInitializer, flwRef);
-
-        //assert
-        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), flwRef, responseAsJsonString);
+        achPresenter.verifyRequeryResponse(generateRequerySuccessful(), generateRandomString(), ravePayInitializer, generateRandomString());
+        verify(view).onPaymentSuccessful(String.valueOf(anyObject()), anyString(), anyString());
     }
 
     @Test
-    public void onPayButtonClicked_validAmount_showAmountError_onValidationSuccessfulCalledWithCorrectParams() {
+    public void onDataCollected_validAmount_showAmountError_onValidationSuccessfulCalledWithCorrectParams() {
 
-        //arrange
         String amount = generateRandomDouble().toString();
-        when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(true);
 
-        //act
-        achPresenter.onPayButtonClicked(ravePayInitializer, amount);
-
-        //assert
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+        achPresenter.onDataCollected(ravePayInitializer, amount);
         verify(view).showAmountError(null);
         verify(view).onValidationSuccessful(amount);
-        verify(view, never()).showAmountError(RaveConstants.validAmountPrompt);
     }
 
     @Test
-    public void onPayButtonClicked_inValidAmount_showAmountErrorWithCorrectParams() {
-
-        //arrange
+    public void onDataCollected_inValidAmount_showAmountErrorWithCorrectParams() {
         when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(false);
-
-        //act
-        achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
-
-        //assert
+        achPresenter.onDataCollected(ravePayInitializer, anyString());
         verify(view).showAmountError(null);
         verify(view).showAmountError(RaveConstants.validAmountPrompt);
-        verify(view, never()).onValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
     }
 
     private Double generateRandomDouble() {
         return new Random().nextDouble();
+    }
+
+    private boolean generateRandomBoolean() {
+        return new Random().nextBoolean();
     }
 
     private String generateRandomString() {
@@ -424,6 +434,12 @@ public class AchPresenterTest {
         chargeResponse.setData(null);
 
         return chargeResponse;
+    }
+
+    private PayloadBuilder generatePayloadBuilder() {
+        PayloadBuilder payloadBuilder = new PayloadBuilder();
+        payloadBuilder.setPaymentPlan(generateRandomString());
+        return payloadBuilder;
     }
 
     private ChargeResponse generateRandomChargeResponse() {

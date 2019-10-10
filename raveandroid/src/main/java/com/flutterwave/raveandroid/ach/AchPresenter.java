@@ -69,11 +69,11 @@ public class AchPresenter implements AchContract.UserActionsListener {
     }
 
     @Override
-    public void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount) {
+    public void onDataCollected(RavePayInitializer ravePayInitializer, String amount) {
 
         mView.showAmountError(null);
 
-        boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+        boolean isAmountValid = amountValidator.isAmountValid(amount);
 
         if (isAmountValid) {
             mView.onValidationSuccessful(amount);
@@ -86,28 +86,31 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void processTransaction(String amount, final RavePayInitializer ravePayInitializer, final boolean isDisplayFee) {
 
-        ravePayInitializer.setAmount(Double.parseDouble(amount));
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(ravePayInitializer.getAmount() + "")
-                .setCountry(ravePayInitializer.getCountry())
-                .setCurrency(ravePayInitializer.getCurrency())
-                .setEmail(ravePayInitializer.getEmail())
-                .setFirstname(ravePayInitializer.getfName())
-                .setLastname(ravePayInitializer.getlName())
-                .setIP(deviceIdGetter.getDeviceId())
-                .setTxRef(ravePayInitializer.getTxRef())
-                .setMeta(ravePayInitializer.getMeta())
-                .setPBFPubKey(ravePayInitializer.getPublicKey())
-                .setIsUsBankCharge(ravePayInitializer.isWithAch())
-                .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+        if (ravePayInitializer != null) {
 
-        if (ravePayInitializer.getPayment_plan() != null) {
-            builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            ravePayInitializer.setAmount(Double.parseDouble(amount));
+            PayloadBuilder builder = new PayloadBuilder();
+            builder.setAmount(ravePayInitializer.getAmount() + "")
+                    .setCountry(ravePayInitializer.getCountry())
+                    .setCurrency(ravePayInitializer.getCurrency())
+                    .setEmail(ravePayInitializer.getEmail())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
+                    .setIP(deviceIdGetter.getDeviceId())
+                    .setTxRef(ravePayInitializer.getTxRef())
+                    .setMeta(ravePayInitializer.getMeta())
+                    .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setIsUsBankCharge(ravePayInitializer.isWithAch())
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+
+            if (ravePayInitializer.getPayment_plan() != null) {
+                builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
+            }
+
+            Payload body = builder.createBankPayload();
+
+            chargeAccount(body, ravePayInitializer.getEncryptionKey(), ravePayInitializer.getIsDisplayFee());
         }
-
-        Payload body = builder.createBankPayload();
-
-        chargeAccount(body, ravePayInitializer.getEncryptionKey(), ravePayInitializer.getIsDisplayFee());
     }
 
 

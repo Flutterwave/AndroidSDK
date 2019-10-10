@@ -9,6 +9,7 @@ public class ChargeResponse {
     String message;
     Data data;
 
+
     public String getStatus() {
         return status;
     }
@@ -32,6 +33,7 @@ public class ChargeResponse {
     public void setData(Data data) {
         this.data = data;
     }
+
 
     public static class AccountValidateInstructions {
         public String getInstruction() {
@@ -60,6 +62,11 @@ public class ChargeResponse {
         String bankname;
         String note;
         String amount;
+        String validateInstruction;
+
+        public void setValidateInstruction(String validateInstruction) {
+            this.validateInstruction = validateInstruction;
+        }
 
         public String getFlw_reference() {
             return flw_reference;
@@ -98,8 +105,6 @@ public class ChargeResponse {
         public String getValidateInstruction() {
             return validateInstruction;
         }
-
-        String validateInstruction;
 
         public String getTx_ref() {
             return txRef;
