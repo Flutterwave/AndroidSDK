@@ -69,7 +69,6 @@ public class UkPresenter implements UkContract.UserActionsListener {
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     mView.showFetchFeeFailed(transactionError);
                 }
             }

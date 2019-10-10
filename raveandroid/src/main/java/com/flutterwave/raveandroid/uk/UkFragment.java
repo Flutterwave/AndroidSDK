@@ -211,17 +211,6 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
-    }
-
-    @Override
     public void showTransactionPage(final ChargeResponse response) {
 
         if (getContext() != null) {
@@ -243,6 +232,17 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
             dialog.show();
         }
 
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+        Intent intent = new Intent();
+        intent.putExtra(response, responseAsString);
+
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
     }
 
     @Override

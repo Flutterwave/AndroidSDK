@@ -50,6 +50,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -119,6 +120,31 @@ public class UkPresenterTest {
 
         //assert
         verify(view).displayFee(feeCheckResponse.getData().getCharge_amount(), payload);
+
+    }
+
+    @Test(expected = Exception.class)
+    public void fetchFee_onSuccess_displayFeeException_showFetchFeeFailedCalledWithCorrectParams() {
+
+        //arrange
+        Payload payload = generatePayload();
+        FeeCheckResponse feeCheckResponse = generateFeeCheckResponse();
+
+        when(ravePayInitializer.getIsDisplayFee()).thenReturn(true);
+        when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+
+        //act
+        ukPresenter.fetchFee(payload);
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+
+        captor.getAllValues().get(0).onSuccess(feeCheckResponse);
+
+        doThrow(new Exception()).when(view).displayFee(feeCheckResponse.getData().getCharge_amount(), payload);
+
+        //assert
+        verify(view).showFetchFeeFailed(transactionError);
 
     }
 
