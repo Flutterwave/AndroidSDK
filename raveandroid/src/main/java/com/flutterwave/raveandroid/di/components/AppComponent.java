@@ -10,6 +10,7 @@ import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
+import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import javax.inject.Singleton;
@@ -27,6 +28,8 @@ public interface AppComponent {
     MpesaComponent plus(MpesaModule mpesaModule);
 
     UgandaComponent plus(UgandaModule ugandaModule);
+
+    RwandaComponent plus(RwandaModule rwandaModule);
 
     GhanaComponent plus(GhanaModule ghanaModule);
 

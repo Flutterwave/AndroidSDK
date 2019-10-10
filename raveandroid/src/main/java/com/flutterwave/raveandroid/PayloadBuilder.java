@@ -37,6 +37,8 @@ public class PayloadBuilder {
         return this;
     }
 
+    private String is_mobile_money_rwf;
+
     public PayloadBuilder setIs_bank_transfer(boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
         return this;
@@ -45,6 +47,11 @@ public class PayloadBuilder {
 
     private String is_mobile_money_gh;
     private String is_mobile_money_ug;
+
+    public PayloadBuilder setIs_mobile_money_rwf(String is_mobile_money_rwf) {
+        this.is_mobile_money_rwf = is_mobile_money_rwf;
+        return this;
+    }
 
     private String phonenumber;
 
@@ -251,6 +258,17 @@ public class PayloadBuilder {
                 firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setIs_mobile_money_ug("1");
         payload.setPayment_type("mobilemoneyuganda");
+        payload.setNetwork(network);
+        return payload;
+    }
+
+    public Payload createRwfMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_gh("1");
+        payload.setPayment_type("mobilemoneygh");
         payload.setNetwork(network);
         return payload;
     }

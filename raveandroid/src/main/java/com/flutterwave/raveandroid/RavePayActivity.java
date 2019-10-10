@@ -25,6 +25,7 @@ import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
+import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
 
 import org.parceler.Parcels;
@@ -119,6 +120,10 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithUgMobileMoney()) {
             raveFragments.add(new RaveFragment(new UgMobileMoneyFragment(), "UGANDA MOBILE MONEY"));
+        }
+
+        if (ravePayInitializer.isWithRwfMobileMoney()) {
+            raveFragments.add(new RaveFragment(new RwfMobileMoneyFragment(), "RWANDA MOBILE MONEY"));
         }
 
         if (ravePayInitializer.isWithBankTransfer()) {
