@@ -45,11 +45,14 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.RaveConstants.validNetworkPrompt;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -112,6 +115,20 @@ public class ZmMobileMoneyPresenterTest {
         captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
 
         verify(view).displayFee(anyString(), any(Payload.class));
+
+    }
+
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailed() throws NullPointerException {
+
+        doThrow(NullPointerException.class).when(view).displayFee(any(String.class), any(Payload.class));
+        presenter.fetchFee(generatePayload());
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view).showFetchFeeFailed(transactionError);
 
     }
 
@@ -277,6 +294,22 @@ public class ZmMobileMoneyPresenterTest {
         presenter.onDataCollected(map);
         //assert
         verify(view, times(failedValidations)).showFieldError(anyInt(), anyString(), (Class<?>) anyObject());
+
+    }
+
+    @Test
+    public void onDataCollected_InvalidNetworkError_showToast() {
+        //arrange
+        HashMap<String, ViewObject> map = generateViewData();
+        int failedValidations = 2;
+        generateViewValidation(failedValidations);
+
+        when(networkValidator.isNetworkValid(anyString())).thenReturn(false);
+
+        //act
+        presenter.onDataCollected(map);
+        //assert
+        verify(view).showToast(validNetworkPrompt);
 
     }
 
