@@ -53,8 +53,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private TextInputLayout amountTil;
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
-    private TextInputLayout voucherTil;
-    private TextInputEditText voucherEt;
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog;
 
@@ -105,8 +103,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private void initializeViews() {
         networkSpinner = v.findViewById(R.id.rave_networkSpinner);
         instructionsTv = v.findViewById(R.id.instructionsTv);
-        voucherTil = v.findViewById(R.id.rave_voucherTil);
-        voucherEt = v.findViewById(R.id.rave_voucherEt);
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
@@ -134,13 +130,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
-                    } else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
-                        validateInstructions = getResources().getString(R.string.tigo_validate_instructions);
-                        showInstructionsAndVoucher(false);
-                    } else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
-                        validateInstructions = getResources().getString(R.string.checkStatus);
-                        showInstructionsAndVoucher(true);
-                        instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
                     }
                 }
             }
@@ -164,7 +153,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private void clearErrors() {
         amountTil.setError(null);
         phoneTil.setError(null);
-        voucherTil.setError(null);
     }
 
     private void collectData() {
@@ -174,10 +162,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItem()), Spinner.class));
-
-        if (voucherTil.getVisibility() == View.VISIBLE) {
-            dataHashMap.put(RaveConstants.fieldVoucher, new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
-        }
 
         presenter.onDataCollected(dataHashMap);
     }
@@ -205,10 +189,8 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private void showInstructionsAndVoucher(boolean show) {
 
         if (show) {
-            voucherTil.setVisibility(View.VISIBLE);
             instructionsTv.setVisibility(View.VISIBLE);
         } else {
-            voucherTil.setVisibility(View.GONE);
             instructionsTv.setVisibility(View.GONE);
         }
     }
