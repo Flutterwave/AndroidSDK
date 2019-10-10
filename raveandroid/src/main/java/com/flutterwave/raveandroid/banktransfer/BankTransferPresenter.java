@@ -51,7 +51,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private boolean hasTransferDetails = false;
 
     @Inject
-    BankTransferPresenter(Context context, BankTransferContract.View mView) {
+    public BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.context = context;
         this.mView = mView;
     }

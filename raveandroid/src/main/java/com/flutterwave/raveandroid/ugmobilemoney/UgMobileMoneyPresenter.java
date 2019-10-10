@@ -54,7 +54,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
 
     @Inject
-    UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
+    public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
