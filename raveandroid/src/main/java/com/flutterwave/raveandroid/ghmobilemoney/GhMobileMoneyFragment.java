@@ -114,7 +114,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
     private void setUpNetworks() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         networkSpinner.setAdapter(adapter);
