@@ -521,7 +521,6 @@ public class AccountPresenterTest {
 
     private Double generateRandomDouble() {
         return new Random().nextDouble();
-
     }
 
     private Boolean generateRandomBoolean() {
@@ -576,7 +575,11 @@ public class AccountPresenterTest {
     }
 
     private RequeryResponse generateRequerySuccessful() {
-        return new RequeryResponse();
+        RequeryResponse requeryResponse = new RequeryResponse();
+        RequeryResponse.Data data = new RequeryResponse.Data();
+        data.setChargeResponseCode("00");
+        requeryResponse.setData(data);
+        return requeryResponse;
     }
 
     private Bank generateBank(boolean internetBanking, String bankCode) {

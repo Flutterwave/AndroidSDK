@@ -194,5 +194,17 @@ public class ChargeResponse {
         public void setFlwRef(String flwRef) {
             this.flwRef = flwRef;
         }
+
+        public void setNote(String note) {
+            this.note = note;
+        }
+
+        public void setBankName(String bankName) {
+            this.bankname = bankName;
+        }
+
+        public void setAccountnumber(String accountnumber) {
+            this.accountnumber = accountnumber;
+        }
     }
 }
