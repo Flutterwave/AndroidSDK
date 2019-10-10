@@ -111,11 +111,11 @@ public class RavePayActivity extends AppCompatActivity {
             }
         }
 
-        if (ravePayInitializer.isWithMpesa()) {
+        if (ravePayInitializer.isWithMpesa() && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")) {
             raveFragments.add(new RaveFragment(new MpesaFragment(), "Mpesa"));
         }
 
-        if (ravePayInitializer.isWithGHMobileMoney()) {
+        if (ravePayInitializer.isWithGHMobileMoney() && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")) {
             raveFragments.add(new RaveFragment(new GhMobileMoneyFragment(), "GHANA MOBILE MONEY"));
         }
 
@@ -123,7 +123,7 @@ public class RavePayActivity extends AppCompatActivity {
             raveFragments.add(new RaveFragment(new ZmMobileMoneyFragment(), "ZAMBIA MOBILE MONEY"));
         }
 
-        if (ravePayInitializer.isWithUgMobileMoney()) {
+        if (ravePayInitializer.isWithUgMobileMoney() && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")) {
             raveFragments.add(new RaveFragment(new UgMobileMoneyFragment(), "UGANDA MOBILE MONEY"));
         }
 
