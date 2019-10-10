@@ -20,14 +20,19 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -38,6 +43,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     Retrofit retrofit;
     ApiService service;
     Gson gson;
+    @Inject
+    String baseUrl;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
@@ -48,7 +55,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     public NetworkRequestImpl() {
-
+        createService();
     }
 
     private ErrorBody parseErrorJson(String errorStr) {
@@ -512,6 +519,28 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                 callback.onError(t.getMessage());
             }
         });
+    }
+
+    private void createService() {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS).build();
+
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .client(okHttpClient)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        service = retrofit.create(ApiService.class);
     }
 
 }
