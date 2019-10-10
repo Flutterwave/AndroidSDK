@@ -44,8 +44,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     Retrofit retrofit;
     ApiService service;
     Gson gson;
-    //    @Inject
-//    String baseUrl;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
@@ -57,6 +55,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
     public NetworkRequestImpl() {
         createService();
+        gson = new Gson();
     }
 
     private ErrorBody parseErrorJson(String errorStr) {
