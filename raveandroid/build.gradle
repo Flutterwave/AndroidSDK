@@ -3,7 +3,6 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.flutterwave'
 
 android {
-
     compileSdkVersion 27
 
     defaultConfig {
@@ -26,7 +25,9 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -54,7 +55,6 @@ dependencies {
     testImplementation 'com.google.dagger:dagger:2.17'
     testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.17'
     testImplementation 'org.mockito:mockito-core:2.25.0'
-    testImplementation 'org.mockito:mockito-inline:2.13.0'
 
 
 }
