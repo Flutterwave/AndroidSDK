@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -35,12 +34,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
 @Singleton
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
+    private static String BASE_URL = "";
     Retrofit retrofit;
     ApiService service;
     Gson gson;
@@ -53,8 +56,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         this.gson = gson;
     }
 
-    public NetworkRequestImpl() {
-        createService();
+    public NetworkRequestImpl(boolean isLive) {
+        createService(isLive);
         gson = new Gson();
     }
 
@@ -521,7 +524,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         });
     }
 
-    private void createService() {
+    private void createService(boolean isLive) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -531,9 +534,14 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS).build();
 
+        if (!isLive) {
+            BASE_URL = STAGING_URL;
+        } else {
+            BASE_URL = LIVE_URL;
+        }
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(RavePayActivity.BASE_URL)
+                    .baseUrl(BASE_URL)
                     .client(okHttpClient)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
