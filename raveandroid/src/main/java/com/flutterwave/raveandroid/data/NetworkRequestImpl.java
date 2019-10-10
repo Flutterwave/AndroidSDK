@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -43,8 +44,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     Retrofit retrofit;
     ApiService service;
     Gson gson;
-    @Inject
-    String baseUrl;
+    //    @Inject
+//    String baseUrl;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
@@ -533,7 +534,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+                    .baseUrl(RavePayActivity.BASE_URL)
                     .client(okHttpClient)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
