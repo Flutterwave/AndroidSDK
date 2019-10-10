@@ -251,6 +251,18 @@ public class PayloadBuilder {
         return payload;
     }
 
+    public Payload createZmMobileMoneyPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setIs_mobile_money_ug("1");
+        payload.setPayment_type("mobilemoneyzambia");
+        payload.setVoucher(voucher);
+        payload.setNetwork(network);
+        return payload;
+    }
+
     public Payload createUgMobileMoneyPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
