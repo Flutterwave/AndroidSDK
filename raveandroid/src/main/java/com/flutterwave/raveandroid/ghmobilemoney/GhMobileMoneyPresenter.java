@@ -170,6 +170,11 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
@@ -177,7 +182,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId())
+                    .setIP(deviceID)
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -185,7 +190,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (dataHashMap.get(fieldVoucher) != null) {
                 builder.setVoucher(dataHashMap.get(fieldVoucher).getData());

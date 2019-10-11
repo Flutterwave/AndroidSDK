@@ -87,8 +87,6 @@ public class UkPresenter implements UkContract.UserActionsListener {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
-//        Log.d("encrypted", encryptedCardRequestBody);
-
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
         body.setPBFPubKey(payload.getPBFPubKey());
@@ -105,11 +103,7 @@ public class UkPresenter implements UkContract.UserActionsListener {
                 if (response.getData() != null) {
                     Log.d("resp", responseAsJSONString);
 
-                    String flwRef = response.getData().getFlwRef();
-                    String txRef = response.getData().getTx_ref();
-
                     mView.showTransactionPage(response);
-//                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 } else {
                     mView.onPaymentError(noResponse);
                 }
@@ -166,6 +160,10 @@ public class UkPresenter implements UkContract.UserActionsListener {
         String amount = dataHashMap.get(fieldAmount).getData();
         Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
+        if (amountValidator == null) {
+            amountValidator = new AmountValidator();
+        }
+
         boolean isAmountValid = amountValidator.isAmountValid(amount);
 
         if (!isAmountValid) {
@@ -186,6 +184,11 @@ public class UkPresenter implements UkContract.UserActionsListener {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
 
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
@@ -194,13 +197,13 @@ public class UkPresenter implements UkContract.UserActionsListener {
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId())
+                    .setIP(deviceID)
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());

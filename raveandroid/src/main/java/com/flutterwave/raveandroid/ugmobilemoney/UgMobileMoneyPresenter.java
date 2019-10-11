@@ -206,6 +206,12 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
 //                    .setCountry(ravePayInitializer.getCountry())
@@ -214,7 +220,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId())
+                    .setIP(deviceID)
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -222,7 +228,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
