@@ -280,6 +280,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
             });
 
             pollingProgressDialog.show();
+
         } else if (active && pollingProgressDialog.isShowing()) {
             //pass
         } else {
