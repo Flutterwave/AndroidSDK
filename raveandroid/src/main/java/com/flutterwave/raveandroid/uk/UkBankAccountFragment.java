@@ -26,7 +26,6 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
-import com.flutterwave.raveandroid.responses.GhChargeResponse;
 
 import static android.view.View.GONE;
 
@@ -45,6 +44,7 @@ public class UkBankAccountFragment extends Fragment implements UkBankAccountCont
     UkBankAccountPresenter presenter;
     TextView instructionsTv;
     String validateInstructions;
+    Dialog dialog;
 
 
     @Override
@@ -276,7 +276,7 @@ public class UkBankAccountFragment extends Fragment implements UkBankAccountCont
     @Override
     public void showTransactionPage(final ChargeResponse response) {
         if (getContext() != null) {
-            final Dialog dialog = new Dialog(getContext());
+                dialog = new Dialog(getContext());
 
                 dialog.setContentView(R.layout.ukinstruction_layout);
                 dialog.setTitle("Flutterwave");
@@ -285,14 +285,23 @@ public class UkBankAccountFragment extends Fragment implements UkBankAccountCont
                 ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
                 ((TextView) dialog.findViewById(R.id.sortCode)).setText(getString(R.string.flutterwave_sortcode));
                 ((TextView) dialog.findViewById(R.id.reference)).setText(response.getData().getData().getPayment_code());
+
                 dialog.show();
                 dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {
+
                     @Override
                     public void onClick(View view) {
                         presenter.requeryTx(response.getData().getData().getTransaction_reference(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
                     }
                 });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        dialog.dismiss();
+        pollingProgressDialog.dismiss();
+        super.onDestroy();
     }
 }
 
