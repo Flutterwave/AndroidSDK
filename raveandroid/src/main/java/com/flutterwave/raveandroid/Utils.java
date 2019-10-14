@@ -1,8 +1,13 @@
 package com.flutterwave.raveandroid;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -35,6 +40,8 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import javax.crypto.spec.SecretKeySpec;
 
+import static android.content.Context.TELEPHONY_SERVICE;
+
 /**
  * Created by hamzafetuga on 05/07/2017.
  */
@@ -48,11 +55,22 @@ public class Utils {
     private static final String CHARSET_NAME = "UTF-8";
     private static final String UTF_8 = "utf-8";
 
+    @SuppressLint({"HardwareIds", "MissingPermission"})
     public static String getDeviceImei(Context c) {
 
-        TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        String ip = mTelephonyManager.getDeviceId();
+        TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(TELEPHONY_SERVICE);
+        String ip = null;
 
+        if (mTelephonyManager != null) {
+            if (ActivityCompat.checkSelfPermission(c, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ip = mTelephonyManager.getImei();
+                } else {
+                    ip = mTelephonyManager.getDeviceId();
+                }
+            }
+            return ip;
+        }
         if (ip == null) {
             ip = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
         }
