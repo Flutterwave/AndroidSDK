@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_margin="10dp"
+        android:text="Add Vendor"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your Vendor's Rave Reference"
+        android:textSize="14sp"
+        android:id="@+id/vendorReferecnceET"
+        android:layout_margin="10dp"
+        android:inputType="textEmailAddress"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textSize="14sp"
+        android:layout_margin="10dp"
+        android:hint="Ratio for this vendor"
+        android:id="@+id/vendorRatioET"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelDialogBtn"
+            android:text="Cancel"
+            android:background="?android:attr/selectableItemBackground"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/doneDialogBtn"
+            android:text="ADD"
+            android:textColor="@color/colorAccent"
+            android:background="?android:attr/selectableItemBackground"/>
+
+    </LinearLayout>
+</LinearLayout>

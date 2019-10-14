@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:scrollbars="vertical"
+    android:fillViewport="true"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="2dp"
+        style="?PinHeaderStyle"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/enter_your_billing_address_details"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_billAddressTil"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:imeOptions="actionNext"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="text"
+            android:hint="Address e.g. 20 Saltlake Eldorado"
+            android:drawablePadding="7dp"
+            android:id="@+id/rave_billAddressEt"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_billCityTil"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="text"
+            android:hint="City e.g. Livingstone"
+            android:imeOptions="actionNext"
+            android:drawablePadding="7dp"
+            android:id="@+id/rave_billCityEt"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_billStateTil"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="text"
+            android:imeOptions="actionNext"
+            android:hint="State e.g. CA"
+            android:drawablePadding="7dp"
+            android:id="@+id/rave_billStateEt"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_zipTil"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:imeOptions="actionNext"
+            android:layout_height="wrap_content"
+            android:hint="@string/billing_zip_code"
+            android:maxLines="1"
+            android:inputType="text"
+            android:drawablePadding="7dp"
+            android:id="@+id/rave_zipEt"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_countryTil"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Country e.g. US"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:inputType="text"
+            android:drawablePadding="7dp"
+            android:id="@+id/rave_countryEt"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/rave_zipButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
+        style="?PinButtonStyle"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:text="@string/enter" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+</LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="TestNewTheme" parent="AppTheme.NoActionBar">
+        <item name="colorPrimary">#092342</item>
+        <item name="colorPrimaryDark">#b71c1c</item>
+        <item name="colorAccent">#7cb342</item>
+        <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
+        <item name="PayButtonStyle">@style/payBtnStyle2</item>
+        <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
+        <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
+        <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
+        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle2</item>
+    </style>
+
+
+</resources>

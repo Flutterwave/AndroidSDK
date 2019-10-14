@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="2dp"
+        style="?PinHeaderStyle"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="30dp"
+        android:padding="20dp"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/please_enter_your_card_pin_nto_continue_your_transaction"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rave_pinTil"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pin"
+            android:inputType="numberPassword"
+            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+            android:drawableStart="@drawable/ic_lock_outline_black_24dp"
+            android:drawablePadding="7dp"
+            android:maxLength="4"
+            android:id="@+id/rave_pinEv"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/rave_pinButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
+        style="?PinButtonStyle"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:text="@string/enter" />
+
+
+</LinearLayout>

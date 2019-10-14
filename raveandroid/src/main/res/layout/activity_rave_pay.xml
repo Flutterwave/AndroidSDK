@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.flutterwave.raveandroid.RavePayActivity">
+
+<include
+    android:id="@+id/main_content"
+    layout="@layout/content_rave_pay" />
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:clickable="true"
+    android:background="#fff"
+    android:id="@+id/rave_permission_required_layout"
+    android:visibility="gone"
+    android:padding="30dp"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:textSize="14sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="7dp"
+        android:text="@string/permissions_are_required_to_complete_payment"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:textSize="12sp"
+        android:layout_below="@id/textView"
+        android:textColor="#009688"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/requestPermsBtn"
+        android:text="@string/grant_permission"
+        />
+
+</RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
