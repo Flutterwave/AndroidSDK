@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.di.components;
 
 import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
@@ -21,6 +22,8 @@ import dagger.Component;
 @Singleton
 @Component(modules = {AndroidModule.class, NetworkModule.class})
 public interface AppComponent {
+
+    NetworkRequestImpl networkImpl();
 
     void inject(RaveApp raveApp);
 

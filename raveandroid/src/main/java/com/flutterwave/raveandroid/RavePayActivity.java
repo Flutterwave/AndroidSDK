@@ -56,6 +56,11 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_CANCELLED = 333;
 
     AppComponent appComponent;
+    static AppComponent appComponent2;
+
+    public static void setGraph(AppComponent appComponent) {
+        appComponent2 = appComponent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
