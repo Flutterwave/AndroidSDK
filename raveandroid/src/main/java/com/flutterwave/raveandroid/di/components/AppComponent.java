@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.di.components;
 
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
@@ -24,8 +23,6 @@ import dagger.Component;
 public interface AppComponent {
 
     NetworkRequestImpl networkImpl();
-
-    void inject(RaveApp raveApp);
 
     void inject(RavePayActivity ravePayActivity);
 
