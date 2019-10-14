@@ -57,6 +57,16 @@ public class ChargeResponse {
         String appFee;
         String currency;
         String charged_amount;
+
+        public String getFlw_reference() {
+            return flw_reference;
+        }
+
+        public void setFlw_reference(String flw_reference) {
+            this.flw_reference = flw_reference;
+        }
+
+        String flw_reference;
         String amount;
         String transaction_reference;
         String payment_code;

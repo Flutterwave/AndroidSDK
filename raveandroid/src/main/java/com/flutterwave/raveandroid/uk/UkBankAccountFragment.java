@@ -291,7 +291,7 @@ public class UkBankAccountFragment extends Fragment implements UkBankAccountCont
 
                     @Override
                     public void onClick(View view) {
-                        presenter.requeryTx(response.getData().getData().getTransaction_reference(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
+                        presenter.requeryTx(response.getData().getData().getFlw_reference(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
                     }
                 });
         }
