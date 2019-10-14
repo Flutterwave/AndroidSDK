@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (valid) {
-            RavePayManager manager = new RavePayManager(this).setAmount(Double.parseDouble(amount))
+            new RavePayManager(this).setAmount(Double.parseDouble(amount))
                     .setCountry(country)
                     .setCurrency(currency)
                     .setEmail(email)
@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
 
-            manager.getAppComponent();
 
         }
     }
