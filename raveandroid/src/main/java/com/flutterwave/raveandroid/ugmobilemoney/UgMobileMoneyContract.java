@@ -22,7 +22,7 @@ public interface UgMobileMoneyContract {
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
-        void chargeUkBankAccount(Payload payload, String encryptionKey);
+        void chargeUgMobileMoney(Payload payload, String encryptionKey);
         void requeryTx(String flwRef, String txRef, String publicKey);
     }
 }

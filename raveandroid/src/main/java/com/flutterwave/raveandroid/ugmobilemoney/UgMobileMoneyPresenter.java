@@ -67,7 +67,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void chargeUkBankAccount(final Payload payload, final String encryptionKey) {
+    public void chargeUgMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 

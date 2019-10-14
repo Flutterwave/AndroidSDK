@@ -164,7 +164,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             if(ravePayInitializer.getIsDisplayFee()){
                 presenter.fetchFee(body);
             } else {
-                presenter.chargeUkBankAccount(body, ravePayInitializer.getEncryptionKey());
+                presenter.chargeUgMobileMoney(body, ravePayInitializer.getEncryptionKey());
             }
         }
 
@@ -254,7 +254,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-                presenter.chargeUkBankAccount(payload, ravePayInitializer.getEncryptionKey());
+                presenter.chargeUgMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
 
             }
