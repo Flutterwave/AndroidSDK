@@ -84,7 +84,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
 
     @Inject
-    CardPresenter(Context context, CardContract.View mView) {
+    public CardPresenter(Context context, CardContract.View mView) {
         this.mView = mView;
     }
 

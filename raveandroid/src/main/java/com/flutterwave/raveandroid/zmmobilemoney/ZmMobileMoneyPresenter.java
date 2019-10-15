@@ -56,7 +56,7 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     private ZmMobileMoneyContract.View mView;
 
     @Inject
-    ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView) {
+    public ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }

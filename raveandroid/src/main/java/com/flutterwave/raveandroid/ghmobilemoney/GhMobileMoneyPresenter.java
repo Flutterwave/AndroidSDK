@@ -58,7 +58,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
 
     @Inject
-    GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
+    public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
