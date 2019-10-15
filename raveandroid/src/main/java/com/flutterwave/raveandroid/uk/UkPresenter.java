@@ -118,7 +118,6 @@ public class UkPresenter implements UkContract.UserActionsListener {
         });
     }
 
-
     @Override
     public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
 

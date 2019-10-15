@@ -144,7 +144,7 @@
     <string name="i_have_completed_this_payment">I have completed this payment  → </string>
     <string name="flutterwave_ukaccount">4327122</string>
     <string name="flutterwave_sortcode">04-00-53</string>
-    <string name="barter_funnding">Barter Funnding</string>
+    <string name="barter_funnding">Barter Funding</string>
 
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>

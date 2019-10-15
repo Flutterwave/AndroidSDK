@@ -237,7 +237,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         }
 
-        int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
+        String network = dataHashMap.get(fieldNetwork).getData();
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
@@ -252,7 +252,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-        if (network == 0) {
+        if (network.equals("Select Network")) {
             valid = false;
             mView.showToast(validNetworkPrompt);
         }
