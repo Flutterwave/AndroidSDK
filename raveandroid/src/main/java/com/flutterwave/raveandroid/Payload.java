@@ -12,6 +12,9 @@ import java.util.List;
 
 public class Payload
 {
+    private boolean is_ussd;
+    private String orderRef;
+
     public String getCardBIN() {
         return cardBIN;
     }
@@ -615,6 +618,22 @@ public class Payload
 
     public void setIs_bank_transfer(boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
+    }
+
+    public boolean getIs_ussd() {
+        return is_ussd;
+    }
+
+    public void setIs_ussd(boolean is_ussd) {
+        this.is_ussd = is_ussd;
+    }
+
+    public String getOrderRef() {
+        return orderRef;
+    }
+
+    public void setOrderRef(String orderRef) {
+        this.orderRef = orderRef;
     }
 }
 

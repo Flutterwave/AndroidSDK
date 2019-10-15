@@ -144,6 +144,13 @@
 	<string name="account_number_placeholder">0690000031</string>
 	<string name="pay_with_bank_timeout_notification">Payments are currently slow at your bank. Slow payments are usually confirmed within 30 minutes. You will get a receipt once your payment is confirmed.</string>
 	<string name="bant_transfer_polling_cancelled_message">You will get a receipt once your payment is confirmed.</string>
+	<string name="reference_code">Reference Code</string>
+	<string name="reference_code_placeholder">4990</string>
+	<string name="ussd_instructions">Dial the code below to complete the payment</string>
+	<string name="ussd_code_placeholder">*737*51*000#</string>
+	<string name="verify_ussd_payment_button_text">I have completed the payment</string>
+	<string name="choose_another_bank">CHOOSE ANOTHER BANK</string>
+	<string name="click_here_to_copy_the_ussd_code">Click here to copy the ussd code</string>
 	
 	<string-array name="gh_mobile_money_networks">
 		<item>Select network</item>
@@ -154,9 +161,13 @@
 	
 	<string-array name="ussd_banks">
 		<item>Select network</item>
-		<item>MTN</item>
-		<item>Tigo</item>
-		<item>Vodafone</item>
+		<item>Fidelity Bank</item>
+		<item>Guaranty Trust Bank</item>
+		<item>Keystone Bank</item>
+		<item>Sterling Bank PLC</item>
+		<item>United Bank for Africa</item>
+		<item>Unity Bank PLC</item>
+		<item>Zenith bank PLC</item>
 	</string-array>
 	
 	<string-array name="zm_mobile_money_networks">
