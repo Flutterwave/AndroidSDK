@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
 //                    .withTheme(R.style.TestNewTheme)
                     .initialize();
 
+
         }
     }
 

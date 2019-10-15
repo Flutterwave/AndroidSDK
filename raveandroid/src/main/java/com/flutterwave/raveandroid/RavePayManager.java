@@ -4,15 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.responses.SubAccount;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class RavePayManager {
     private String email;
@@ -194,15 +200,25 @@ public class RavePayManager {
     }
 
     public void initialize() {
+
         if (activity != null) {
 
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             activity.startActivityForResult(intent, RAVE_REQUEST_CODE) ;
+        } else {
+            Log.d(RAVEPAY, "Context is required!");
         }
-        else {
-                Log.d(RAVEPAY, "Context is required!");
-        }
+
+    }
+
+    public Raver initializeNoUi() {
+
+        RavePayInitializer ravePayInitializer = createRavePayInitializer();
+        AppComponent component = setUpGraph();
+
+        return new Raver(ravePayInitializer, component);
+
     }
 
     public RavePayManager shouldDisplayFee(boolean displayFee) {
@@ -211,6 +227,7 @@ public class RavePayManager {
     }
 
     public RavePayInitializer createRavePayInitializer() {
+
         return new RavePayInitializer(
                 email,
                 amount,
@@ -241,4 +258,23 @@ public class RavePayManager {
                 showStagingLabel,
                 displayFee);
        }
+
+    private AppComponent setUpGraph() {
+
+
+        String baseUrl;
+
+        if (staging) {
+            baseUrl = STAGING_URL;
+        } else {
+            baseUrl = LIVE_URL;
+        }
+
+        return DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(activity))
+                .networkModule(new NetworkModule(baseUrl))
+                .build();
+
+
+    }
 }

@@ -57,7 +57,12 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
 
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
     AppComponent appComponent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +182,6 @@ public class RavePayActivity extends AppCompatActivity {
                 .networkModule(new NetworkModule(BASE_URL))
                 .build();
 
-        ((RaveApp) getApplication()).setAppComponent(appComponent);
 
     }
 

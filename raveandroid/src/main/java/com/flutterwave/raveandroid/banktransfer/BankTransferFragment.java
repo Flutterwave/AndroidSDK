@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -90,7 +89,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new BankTransferModule(this))
                     .inject(this);
         }
