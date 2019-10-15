@@ -45,6 +45,7 @@ public class RaveConstants {
     public static String fieldAccount = "account";
     public static String fieldVoucher = "voucher";
     public static String fieldNetwork = "network";
+    public static String networkPosition = "position";
     public static String fieldBVN = "bvn";
     public static String fieldDOB = "dob";
     public static String fieldBankCode = "bankcode";

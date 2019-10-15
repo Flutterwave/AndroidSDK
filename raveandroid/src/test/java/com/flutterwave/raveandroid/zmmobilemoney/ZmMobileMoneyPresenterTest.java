@@ -304,7 +304,7 @@ public class ZmMobileMoneyPresenterTest {
         int failedValidations = 2;
         generateViewValidation(failedValidations);
 
-        when(networkValidator.isNetworkValid(anyString())).thenReturn(false);
+        when(networkValidator.isNetworkValid(anyInt())).thenReturn(false);
 
         //act
         presenter.onDataCollected(map);
@@ -391,7 +391,7 @@ public class ZmMobileMoneyPresenterTest {
 
         when(amountValidator.isAmountValid(anyString())).thenReturn(falses.get(0));
         when(phoneValidator.isPhoneValid(anyString())).thenReturn(falses.get(1));
-        when(networkValidator.isNetworkValid(anyString())).thenReturn(falses.get(2));
+        when(networkValidator.isNetworkValid(anyInt())).thenReturn(falses.get(2));
 
     }
 

@@ -226,6 +226,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
+        int networkPosition = Integer.valueOf(dataHashMap.get(RaveConstants.networkPosition).getData());
         ViewObject voucherViewObject = dataHashMap.get(fieldVoucher);
 
         if (voucherViewObject != null) {
@@ -244,7 +245,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
-        boolean isNetworkValid = networkValidator.isNetworkValid(network);
+        boolean isNetworkValid = networkValidator.isNetworkValid(networkPosition);
 
         if (!isAmountValidated) {
             valid = false;
