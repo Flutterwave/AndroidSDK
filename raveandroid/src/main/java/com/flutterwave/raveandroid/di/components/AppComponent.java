@@ -12,6 +12,7 @@ import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
+import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import javax.inject.Singleton;
@@ -39,6 +40,8 @@ public interface AppComponent {
     CardComponent plus(CardModule cardModule);
 
     BankTransferComponent plus(BankTransferModule bankTransferModule);
+
+    UssdComponent plus(UssdModule ussdModule);
 
     AccountComponent plus(AccountModule accountModule);
 

@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
+import com.flutterwave.raveandroid.ussd.UssdFragment;
 import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 
 import org.parceler.Parcels;
@@ -63,8 +64,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         try {
             ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
@@ -76,8 +76,7 @@ public class RavePayActivity extends AppCompatActivity {
         if (theme != 0) {
             try {
                 setTheme(theme);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -105,8 +104,7 @@ public class RavePayActivity extends AppCompatActivity {
         if (ravePayInitializer.isWithAccount()) {
             if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
                 raveFragments.add(new RaveFragment(new AchFragment(), "ACH"));
-            }
-            else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")){
+            } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
                 raveFragments.add(new RaveFragment(new AccountFragment(), "Account"));
             }
         }
@@ -131,9 +129,12 @@ public class RavePayActivity extends AppCompatActivity {
             raveFragments.add(new RaveFragment(new RwfMobileMoneyFragment(), "RWANDA MOBILE MONEY"));
         }
 
-        if (ravePayInitializer.isWithBankTransfer()) {
-            if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")){
+        if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
+            if (ravePayInitializer.isWithBankTransfer()) {
                 raveFragments.add(new RaveFragment(new BankTransferFragment(), "Bank Transfer"));
+            }
+            if (ravePayInitializer.isWithUssd()) {
+                raveFragments.add(new RaveFragment(new UssdFragment(), "USSD"));
             }
         }
 
@@ -204,8 +205,7 @@ public class RavePayActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             permissionsRequiredLayout.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             permissionsRequiredLayout.setVisibility(GONE);
         }
     }
