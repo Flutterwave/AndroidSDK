@@ -54,7 +54,7 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     private RwfMobileMoneyContract.View mView;
 
     @Inject
-    RwfMobileMoneyPresenter(Context context, RwfMobileMoneyContract.View mView) {
+    public RwfMobileMoneyPresenter(Context context, RwfMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }

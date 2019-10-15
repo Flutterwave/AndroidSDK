@@ -58,7 +58,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     GetEncryptedData getEncryptedData;
 
     @Inject
-    BankTransferPresenter(Context context, BankTransferContract.View mView) {
+    public BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.mView = mView;
     }
 

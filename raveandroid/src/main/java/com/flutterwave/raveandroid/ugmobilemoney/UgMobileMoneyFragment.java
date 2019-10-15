@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -78,7 +77,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new UgandaModule(this))
                     .inject(this);
         }
