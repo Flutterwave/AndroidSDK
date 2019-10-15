@@ -83,7 +83,6 @@ public class TestAndroidModule {
         return Mockito.mock(DateOfBirthValidator.class);
     }
 
-
     @Provides
     @Singleton
     public BvnValidator providesBvnValidator() {
@@ -108,7 +107,6 @@ public class TestAndroidModule {
     public BanksMinimum100AccountPaymentValidator providesBanksMinimum100AccountPaymentValidator() {
         return Mockito.mock(BanksMinimum100AccountPaymentValidator.class);
     }
-
 
     @Provides
     @Singleton

@@ -78,14 +78,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardExpiryValidator cardExpiryValidator;
     @Inject
     CardNoValidator cardNoValidator;
+    private Context context;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
 
     @Inject
-    CardPresenter(Context context, CardContract.View mView) {
+    public CardPresenter(Context context, CardContract.View mView) {
         this.mView = mView;
+        this.context = context;
     }
 
     @Override
@@ -302,6 +304,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCardno(dataHashMap.get(fieldcardNoStripped).getData())
@@ -311,14 +318,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     .setEmail(dataHashMap.get(fieldEmail).getData())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId()).setTxRef(ravePayInitializer.getTxRef())
+                    .setIP(deviceID).setTxRef(ravePayInitializer.getTxRef())
                     .setExpiryyear(dataHashMap.get(fieldCardExpiry).getData().substring(3, 5))
                     .setExpirymonth(dataHashMap.get(fieldCardExpiry).getData().substring(0, 2))
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());

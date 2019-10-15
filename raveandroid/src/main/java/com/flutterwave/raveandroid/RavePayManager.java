@@ -37,6 +37,7 @@ public class RavePayManager {
     boolean withUgMobileMoney = false;
     boolean withRwfMobileMoney = false;
     boolean withZmMobileMoney = false;
+    boolean withUk = false;
     boolean withBankTransfer = false;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
@@ -101,6 +102,11 @@ public class RavePayManager {
 
     public RavePayManager acceptZmMobileMoneyPayments(boolean withZmMobileMoney) {
         this.withZmMobileMoney = withZmMobileMoney;
+        return this;
+    }
+
+    public RavePayManager acceptUkPayments(boolean withUk) {
+        this.withUk = withUk;
         return this;
     }
 
@@ -225,6 +231,7 @@ public class RavePayManager {
                 withZmMobileMoney,
                 withAch,
                 withBankTransfer,
+                withUk,
                 theme,
                 staging,
                 meta,

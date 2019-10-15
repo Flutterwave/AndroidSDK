@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.mpesa;
+package com.flutterwave.raveandroid.uk;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,7 +18,6 @@ import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
-import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
 
@@ -26,33 +25,28 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
-import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 /**
  * Created by hfetuga on 27/06/2018.
  */
 
 
-public class MpesaPresenter implements MpesaContract.UserActionsListener {
-
-    private Context context;
-    private MpesaContract.View mView;
+public class UkPresenter implements UkContract.UserActionsListener {
 
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
     AmountValidator amountValidator;
     @Inject
-    PhoneValidator phoneValidator;
-    @Inject
     DeviceIdGetter deviceIdGetter;
+    private Context context;
+    private UkContract.View mView;
 
     @Inject
-    public MpesaPresenter(Context context, MpesaContract.View mView) {
+    public UkPresenter(Context context, UkContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -74,9 +68,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
                     mView.showFetchFeeFailed(transactionError);
                 }
             }
@@ -91,11 +83,9 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
     @Override
-    public void chargeMpesa(final Payload payload, final String encryptionKey) {
+    public void chargeUk(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -104,7 +94,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeUK(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -113,11 +103,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 if (response.getData() != null) {
                     Log.d("resp", responseAsJSONString);
 
-                    String flwRef = response.getData().getFlwRef();
-                    String txRef = response.getData().getTx_ref();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                }
-                else {
+                    mView.showTransactionPage(response);
+                } else {
                     mView.onPaymentError(noResponse);
                 }
 
@@ -130,7 +117,6 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             }
         });
     }
-
 
 
     @Override
@@ -147,15 +133,12 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
-                else if (response.getData().getChargeResponseCode().equals("02")){
+                } else if (response.getData().getChargeResponseCode().equals("02")) {
                     mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                }
-                else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
                     mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
-                }
-                else {
+                } else {
                     mView.showProgressIndicator(false);
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 }
@@ -177,21 +160,15 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         String amount = dataHashMap.get(fieldAmount).getData();
         Class amountViewType = dataHashMap.get(fieldAmount).getViewType();
 
-        int phoneID = dataHashMap.get(fieldPhone).getViewId();
-        String phone = dataHashMap.get(fieldPhone).getData();
-        Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
+        if (amountValidator == null) {
+            amountValidator = new AmountValidator();
+        }
 
         boolean isAmountValid = amountValidator.isAmountValid(amount);
-        boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
 
         if (!isAmountValid) {
             valid = false;
             mView.showFieldError(amountID, validAmountPrompt, amountViewType);
-        }
-
-        if (!isPhoneValid) {
-            valid = false;
-            mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
         if (valid) {
@@ -203,7 +180,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
@@ -213,6 +190,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             }
 
             PayloadBuilder builder = new PayloadBuilder();
+
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
@@ -223,7 +201,6 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(deviceID);
@@ -232,12 +209,12 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
             }
 
-            Payload body = builder.createMpesaPayload();
+            Payload body = builder.createUKPayload();
 
             if (ravePayInitializer.getIsDisplayFee()) {
                 fetchFee(body);
             } else {
-                chargeMpesa(body, ravePayInitializer.getEncryptionKey());
+                chargeUk(body, ravePayInitializer.getEncryptionKey());
             }
         }
     }
@@ -245,7 +222,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void init(RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -255,12 +232,12 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     }
 
     @Override
-    public void onAttachView(MpesaContract.View view) {
+    public void onAttachView(UkContract.View view) {
         this.mView = view;
     }
 
     @Override
     public void onDetachView() {
-        this.mView = new NullMpesaView();
+        this.mView = new NullUkView();
     }
 }

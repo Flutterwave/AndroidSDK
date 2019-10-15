@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
+import com.flutterwave.raveandroid.uk.UkFragment;
 import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 
 import org.parceler.Parcels;
@@ -50,6 +51,7 @@ public class RavePayActivity extends AppCompatActivity {
     Button requestPermsBtn;
     int theme;
     RavePayInitializer ravePayInitializer;
+    public static String BASE_URL;
     MainPagerAdapter mainPagerAdapter;
     public static int RESULT_SUCCESS = 111;
     public static int RESULT_ERROR = 222;
@@ -127,6 +129,10 @@ public class RavePayActivity extends AppCompatActivity {
             raveFragments.add(new RaveFragment(new UgMobileMoneyFragment(), "UGANDA MOBILE MONEY"));
         }
 
+        if (ravePayInitializer.isWithUk()) {
+            raveFragments.add(new RaveFragment(new UkFragment(), "UK"));
+        }
+
         if (ravePayInitializer.isWithRwfMobileMoney()) {
             raveFragments.add(new RaveFragment(new RwfMobileMoneyFragment(), "RWANDA MOBILE MONEY"));
         }
@@ -160,17 +166,15 @@ public class RavePayActivity extends AppCompatActivity {
 
     private void buildGraph() {
 
-        String baseUrl;
-
         if (ravePayInitializer.isStaging()) {
-            baseUrl = STAGING_URL;
+            BASE_URL = STAGING_URL;
         } else {
-            baseUrl = LIVE_URL;
+            BASE_URL = LIVE_URL;
         }
 
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
-                .networkModule(new NetworkModule(baseUrl))
+                .networkModule(new NetworkModule(BASE_URL))
                 .build();
 
         ((RaveApp) getApplication()).setAppComponent(appComponent);
