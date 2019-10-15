@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.RaveConstants.networkPosition;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static com.flutterwave.raveandroid.RaveConstants.transactionError;
@@ -374,6 +375,8 @@ public class ZmMobileMoneyPresenterTest {
         viewData.put(fieldAmount, new ViewObject(generateRandomInt(), generateRandomDouble().toString(), TextInputLayout.class));
         viewData.put(fieldPhone, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
         viewData.put(fieldNetwork, new ViewObject(generateRandomInt(), generateRandomString(), Spinner.class));
+        viewData.put(networkPosition, new ViewObject(generateRandomInt(), "0", Spinner.class));
+
         return viewData;
     }
 
