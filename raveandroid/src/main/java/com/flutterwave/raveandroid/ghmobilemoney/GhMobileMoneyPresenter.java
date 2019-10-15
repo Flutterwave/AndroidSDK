@@ -252,7 +252,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-        if (network.equals("Select Network")) {
+        if (network.contains("network")) {
             valid = false;
             mView.showToast(validNetworkPrompt);
         }
