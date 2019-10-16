@@ -96,7 +96,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    AccountPresenter(Context context, AccountContract.View mView) {
+    public AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
         this.mView = mView;
     }

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.flutterwave.rave_android.MainActivity">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context="com.flutterwave.rave_android.MainActivity">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -126,6 +124,14 @@
 		            android:layout_marginBottom="10dp"
 		            android:checked="false"
 		            android:text="@string/accept_ussd_payments" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountUkbankSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="Accept UK Bank Payments" />
 
                 <android.support.v7.widget.SwitchCompat
                     android:layout_width="match_parent"

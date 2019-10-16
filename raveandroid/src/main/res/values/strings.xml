@@ -79,6 +79,7 @@
         <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
         ]]>
     </string>
+
 	<string name="mtn">mtn</string>
 	<string name="tigo">tigo</string>
 	<string name="vodafone">vodafone</string>
@@ -144,6 +145,13 @@
 	<string name="account_number_placeholder">0690000031</string>
 	<string name="pay_with_bank_timeout_notification">Payments are currently slow at your bank. Slow payments are usually confirmed within 30 minutes. You will get a receipt once your payment is confirmed.</string>
 	<string name="bant_transfer_polling_cancelled_message">You will get a receipt once your payment is confirmed.</string>
+
+   <string name="uk_instruction">Please complete this transaction on your Mobile Banking App or Online Banking Platform using the following details</string>
+   <string name="i_have_completed_this_payment">I have completed this payment  → </string>
+   <string name="flutterwave_ukaccount">4327122</string>
+   <string name="flutterwave_sortcode">04-00-53</string>
+   <string name="barter_funnding">Barter Funnding</string>
+
 	<string name="reference_code">Reference Code</string>
 	<string name="reference_code_placeholder">4990</string>
 	<string name="ussd_instructions">Dial the code below to complete the payment</string>

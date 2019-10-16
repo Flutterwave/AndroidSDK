@@ -69,6 +69,7 @@ public class PayloadBuilder {
     private String pin;
     private String accountbank;
     private String accountnumber;
+    private String accountname;
 
     public PayloadBuilder setAccountnumber(String accountnumber) {
         this.accountnumber = accountnumber;
@@ -185,6 +186,15 @@ public class PayloadBuilder {
         return this;
     }
 
+    public String getAccountname() {
+        return accountname;
+    }
+
+    public PayloadBuilder setAccountname(String accountname) {
+        this.accountname = accountname;
+        return this;
+    }
+
     public Payload createPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
@@ -249,6 +259,19 @@ public class PayloadBuilder {
         payload.setPayment_type("mpesa");
         payload.setIs_mpesa("1");
         payload.setIs_mpesa_lipa("1");
+        return payload;
+    }
+
+    public Payload createUKPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setPayment_type("account");
+        payload.setAccountnumber("00000");
+        payload.setAccountname("account rave mobile");
+        payload.setAccountbank("093");
+        payload.setIs_uk_bank_charge2(true);
         return payload;
     }
 

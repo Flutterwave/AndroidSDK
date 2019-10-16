@@ -20,14 +20,22 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -35,6 +43,7 @@ import retrofit2.Retrofit;
 @Singleton
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
+    private static String BASE_URL = "";
     Retrofit retrofit;
     ApiService service;
     Gson gson;
@@ -47,8 +56,9 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         this.gson = gson;
     }
 
-    public NetworkRequestImpl() {
-
+    public NetworkRequestImpl(boolean isLive) {
+        createService(isLive);
+        gson = new Gson();
     }
 
     private ErrorBody parseErrorJson(String errorStr) {
@@ -79,8 +89,41 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     Type type = new TypeToken<ChargeResponse>() {}.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
                 }
-                else {
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+
+    }
+
+    @Override
+    public void chargeUK(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
+
+        Call<String> call = service.chargeUK(body);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.isSuccessful()) {
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
+                    ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
+                    callback.onSuccess(chargeResponse, response.body());
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -478,6 +521,33 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                 callback.onError(t.getMessage());
             }
         });
+    }
+
+    private void createService(boolean isLive) {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS).build();
+
+        if (!isLive) {
+            BASE_URL = STAGING_URL;
+        } else {
+            BASE_URL = LIVE_URL;
+        }
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .client(okHttpClient)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        service = retrofit.create(ApiService.class);
     }
 
 }
