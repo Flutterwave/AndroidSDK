@@ -362,12 +362,12 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     }
 
     @Override
-    public void onPollingCanceled(String flwRef, String txRef, final String responseAsJSONString) {
+    public void onPollingCanceled(String flwRef, final String responseAsJSONString) {
         showBackToApp(getString(R.string.bant_transfer_polling_cancelled_message), responseAsJSONString);
     }
 
     @Override
-    public void onPollingTimeout(String flwRef, String txRef, final String responseAsJSONString) {
+    public void onPollingTimeout(String flwRef, final String responseAsJSONString) {
         showBackToApp(getString(R.string.pay_with_bank_timeout_notification), responseAsJSONString);
     }
 
@@ -392,7 +392,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, final String responseAsString) {
+    public void onPaymentSuccessful(String status, final String responseAsString) {
         Intent intent = new Intent();
         intent.putExtra("response", responseAsString);
 

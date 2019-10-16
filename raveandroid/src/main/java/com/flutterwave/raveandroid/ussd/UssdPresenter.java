@@ -26,9 +26,9 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-class UssdPresenter implements UssdContract.UserActionsListener {
+public class UssdPresenter implements UssdContract.UserActionsListener {
     private Context context;
-    private UssdContract.View mView;
+    public UssdContract.View mView;
 
     public boolean pollingCancelled = false;
     @Inject
@@ -224,22 +224,23 @@ class UssdPresenter implements UssdContract.UserActionsListener {
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
 
                 if (response.getData() == null) {
+                    mView.showPollingIndicator(false);
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     if (pollingCancelled) {
                         mView.showPollingIndicator(false);
-                        mView.onPollingCanceled(flwRef, txRef, responseAsJSONString);
+                        mView.onPollingCanceled(flwRef, responseAsJSONString);
                     } else {
                         if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
                             requeryTx(flwRef, publicKey, requeryCountdownTime);
                         } else {
                             mView.showPollingIndicator(false);
-                            mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
+                            mView.onPollingTimeout(flwRef, responseAsJSONString);
                         }
                     }
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
-                    mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
+                    mView.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {
                     mView.showProgressIndicator(false);
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);

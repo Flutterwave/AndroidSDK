@@ -27,7 +27,7 @@ class NullUssdView implements UssdContract.View {
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+    public void onPaymentSuccessful(String status, String responseAsString) {
 
     }
 
@@ -47,7 +47,7 @@ class NullUssdView implements UssdContract.View {
     }
 
     @Override
-    public void onPollingTimeout(String flwRef, String txRef, String responseAsJSONString) {
+    public void onPollingTimeout(String flwRef, String responseAsJSONString) {
 
     }
 
@@ -77,7 +77,7 @@ class NullUssdView implements UssdContract.View {
     }
 
     @Override
-    public void onPollingCanceled(String flwRef, String txRef, String responseAsJSONString) {
+    public void onPollingCanceled(String flwRef, String responseAsJSONString) {
 
     }
 }

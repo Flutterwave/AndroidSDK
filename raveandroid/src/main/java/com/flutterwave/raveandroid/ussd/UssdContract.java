@@ -23,7 +23,7 @@ public interface UssdContract {
         void showToast(String message);
 
         //
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
+        void onPaymentSuccessful(String status, String responseAsString);
 
         //
         void displayFee(String charge_amount, Payload payload);
@@ -35,7 +35,7 @@ public interface UssdContract {
         void onPaymentFailed(String message, String responseAsJSONString);
 
         //
-        void onPollingTimeout(String flwRef, String txRef, String responseAsJSONString);
+        void onPollingTimeout(String flwRef, String responseAsJSONString);
 
         //
         void onAmountValidationSuccessful(String amountToPay);
@@ -52,7 +52,7 @@ public interface UssdContract {
         void onUssdDetailsReceived(String ussdCode, String referenceCode);
 
         //
-        void onPollingCanceled(String flwRef, String txRef, final String responseAsJSONString);
+        void onPollingCanceled(String flwRef, final String responseAsJSONString);
     }
 
     interface UserActionsListener {
