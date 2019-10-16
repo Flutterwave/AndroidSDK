@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.responses;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -65,20 +63,26 @@ public class ChargeResponse {
         String accountnumber;
         String bankname;
 
-        //Field for pay with USSD
-        @SerializedName("data")
-        UssdData ussdData;
 
-        public UssdData getUssdData() {
-            return ussdData;
-        }
-
-        public void setUssdData(UssdData data) {
-            this.ussdData = data;
-        }
 
         public void setFlw_reference(String flw_reference) {
             this.flw_reference = flw_reference;
+        }
+
+        public String getReference_code() {
+            return payment_code;
+        }
+
+        public void setReference_code(String reference_code) {
+            this.payment_code = reference_code;
+        }
+
+        public Data getUssdData() {
+            return data;
+        }
+
+        public void setUssdData(Data data) {
+            this.data = data;
         }
 
         public void setResponse_code(String response_code) {
@@ -121,37 +125,6 @@ public class ChargeResponse {
             this.redirectUrl = redirectUrl;
         }
 
-        public static class UssdData {
-            String flw_reference;
-            String note;
-            @SerializedName("payment_code")
-            String reference_code;
-
-
-            public String getFlw_reference() {
-                return flw_reference;
-            }
-
-            public void setFlw_reference(String flw_reference) {
-                this.flw_reference = flw_reference;
-            }
-
-            public String getNote() {
-                return note;
-            }
-
-            public void setNote(String note) {
-                this.note = note;
-            }
-
-            public String getReference_code() {
-                return reference_code;
-            }
-
-            public void setReference_code(String reference_code) {
-                this.reference_code = reference_code;
-            }
-        }
 
         String note;
         String amount;

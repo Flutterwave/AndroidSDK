@@ -639,6 +639,8 @@ public class Payload
     public void setOrderRef(String orderRef) {
         this.orderRef = orderRef;
 
+    }
+
     public boolean getIs_uk_bank_charge() {
         return is_uk_bank_charge2;
     }

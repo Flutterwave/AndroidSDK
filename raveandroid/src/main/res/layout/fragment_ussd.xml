@@ -88,21 +88,24 @@
 			android:visibility="gone"
 			app:layout_constraintTop_toBottomOf="@id/ussd_code_tv"
 			tools:visibility="visible">
-			
+			<View
+				android:id="@+id/divider1"
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#DCD4C9" />
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 				android:padding="12dp">
-				
-				<ImageView
-					android:id="@+id/copy_reference_code_view"
-					android:layout_width="18dp"
-					android:layout_height="18dp"
-					android:layout_gravity="center_vertical"
-					android:contentDescription="Copy reference code"
-					android:src="@drawable/ic_content_copy_black_24dp" />
-				
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="start"
+					android:layout_marginStart="8dp"
+					android:layout_marginLeft="8dp"
+					android:text="@string/reference_code"
+					android:textSize="20sp" />
 				<TextView
 					android:id="@+id/reference_code_tv"
 					android:layout_width="0dp"
@@ -113,22 +116,15 @@
 					android:gravity="end"
 					android:text="@string/reference_code_placeholder"
 					android:textSize="20sp" />
-				
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="start"
-					android:layout_marginStart="8dp"
-					android:layout_marginLeft="8dp"
-					android:text="@string/reference_code"
-					android:textSize="20sp" />
+				<ImageView
+					android:id="@+id/copy_reference_code_view"
+					android:layout_width="18dp"
+					android:layout_height="18dp"
+					android:layout_gravity="center_vertical"
+					android:contentDescription="Copy reference code"
+					android:src="@drawable/ic_content_copy_black_24dp" />
 			</LinearLayout>
 			
-			<View
-				android:id="@+id/divider1"
-				android:layout_width="match_parent"
-				android:layout_height="1dp"
-				android:background="#DCD4C9" />
 			
 			<View
 				android:id="@+id/divider2"
