@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.CardModule;
+import com.flutterwave.raveandroid.di.modules.FrancModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
@@ -46,5 +47,7 @@ public interface AppComponent {
     AchComponent plus(AchModule achModule);
 
     UkComponent plus(UkModule ukModule);
+
+    FrancComponent plus(FrancModule francModule);
 }
 

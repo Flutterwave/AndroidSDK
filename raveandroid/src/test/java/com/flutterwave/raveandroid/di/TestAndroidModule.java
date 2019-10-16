@@ -76,7 +76,6 @@ public class TestAndroidModule {
         return Mockito.mock(NetworkValidator.class);
     }
 
-
     @Provides
     @Singleton
     public DateOfBirthValidator providesDateOfBirthValidator() {
