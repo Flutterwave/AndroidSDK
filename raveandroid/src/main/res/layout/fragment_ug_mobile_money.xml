@@ -23,8 +23,6 @@
             android:paddingTop="10dp"
             android:orientation="vertical">
 
-
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:id="@+id/rave_amountTil"
