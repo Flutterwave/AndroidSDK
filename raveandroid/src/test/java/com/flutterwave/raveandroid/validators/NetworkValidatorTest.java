@@ -18,21 +18,21 @@ public class NetworkValidatorTest {
     @Test
     public void isNetworkValid_isCorrectNetworkPassed_returnTrue() {
         String network = "mtn";
-        boolean isNetworkValid = SUT.isNetworkValid(network);
+        boolean isNetworkValid = SUT.isNetworkValid(1);
         assertThat(true, is(isNetworkValid));
     }
 
     @Test
     public void isNetworkInValid_isEmptyPassed_returnFalse() {
         String network = "";
-        boolean isNetworkValid = SUT.isNetworkValid(network);
+        boolean isNetworkValid = SUT.isNetworkValid(0);
         assertThat(false, is(isNetworkValid));
     }
 
     @Test
     public void isNetworkInValid_isNoNetworkPassed_returnFalse() {
         String network = "Select network";
-        boolean isNetworkValid = SUT.isNetworkValid(network);
+        boolean isNetworkValid = SUT.isNetworkValid(0);
         assertThat(false, is(isNetworkValid));
     }
 

@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.SubAccount;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import org.junit.Before;
@@ -42,6 +43,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldNetwork;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.fieldVoucher;
+import static com.flutterwave.raveandroid.RaveConstants.networkPosition;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static org.junit.Assert.assertEquals;
@@ -64,6 +66,8 @@ public class GhMobileMoneyPresenterTest {
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    NetworkValidator networkValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
     @Inject
@@ -340,6 +344,7 @@ public class GhMobileMoneyPresenterTest {
         viewData.put(fieldPhone, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
         viewData.put(fieldNetwork, new ViewObject(generateRandomInt(), String.valueOf(generateRandomInt()), TextInputLayout.class));
         viewData.put(fieldVoucher, new ViewObject(generateRandomInt(), String.valueOf(generateRandomInt()), TextInputLayout.class));
+        viewData.put(networkPosition, new ViewObject(generateRandomInt(), String.valueOf(generateRandomInt()), TextInputLayout.class));
         return viewData;
     }
 
@@ -357,6 +362,7 @@ public class GhMobileMoneyPresenterTest {
 
         when(amountValidator.isAmountValid(anyString())).thenReturn(falses.get(0));
         when(phoneValidator.isPhoneValid(anyString())).thenReturn(falses.get(1));
+        when(networkValidator.isNetworkValid(anyInt())).thenReturn(falses.get(2));
 
     }
 
