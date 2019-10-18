@@ -8,12 +8,12 @@ public class RaveConstants {
     public static int PERMISSIONS_REQUEST_READ_PHONE_STATE = 419;
 
     public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test
-    public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";
+    public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";//test
     //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
-    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
+//    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     //Todo: change back BAse URL
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
-    //  public static String LIVE_URL = "https://api.ravepay.co";
+    public static String LIVE_URL = "https://api.ravepay.co";
 
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
@@ -36,10 +36,14 @@ public class RaveConstants {
     public static int TOKEN_CHARGE = 24;
     public static String fieldAmount = "amount";
     public static String fieldPhone = "phone";
+    public static String fieldAccountName = "accountname";
+    public static String fieldAccountBank = "accountbank";
+    public static String fieldAccountNumber = "accountnumber";
     public static String fieldEmail = "email";
     public static String fieldAccount = "account";
     public static String fieldVoucher = "voucher";
     public static String fieldNetwork = "network";
+    public static String networkPosition = "position";
     public static String fieldBVN = "bvn";
     public static String fieldDOB = "dob";
     public static String fieldBankCode = "bankcode";
@@ -69,6 +73,9 @@ public class RaveConstants {
     public static String validAmountPrompt = "Enter a valid amount";
     public static String validPhonePrompt = "Enter a valid number";
     public static String validEmailPrompt = "Enter a valid Email";
+    public static String validAccountNumberPrompt = "Enter a valid Account Number";
+    public static String validAccountNamePrompt = "Enter a valid Account Name";
+    public static String validBankNamePrompt = "Enter a valid Bank Name";
     public static String charge = "You will be charged a total of";
     public static String askToContinue = ". Do you want to continue?";
     public static String yes = "YES";

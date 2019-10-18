@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat accountSwitch;
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat ugMobileMoneySwitch;
+    SwitchCompat ukbankSwitch;
     SwitchCompat rwfMobileMoneySwitch;
     SwitchCompat zmMobileMoneySwitch;
     SwitchCompat bankTransferSwitch;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
+        ukbankSwitch = findViewById(R.id.accountUkbankSwitch);
         zmMobileMoneySwitch = findViewById(R.id.accountZmMobileMoneySwitch);
         rwfMobileMoneySwitch = findViewById(R.id.accountRwfMobileMoneySwitch);
         bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
@@ -272,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
                     .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
                     .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
+                    .acceptUkPayments(ukbankSwitch.isChecked())
                     .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
@@ -300,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             ravePayManager.initialize();
+
 
         }
     }

@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.data.ApiService;
 import com.google.gson.Gson;
 
@@ -22,8 +21,7 @@ public class NetworkModule {
 
     @Inject
     String baseUrl;
-    @Inject
-    RaveApp raveApp;
+
     private Retrofit retrofit;
     private ApiService apiService;
 

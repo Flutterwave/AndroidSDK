@@ -1,335 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+tools:context="com.flutterwave.rave_android.MainActivity">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
     tools:context="com.flutterwave.rave_android.MainActivity">
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/cardPaymentSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="@string/accept_card_payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountPaymentSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="@string/accept_account_payments" />
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountMpesaSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="Accept Mpesa payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/isDisplayFeeSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="Should Display Fee" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/shouldShowStagingLabelSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="Show Staging Label" />
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountAchSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept ACH payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountGHMobileMoneySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept GH Mobile money payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountUgMobileMoneySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept UG Mobile money payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountRwfMobileMoneySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept RWF Mobile money payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountZmMobileMoneySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept ZM Mobile money payments" />
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/accountUkbankSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept UK Bank Payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/bankTransferSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Accept Bank Transfer Payments" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/isPermanentSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Use a static account number"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/setExpirySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Set account expiry"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+        <LinearLayout
+            android:id="@+id/expiry_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <EditText
+                android:id="@+id/expiryDaysEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Number of days till expiry"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:text="and/or" />
+
+
+            <EditText
+                android:id="@+id/frequencyEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number of payments till expiry"
+            android:inputType="number" />
+        </LinearLayout>
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/isLiveSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Live" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/isPreAuthSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="false"
+            android:text="Pre Auth Charge" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="30dp">
+            android:orientation="vertical">
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/cardPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_card_payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_account_payments" />
-
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountMpesaSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="Accept Mpesa payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/isDisplayFeeSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="Should Display Fee" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/shouldShowStagingLabelSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="Show Staging Label" />
-
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountAchSwitch"
+                android:id="@+id/addSubAccountsSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:checked="false"
-                android:text="Accept ACH payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountGHMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Accept GH Mobile money payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountUgMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Accept UG Mobile money payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountRwfMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Accept RWF Mobile money payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountZmMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Accept ZM Mobile money payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/bankTransferSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Accept Bank Transfer Payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/isPermanentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Use a static account number"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/setExpirySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Set account expiry"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
+                android:text="Add subaccounts" />
 
             <LinearLayout
-                android:id="@+id/expiry_layout"
+                android:id="@+id/addSubAccountsLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <EditText
-                    android:id="@+id/expiryDaysEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Number of days till expiry"
-                    android:inputType="number" />
+                android:visibility="gone">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="8dp"
-                    android:text="and/or" />
-
-                <EditText
-                    android:id="@+id/frequencyEt"
+                    android:id="@+id/refIdsTV"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Number of payments till expiry"
-                    android:inputType="number" />
-            </LinearLayout>
-
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/isLiveSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Live" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/isPreAuthSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Pre Auth Charge" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/addSubAccountsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="Add subaccounts" />
+                    android:layout_height="match_parent"
+                    android:text="Your current vendor refs are: "
+                    android:textColor="@color/black" />
 
                 <LinearLayout
-                    android:id="@+id/addSubAccountsLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/refIdsTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="Your current vendor refs are: "
-                        android:textColor="@color/black" />
-
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/addVendorBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:layout_margin="3dp"
+                        android:text="ADD VENDOR" />
 
-                        <Button
-                            android:id="@+id/addVendorBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="3dp"
-                            android:text="ADD VENDOR" />
-
-                        <Button
-                            android:id="@+id/clearVendorsBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="3dp"
-                            android:text="CLEAR" />
-
-                    </LinearLayout>
+                    <Button
+                        android:id="@+id/clearVendorsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:text="CLEAR" />
 
                 </LinearLayout>
+
             </LinearLayout>
-
-            <EditText
-                android:id="@+id/emailEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/amountEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/amount_to_charge_required"
-                android:inputType="number"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/publicKeyEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/public_key"
-                android:text=""
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/encryptionEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/encryption_key"
-                android:text=""
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/txRefEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/txref_required"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/narrationTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/narration"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/currencyEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/currency_code_e_g_ngn"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/countryEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/country_code_e_g_ng"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/fNameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/first_name"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/lnameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/last_name"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/startPaymentBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/start_payment" />
-
-
         </LinearLayout>
 
-    </ScrollView>
+        <EditText
+            android:id="@+id/emailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/amountEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/amount_to_charge_required"
+            android:inputType="number"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/publicKeyEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/public_key"
+            android:text=""
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/encryptionEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/encryption_key"
+            android:text=""
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/txRefEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/txref_required"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/narrationTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/narration"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/currencyEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/currency_code_e_g_ngn"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/countryEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/country_code_e_g_ng"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/fNameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/first_name"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/lnameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/last_name"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/startPaymentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/start_payment" />
+
+
+    </LinearLayout>
+
+</ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

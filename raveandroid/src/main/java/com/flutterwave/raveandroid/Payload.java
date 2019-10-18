@@ -24,6 +24,8 @@ public class Payload
 
     private boolean is_us_bank_charge;
 
+    private boolean is_uk_bank_charge2;
+
     private String remember_device_mobile_key;
 
     private String remember_device_email;
@@ -389,6 +391,8 @@ public class Payload
 
     private String accountnumber;
 
+    private String accountname;
+
     public String getAccountnumber() {
         return accountnumber;
     }
@@ -643,6 +647,22 @@ public class Payload
 
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+
+    public boolean getIs_uk_bank_charge() {
+        return is_uk_bank_charge2;
+    }
+
+    public void setIs_uk_bank_charge2(boolean is_uk_bank_charge2) {
+        this.is_uk_bank_charge2 = is_uk_bank_charge2;
+    }
+
+    public String getAccountname() {
+        return accountname;
+    }
+
+    public void setAccountname(String accountname) {
+        this.accountname = accountname;
+>
     }
 }
 

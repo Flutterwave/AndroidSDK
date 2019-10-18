@@ -1,6 +1,7 @@
-package com.flutterwave.raveandroid.mpesa;
+package com.flutterwave.raveandroid.uk;
 
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
@@ -22,7 +24,8 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.di.modules.MpesaModule;
+import com.flutterwave.raveandroid.di.modules.UkModule;
+import com.flutterwave.raveandroid.responses.ChargeResponse;
 
 import java.util.HashMap;
 
@@ -30,28 +33,25 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.response;
 
-//import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_MpesaComponents;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
+public class UkFragment extends Fragment implements UkContract.View, View.OnClickListener {
 
 
     @Inject
-    MpesaPresenter presenter;
+    UkPresenter presenter;
 
     private View v;
     private Button payButton;
-    private TextInputLayout phoneTil;
     private TextInputLayout amountTil;
-    private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
+
     private ProgressDialog progressDialog;
-    private ProgressDialog pollingProgressDialog ;
+    private ProgressDialog pollingProgressDialog;
 
     private int rave_phoneEtInt;
     private RavePayInitializer ravePayInitializer;
@@ -63,7 +63,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_mpesa, container, false);
+        v = inflater.inflate(R.layout.fragment_uk, container, false);
 
         initializeViews();
 
@@ -74,12 +74,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         return v;
     }
 
-
     private void injectComponents() {
 
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).getAppComponent()
-                    .plus(new MpesaModule(this))
+                    .plus(new UkModule(this))
                     .inject(this);
         }
     }
@@ -99,8 +98,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         amountEt = v.findViewById(R.id.rave_amountTV);
-        phoneTil = v.findViewById(R.id.rave_phoneTil);
-        phoneEt = v.findViewById(R.id.rave_phoneEt);
         rave_phoneEtInt = amountEt.getId();
     }
 
@@ -119,9 +116,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     private void clearErrors() {
         amountTil.setErrorEnabled(false);
-        phoneTil.setErrorEnabled(false);
         amountTil.setError(null);
-        phoneTil.setError(null);
     }
 
     private void collectData() {
@@ -129,7 +124,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         HashMap<String, ViewObject> dataHashMap = new HashMap<>();
 
         dataHashMap.put(fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
 
         presenter.onDataCollected(dataHashMap);
     }
@@ -185,12 +179,12 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    presenter.chargeMpesa(payload, ravePayInitializer.getEncryptionKey());
+                    presenter.chargeUk(payload, ravePayInitializer.getEncryptionKey());
 
                 }
             }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -212,6 +206,30 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showTransactionPage(final ChargeResponse response) {
+
+        if (getContext() != null) {
+            final Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.ukinstruction_layout);
+            dialog.setTitle("Flutterwave");
+
+            ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", response.getData().getData().getAmount()));
+            ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
+            ((TextView) dialog.findViewById(R.id.sortCode)).setText(getString(R.string.flutterwave_sortcode));
+            ((TextView) dialog.findViewById(R.id.reference)).setText(response.getData().getData().getPayment_code());
+
+            dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    presenter.requeryTx(response.getData().getData().getFlw_reference(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
+                }
+            });
+            dialog.show();
+        }
+
     }
 
     @Override
@@ -260,6 +278,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
             });
 
             pollingProgressDialog.show();
+
         } else if (active && pollingProgressDialog.isShowing()) {
             //pass
         } else {

@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -83,7 +82,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new ZambiaModule(this))
                     .inject(this);
         }
@@ -162,6 +161,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItem()), Spinner.class));
+        dataHashMap.put(RaveConstants.networkPosition, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItemPosition()), Spinner.class));
 
         presenter.onDataCollected(dataHashMap);
     }

@@ -1,7 +1,7 @@
 package com.flutterwave.raveandroid.di.components;
 
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
@@ -12,6 +12,7 @@ import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
+import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import javax.inject.Singleton;
@@ -22,7 +23,7 @@ import dagger.Component;
 @Component(modules = {AndroidModule.class, NetworkModule.class})
 public interface AppComponent {
 
-    void inject(RaveApp raveApp);
+    NetworkRequestImpl networkImpl();
 
     void inject(RavePayActivity ravePayActivity);
 
@@ -43,5 +44,7 @@ public interface AppComponent {
     AccountComponent plus(AccountModule accountModule);
 
     AchComponent plus(AchModule achModule);
+
+    UkComponent plus(UkModule ukModule);
 }
 

@@ -56,7 +56,7 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     private ZmMobileMoneyContract.View mView;
 
     @Inject
-    ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView) {
+    public ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -220,10 +220,11 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
         String network = dataHashMap.get(fieldNetwork).getData();
+        int networkPosition = Integer.valueOf(dataHashMap.get(RaveConstants.networkPosition).getData());
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
-        boolean isNetworkValid = networkValidator.isNetworkValid(network);
+        boolean isNetworkValid = networkValidator.isNetworkValid(networkPosition);
 
         if (!isAmountValidated) {
             valid = false;
