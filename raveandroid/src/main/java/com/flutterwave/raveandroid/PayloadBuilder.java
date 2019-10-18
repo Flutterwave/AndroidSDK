@@ -262,6 +262,16 @@ public class PayloadBuilder {
         return payload;
     }
 
+    public Payload createFrancPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setPayment_type("mobilemoneyfranco");
+        payload.setIs_mobile_money_franco(true);
+        return payload;
+    }
+
     public Payload createUKPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);

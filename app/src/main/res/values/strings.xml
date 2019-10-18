@@ -15,5 +15,22 @@
     <string name="start_payment">START PAYMENT</string>
     <string name="secret_key">Secret Key</string>
     <string name="encryption_key">Encryption key</string>
+    <string name="francophone">Accept Franc Mobile Money Payments</string>
+    <string name="uk_bank">Accept UK Bank Payments</string>
+    <string name="live">Live</string>
+    <string name="bank_transfer">Accept Bank Transfer Payments</string>
+    <string name="zambia">Accept ZM Mobile money payments</string>
+    <string name="rwanda">Accept RWF Mobile money payments</string>
+    <string name="uganda">Accept UG Mobile money payments</string>
+    <string name="ghana">Accept GH Mobile money payments</string>
+    <string name="staging">Show Staging Label</string>
+    <string name="ach">Accept ACH payments</string>
+    <string name="should_display_fee">Should Display Fee</string>
+    <string name="mpesa">Accept Mpesa payments</string>
+    <string name="pre_auth_charge">Pre Auth Charge</string>
+    <string name="add_subaccounts">Add subaccounts</string>
+    <string name="current_vendor">Your current vendor refs are:</string>
+    <string name="add_vendor">ADD VENDOR</string>
+    <string name="clear">CLEAR</string>
 	<string name="accept_ussd_payments">Accept USSD Payments</string>
 </resources>

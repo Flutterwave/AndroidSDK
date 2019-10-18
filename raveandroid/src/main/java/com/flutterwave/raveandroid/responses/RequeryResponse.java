@@ -27,6 +27,16 @@ public class RequeryResponse {
 
     public static class Data {
 
+        Data data;
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
         String chargeResponseCode;
 
         public String getChargeResponseCode() { return chargeResponseCode; }

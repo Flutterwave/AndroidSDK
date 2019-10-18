@@ -362,7 +362,17 @@ public class Payload
         this.payment_type = payment_type;
     }
 
+    private boolean is_mobile_money_franco;
+
     private String payment_type;
+
+    public boolean getIs_mobile_money_franco() {
+        return is_mobile_money_franco;
+    }
+
+    public void setIs_mobile_money_franco(boolean is_mobile_money_franco) {
+        this.is_mobile_money_franco = is_mobile_money_franco;
+    }
 
     public String getPhonenumber() {
         return phonenumber;

@@ -37,133 +37,10 @@
                 />
 
 
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Accept Mpesa payments"
-                    android:checked="true"
-                    android:id="@+id/accountMpesaSwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Should Display Fee"
-                    android:checked="true"
-                    android:id="@+id/isDisplayFeeSwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Show Staging Label"
-                    android:checked="true"
-                    android:id="@+id/shouldShowStagingLabelSwitch"
-                    />
-
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Accept ACH payments"
-                    android:checked="false"
-                    android:id="@+id/accountAchSwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Accept GH Mobile money payments"
-                    android:checked="false"
-                    android:id="@+id/accountGHMobileMoneySwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Accept UG Mobile money payments"
-                    android:checked="false"
-                    android:id="@+id/accountUgMobileMoneySwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/accountRwfMobileMoneySwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="Accept RWF Mobile money payments" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/accountZmMobileMoneySwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="Accept ZM Mobile money payments" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Accept Bank Transfer Payments"
-                    android:checked="false"
-                    android:id="@+id/bankTransferSwitch"
-                    />
-	
-	            <android.support.v7.widget.SwitchCompat
-		            android:id="@+id/ussd_switch"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="10dp"
-		            android:checked="false"
-		            android:text="@string/accept_ussd_payments" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/accountUkbankSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="Accept UK Bank Payments" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Live"
-                    android:checked="false"
-                    android:id="@+id/isLiveSwitch"
-                    />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Pre Auth Charge"
-                    android:checked="false"
-                    android:id="@+id/isPreAuthSwitch"
-                    />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_height="wrap_content">
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Add subaccounts"
-                        android:checked="false"
-                        android:id="@+id/addSubAccountsSwitch"
-                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,13 +48,6 @@
                         android:orientation="vertical"
                         android:visibility="gone"
                         android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/refIdsTV"
-                            android:textColor="@color/black"
-                            android:text="Your current vendor refs are: "/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -188,21 +58,156 @@
                             <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ADD VENDOR"
+                                android:text="@string/add_vendor"
                                 android:layout_margin="3dp"
-                                android:id="@+id/addVendorBtn"/>
+                                android:id="@+id/addVendorBtn" />
 
                             <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="CLEAR"
+                                android:text="@string/clear"
                                 android:layout_margin="3dp"
-                                android:id="@+id/clearVendorsBtn"/>
+                                android:id="@+id/clearVendorsBtn" />
 
                         </LinearLayout>
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/refIdsTV"
+                            android:textColor="@color/black"
+                            android:text="@string/current_vendor" />
+
                     </LinearLayout>
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/add_subaccounts"
+                        android:checked="false"
+                        android:id="@+id/addSubAccountsSwitch" />
                 </LinearLayout>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/mpesa"
+                    android:checked="true"
+                    android:id="@+id/accountMpesaSwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/should_display_fee"
+                    android:checked="true"
+                    android:id="@+id/isDisplayFeeSwitch"
+                    />
+
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/staging"
+                    android:checked="true"
+                    android:id="@+id/shouldShowStagingLabelSwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/ach"
+                    android:checked="false"
+                    android:id="@+id/accountAchSwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/ghana"
+                    android:checked="false"
+                    android:id="@+id/accountGHMobileMoneySwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/uganda"
+                    android:checked="false"
+                    android:id="@+id/accountUgMobileMoneySwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountRwfMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/rwanda" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountZmMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/zambia" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/ussd_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/accept_ussd_payments" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/bank_transfer"
+                    android:checked="false"
+                    android:id="@+id/bankTransferSwitch" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountUkbankSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/uk_bank" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountfrancMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/francophone" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/live"
+                    android:checked="false"
+                    android:id="@+id/isLiveSwitch"
+                    />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/pre_auth_charge"
+                    android:checked="false"
+                    android:id="@+id/isPreAuthSwitch" />
 
                 <EditText
                     android:layout_width="match_parent"

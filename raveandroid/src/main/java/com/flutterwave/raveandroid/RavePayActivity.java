@@ -23,12 +23,13 @@ import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
+import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
-import com.flutterwave.raveandroid.ussd.UssdFragment;
 import com.flutterwave.raveandroid.uk.UkFragment;
+import com.flutterwave.raveandroid.ussd.UssdFragment;
 import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 
 import org.parceler.Parcels;
@@ -134,6 +135,10 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (ravePayInitializer.isWithUk()) {
             raveFragments.add(new RaveFragment(new UkFragment(), "UK"));
+        }
+
+        if (ravePayInitializer.isWithFrancMobileMoney()) {
+            raveFragments.add(new RaveFragment(new FrancMobileMoneyFragment(), "Franc Mobile Money"));
         }
 
         if (ravePayInitializer.isWithRwfMobileMoney()) {

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat ugMobileMoneySwitch;
     SwitchCompat ukbankSwitch;
+    SwitchCompat francMobileMoneySwitch;
     SwitchCompat rwfMobileMoneySwitch;
     SwitchCompat zmMobileMoneySwitch;
     SwitchCompat bankTransferSwitch;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
         ukbankSwitch = findViewById(R.id.accountUkbankSwitch);
+        francMobileMoneySwitch = findViewById(R.id.accountfrancMobileMoneySwitch);
         zmMobileMoneySwitch = findViewById(R.id.accountZmMobileMoneySwitch);
         rwfMobileMoneySwitch = findViewById(R.id.accountRwfMobileMoneySwitch);
         bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
@@ -217,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
                     .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
                     .acceptUkPayments(ukbankSwitch.isChecked())
+                    .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
                     .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                     .acceptUssdPayments(ussdSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
