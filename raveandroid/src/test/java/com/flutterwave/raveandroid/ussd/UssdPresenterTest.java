@@ -490,9 +490,9 @@ public class UssdPresenterTest {
     private ChargeResponse generateValidChargeResponse() {
         ChargeResponse chargeResponse = new ChargeResponse();
         chargeResponse.setData(new ChargeResponse.Data());
-        chargeResponse.getData().setUssdData(new ChargeResponse.Data.UssdData());
+        chargeResponse.getData().setUssdData(new ChargeResponse.Data());
 
-        ChargeResponse.Data.UssdData data = chargeResponse.getData().getUssdData();
+        ChargeResponse.Data data = chargeResponse.getData().getUssdData();
 
         data.setFlw_reference(generateRandomString());
         data.setNote(generateRandomString());
