@@ -20,21 +20,8 @@
             android:orientation="vertical"
             android:padding="30dp">
 
-            <Button
-                android:id="@+id/startPaymentBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/start_payment" />
 
-            <EditText
-                android:id="@+id/emailEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:textSize="14sp" />
+
 
 
             <android.support.v7.widget.SwitchCompat
@@ -124,106 +111,20 @@
                     android:checked="false"
                     android:id="@+id/bankTransferSwitch" />
 
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/accountUkbankSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="@string/uk_bank" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/accountfrancMobileMoneySwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:checked="false"
-                    android:text="@string/francophone" />
+            <Button
+                android:id="@+id/startPaymentBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/start_payment" />
 
             <EditText
-                android:id="@+id/amountEt"
+                android:id="@+id/emailEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="@string/amount_to_charge_required"
-                android:inputType="number"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/publicKeyEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/public_key"
-                android:text=""
-                android:textSize="14sp" />
-
-
-            <EditText
-                android:id="@+id/encryptionEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/encryption_key"
-                android:text=""
-                android:textSize="14sp" />
-
-
-            <android.support.v7.widget.SwitchCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                android:text="@string/live"
-                android:checked="false"
-                android:id="@+id/isLiveSwitch"
-                    />
-
-            <EditText
-                android:id="@+id/txRefEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/txref_required"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/narrationTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/narration"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/currencyEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/currency_code_e_g_ngn"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/countryEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/country_code_e_g_ng"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/fNameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/first_name"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/lnameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/last_name"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
             <LinearLayout
@@ -250,14 +151,15 @@
                     android:hint="Number of payments till expiry"
                     android:inputType="number" />
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
                     android:text="and/or" />
+
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -309,23 +211,16 @@
                     android:layout_marginBottom="10dp"
                     android:checked="false"
                     android:text="Add subaccounts" />
+
             </LinearLayout>
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/cardPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_card_payments" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/accountPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_account_payments" />
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountfrancMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="@string/francophone" />
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/isPermanentSwitch"
@@ -352,12 +247,122 @@
                 tools:visibility="visible" />
 
             <android.support.v7.widget.SwitchCompat
+                android:id="@+id/accountUkbankSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/uk_bank" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/cardPaymentSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/accept_card_payments" />
+
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/accountPaymentSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/accept_account_payments" />
+
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/isPreAuthSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:checked="false"
                 android:text="Pre Auth Charge" />
+
+            <EditText
+                android:id="@+id/amountEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/amount_to_charge_required"
+                android:inputType="number"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/publicKeyEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/public_key"
+                android:text=""
+                android:textSize="14sp" />
+
+
+            <EditText
+                android:id="@+id/encryptionEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/encryption_key"
+                android:text=""
+                android:textSize="14sp" />
+
+
+            <EditText
+                android:id="@+id/txRefEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/txref_required"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/narrationTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/narration"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/currencyEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/currency_code_e_g_ngn"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/countryEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/country_code_e_g_ng"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/fNameEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/first_name"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/lnameEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/last_name"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/isLiveSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/live" />
 
 
         </LinearLayout>
