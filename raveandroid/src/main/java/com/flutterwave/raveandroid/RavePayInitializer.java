@@ -37,6 +37,9 @@ public class RavePayInitializer {
     boolean isPreAuth = false;
     boolean displayFee = true;
     boolean showStagingLabel;
+    private boolean isPermanent;
+    private int frequency;
+    private int duration;
     private boolean withUssd;
 
     public RavePayInitializer(String email, double amount, String publicKey,
@@ -46,6 +49,7 @@ public class RavePayInitializer {
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
                               boolean withUgMobileMoney, boolean withRwfMobileMoney, boolean withZmMobileMoney,
                               boolean withAch, boolean withBankTransfer, boolean withUk, boolean withUssd, boolean withFrancMobileMoney, int theme,
+                              boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee) {
         this.email = email;
@@ -64,6 +68,9 @@ public class RavePayInitializer {
         this.withRwfMobileMoney = withRwfMobileMoney;
         this.withZmMobileMoney = withZmMobileMoney;
         this.withBankTransfer = withBankTransfer;
+        this.isPermanent = isPermanent;
+        this.duration = duration;
+        this.frequency = frequency;
         this.withUssd = withUssd;
         this.withUk = withUk;
         this.withFrancMobileMoney = withFrancMobileMoney;
@@ -281,6 +288,30 @@ public class RavePayInitializer {
 
     public void setIsDisplayFee(boolean displayFee) {
         this.displayFee = displayFee;
+    }
+
+    public boolean getIsPermanent() {
+        return isPermanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.isPermanent = permanent;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public boolean isWithUssd() {
