@@ -74,7 +74,6 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         return v;
     }
 
-
     private void injectComponents() {
 
         if (getActivity() != null) {
