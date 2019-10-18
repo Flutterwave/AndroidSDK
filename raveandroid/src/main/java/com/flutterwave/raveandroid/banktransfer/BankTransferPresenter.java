@@ -80,6 +80,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
                 }
             }
@@ -196,10 +197,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
         body.setPBFPubKey(publicKey);
 
         networkRequest.requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
-
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("01")) {
@@ -287,7 +286,10 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId())
-                    .setNarration(ravePayInitializer.getNarration());
+                    .setNarration(ravePayInitializer.getNarration())
+                    .setfrequency(ravePayInitializer.getFrequency())
+                    .setDuration(ravePayInitializer.getDuration())
+                    .setIsPermanent(ravePayInitializer.getIsPermanent());
 
             Payload body = builder.createBankTransferPayload();
 

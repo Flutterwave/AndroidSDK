@@ -44,6 +44,9 @@ public class RavePayManager {
     boolean isPreAuth =  false;
     boolean showStagingLabel = true;
     boolean displayFee = true;
+    private boolean isPermanent = false;
+    private int duration = 0;
+    private int frequency = 0;
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -106,6 +109,20 @@ public class RavePayManager {
 
     public RavePayManager acceptBankTransferPayments(boolean withBankTransfer) {
         this.withBankTransfer = withBankTransfer;
+        return this;
+    }
+
+
+    public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, boolean isPermanent) {
+        this.withBankTransfer = withBankTransfer;
+        this.isPermanent = isPermanent;
+        return this;
+    }
+
+    public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, int duration, int frequency) {
+        this.withBankTransfer = withBankTransfer;
+        this.duration = duration;
+        this.frequency = frequency;
         return this;
     }
 
@@ -225,6 +242,9 @@ public class RavePayManager {
                 withZmMobileMoney,
                 withAch,
                 withBankTransfer,
+                isPermanent,
+                duration,
+                frequency,
                 theme,
                 staging,
                 meta,

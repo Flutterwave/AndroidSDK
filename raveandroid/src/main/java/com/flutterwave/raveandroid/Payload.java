@@ -12,6 +12,10 @@ import java.util.List;
 
 public class Payload
 {
+    private Boolean is_permanent;
+    private Integer duration;
+    private Integer frequency;
+
     public String getCardBIN() {
         return cardBIN;
     }
@@ -615,6 +619,30 @@ public class Payload
 
     public void setIs_bank_transfer(boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
+    }
+
+    public boolean getIs_permanent() {
+        return is_permanent;
+    }
+
+    public void setIs_permanent(boolean is_permanent) {
+        this.is_permanent = is_permanent;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
     }
 }
 

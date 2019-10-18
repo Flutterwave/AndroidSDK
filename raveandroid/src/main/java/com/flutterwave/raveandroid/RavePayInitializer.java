@@ -35,6 +35,9 @@ public class RavePayInitializer {
     boolean isPreAuth = false;
     boolean displayFee = true;
     boolean showStagingLabel;
+    private boolean isPermanent;
+    private int frequency;
+    private int duration;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
@@ -42,7 +45,8 @@ public class RavePayInitializer {
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
                               boolean withUgMobileMoney, boolean withRwfMobileMoney, boolean withZmMobileMoney,
-                              boolean withAch, boolean withBankTransfer, int theme,
+                              boolean withAch, boolean withBankTransfer, boolean isPermanent,
+                              int duration, int frequency, int theme,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee) {
         this.email = email;
@@ -61,6 +65,9 @@ public class RavePayInitializer {
         this.withRwfMobileMoney = withRwfMobileMoney;
         this.withZmMobileMoney = withZmMobileMoney;
         this.withBankTransfer = withBankTransfer;
+        this.isPermanent = isPermanent;
+        this.duration = duration;
+        this.frequency = frequency;
         this.withMpesa = withMpesa;
         this.withCard = withCard;
         this.withAch = withAch;
@@ -267,5 +274,29 @@ public class RavePayInitializer {
 
     public void setIsDisplayFee(boolean displayFee) {
         this.displayFee = displayFee;
+    }
+
+    public boolean getIsPermanent() {
+        return isPermanent;
+    }
+
+    public void setPermanent(boolean permanent) {
+        this.isPermanent = permanent;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
