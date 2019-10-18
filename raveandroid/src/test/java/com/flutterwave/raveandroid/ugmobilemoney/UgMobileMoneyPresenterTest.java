@@ -42,11 +42,13 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -110,6 +112,20 @@ public class UgMobileMoneyPresenterTest {
 
     }
 
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
+
+        presenter.fetchFee(generatePayload());
+
+        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class));
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view, times(1)).showFetchFeeFailed(transactionError);
+
+    }
 
     @Test
     public void chargeUgMobileMoney_onSuccess_requeryTxCalled() {

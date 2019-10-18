@@ -26,6 +26,8 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+
 public class UssdPresenter implements UssdContract.UserActionsListener {
     private Context context;
     public UssdContract.View mView;
@@ -101,7 +103,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
                 } catch (Exception e) {
-                    mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                    mView.showFetchFeeFailed(transactionError);
                 }
             }
 
@@ -109,7 +111,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                mView.showFetchFeeFailed(transactionError);
             }
         });
     }

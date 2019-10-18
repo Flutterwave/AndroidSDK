@@ -73,6 +73,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -322,6 +323,21 @@ public class AccountPresenterTest {
 
         //assert
         verify(view).displayFee(feeCheckResponse.getData().getCharge_amount(), payload, internetBanking);
+
+    }
+
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
+
+        accountPresenter.fetchFee(generatePayload(), false);
+
+        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class), any(Boolean.class));
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view, times(1)).showFetchFeeFailed(transactionError);
 
     }
 

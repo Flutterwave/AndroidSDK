@@ -123,6 +123,21 @@ public class UkPresenterTest {
 
     }
 
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
+
+        ukPresenter.fetchFee(generatePayload());
+
+        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class));
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view, times(1)).showFetchFeeFailed(transactionError);
+
+    }
+
     @Test(expected = Exception.class)
     public void fetchFee_onSuccess_displayFeeException_showFetchFeeFailedCalledWithCorrectParams() {
 
