@@ -650,6 +650,7 @@ public class Payload
 
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+    }
 
     public boolean getIs_ussd() {
         return is_ussd;
