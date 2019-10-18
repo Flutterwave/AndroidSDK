@@ -109,6 +109,30 @@ tools:context="com.flutterwave.rave_android.MainActivity">
             android:layout_marginBottom="10dp"
             android:checked="false"
             android:text="Accept UK Bank Payments" />
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/accountZmMobileMoneySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:checked="false"
+                    android:text="Accept ZM Mobile money payments" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="Accept Bank Transfer Payments"
+                    android:checked="false"
+                    android:id="@+id/bankTransferSwitch"
+                    />
+
+	            <android.support.v7.widget.SwitchCompat
+		            android:id="@+id/ussd_switch"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="10dp"
+		            android:checked="false"
+		            android:text="@string/accept_ussd_payments" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/bankTransferSwitch"

@@ -16,6 +16,9 @@ public class Payload
     private Integer duration;
     private Integer frequency;
 
+    private boolean is_ussd;
+    private String orderRef;
+
     public String getCardBIN() {
         return cardBIN;
     }
@@ -648,6 +651,23 @@ public class Payload
     public void setFrequency(int frequency) {
         this.frequency = frequency;
 
+    public boolean getIs_ussd() {
+        return is_ussd;
+    }
+
+    public void setIs_ussd(boolean is_ussd) {
+        this.is_ussd = is_ussd;
+    }
+
+    public String getOrderRef() {
+        return orderRef;
+    }
+
+    public void setOrderRef(String orderRef) {
+        this.orderRef = orderRef;
+
+    }
+
     public boolean getIs_uk_bank_charge() {
         return is_uk_bank_charge2;
     }
@@ -662,7 +682,6 @@ public class Payload
 
     public void setAccountname(String accountname) {
         this.accountname = accountname;
->
     }
 }
 

@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid;
 
+import java.util.HashMap;
+
 /**
  * Created by hamzafetuga on 14/07/2017.
  */
@@ -50,6 +52,7 @@ public class RaveConstants {
     public static String fieldCvv = "cvv";
     public static String fieldCardExpiry = "cardExpiry";
     public static String fieldcardNoStripped = "cardNoStripped";
+    public static String fieldUssdBank = "ussdbank";
     public static String date_of_birth = "Date of Birth";
     public static String isInternetBanking = "bankcode";
 
@@ -95,4 +98,18 @@ public class RaveConstants {
     public static String no_authurl_was_returnedmsg = "No authUrl was returned";
     public static String wait = "Please wait...";
     public static String cancelPayment = "CANCEL PAYMENT";
+    public static String bankNameGtb = "Guaranty Trust Bank";
+
+
+    public static HashMap<String, String> ussdBanksList = new HashMap<String, String>() {{
+        put(bankNameGtb, "058");
+        put("Fidelity Bank", "070");
+        put("Keystone Bank", "082");
+        put("Unity Bank PLC", "215");
+        put("Zenith bank PLC", "057");
+        put("Sterling Bank PLC", "232");
+        put("United Bank for Africa", "033");
+    }};
+
+
 }

@@ -54,6 +54,7 @@ public class RavePayManager {
     private boolean isPermanent = false;
     private int duration = 0;
     private int frequency = 0;
+    private boolean withUssd;
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -135,6 +136,11 @@ public class RavePayManager {
         this.withBankTransfer = withBankTransfer;
         this.duration = duration;
         this.frequency = frequency;
+        return this;
+    }
+
+    public RavePayManager acceptUssdPayments(boolean withUssd) {
+        this.withUssd = withUssd;
         return this;
     }
 
@@ -265,6 +271,7 @@ public class RavePayManager {
                 withZmMobileMoney,
                 withAch,
                 withUk,
+                withUssd,
                 withBankTransfer,
                 isPermanent,
                 duration,

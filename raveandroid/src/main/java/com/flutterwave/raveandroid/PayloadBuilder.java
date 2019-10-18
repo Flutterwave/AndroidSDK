@@ -249,6 +249,19 @@ public class PayloadBuilder {
         return payload;
     }
 
+
+    public Payload createUssdPayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setAccountbank(accountbank);
+        payload.setIs_ussd(true);
+        payload.setPayment_type("USSD");
+        payload.setOrderRef(txRef);
+        return payload;
+    }
+
     public Payload createMpesaPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
@@ -491,4 +504,5 @@ public class PayloadBuilder {
         this.duration = duration;
         return this;
     }
+
 }

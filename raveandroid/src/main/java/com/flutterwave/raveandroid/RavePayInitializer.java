@@ -39,6 +39,7 @@ public class RavePayInitializer {
     private boolean isPermanent;
     private int frequency;
     private int duration;
+    private boolean withUssd;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
@@ -46,7 +47,7 @@ public class RavePayInitializer {
                               String lName, boolean withCard,
                               boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
                               boolean withUgMobileMoney, boolean withRwfMobileMoney, boolean withZmMobileMoney,
-                              boolean withAch, boolean withUk, boolean withBankTransfer, boolean isPermanent,
+                              boolean withAch, boolean withUk, boolean withUssd, boolean withBankTransfer, boolean isPermanent,
                               int duration, int frequency, int theme,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee) {
@@ -69,6 +70,7 @@ public class RavePayInitializer {
         this.isPermanent = isPermanent;
         this.duration = duration;
         this.frequency = frequency;
+        this.withUssd = withUssd;
         this.withUk = withUk;
         this.withMpesa = withMpesa;
         this.withCard = withCard;
@@ -304,5 +306,13 @@ public class RavePayInitializer {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public boolean isWithUssd() {
+        return withUssd;
+    }
+
+    public void setWithUssd(boolean withUssd) {
+        this.withUssd = withUssd;
     }
 }

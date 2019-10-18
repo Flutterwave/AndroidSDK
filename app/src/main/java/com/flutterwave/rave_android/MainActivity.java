@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat bankTransferSwitch;
     SwitchCompat isPermanentAccountSwitch;
     SwitchCompat setExpirySwitch;
+    SwitchCompat ussdSwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         setExpirySwitch = findViewById(R.id.setExpirySwitch);
         bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
         expiryDetailsLayout = findViewById(R.id.expiry_layout);
+        ussdSwitch = findViewById(R.id.ussd_switch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
@@ -276,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
                     .acceptUkPayments(ukbankSwitch.isChecked())
                     .acceptBankTransferPayments(bankTransferSwitch.isChecked())
+                    .acceptUssdPayments(ussdSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
                     .isPreAuth(isPreAuthSwitch.isChecked())

@@ -8,4 +8,5 @@
     <color name="tabIndicatorColor">@color/colorPrimary</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
+	<color name="sisal">#DCD4C9</color>
 </resources>
