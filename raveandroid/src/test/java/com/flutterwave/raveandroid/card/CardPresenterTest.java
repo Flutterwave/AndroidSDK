@@ -49,6 +49,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.unknownAuthmsg;
 import static com.flutterwave.raveandroid.RaveConstants.unknownResCodemsg;
 import static org.junit.Assert.assertEquals;
@@ -56,6 +57,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -235,6 +237,21 @@ public class CardPresenterTest {
         captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
 
         verify(view).displayFee(anyString(), any(Payload.class), anyInt());
+
+    }
+
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
+
+        cardPresenter.fetchFee(generatePayload(), 1);
+
+        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class), any(Integer.class));
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view, times(1)).showFetchFeeFailed(transactionError);
 
     }
 
