@@ -51,6 +51,7 @@ public class RavePayManager {
     boolean isPreAuth =  false;
     boolean showStagingLabel = true;
     boolean displayFee = true;
+    private boolean withUssd;
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -118,6 +119,11 @@ public class RavePayManager {
 
     public RavePayManager acceptBankTransferPayments(boolean withBankTransfer) {
         this.withBankTransfer = withBankTransfer;
+        return this;
+    }
+
+    public RavePayManager acceptUssdPayments(boolean withUssd) {
+        this.withUssd = withUssd;
         return this;
     }
 
@@ -249,6 +255,7 @@ public class RavePayManager {
                 withAch,
                 withBankTransfer,
                 withUk,
+                withUssd,
                 theme,
                 staging,
                 meta,

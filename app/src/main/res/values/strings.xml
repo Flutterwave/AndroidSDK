@@ -15,4 +15,5 @@
     <string name="start_payment">START PAYMENT</string>
     <string name="secret_key">Secret Key</string>
     <string name="encryption_key">Encryption key</string>
+	<string name="accept_ussd_payments">Accept USSD Payments</string>
 </resources>

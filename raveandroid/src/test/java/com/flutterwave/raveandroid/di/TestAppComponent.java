@@ -18,6 +18,8 @@ import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenter;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenter;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenterTest;
+import com.flutterwave.raveandroid.ussd.UssdPresenter;
+import com.flutterwave.raveandroid.ussd.UssdPresenterTest;
 import com.flutterwave.raveandroid.uk.UkPresenter;
 import com.flutterwave.raveandroid.uk.UkPresenterTest;
 import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyPresenter;
@@ -37,6 +39,8 @@ public interface TestAppComponent extends AppComponent {
 
     void inject(BankTransferPresenterTest bankTransferPresenterTest);
 
+    void inject(UssdPresenterTest ussdPresenterTest);
+
     void inject(MpesaPresenterTest mpesaPresenterTest);
 
     void inject(UgMobileMoneyPresenterTest ugMobileMoneyPresenterTest);
@@ -50,7 +54,7 @@ public interface TestAppComponent extends AppComponent {
     void inject(TransactionStatusCheckerTest transactionStatusCheckerTest);
 
     void inject(AchPresenterTest achPresenterTest);
-
+    
     void inject(UkPresenterTest ukPresenterTest);
 
     void inject(CardPresenter cardPresenter);
@@ -59,6 +63,8 @@ public interface TestAppComponent extends AppComponent {
 
     void inject(BankTransferPresenter bankTransferPresenter);
 
+    void inject(UssdPresenter ussdPresenter);
+
     void inject(MpesaPresenter mpesaPresenter);
 
     void inject(UgMobileMoneyPresenter ugMobileMoneyPresenter);
@@ -66,7 +72,7 @@ public interface TestAppComponent extends AppComponent {
     void inject(GhMobileMoneyPresenter ghMobileMoneyPresenter);
 
     void inject(AchPresenter achPresenter);
-
+    
     void inject(UkPresenter ukPresenter);
 
     void inject(RwfMobileMoneyPresenter rwfMobileMoneyPresenter);

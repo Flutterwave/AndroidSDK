@@ -62,6 +62,70 @@ public class ChargeResponse {
         String response_message;
         String accountnumber;
         String bankname;
+
+
+
+        public void setFlw_reference(String flw_reference) {
+            this.flw_reference = flw_reference;
+        }
+
+        public String getReference_code() {
+            return payment_code;
+        }
+
+        public void setReference_code(String reference_code) {
+            this.payment_code = reference_code;
+        }
+
+        public Data getUssdData() {
+            return data;
+        }
+
+        public void setUssdData(Data data) {
+            this.data = data;
+        }
+
+        public void setResponse_code(String response_code) {
+            this.response_code = response_code;
+        }
+
+        public void setResponse_message(String response_message) {
+            this.response_message = response_message;
+        }
+
+        public void setBankname(String bankname) {
+            this.bankname = bankname;
+        }
+
+        public void setAmount(String amount) {
+            this.amount = amount;
+        }
+
+        public String getTxRef() {
+            return txRef;
+        }
+
+        public void setTxRef(String txRef) {
+            this.txRef = txRef;
+        }
+
+        public void setChargeResponseMessage(String chargeResponseMessage) {
+            this.chargeResponseMessage = chargeResponseMessage;
+        }
+
+        public String getCharged_amount() {
+            return charged_amount;
+        }
+
+        public void setCharged_amount(String charged_amount) {
+            this.charged_amount = charged_amount;
+        }
+
+        public void setRedirectUrl(String redirectUrl) {
+            this.redirectUrl = redirectUrl;
+        }
+
+
         String note;
         String amount;
         String validateInstruction;
@@ -83,6 +147,7 @@ public class ChargeResponse {
         public String getTransaction_reference() {
             return transaction_reference;
         }
+
 
         public void setValidateInstruction(String validateInstruction) {
             this.validateInstruction = validateInstruction;
