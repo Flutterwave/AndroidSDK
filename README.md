@@ -1,4 +1,4 @@
-# Rave's Android Drop In UI
+# Rave's Android Drop-In UI
 
 Rave's Android Drop-In is a readymade UI that allows you to accept card and bank payments in your Android app.
 
@@ -33,7 +33,7 @@ The minimum supported SDK version is 15
 
 **Step 3.** Add the required permission
 
-Add the `READ_PHONE_PERMISSION` and `INTERNET` permissions to your android manifest
+Add the `READ_PHONE_PERMISSION` and `INTERNET` permissions to your Android manifest
 
      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
      <uses-permission android:name="android.permission.INTERNET" />
@@ -103,7 +103,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | acceptFrancMobileMoneyPayments(boolean) | Set to `true` if you want to accept Francophone mobile money payments, else set to `false` . For this option to work, you should set your country to `NG` and your currency to `XOF` for West African CFA franc like `Ivory Coast` OR `XAF` for Central African CFA franc like `Cameroon` . See more details in the [API documentation](https://developer.flutterwave.com/reference#mobile-money-francophone).| `boolean` | Not Required |
 | onStagingEnv(boolean) | Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to false  | `boolean` | Not Required
 | setMeta(`List<Meta>`) | Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects | List<Meta> | Not Required
-| setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccount` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
+| setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`, if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccount` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
 | setIsPreAuth(boolean) | Set to `true` to preauthorise the transaction amount. [Learn more about preauthourization](https://developer.flutterwave.com/v2.0/reference#introduction-1). | `int` | Not Required
 | withTheme(styleId) | Sets the theme of the UI. | `int` | Not Required
 | setPaymentPlan(payment_plan) | If you want to do recurrent payment, this is the payment plan ID to use for the recurring payment, you can see how to create payment plans [here](https://flutterwavedevelopers.readme.io/v2.0/reference#create-payment-plan) and [here](https://flutterwavedevelopers.readme.io/docs/recurring-billing). This is only available for card payments | `String` | Not Required
