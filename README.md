@@ -1,4 +1,4 @@
-# Rave's Android Drop-In UI
+# Rave's Android Drop In UI
 
 Rave's Android Drop-In is a readymade UI that allows you to accept card and bank payments in your Android app.
 
