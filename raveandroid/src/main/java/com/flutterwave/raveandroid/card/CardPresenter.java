@@ -143,9 +143,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
                                 chargeResponseMessage = chargeResponseMessage == null ? enterOTP : chargeResponseMessage;
                                 mView.showOTPLayout(flwRef, chargeResponseMessage);
+
                             } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
                                 String flwRef = response.getData().getFlwRef();
-
                                 mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
                             }
                         }
@@ -186,6 +186,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         mView.showProgressIndicator(true);
 
         networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
