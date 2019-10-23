@@ -168,7 +168,7 @@
 	</string-array>
 	
 	<string-array name="ussd_banks">
-		<item>Select network</item>
+        <item>Select Bank</item>
 		<item>Fidelity Bank</item>
 		<item>Guaranty Trust Bank</item>
 		<item>Keystone Bank</item>
