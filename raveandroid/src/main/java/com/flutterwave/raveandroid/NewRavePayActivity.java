@@ -139,7 +139,7 @@ public class NewRavePayActivity extends AppCompatActivity {
     }
 
 
-    private void renderToTop(TextView tv) {
+    private void renderToTop(View tv) {
 
         ConstraintSet set = new ConstraintSet();
         set.clone(root);
@@ -160,7 +160,7 @@ public class NewRavePayActivity extends AppCompatActivity {
         } else set.applyTo(root);
     }
 
-    private void renderToBottom(TextView tv) {
+    private void renderToBottom(View tv) {
 
         ConstraintSet set = new ConstraintSet();
         set.clone(root);
@@ -180,7 +180,7 @@ public class NewRavePayActivity extends AppCompatActivity {
         } else set.applyTo(root);
     }
 
-    private void renderAsHidden(TextView tv) {
+    private void renderAsHidden(View tv) {
 
         ConstraintSet set = new ConstraintSet();
         set.clone(root);
@@ -203,11 +203,11 @@ public class NewRavePayActivity extends AppCompatActivity {
     private void generateTiles(int count) {
 
         for (int t = 0; t < count; t++) {
-            TextView tv = createTileView("tile" + t);
-            Tile tile = new Tile(tv, false);
+            View tileView = createTileView("tile" + t);
+            Tile tile = new Tile(tileView, false);
             tiles.add(tile);
-            tv.setOnClickListener(onClickListener);
-            tileMap.put(tv.getId(), tile);
+            tileView.setOnClickListener(onClickListener);
+            tileMap.put(tileView.getId(), tile);
         }
     }
 
@@ -228,7 +228,7 @@ public class NewRavePayActivity extends AppCompatActivity {
 //        for (i in 0 until tiles.count())
         for (int i = 0; i < tiles.size(); i++) {
 
-            TextView tv2 = tiles.get(i).view;
+            View tv2 = tiles.get(i).view;
 
             int upIndex = 10 - (i + 1);
             Guideline upGuide = guidelineMap.get(upIndex);
@@ -258,15 +258,16 @@ public class NewRavePayActivity extends AppCompatActivity {
 
     }
 
-    private TextView createTileView(String title) {
-        TextView tv2 = new TextView(this);
-        tv2.setId(ViewCompat.generateViewId());
-        tv2.setBackgroundColor(getRandomColor());
+    private View createTileView(String title) {
+        View tileView = getLayoutInflater().inflate(R.layout.payment_type_tile_layout, root, false);
+        TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
+        tileView.setId(ViewCompat.generateViewId());
+//        tv2.setBackgroundColor(getRandomColor());
         tv2.setText(title);
         tv2.setTextSize(29f);
-        root.addView(tv2);
+        root.addView(tileView);
 
-        return tv2;
+        return tileView;
     }
 
     private void generateGuides(int count) {

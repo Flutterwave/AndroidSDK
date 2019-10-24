@@ -1,18 +1,19 @@
 package com.flutterwave.raveandroid;
 
-import android.widget.TextView;
+
+import android.view.View;
 
 public class Tile {
 
-    TextView view;
+    View view;
     boolean isTop;
 
-    Tile(TextView view) {
+    Tile(View view) {
         this.view = view;
         this.isTop = false;
     }
 
-    Tile(TextView view, boolean isTop) {
+    Tile(View view, boolean isTop) {
         this.view = view;
         this.isTop = isTop;
     }
