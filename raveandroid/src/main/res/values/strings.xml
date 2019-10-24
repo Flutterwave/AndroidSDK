@@ -159,6 +159,7 @@
 	<string name="verify_ussd_payment_button_text">I have completed the payment</string>
 	<string name="choose_another_bank">CHOOSE ANOTHER BANK</string>
 	<string name="click_here_to_copy_the_ussd_code">Click here to copy the ussd code</string>
+	<string name="how_would_you_like_to_pay">How would you\nlike to pay?</string>
 
     <string-array name="gh_mobile_money_networks">
 		<item>Select network</item>

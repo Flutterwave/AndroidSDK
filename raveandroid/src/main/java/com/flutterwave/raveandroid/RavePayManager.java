@@ -257,6 +257,8 @@ public class RavePayManager {
 
     public RavePayInitializer createRavePayInitializer() {
 
+        // Todo: Add payment type order
+
         return new RavePayInitializer(
                 email,
                 amount,

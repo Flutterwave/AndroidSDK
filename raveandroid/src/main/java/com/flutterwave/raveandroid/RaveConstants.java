@@ -111,5 +111,33 @@ public class RaveConstants {
         put("United Bank for Africa", "033");
     }};
 
+    public static int PAYMENT_TYPE_CARD = 101;
+    public static int PAYMENT_TYPE_ACCOUNT = 102;
+    public static int PAYMENT_TYPE_GH_MOBILE_MONEY = 103;
+    public static int PAYMENT_TYPE_RW_MOBILE_MONEY = 104;
+    public static int PAYMENT_TYPE_MPESA = 105;
+    public static int PAYMENT_TYPE_UG_MOBILE_MONEY = 106;
+    public static int PAYMENT_TYPE_ACH = 107;
+    public static int PAYMENT_TYPE_ZM_MOBILE_MONEY = 108;
+    public static int PAYMENT_TYPE_BANK_TRANSFER = 109;
+    public static int PAYMENT_TYPE_UK = 110;
+    public static int PAYMENT_TYPE_USSD = 111;
+    public static int PAYMENT_TYPE_FRANCO_MOBILE_MONEY = 112;
+
+    public static HashMap<Integer, String> paymentTypesNamesList = new HashMap<Integer, String>() {{
+        put(PAYMENT_TYPE_CARD, "Card");
+        put(PAYMENT_TYPE_ACCOUNT, "Account");
+        put(PAYMENT_TYPE_GH_MOBILE_MONEY, "Ghana Mobile Money");
+        put(PAYMENT_TYPE_RW_MOBILE_MONEY, "Rwanda Mobile Money");
+        put(PAYMENT_TYPE_UG_MOBILE_MONEY, "Uganda Mobile Money");
+        put(PAYMENT_TYPE_ZM_MOBILE_MONEY, "Zambia Mobile Money");
+        put(PAYMENT_TYPE_FRANCO_MOBILE_MONEY, "Francophone Mobile Money");
+        put(PAYMENT_TYPE_MPESA, "M-Pesa");
+        put(PAYMENT_TYPE_ACH, "ACH");
+        put(PAYMENT_TYPE_BANK_TRANSFER, "Bank Transfer");
+        put(PAYMENT_TYPE_UK, "UK Bank Account");
+        put(PAYMENT_TYPE_USSD, "USSD");
+    }};
+
 
 }

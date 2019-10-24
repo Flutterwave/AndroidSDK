@@ -11,6 +11,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,14 +29,19 @@ public class NewRavePayActivity extends AppCompatActivity {
     private HashMap<Integer, Tile> tileMap = new HashMap<>();
     private Guideline topGuide;
     private Guideline bottomGuide;
-    private int tileCount = 10;
+    RavePayInitializer ravePayInitializer;
     private ConstraintLayout root;
+    private int tileCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_rave_pay);
         root = findViewById(R.id.rave_pay_activity_root);
+
+        setupRavePayInitializer();
+        // Todo: Handle edge cases for too few (1) or too many (13) payment types
+        // todo: Handle several screen sizes
 
 
         onClickListener = new View.OnClickListener() {
@@ -53,10 +59,47 @@ public class NewRavePayActivity extends AppCompatActivity {
         root.addView(bottomGuide);
         bottomGuide.setGuidelinePercent(0.9f);
 
+        generatePaymentTiles(tileCount);
         generateGuides(tileCount);
-        generateTiles(tileCount);
         render();
 
+    }
+
+    private void setupRavePayInitializer() {
+        ravePayInitializer = new RavePayInitializer(
+                "user@example.com",
+                100.00,
+                "asdf",
+                "asdfa",
+                "1",
+                "",
+                "NGN",
+                "NG",
+                "Wuraola",
+                "Benson",
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                R.style.DefaultTheme,
+                false,
+                0,
+                0,
+                true,
+                "",
+                "",
+                "",
+                false,
+                true,
+                true);
     }
 
     private void handleClick(View it) {
@@ -200,15 +243,79 @@ public class NewRavePayActivity extends AppCompatActivity {
         } else set.applyTo(root);
     }
 
-    private void generateTiles(int count) {
-
-        for (int t = 0; t < count; t++) {
-            View tileView = createTileView("tile" + t);
-            Tile tile = new Tile(tileView, false);
-            tiles.add(tile);
-            tileView.setOnClickListener(onClickListener);
-            tileMap.put(tileView.getId(), tile);
+    private void generatePaymentTiles(int count) {
+// Todo: reintroduce currency checks
+        if (ravePayInitializer.isWithCard()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_CARD);
         }
+
+        if (ravePayInitializer.isWithAccount()) {
+//            if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_ACH);
+//            } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_ACCOUNT);
+//            }
+        }
+
+        if (ravePayInitializer.isWithMpesa()
+//                && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")
+        ) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_MPESA);
+        }
+
+        if (ravePayInitializer.isWithGHMobileMoney()
+//                && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")
+        ) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
+        }
+
+        if (ravePayInitializer.isWithZmMobileMoney()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
+        }
+
+        if (ravePayInitializer.isWithUgMobileMoney()
+//                && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")
+        ) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
+        }
+
+        if (ravePayInitializer.isWithUk()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_UK);
+        }
+
+        if (ravePayInitializer.isWithFrancMobileMoney()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+        }
+
+        if (ravePayInitializer.isWithRwfMobileMoney()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
+        }
+
+//        if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
+        if (ravePayInitializer.isWithBankTransfer()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_BANK_TRANSFER);
+        }
+        if (ravePayInitializer.isWithUssd()) {
+            addPaymentType(RaveConstants.PAYMENT_TYPE_USSD);
+        }
+//        }
+    }
+
+    private void addPaymentType(int paymentType) {
+        View tileView;
+        try {
+            tileView = createTileView(RaveConstants.paymentTypesNamesList.get(paymentType));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("Add payment type error", "Payment type doesnt exist.");
+            return;
+        }
+
+        Tile tile = new Tile(tileView, false);
+        tiles.add(tile);
+        tileView.setOnClickListener(onClickListener);
+        tileMap.put(tileView.getId(), tile);
+        tileCount += 1;
     }
 
     private int getRandomColor() {
