@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/title_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/secured_by_flutterwave_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="25dp"
+        android:drawableLeft="@drawable/padlock"
+        android:drawablePadding="10dp"
+        android:letterSpacing="-0.01"
+        android:text="SECURED BY FLUTTERWAVE"
+        android:textColor="#4a4a4a"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:text="@string/how_would_you_like_to_pay"
+        android:textColor="#12122c"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <View
+        android:id="@+id/decorating_line"
+        android:layout_width="106dp"
+        android:layout_height="3dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/colorAccent"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+</android.support.constraint.ConstraintLayout>

@@ -8,7 +8,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/rave_cl"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="match_parent"
         android:background="#fbeed8">
 
         <TextView
@@ -20,6 +20,8 @@
             android:ellipsize="end"
             android:letterSpacing="-0.01"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Pay with your Debit Cards"
             android:textColor="#4a4a4a"
             android:textSize="18sp"

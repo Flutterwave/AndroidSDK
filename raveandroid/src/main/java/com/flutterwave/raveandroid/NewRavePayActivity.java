@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -9,6 +10,9 @@ import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -140,6 +144,7 @@ public class NewRavePayActivity extends AppCompatActivity {
                 }
             }
 
+            renderAsHidden(root.getViewById(R.id.title_container));
             //view was found
             if (tileId != null &&
                     foundTile != null &&
@@ -263,33 +268,33 @@ public class NewRavePayActivity extends AppCompatActivity {
             addPaymentType(RaveConstants.PAYMENT_TYPE_MPESA);
         }
 
-        if (ravePayInitializer.isWithGHMobileMoney()
-//                && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")
-        ) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
-        }
-
-        if (ravePayInitializer.isWithZmMobileMoney()) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
-        }
-
-        if (ravePayInitializer.isWithUgMobileMoney()
-//                && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")
-        ) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
-        }
-
-        if (ravePayInitializer.isWithUk()) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_UK);
-        }
-
-        if (ravePayInitializer.isWithFrancMobileMoney()) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
-        }
-
-        if (ravePayInitializer.isWithRwfMobileMoney()) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
-        }
+//        if (ravePayInitializer.isWithGHMobileMoney()
+////                && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")
+//        ) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
+//        }
+//
+//        if (ravePayInitializer.isWithZmMobileMoney()) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
+//        }
+//
+//        if (ravePayInitializer.isWithUgMobileMoney()
+////                && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")
+//        ) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
+//        }
+//
+//        if (ravePayInitializer.isWithUk()) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_UK);
+//        }
+//
+//        if (ravePayInitializer.isWithFrancMobileMoney()) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+//        }
+//
+//        if (ravePayInitializer.isWithRwfMobileMoney()) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
+//        }
 
 //        if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
         if (ravePayInitializer.isWithBankTransfer()) {
@@ -304,10 +309,12 @@ public class NewRavePayActivity extends AppCompatActivity {
     private void addPaymentType(int paymentType) {
         View tileView;
         try {
-            tileView = createTileView(RaveConstants.paymentTypesNamesList.get(paymentType));
+
+
+            tileView = createPaymentTileView(RaveConstants.paymentTypesNamesList.get(paymentType) + "");
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("Add payment type error", "Payment type doesnt exist.");
+            Log.d("Add payment type error", "Payment type doesn't exist.");
             return;
         }
 
@@ -352,6 +359,19 @@ public class NewRavePayActivity extends AppCompatActivity {
 
         }
 
+        // Set title view
+        View titleView = root.findViewById(R.id.title_container);
+        if (titleView == null) {
+            titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
+            root.addView(titleView);
+        }
+        set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
+        set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - tiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+        set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+        set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+        set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+        set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+
         if (animated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 AutoTransition transition = new AutoTransition();
@@ -365,13 +385,18 @@ public class NewRavePayActivity extends AppCompatActivity {
 
     }
 
-    private View createTileView(String title) {
+    private View createPaymentTileView(String title) {
         View tileView = getLayoutInflater().inflate(R.layout.payment_type_tile_layout, root, false);
         TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
         tileView.setId(ViewCompat.generateViewId());
 //        tv2.setBackgroundColor(getRandomColor());
-        tv2.setText(title);
-        tv2.setTextSize(29f);
+        String fullTitle = "Pay with " + title;
+
+        SpannableStringBuilder sb = new SpannableStringBuilder(fullTitle);
+        sb.setSpan(new StyleSpan(Typeface.BOLD), 9, fullTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first 4 characters Bold
+
+        tv2.setText(sb);
+        tv2.setTextSize(20f);
         root.addView(tileView);
 
         return tileView;
