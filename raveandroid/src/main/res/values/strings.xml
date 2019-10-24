@@ -1,9 +1,9 @@
 <resources>
 	<string name="app_name">RaveAndroid</string>
 	<string name="action_settings">Settings</string>
-	
-	
-	<string name="permissions_are_required_to_complete_payment">Rave Pay needs phone access in order to uniquely identify the devices associated with your account and ensure that unauthorized devices are not able to act on your behalf. Ravepay will never use or store your phone number or call history. </string>
+
+
+    <string name="permissions_are_required_to_complete_payment">Rave Pay needs phone access in order to uniquely identify the devices associated with your account and ensure that unauthorized devices are not able to act on your behalf. Ravepay will never use or store your phone number or call history. </string>
 	<string name="grant_permission">Grant permission</string>
 	<string name="permission_required_image">permission_required_image</string>
 	<string name="title_activity_entry">EntryActivity</string>
@@ -42,7 +42,7 @@
         <p>3. Enter your PIN in next prompt.</p>
         <p>4. Input the voucher generated in the voucher field below.</p>]]>
     </string>
-	
+
 	<string name="mtn_validate_instructions">
        <![CDATA[
         <b>Please follow the instruction below to complete your MTN transaction</b>
@@ -57,8 +57,8 @@
         <p>7. Tap button to continue </p>
         ]]>
     </string>
-	
-	<string name="tigo_validate_instructions">
+
+    <string name="tigo_validate_instructions">
         <![CDATA[
         <b>Please follow the instruction below to complete your Tigo transaction</b>
         <br>
@@ -68,8 +68,8 @@
         <p>3. Select YES to confirm your payment.</p>
         ]]>
     </string>
-	
-	<string name="ugx_validate_instructions">
+
+    <string name="ugx_validate_instructions">
         <![CDATA[
         <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
         ]]>
@@ -129,8 +129,8 @@
 	<string name="checkStatus">Checking the status of your payment</string>
 	<string name="defaultCardExpiry">12</string>
 	<string name="ok">OK</string>
-	
-	<string name="back_to_app">Back to App</string>
+
+    <string name="back_to_app">Back to App</string>
 	<string name="payment_failed">Payment failed</string>
 	<string name="proceed">Proceed</string>
 	<string name="transfer_received_successfully">Transfer received successfully</string>
@@ -146,11 +146,11 @@
 	<string name="pay_with_bank_timeout_notification">Payments are currently slow at your bank. Slow payments are usually confirmed within 30 minutes. You will get a receipt once your payment is confirmed.</string>
 	<string name="bant_transfer_polling_cancelled_message">You will get a receipt once your payment is confirmed.</string>
 
-   <string name="uk_instruction">Please complete this transaction on your Mobile Banking App or Online Banking Platform using the following details</string>
-   <string name="i_have_completed_this_payment">I have completed this payment  → </string>
-   <string name="flutterwave_ukaccount">4327122</string>
-   <string name="flutterwave_sortcode">04-00-53</string>
-   <string name="barter_funnding">Barter Funnding</string>
+    <string name="uk_instruction">Please complete this transaction on your Mobile Banking App or Online Banking Platform using the following details</string>
+    <string name="i_have_completed_this_payment">I have completed this payment  → </string>
+    <string name="flutterwave_ukaccount">4327122</string>
+    <string name="flutterwave_sortcode">04-00-53</string>
+    <string name="barter_funnding">Barter Funnding</string>
 
 	<string name="reference_code">Reference Code</string>
 	<string name="reference_code_placeholder">4990</string>
@@ -159,15 +159,15 @@
 	<string name="verify_ussd_payment_button_text">I have completed the payment</string>
 	<string name="choose_another_bank">CHOOSE ANOTHER BANK</string>
 	<string name="click_here_to_copy_the_ussd_code">Click here to copy the ussd code</string>
-	
-	<string-array name="gh_mobile_money_networks">
+
+    <string-array name="gh_mobile_money_networks">
 		<item>Select network</item>
 		<item>MTN</item>
 		<item>Tigo</item>
 		<item>Vodafone</item>
 	</string-array>
-	
-	<string-array name="ussd_banks">
+
+    <string-array name="ussd_banks">
 		<item>Select network</item>
 		<item>Fidelity Bank</item>
 		<item>Guaranty Trust Bank</item>
@@ -177,8 +177,8 @@
 		<item>Unity Bank PLC</item>
 		<item>Zenith bank PLC</item>
 	</string-array>
-	
-	<string-array name="zm_mobile_money_networks">
+
+    <string-array name="zm_mobile_money_networks">
 		<item>Select network</item>
 		<item>MTN</item>
 	</string-array>

@@ -232,7 +232,7 @@ public class RavePayManager {
 
         if (activity != null) {
 
-            Intent intent = new Intent(activity, RavePayActivity.class);
+            Intent intent = new Intent(activity, NewRavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             activity.startActivityForResult(intent, RAVE_REQUEST_CODE) ;
         } else {
