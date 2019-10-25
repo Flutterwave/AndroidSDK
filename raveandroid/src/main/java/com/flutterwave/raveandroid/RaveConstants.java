@@ -111,18 +111,18 @@ public class RaveConstants {
         put("United Bank for Africa", "033");
     }};
 
-    public static int PAYMENT_TYPE_CARD = 101;
-    public static int PAYMENT_TYPE_ACCOUNT = 102;
-    public static int PAYMENT_TYPE_GH_MOBILE_MONEY = 103;
-    public static int PAYMENT_TYPE_RW_MOBILE_MONEY = 104;
-    public static int PAYMENT_TYPE_MPESA = 105;
-    public static int PAYMENT_TYPE_UG_MOBILE_MONEY = 106;
-    public static int PAYMENT_TYPE_ACH = 107;
-    public static int PAYMENT_TYPE_ZM_MOBILE_MONEY = 108;
-    public static int PAYMENT_TYPE_BANK_TRANSFER = 109;
-    public static int PAYMENT_TYPE_UK = 110;
-    public static int PAYMENT_TYPE_USSD = 111;
-    public static int PAYMENT_TYPE_FRANCO_MOBILE_MONEY = 112;
+    public static final int PAYMENT_TYPE_CARD = 101;
+    public static final int PAYMENT_TYPE_ACCOUNT = 102;
+    public static final int PAYMENT_TYPE_GH_MOBILE_MONEY = 103;
+    public static final int PAYMENT_TYPE_RW_MOBILE_MONEY = 104;
+    public static final int PAYMENT_TYPE_MPESA = 105;
+    public static final int PAYMENT_TYPE_UG_MOBILE_MONEY = 106;
+    public static final int PAYMENT_TYPE_ACH = 107;
+    public static final int PAYMENT_TYPE_ZM_MOBILE_MONEY = 108;
+    public static final int PAYMENT_TYPE_BANK_TRANSFER = 109;
+    public static final int PAYMENT_TYPE_UK = 110;
+    public static final int PAYMENT_TYPE_USSD = 111;
+    public static final int PAYMENT_TYPE_FRANCO_MOBILE_MONEY = 112;
 
     public static HashMap<Integer, String> paymentTypesNamesList = new HashMap<Integer, String>() {{
         put(PAYMENT_TYPE_CARD, "Card");

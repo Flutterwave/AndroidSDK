@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/payment_fragment_container_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/payment_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/choose_another_payment_method_tv"
         app:layout_constraintTop_toTopOf="parent" />
+
     <!--    Todo: make this tv invisible for 1 payment method-->
     <TextView
         android:id="@+id/choose_another_payment_method_tv"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="88dp"
         android:text="@string/choose_another_payment_method"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/stagingModeBannerLay"
