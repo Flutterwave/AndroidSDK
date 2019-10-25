@@ -30,6 +30,8 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toLeftOf="parent" />
 
+        <!--        Todo: animate arrow-->
+
         <ImageView
             android:id="@+id/arrowIv2"
             android:layout_width="13dp"
@@ -40,6 +42,15 @@
             android:src="@drawable/collapsed"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DCD4C9"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

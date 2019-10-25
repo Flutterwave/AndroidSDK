@@ -29,8 +29,8 @@ public class NewRavePayActivity extends AppCompatActivity {
 
     View.OnClickListener onClickListener;
     private HashMap<Integer, Guideline> guidelineMap = new HashMap<>();
-    private ArrayList<Tile> tiles = new ArrayList<>();
-    private HashMap<Integer, Tile> tileMap = new HashMap<>();
+    private ArrayList<PaymentTile> paymentTiles = new ArrayList<>();
+    private HashMap<Integer, PaymentTile> tileMap = new HashMap<>();
     private Guideline topGuide;
     private Guideline bottomGuide;
     RavePayInitializer ravePayInitializer;
@@ -63,7 +63,7 @@ public class NewRavePayActivity extends AppCompatActivity {
         root.addView(bottomGuide);
         bottomGuide.setGuidelinePercent(0.9f);
 
-        generatePaymentTiles(tileCount);
+        generatePaymentTiles();
         generateGuides(tileCount);
         render();
 
@@ -106,84 +106,114 @@ public class NewRavePayActivity extends AppCompatActivity {
                 true);
     }
 
-    private void handleClick(View it) {
-//int viewId = it.getId();
+    private void handleClick(View clickedView) {
 
-        Tile tile = tileMap.get(it.getId());
+        PaymentTile paymentTile = tileMap.get(clickedView.getId());
 
-        if (tile.isTop) {
+        if (paymentTile.isTop) {
             render(true);
-//            for (t in tiles)
-            for (int i = 0; i < tiles.size(); i++) {
-                Tile t = tiles.get(i);
+            for (int i = 0; i < paymentTiles.size(); i++) {
+                PaymentTile t = paymentTiles.get(i);
                 t.isTop = false;
                 tileMap.put(t.view.getId(), t);
             }
         } else {
 
-            for (int i = 0; i < tiles.size(); i++) {
-                Tile t = tiles.get(i);
-                t.isTop = t.view.getId() == it.getId();
-                tileMap.put(t.view.getId(), t);
+            showSelectedPaymentType(clickedView);
+        }
+
+    }
+
+    private void showSelectedPaymentType(View clickedView) {
+        for (int i = 0; i < paymentTiles.size(); i++) {
+            PaymentTile t = paymentTiles.get(i);
+            t.isTop = t.view.getId() == clickedView.getId();
+            tileMap.put(t.view.getId(), t);
+        }
+
+
+        Integer tileId = null;
+        PaymentTile foundPaymentTile = null;
+        Integer foundIndex = null;
+
+        for (int i = 0; i < paymentTiles.size(); i++) {
+            PaymentTile current = paymentTiles.get(i);
+
+            if (current.view.getId() == clickedView.getId()) {
+                tileId = current.view.getId();
+                foundPaymentTile = current;
+                foundIndex = i;
+                break;
             }
+        }
 
 
-            Integer tileId = null;
-            Tile foundTile = null;
-            Integer foundIndex = null;
+        // If view was found
+        if (tileId != null && paymentTiles.size() != 0) {
 
-//            for (i in 0 until tiles.count())
-            for (int i = 0; i < tiles.size(); i++) {
-                Tile current = tiles.get(i);
+            renderAsHidden(root.getViewById(R.id.title_container)); // Hide title layout
 
-                if (current.view.getId() == it.getId()) {
-                    tileId = current.view.getId();
-                    foundTile = current;
-                    foundIndex = i;
-                    break;
-                }
-            }
+            //render selected view To Top
+            renderToTop(foundPaymentTile.view);
 
-            renderAsHidden(root.getViewById(R.id.title_container));
-            //view was found
-            if (tileId != null &&
-                    foundTile != null &&
-                    foundIndex != null &&
-                    tiles.size() != 0) {
+            showPaymentFragment(foundPaymentTile);
 
-                //render selected To Top
-                renderToTop(foundTile.view);
 
-                //more than one view but selected is last
-                if (tileId == tiles.get(tiles.size() - 1).view.getId()) {
-                    //pick first as bottom
-                    int bottomId = tiles.get(0).view.getId();
-//                            //pick penultimate as bottom
-//                            renderToBottom(tiles[foundIndex - 1].view)
-                    renderToBottom(tiles.get(0).view);
-                    //hide other
-                    for (int i = 0; i < tiles.size(); i++) {
-                        Tile t = tiles.get(i);
-                        if (it.getId() != t.view.getId() && bottomId != t.view.getId()) {
-                            renderAsHidden(t.view);
-                        }
+            //If more than one view but selected is last
+            if (tileId == paymentTiles.get(paymentTiles.size() - 1).view.getId()) {
+                //pick first as bottom
+                int bottomId = paymentTiles.get(0).view.getId();
+                renderToBottom(paymentTiles.get(0).view);
+                //hide other(s)
+                for (int i = 0; i < paymentTiles.size(); i++) {
+                    PaymentTile t = paymentTiles.get(i);
+                    if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
+                        renderAsHidden(t.view);
                     }
-                } else {
+                }
+            } else {
 
-                    int bottomId = tiles.get(foundIndex + 1).view.getId();
-                    //pick next as bottom
-                    renderToBottom(tiles.get(foundIndex + 1).view);
-                    //hide other
-                    for (int i = 0; i < tiles.size(); i++) {
-                        Tile t = tiles.get(i);
-                        if (it.getId() != t.view.getId() && bottomId != t.view.getId()) {
-                            renderAsHidden(t.view);
-                        }
+                int bottomId = paymentTiles.get(foundIndex + 1).view.getId();
+                //pick next as bottom
+                renderToBottom(paymentTiles.get(foundIndex + 1).view);
+                //hide other(S)
+                for (int i = 0; i < paymentTiles.size(); i++) {
+                    PaymentTile t = paymentTiles.get(i);
+                    if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
+                        renderAsHidden(t.view);
                     }
                 }
             }
         }
+    }
 
+    private void showPaymentFragment(PaymentTile foundPaymentTile) {
+        View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
+        if (fragmentContainerLayout == null) {
+            fragmentContainerLayout = getLayoutInflater().inflate(R.layout.payment_fragment_container_layout, root, false);
+            root.addView(fragmentContainerLayout);
+        }
+
+        ConstraintSet set = new ConstraintSet();
+        set.clone(root);
+
+        set.connect(fragmentContainerLayout.getId(), ConstraintSet.TOP, topGuide.getId(), ConstraintSet.TOP);
+        set.connect(fragmentContainerLayout.getId(), ConstraintSet.BOTTOM, bottomGuide.getId(), ConstraintSet.BOTTOM);
+        set.connect(fragmentContainerLayout.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+        set.connect(fragmentContainerLayout.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+        set.constrainWidth(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+        set.constrainHeight(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+
+        // Todo: add actual fragment
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            AutoTransition transition = new AutoTransition();
+            transition.setDuration(350);
+            TransitionManager.beginDelayedTransition(root, transition);
+            set.applyTo(root);
+        } else {
+            set.applyTo(root);
+        }
     }
 
 
@@ -248,7 +278,7 @@ public class NewRavePayActivity extends AppCompatActivity {
         } else set.applyTo(root);
     }
 
-    private void generatePaymentTiles(int count) {
+    private void generatePaymentTiles() {
 // Todo: reintroduce currency checks
         if (ravePayInitializer.isWithCard()) {
             addPaymentType(RaveConstants.PAYMENT_TYPE_CARD);
@@ -318,10 +348,10 @@ public class NewRavePayActivity extends AppCompatActivity {
             return;
         }
 
-        Tile tile = new Tile(tileView, false);
-        tiles.add(tile);
+        PaymentTile paymentTile = new PaymentTile(tileView, paymentType, false);
+        paymentTiles.add(paymentTile);
         tileView.setOnClickListener(onClickListener);
-        tileMap.put(tileView.getId(), tile);
+        tileMap.put(tileView.getId(), paymentTile);
         tileCount += 1;
     }
 
@@ -339,10 +369,10 @@ public class NewRavePayActivity extends AppCompatActivity {
         ConstraintSet set = new ConstraintSet();
         set.clone(root);
 
-//        for (i in 0 until tiles.count())
-        for (int i = 0; i < tiles.size(); i++) {
+//        for (i in 0 until paymentTiles.count())
+        for (int i = 0; i < paymentTiles.size(); i++) {
 
-            View tv2 = tiles.get(i).view;
+            View tv2 = paymentTiles.get(i).view;
 
             int upIndex = 10 - (i + 1);
             Guideline upGuide = guidelineMap.get(upIndex);
@@ -366,11 +396,15 @@ public class NewRavePayActivity extends AppCompatActivity {
             root.addView(titleView);
         }
         set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
-        set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - tiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+        set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
         set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
         set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
         set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+
+        // Hide payment fragment container
+        View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
+        if (fragmentContainerLayout != null) renderAsHidden(fragmentContainerLayout);
 
         if (animated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
