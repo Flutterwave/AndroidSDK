@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/title_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/secured_by_flutterwave_tv"
@@ -44,25 +44,9 @@
         android:background="@color/colorAccent"
         app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/stagingModeBannerLay"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView" />
 
-    <RelativeLayout
-        android:id="@+id/stagingModeBannerLay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@android:color/holo_red_dark"
-            android:gravity="center"
-            android:text="@string/you_are_currently_on_staging_mode"
-            android:textColor="@android:color/white" />
-
-    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
