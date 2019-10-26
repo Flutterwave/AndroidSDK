@@ -99,7 +99,7 @@ public class OldRavePayActivity extends AppCompatActivity {
             }
         }
 
-        setContentView(R.layout.activity_rave_pay);
+        setContentView(R.layout.activity_old_rave_pay);
 
         if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
             findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);

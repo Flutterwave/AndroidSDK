@@ -94,7 +94,7 @@ public class RavePayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_rave_pay);
+        setContentView(R.layout.activity_rave_pay);
         root = findViewById(R.id.rave_pay_activity_root);
 
         try {
