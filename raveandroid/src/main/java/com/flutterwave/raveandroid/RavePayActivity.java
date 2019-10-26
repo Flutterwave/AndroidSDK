@@ -20,6 +20,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -49,18 +50,7 @@ import java.util.Random;
 
 import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
@@ -103,8 +93,8 @@ public class RavePayActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
-// Todo: Remove default rave pay Initialization
-        setupRavePayInitializer();
+
+        setupRavePayInitializer(); // Todo: Remove default rave pay Initialization
         // Todo: Handle edge cases for too few (1) or too many (13) payment types
         // todo: Handle several screen sizes
 
@@ -129,11 +119,11 @@ public class RavePayActivity extends AppCompatActivity {
 
         topGuide = createGuideline(this, HORIZONTAL);
         root.addView(topGuide);
-        topGuide.setGuidelinePercent(0.1f);
+        topGuide.setGuidelinePercent(0.08f);
 
         bottomGuide = createGuideline(this, HORIZONTAL);
         root.addView(bottomGuide);
-        bottomGuide.setGuidelinePercent(0.9f);
+        bottomGuide.setGuidelinePercent(0.08f);
 
         generatePaymentTiles();
         generateGuides(tileCount);
@@ -181,17 +171,17 @@ public class RavePayActivity extends AppCompatActivity {
                 true,
                 new ArrayList<Integer>() {{
                     add(PAYMENT_TYPE_CARD);
-                    add(PAYMENT_TYPE_ACCOUNT);
-                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_MPESA);
-                    add(PAYMENT_TYPE_ACH);
-                    add(PAYMENT_TYPE_BANK_TRANSFER);
-                    add(PAYMENT_TYPE_UK);
-                    add(PAYMENT_TYPE_USSD);
+//                    add(PAYMENT_TYPE_ACCOUNT);
+//                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
+//                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
+//                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
+//                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
+//                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+//                    add(PAYMENT_TYPE_MPESA);
+//                    add(PAYMENT_TYPE_ACH);
+//                    add(PAYMENT_TYPE_BANK_TRANSFER);
+//                    add(PAYMENT_TYPE_UK);
+//                    add(PAYMENT_TYPE_USSD);
                 }});
     }
 
@@ -251,28 +241,31 @@ public class RavePayActivity extends AppCompatActivity {
             displayPaymentFragment(foundPaymentTile);
 
 
-            //If more than one view but selected is last
-            if (tileId == paymentTiles.get(paymentTiles.size() - 1).view.getId()) {
-                //pick first as bottom
-                int bottomId = paymentTiles.get(0).view.getId();
-                renderToBottom(paymentTiles.get(0).view);
-                //hide other(s)
-                for (int i = 0; i < paymentTiles.size(); i++) {
-                    PaymentTile t = paymentTiles.get(i);
-                    if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
-                        renderAsHidden(t.view);
+            //If more than one view
+            if (tileCount > 1) {
+                //If selected view is last
+                if (tileId == paymentTiles.get(paymentTiles.size() - 1).view.getId()) {
+                    //pick first as bottom
+                    int bottomId = paymentTiles.get(0).view.getId();
+                    renderToBottom(paymentTiles.get(0).view);
+                    //hide other(s)
+                    for (int i = 0; i < paymentTiles.size(); i++) {
+                        PaymentTile t = paymentTiles.get(i);
+                        if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
+                            renderAsHidden(t.view);
+                        }
                     }
-                }
-            } else {
+                } else {
 
-                int bottomId = paymentTiles.get(foundIndex + 1).view.getId();
-                //pick next as bottom
-                renderToBottom(paymentTiles.get(foundIndex + 1).view);
-                //hide other(S)
-                for (int i = 0; i < paymentTiles.size(); i++) {
-                    PaymentTile t = paymentTiles.get(i);
-                    if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
-                        renderAsHidden(t.view);
+                    int bottomId = paymentTiles.get(foundIndex + 1).view.getId();
+                    //pick next as bottom
+                    renderToBottom(paymentTiles.get(foundIndex + 1).view);
+                    //hide other(S)
+                    for (int i = 0; i < paymentTiles.size(); i++) {
+                        PaymentTile t = paymentTiles.get(i);
+                        if (clickedView.getId() != t.view.getId() && bottomId != t.view.getId()) {
+                            renderAsHidden(t.view);
+                        }
                     }
                 }
             }
@@ -339,13 +332,19 @@ public class RavePayActivity extends AppCompatActivity {
         set.clone(root);
 
         set.connect(fragmentContainerLayout.getId(), ConstraintSet.TOP, topGuide.getId(), ConstraintSet.TOP);
-        set.connect(fragmentContainerLayout.getId(), ConstraintSet.BOTTOM, bottomGuide.getId(), ConstraintSet.BOTTOM);
+        if (tileCount > 1)
+            set.connect(fragmentContainerLayout.getId(), ConstraintSet.BOTTOM, bottomGuide.getId(), ConstraintSet.BOTTOM);
+        else
+            set.connect(fragmentContainerLayout.getId(), ConstraintSet.BOTTOM, root.getId(), ConstraintSet.BOTTOM);
         set.connect(fragmentContainerLayout.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
         set.connect(fragmentContainerLayout.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
         set.constrainWidth(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
 
         addFragmentToLayout(foundPaymentTile);
+        if (tileCount == 1)
+            fragmentContainerLayout.findViewById(R.id.choose_another_payment_method_tv).setVisibility(View.GONE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
@@ -573,63 +572,70 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void render(boolean animated) {
+        if (tileCount == 1) {
+            View singlePaymentTileView = paymentTiles.get(0).view;
+            singlePaymentTileView.callOnClick(); // Show payment fragment
+            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
+            ((TextView) singlePaymentTileView.findViewById(R.id.rave_payment_type_title_textView)).setGravity(Gravity.CENTER);
 
+            singlePaymentTileView.setOnClickListener(null);
+        } else {
+            // Hide payment fragment container
+            // Do this first before cloning the constraint set, otherwise, the changes here will be reversed
+            View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
+            if (fragmentContainerLayout != null) {
+                renderAsHidden(fragmentContainerLayout);
+            }
 
-        // Hide payment fragment container
-        // Do this first before cloning the constraint set, otherwise, the changes here will be reversed
-        View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
-        if (fragmentContainerLayout != null) {
-            renderAsHidden(fragmentContainerLayout);
-        }
-
-        ConstraintSet set = new ConstraintSet();
-        set.clone(root);
+            ConstraintSet set = new ConstraintSet();
+            set.clone(root);
 
 //        for (i in 0 until paymentTiles.count())
-        for (int i = 0; i < paymentTiles.size(); i++) {
+            for (int i = 0; i < paymentTiles.size(); i++) {
 
-            View tv2 = paymentTiles.get(i).view;
+                View tv2 = paymentTiles.get(i).view;
 
-            int upIndex = 10 - (i + 1);
-            Guideline upGuide = guidelineMap.get(upIndex);
-            Guideline downGuide = guidelineMap.get(upIndex + 1);
+                int upIndex = 10 - (i + 1);
+                Guideline upGuide = guidelineMap.get(upIndex);
+                Guideline downGuide = guidelineMap.get(upIndex + 1);
 
-            if (upGuide != null && downGuide != null) {
-                set.connect(tv2.getId(), ConstraintSet.TOP, upGuide.getId(), ConstraintSet.BOTTOM);
-                set.connect(tv2.getId(), ConstraintSet.BOTTOM, downGuide.getId(), ConstraintSet.TOP);
-                set.connect(tv2.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-                set.connect(tv2.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-                set.constrainWidth(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-                set.constrainHeight(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                if (upGuide != null && downGuide != null) {
+                    set.connect(tv2.getId(), ConstraintSet.TOP, upGuide.getId(), ConstraintSet.BOTTOM);
+                    set.connect(tv2.getId(), ConstraintSet.BOTTOM, downGuide.getId(), ConstraintSet.TOP);
+                    set.connect(tv2.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+                    set.connect(tv2.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+                    set.constrainWidth(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.constrainHeight(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                }
+
             }
 
-        }
-
-        // Set title view
-        View titleView = root.findViewById(R.id.title_container);
-        if (titleView == null) {
-            titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
-            root.addView(titleView);
-        }
-        set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
-        set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
-        set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-        set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-        set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-        set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            // Set title view
+            View titleView = root.findViewById(R.id.title_container);
+            if (titleView == null) {
+                titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
+                root.addView(titleView);
+            }
+            set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
+            set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+            set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+            set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+            set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
 
 
-        if (animated) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                AutoTransition transition = new AutoTransition();
-                transition.setDuration(350);
-                TransitionManager.beginDelayedTransition(root, transition);
+            if (animated) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    AutoTransition transition = new AutoTransition();
+                    transition.setDuration(350);
+                    TransitionManager.beginDelayedTransition(root, transition);
+                    set.applyTo(root);
+                }
+            } else {
                 set.applyTo(root);
             }
-        } else {
-            set.applyTo(root);
-        }
 
+        }
     }
 
     private View createPaymentTileView(String title) {
