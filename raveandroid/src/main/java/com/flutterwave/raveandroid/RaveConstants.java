@@ -79,7 +79,7 @@ public class RaveConstants {
     public static String validAccountNumberPrompt = "Enter a valid Account Number";
     public static String validAccountNamePrompt = "Enter a valid Account Name";
     public static String validBankNamePrompt = "Enter a valid Bank Name";
-    public static String charge = "You will be charged a total of";
+    public static String charge = "You will be charged a total of ";
     public static String askToContinue = ". Do you want to continue?";
     public static String yes = "YES";
     public static String no = "NO";

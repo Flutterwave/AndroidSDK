@@ -12,9 +12,22 @@ import com.flutterwave.raveandroid.responses.SubAccount;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_REQUEST_CODE;
@@ -35,27 +48,16 @@ public class RavePayManager {
     private String subAccounts = "";
     private String payment_plan;
     private Activity activity;
-    boolean withCard = true;
-    boolean withAccount = true;
-    boolean withAch = false;
-    boolean withMpesa = false;
-    boolean withGHMobileMoney = false;
-    boolean withUgMobileMoney = false;
-    boolean withRwfMobileMoney = false;
-    boolean withZmMobileMoney = false;
-    boolean withUk = false;
-    boolean withFrancMobileMoney = false;
-    boolean withBankTransfer = false;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
     boolean allowSaveCard = true;
-    boolean isPreAuth =  false;
+    boolean isPreAuth = false;
     boolean showStagingLabel = true;
     boolean displayFee = true;
     private boolean isPermanent = false;
     private int duration = 0;
     private int frequency = 0;
-    private boolean withUssd;
+    private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
 
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
@@ -77,80 +79,94 @@ public class RavePayManager {
     }
 
     public RavePayManager acceptAchPayments(boolean withAch) {
-        this.withAch = withAch;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) && withAch)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACH);
         return this;
     }
 
     public RavePayManager acceptCardPayments(boolean withCard) {
-        this.withCard = withCard;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD) && withCard)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_CARD);
         return this;
     }
 
     public RavePayManager acceptMpesaPayments(boolean withMpesa) {
-        this.withMpesa = withMpesa;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_MPESA) && withMpesa)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_MPESA);
         return this;
     }
 
     public RavePayManager acceptAccountPayments(boolean withAccount) {
-        this.withAccount = withAccount;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT) && withAccount)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACCOUNT);
         return this;
     }
 
     public RavePayManager acceptGHMobileMoneyPayments(boolean withGHMobileMoney) {
-        this.withGHMobileMoney = withGHMobileMoney;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_GH_MOBILE_MONEY) && withGHMobileMoney)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptUgMobileMoneyPayments(boolean withUgMobileMoney) {
-        this.withUgMobileMoney = withUgMobileMoney;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UG_MOBILE_MONEY) && withUgMobileMoney)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptRwfMobileMoneyPayments(boolean withRwfMobileMoney) {
-        this.withRwfMobileMoney = withRwfMobileMoney;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_RW_MOBILE_MONEY) && withRwfMobileMoney)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptZmMobileMoneyPayments(boolean withZmMobileMoney) {
-        this.withZmMobileMoney = withZmMobileMoney;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ZM_MOBILE_MONEY) && withZmMobileMoney)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptUkPayments(boolean withUk) {
-        this.withUk = withUk;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UK) && withUk)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_UK);
         return this;
     }
 
     public RavePayManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
-        this.withFrancMobileMoney = withFrancMobileMoney;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY) && withFrancMobileMoney)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACH);
         return this;
     }
 
     public RavePayManager acceptBankTransferPayments(boolean withBankTransfer) {
-        this.withBankTransfer = withBankTransfer;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
+            orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         return this;
     }
 
 
     public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, boolean isPermanent) {
-        this.withBankTransfer = withBankTransfer;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
+            orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         this.isPermanent = isPermanent;
         return this;
     }
 
     public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, int duration, int frequency) {
-        this.withBankTransfer = withBankTransfer;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
+            orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         this.duration = duration;
         this.frequency = frequency;
         return this;
     }
 
     public RavePayManager acceptUssdPayments(boolean withUssd) {
-        this.withUssd = withUssd;
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_USSD) && withUssd)
+            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_USSD);
         return this;
     }
 
-    public RavePayManager isPreAuth(boolean isPreAuth){
+    public RavePayManager isPreAuth(boolean isPreAuth) {
         this.isPreAuth = isPreAuth;
         return this;
     }
@@ -160,7 +176,7 @@ public class RavePayManager {
         return this;
     }
 
-    public RavePayManager setSubAccounts(List<SubAccount> subAccounts){
+    public RavePayManager setSubAccounts(List<SubAccount> subAccounts) {
         this.subAccounts = Utils.stringifySubaccounts(subAccounts);
         return this;
     }
@@ -234,7 +250,7 @@ public class RavePayManager {
 
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
-            activity.startActivityForResult(intent, RAVE_REQUEST_CODE) ;
+            activity.startActivityForResult(intent, RAVE_REQUEST_CODE);
         } else {
             Log.d(RAVEPAY, "Context is required!");
         }
@@ -257,8 +273,6 @@ public class RavePayManager {
 
     public RavePayInitializer createRavePayInitializer() {
 
-        // Todo: Add payment type order
-
         return new RavePayInitializer(
                 email,
                 amount,
@@ -270,18 +284,6 @@ public class RavePayManager {
                 country,
                 fName,
                 lName,
-                withCard,
-                withAccount,
-                withMpesa,
-                withGHMobileMoney,
-                withUgMobileMoney,
-                withRwfMobileMoney,
-                withZmMobileMoney,
-                withAch,
-                withBankTransfer,
-                withUk,
-                withUssd,
-                withFrancMobileMoney,
                 theme,
                 isPermanent,
                 duration,
@@ -292,7 +294,8 @@ public class RavePayManager {
                 payment_plan,
                 isPreAuth,
                 showStagingLabel,
-                displayFee);
+                displayFee,
+                orderedPaymentTypesList);
     }
 
     private AppComponent setUpGraph() {

@@ -100,7 +100,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsUsBankCharge(ravePayInitializer.isWithAch())
+                    .setIsUsBankCharge(ravePayInitializer.getOrderedPaymentTypesList().contains(RaveConstants.PAYMENT_TYPE_ACH))
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {

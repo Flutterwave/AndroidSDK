@@ -39,6 +39,16 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ_PHONE_STATE;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
@@ -59,6 +69,7 @@ public class OldRavePayActivity extends AppCompatActivity {
     RavePayInitializer ravePayInitializer;
     MainPagerAdapter mainPagerAdapter;
     AppComponent appComponent;
+    ArrayList<Integer> orderedPaymentTypesList;
 
     public AppComponent getAppComponent() {
         return appComponent;
@@ -75,6 +86,7 @@ public class OldRavePayActivity extends AppCompatActivity {
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
 
+        orderedPaymentTypesList = ravePayInitializer.getOrderedPaymentTypesList();
         buildGraph();
 
         theme = ravePayInitializer.getTheme();
@@ -103,11 +115,11 @@ public class OldRavePayActivity extends AppCompatActivity {
         mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         List<RaveFragment> raveFragments = new ArrayList<>();
 
-        if (ravePayInitializer.isWithCard()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD)) {
             raveFragments.add(new RaveFragment(new CardFragment(), "Card"));
         }
 
-        if (ravePayInitializer.isWithAccount()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) || orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD)) {
             if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
                 raveFragments.add(new RaveFragment(new AchFragment(), "ACH"));
             } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
@@ -115,39 +127,39 @@ public class OldRavePayActivity extends AppCompatActivity {
             }
         }
 
-        if (ravePayInitializer.isWithMpesa() && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_MPESA) && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")) {
             raveFragments.add(new RaveFragment(new MpesaFragment(), "Mpesa"));
         }
 
-        if (ravePayInitializer.isWithGHMobileMoney() && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_GH_MOBILE_MONEY) && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")) {
             raveFragments.add(new RaveFragment(new GhMobileMoneyFragment(), "GHANA MOBILE MONEY"));
         }
 
-        if (ravePayInitializer.isWithZmMobileMoney()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ZM_MOBILE_MONEY)) {
             raveFragments.add(new RaveFragment(new ZmMobileMoneyFragment(), "ZAMBIA MOBILE MONEY"));
         }
 
-        if (ravePayInitializer.isWithUgMobileMoney() && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")) {
             raveFragments.add(new RaveFragment(new UgMobileMoneyFragment(), "UGANDA MOBILE MONEY"));
         }
 
-        if (ravePayInitializer.isWithUk()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_UK)) {
             raveFragments.add(new RaveFragment(new UkFragment(), "UK"));
         }
 
-        if (ravePayInitializer.isWithFrancMobileMoney()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY)) {
             raveFragments.add(new RaveFragment(new FrancMobileMoneyFragment(), "Franc Mobile Money"));
         }
 
-        if (ravePayInitializer.isWithRwfMobileMoney()) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_RW_MOBILE_MONEY)) {
             raveFragments.add(new RaveFragment(new RwfMobileMoneyFragment(), "RWANDA MOBILE MONEY"));
         }
 
         if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
-            if (ravePayInitializer.isWithBankTransfer()) {
+            if (orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER)) {
                 raveFragments.add(new RaveFragment(new BankTransferFragment(), "Bank Transfer"));
             }
-            if (ravePayInitializer.isWithUssd()) {
+            if (orderedPaymentTypesList.contains(PAYMENT_TYPE_USSD)) {
                 raveFragments.add(new RaveFragment(new UssdFragment(), "USSD"));
             }
         }

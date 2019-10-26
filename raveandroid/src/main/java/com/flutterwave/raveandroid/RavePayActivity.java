@@ -40,12 +40,29 @@ import com.flutterwave.raveandroid.uk.UkFragment;
 import com.flutterwave.raveandroid.ussd.UssdFragment;
 import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
 import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class RavePayActivity extends AppCompatActivity {
@@ -65,6 +82,8 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_ERROR = 222;
     public static int RESULT_CANCELLED = 333;
     private int tileCount = 0;
+    int theme;
+
 
     public AppComponent getAppComponent() {
         return appComponent;
@@ -78,12 +97,28 @@ public class RavePayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_rave_pay);
         root = findViewById(R.id.rave_pay_activity_root);
 
+        try {
+            ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(RAVEPAY, "Error retrieving initializer");
+        }
+// Todo: Remove default rave pay Initialization
         setupRavePayInitializer();
         // Todo: Handle edge cases for too few (1) or too many (13) payment types
         // todo: Handle several screen sizes
 
         buildGraph();
 
+        theme = ravePayInitializer.getTheme();
+
+        if (theme != 0) {
+            try {
+                setTheme(theme);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         onClickListener = new View.OnClickListener() {
             @Override
@@ -133,18 +168,6 @@ public class RavePayActivity extends AppCompatActivity {
                 "NG",
                 "Wuraola",
                 "Benson",
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
                 R.style.DefaultTheme,
                 false,
                 0,
@@ -155,7 +178,21 @@ public class RavePayActivity extends AppCompatActivity {
                 "",
                 false,
                 true,
-                true);
+                true,
+                new ArrayList<Integer>() {{
+                    add(PAYMENT_TYPE_CARD);
+                    add(PAYMENT_TYPE_ACCOUNT);
+                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_MPESA);
+                    add(PAYMENT_TYPE_ACH);
+                    add(PAYMENT_TYPE_BANK_TRANSFER);
+                    add(PAYMENT_TYPE_UK);
+                    add(PAYMENT_TYPE_USSD);
+                }});
     }
 
     private void handleClick(View clickedView) {
@@ -255,7 +292,7 @@ public class RavePayActivity extends AppCompatActivity {
             });
         }
 
-        // Todo: Handle payment fragment displaying fluidly
+        // Todo: Handle payment fragment switching fluidly
 //        int topToBottomConstraint = ((ConstraintLayout.LayoutParams) fragmentContainerLayout.getLayoutParams()).topToBottom;
 //        int topToTopConstraint = ((ConstraintLayout.LayoutParams) fragmentContainerLayout.getLayoutParams()).topToTop;
 //        if (topToBottomConstraint != topGuide.getId() && topToTopConstraint != topGuide.getId()) {
@@ -443,53 +480,61 @@ public class RavePayActivity extends AppCompatActivity {
 
     private void generatePaymentTiles() {
 // Todo: reintroduce currency checks
-        if (ravePayInitializer.isWithCard()) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_CARD);
+
+        ArrayList<Integer> orderedPaymentTypesList = ravePayInitializer.getOrderedPaymentTypesList();
+        // Reverse payment types order since payment types are added from the bottom
+        Collections.reverse(orderedPaymentTypesList);
+
+        for (int index = 0; index < orderedPaymentTypesList.size(); index++) {
+            addPaymentType(orderedPaymentTypesList.get(index));
         }
-
-        if (ravePayInitializer.isWithAccount()) {
-//            if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_ACH);
-//            } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
-            addPaymentType(RaveConstants.PAYMENT_TYPE_ACCOUNT);
-//            }
-        }
-
-//        if (ravePayInitializer.isWithMpesa()
-////                && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")
-//        ) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_MPESA);
-//        }
-
-//        if (ravePayInitializer.isWithGHMobileMoney()
-////                && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")
-//        ) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
+//        if (ravePayInitializer.isWithCard()) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_CARD);
 //        }
 //
-//        if (ravePayInitializer.isWithZmMobileMoney()) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
+//        if (ravePayInitializer.isWithAccount()) {
+////            if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_ACH);
+////            } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
+//            addPaymentType(RaveConstants.PAYMENT_TYPE_ACCOUNT);
+////            }
 //        }
 //
-//        if (ravePayInitializer.isWithUgMobileMoney()
-////                && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")
-//        ) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
-//        }
+////        if (ravePayInitializer.isWithMpesa()
+//////                && ravePayInitializer.getCurrency().equalsIgnoreCase("KES")
+////        ) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_MPESA);
+////        }
 //
-//        if (ravePayInitializer.isWithUk()) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_UK);
-//        }
+////        if (ravePayInitializer.isWithGHMobileMoney()
+//////                && ravePayInitializer.getCurrency().equalsIgnoreCase("GHS")
+////        ) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
+////        }
+////
+////        if (ravePayInitializer.isWithZmMobileMoney()) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
+////        }
+////
+////        if (ravePayInitializer.isWithUgMobileMoney()
+//////                && ravePayInitializer.getCurrency().equalsIgnoreCase("UGX")
+////        ) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
+////        }
+////
+////        if (ravePayInitializer.isWithUk()) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_UK);
+////        }
+////
+////        if (ravePayInitializer.isWithFrancMobileMoney()) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+////        }
+////
+////        if (ravePayInitializer.isWithRwfMobileMoney()) {
+////            addPaymentType(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
+////        }
 //
-//        if (ravePayInitializer.isWithFrancMobileMoney()) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
-//        }
-//
-//        if (ravePayInitializer.isWithRwfMobileMoney()) {
-//            addPaymentType(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
-//        }
-
-//        if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
+////        if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
 //        if (ravePayInitializer.isWithBankTransfer()) {
 //            addPaymentType(RaveConstants.PAYMENT_TYPE_BANK_TRANSFER);
 //        }
