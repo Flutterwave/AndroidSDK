@@ -488,7 +488,6 @@ public class RavePayActivity extends AppCompatActivity {
                     break;
                 default:
                     addPaymentType(orderedPaymentTypesList.get(index));
-                    return;
             }
         }
     }
