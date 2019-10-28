@@ -257,6 +257,9 @@ public class RavePayActivity extends AppCompatActivity {
                 }
             });
         }
+        if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
+            findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
+        }
 
         // Todo: Handle payment fragment switching fluidly
 //        int topToBottomConstraint = ((ConstraintLayout.LayoutParams) fragmentContainerLayout.getLayoutParams()).topToBottom;
