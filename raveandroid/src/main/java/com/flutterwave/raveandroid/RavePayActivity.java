@@ -585,7 +585,7 @@ public class RavePayActivity extends AppCompatActivity {
         if (tileCount == 1) {
             View singlePaymentTileView = paymentTiles.get(0).view;
             singlePaymentTileView.callOnClick(); // Show payment fragment
-            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
+//            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
             ((TextView) singlePaymentTileView.findViewById(R.id.rave_payment_type_title_textView)).setGravity(Gravity.CENTER);
 
             singlePaymentTileView.setOnClickListener(null);
