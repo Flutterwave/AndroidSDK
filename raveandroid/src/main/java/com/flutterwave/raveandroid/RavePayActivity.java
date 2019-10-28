@@ -50,7 +50,18 @@ import java.util.Random;
 
 import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
@@ -73,6 +84,7 @@ public class RavePayActivity extends AppCompatActivity {
     public static int RESULT_CANCELLED = 333;
     private int tileCount = 0;
     int theme;
+    private float paymentTilesTextSize;
 
 
     public AppComponent getAppComponent() {
@@ -95,7 +107,10 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         setupRavePayInitializer(); // Todo: Remove default rave pay Initialization
-        // Todo: Handle edge cases for too few (1) or too many (13) payment types
+        tileCount = ravePayInitializer.getOrderedPaymentTypesList().size();
+        if (tileCount > 8) paymentTilesTextSize = 18f;
+        else paymentTilesTextSize = 20f;
+        // Todo: Handle edge cases for too many (13) payment types
         // todo: Handle several screen sizes
 
         buildGraph();
@@ -123,7 +138,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         bottomGuide = createGuideline(this, HORIZONTAL);
         root.addView(bottomGuide);
-        bottomGuide.setGuidelinePercent(0.08f);
+        bottomGuide.setGuidelinePercent(0.92f);
 
         generatePaymentTiles();
         generateGuides(tileCount);
@@ -171,15 +186,15 @@ public class RavePayActivity extends AppCompatActivity {
                 true,
                 new ArrayList<Integer>() {{
                     add(PAYMENT_TYPE_CARD);
-//                    add(PAYMENT_TYPE_ACCOUNT);
-//                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
-//                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
-//                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
-//                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
-//                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
-//                    add(PAYMENT_TYPE_MPESA);
-//                    add(PAYMENT_TYPE_ACH);
-//                    add(PAYMENT_TYPE_BANK_TRANSFER);
+                    add(PAYMENT_TYPE_ACCOUNT);
+                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+                    add(PAYMENT_TYPE_MPESA);
+                    add(PAYMENT_TYPE_ACH);
+                    add(PAYMENT_TYPE_BANK_TRANSFER);
 //                    add(PAYMENT_TYPE_UK);
 //                    add(PAYMENT_TYPE_USSD);
                 }});
@@ -360,40 +375,40 @@ public class RavePayActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         switch (foundPaymentTile.paymentType) {
-            case RaveConstants.PAYMENT_TYPE_ACCOUNT:
+            case PAYMENT_TYPE_ACCOUNT:
                 transaction.replace(R.id.payment_fragment_container, new AccountFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_ACH:
+            case PAYMENT_TYPE_ACH:
                 transaction.replace(R.id.payment_fragment_container, new AchFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_BANK_TRANSFER:
+            case PAYMENT_TYPE_BANK_TRANSFER:
                 transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
                 transaction.replace(R.id.payment_fragment_container, new CardFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
+            case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY:
+            case PAYMENT_TYPE_GH_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new GhMobileMoneyFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_MPESA:
+            case PAYMENT_TYPE_MPESA:
                 transaction.replace(R.id.payment_fragment_container, new MpesaFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY:
+            case PAYMENT_TYPE_RW_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY:
+            case PAYMENT_TYPE_UG_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new UgMobileMoneyFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_UK:
+            case PAYMENT_TYPE_UK:
                 transaction.replace(R.id.payment_fragment_container, new UkFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_USSD:
+            case PAYMENT_TYPE_USSD:
                 transaction.replace(R.id.payment_fragment_container, new UssdFragment());
                 break;
-            case RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY:
+            case PAYMENT_TYPE_ZM_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
                 break;
             default:
@@ -546,8 +561,6 @@ public class RavePayActivity extends AppCompatActivity {
     private void addPaymentType(int paymentType) {
         View tileView;
         try {
-
-
             tileView = createPaymentTileView(RaveConstants.paymentTypesNamesList.get(paymentType) + "");
         } catch (Exception e) {
             e.printStackTrace();
@@ -559,7 +572,6 @@ public class RavePayActivity extends AppCompatActivity {
         paymentTiles.add(paymentTile);
         tileView.setOnClickListener(onClickListener);
         tileMap.put(tileView.getId(), paymentTile);
-        tileCount += 1;
     }
 
     private int getRandomColor() {
@@ -648,7 +660,7 @@ public class RavePayActivity extends AppCompatActivity {
         sb.setSpan(new StyleSpan(Typeface.BOLD), 9, fullTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE); // make first 4 characters Bold
 
         tv2.setText(sb);
-        tv2.setTextSize(20f);
+        tv2.setTextSize(paymentTilesTextSize);
         root.addView(tileView);
 
         return tileView;
@@ -660,7 +672,9 @@ public class RavePayActivity extends AppCompatActivity {
         for (int i = 0; i <= count; i++) {
             Guideline guideline = createGuideline(this, HORIZONTAL);
             root.addView(guideline);
-            double percent = (1 - (0.08 * i));
+            double percent;
+            if (count > 8) percent = (1 - (0.07 * i));
+            else percent = (1 - (0.08 * i));
             guideline.setGuidelinePercent((float) percent);
             guideline.setTag(10 - i);
             guidelineMap.put(10 - i, guideline);
