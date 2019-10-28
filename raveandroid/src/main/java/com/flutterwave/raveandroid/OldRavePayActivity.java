@@ -39,6 +39,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
@@ -119,7 +120,7 @@ public class OldRavePayActivity extends AppCompatActivity {
             raveFragments.add(new RaveFragment(new CardFragment(), "Card"));
         }
 
-        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) || orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD)) {
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) || orderedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT)) {
             if (ravePayInitializer.getCountry().equalsIgnoreCase("us") && ravePayInitializer.getCurrency().equalsIgnoreCase("usd")) {
                 raveFragments.add(new RaveFragment(new AchFragment(), "ACH"));
             } else if (ravePayInitializer.getCountry().equalsIgnoreCase("ng") && ravePayInitializer.getCurrency().equalsIgnoreCase("ngn")) {
