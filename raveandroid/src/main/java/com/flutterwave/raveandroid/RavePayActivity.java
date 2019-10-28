@@ -1,7 +1,10 @@
 package com.flutterwave.raveandroid;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -62,6 +65,7 @@ import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_M
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ_PHONE_STATE;
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
@@ -85,6 +89,7 @@ public class RavePayActivity extends AppCompatActivity {
     private int tileCount = 0;
     int theme;
     private float paymentTilesTextSize;
+    View permissionsRequiredLayout;
 
 
     public AppComponent getAppComponent() {
@@ -107,14 +112,8 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         setupRavePayInitializer(); // Todo: Remove default rave pay Initialization
-        tileCount = ravePayInitializer.getOrderedPaymentTypesList().size();
-        if (tileCount > 8) paymentTilesTextSize = 18f;
-        else paymentTilesTextSize = 20f;
-        // Todo: Handle edge cases for too many (13) payment types
-        // todo: Handle several screen sizes
 
         buildGraph();
-
         theme = ravePayInitializer.getTheme();
 
         if (theme != 0) {
@@ -124,6 +123,21 @@ public class RavePayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkForRequiredPermissions();
+        } else setupMainContent();
+
+    }
+
+    private void setupMainContent() {
+        tileCount = ravePayInitializer.getOrderedPaymentTypesList().size();
+        if (tileCount > 8) paymentTilesTextSize = 18f;
+        else paymentTilesTextSize = 20f;
+        // Todo: Handle edge cases for too many (13) payment types
+        // todo: Handle several screen sizes
+
 
         onClickListener = new View.OnClickListener() {
             @Override
@@ -143,22 +157,6 @@ public class RavePayActivity extends AppCompatActivity {
         generatePaymentTiles();
         generateGuides(tileCount);
         render();
-
-        // Todo: Handle permissions
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            checkForRequiredPermissions();
-//        }
-//
-//        requestPermsBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
-//                            PERMISSIONS_REQUEST_READ_PHONE_STATE);
-//                }
-//            }
-//        });
-
     }
 
     private void setupRavePayInitializer() {
@@ -714,33 +712,47 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                mainContent.setVisibility(View.VISIBLE);
-//                permissionsRequiredLayout.setVisibility(GONE);
-//
-//            } else {
-//                permissionsRequiredLayout.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
-//
-//    @TargetApi(Build.VERSION_CODES.M)
-//    public void checkForRequiredPermissions() {
-//
-//        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            permissionsRequiredLayout.setVisibility(View.VISIBLE);
-//        } else {
-//            permissionsRequiredLayout.setVisibility(GONE);
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                permissionsRequiredLayout.setVisibility(View.GONE);
+                setupMainContent();
+
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void checkForRequiredPermissions() {
+
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsRequiredLayout = findViewById(R.id.rave_permission_required_layout);
+            if (permissionsRequiredLayout != null)
+                permissionsRequiredLayout.setVisibility(View.VISIBLE);
+            else {
+                root.addView(getLayoutInflater().inflate(R.layout.request_permissions_layout, root, false));
+                permissionsRequiredLayout = findViewById(R.id.rave_permission_required_layout);
+            }
+
+            findViewById(R.id.requestPermsBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+                                PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                    }
+                }
+            });
+        } else {
+            setupMainContent();
+        }
+    }
 
     @Override
     public void onBackPressed() {

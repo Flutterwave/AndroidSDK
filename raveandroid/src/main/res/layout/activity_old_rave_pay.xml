@@ -17,7 +17,8 @@
         android:clickable="true"
         android:gravity="center"
         android:padding="30dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
 
         <TextView
