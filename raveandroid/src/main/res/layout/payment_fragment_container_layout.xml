@@ -15,7 +15,6 @@
         app:layout_constraintBottom_toTopOf="@id/choose_another_payment_method_tv"
         app:layout_constraintVertical_bias="0.0" />
 
-    <!--    Todo: make this tv invisible for 1 payment method-->
     <TextView
         android:id="@+id/choose_another_payment_method_tv"
         android:layout_width="wrap_content"

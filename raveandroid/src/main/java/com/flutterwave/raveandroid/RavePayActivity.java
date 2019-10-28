@@ -56,7 +56,6 @@ import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
@@ -111,7 +110,6 @@ public class RavePayActivity extends AppCompatActivity {
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
 
-        setupRavePayInitializer(); // Todo: Remove default rave pay Initialization
 
         buildGraph();
         theme = ravePayInitializer.getTheme();
@@ -159,44 +157,6 @@ public class RavePayActivity extends AppCompatActivity {
         render();
     }
 
-    private void setupRavePayInitializer() {
-        ravePayInitializer = new RavePayInitializer(
-                "user@example.com",
-                100.00,
-                "FLWPUBK_TEST-7ddb1c9cb4571aa27d588f468fb8c052-X",
-                "FLWSECK_TEST24a907495c60",
-                "1",
-                "",
-                "NGN",
-                "NG",
-                "Wuraola",
-                "Benson",
-                R.style.DefaultTheme,
-                false,
-                0,
-                0,
-                true,
-                "",
-                "",
-                "",
-                false,
-                true,
-                true,
-                new ArrayList<Integer>() {{
-                    add(PAYMENT_TYPE_CARD);
-                    add(PAYMENT_TYPE_ACCOUNT);
-                    add(PAYMENT_TYPE_GH_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_UG_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_RW_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
-                    add(PAYMENT_TYPE_MPESA);
-                    add(PAYMENT_TYPE_ACH);
-                    add(PAYMENT_TYPE_BANK_TRANSFER);
-//                    add(PAYMENT_TYPE_UK);
-//                    add(PAYMENT_TYPE_USSD);
-                }});
-    }
 
     private void handleClick(View clickedView) {
 

@@ -13,7 +13,6 @@ public class RaveConstants {
     public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";//test
     //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
-    //Todo: change back BAse URL
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
     public static String LIVE_URL = "https://api.ravepay.co";
 
