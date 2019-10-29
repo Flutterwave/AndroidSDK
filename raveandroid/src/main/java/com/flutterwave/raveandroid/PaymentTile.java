@@ -9,12 +9,6 @@ public class PaymentTile {
     boolean isTop;
     int paymentType;
 
-    PaymentTile(View view, int paymentType) {
-        this.view = view;
-        this.isTop = false;
-        this.paymentType = paymentType;
-    }
-
     PaymentTile(View view, int paymentType, boolean isTop) {
         this.view = view;
         this.isTop = isTop;

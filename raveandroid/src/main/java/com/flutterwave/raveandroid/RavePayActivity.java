@@ -133,8 +133,6 @@ public class RavePayActivity extends AppCompatActivity {
         tileCount = ravePayInitializer.getOrderedPaymentTypesList().size();
         if (tileCount > 8) paymentTilesTextSize = 18f;
         else paymentTilesTextSize = 20f;
-        // Todo: Handle edge cases for too many (13) payment types
-        // todo: Handle several screen sizes
 
 
         onClickListener = new View.OnClickListener() {
