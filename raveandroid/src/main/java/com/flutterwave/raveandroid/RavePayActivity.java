@@ -130,11 +130,6 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void setupMainContent() {
-        tileCount = ravePayInitializer.getOrderedPaymentTypesList().size();
-        if (tileCount > 8) paymentTilesTextSize = 18f;
-        else paymentTilesTextSize = 20f;
-
-
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -462,6 +457,10 @@ public class RavePayActivity extends AppCompatActivity {
                         orderedPaymentTypesList,
                         ravePayInitializer.getCurrency()
                 );
+
+        tileCount = currencyCheckedPaymentTypesList.size();
+        if (tileCount > 8) paymentTilesTextSize = 18f;
+        else paymentTilesTextSize = 20f;
 
         for (int index = 0; index < currencyCheckedPaymentTypesList.size(); index++)
             addPaymentType(currencyCheckedPaymentTypesList.get(index));
