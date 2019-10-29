@@ -452,42 +452,19 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void generatePaymentTiles() {
-        String currency = ravePayInitializer.getCurrency();
 
         ArrayList<Integer> orderedPaymentTypesList = ravePayInitializer.getOrderedPaymentTypesList();
         // Reverse payment types order since payment types are added from the bottom
         Collections.reverse(orderedPaymentTypesList);
 
-        for (int index = 0; index < orderedPaymentTypesList.size(); index++) {
+        ArrayList<Integer> currencyCheckedPaymentTypesList =
+                PaymentTypesCurrencyChecker.applyCurrencyChecks(
+                        orderedPaymentTypesList,
+                        ravePayInitializer.getCurrency()
+                );
 
-            // Currency checks
-            switch (orderedPaymentTypesList.get(index)) {
-                case PAYMENT_TYPE_ACCOUNT:
-                case PAYMENT_TYPE_BANK_TRANSFER:
-                case PAYMENT_TYPE_USSD:
-                    if (currency.equalsIgnoreCase("NGN"))
-                        addPaymentType(orderedPaymentTypesList.get(index));
-                    break;
-                case PAYMENT_TYPE_ACH:
-                    if (currency.equalsIgnoreCase("USD"))
-                        addPaymentType(orderedPaymentTypesList.get(index));
-                    break;
-                case PAYMENT_TYPE_GH_MOBILE_MONEY:
-                    if (currency.equalsIgnoreCase("GHS"))
-                        addPaymentType(orderedPaymentTypesList.get(index));
-                    break;
-                case PAYMENT_TYPE_MPESA:
-                    if (currency.equalsIgnoreCase("KES"))
-                        addPaymentType(orderedPaymentTypesList.get(index));
-                    break;
-                case PAYMENT_TYPE_UG_MOBILE_MONEY:
-                    if (currency.equalsIgnoreCase("UGX"))
-                        addPaymentType(orderedPaymentTypesList.get(index));
-                    break;
-                default:
-                    addPaymentType(orderedPaymentTypesList.get(index));
-            }
-        }
+        for (int index = 0; index < currencyCheckedPaymentTypesList.size(); index++)
+            addPaymentType(currencyCheckedPaymentTypesList.get(index));
     }
 
     private void addPaymentType(int paymentType) {
