@@ -1,6 +1,8 @@
 package com.flutterwave.raveandroid;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +16,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Guideline;
 import android.support.transition.AutoTransition;
-import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
@@ -89,6 +90,7 @@ public class RavePayActivity extends AppCompatActivity {
     int theme;
     private float paymentTilesTextSize;
     View permissionsRequiredLayout;
+    private long transitionDuration = 350;
 
 
     public AppComponent getAppComponent() {
@@ -199,17 +201,14 @@ public class RavePayActivity extends AppCompatActivity {
         // If view was found
         if (tileId != null && paymentTiles.size() != 0) {
 
-            renderAsHidden(root.getViewById(R.id.title_container)); // Hide title layout
+            renderAsHidden(root.getViewById(R.id.title_container));
 
-            //render selected view To Top
             renderToTop(foundPaymentTile.view);
 
             displayPaymentFragment(foundPaymentTile);
 
 
-            //If more than one view
             if (tileCount > 1) {
-                //If selected view is last
                 if (tileId == paymentTiles.get(paymentTiles.size() - 1).view.getId()) {
                     //pick first as bottom
                     int bottomId = paymentTiles.get(0).view.getId();
@@ -241,59 +240,52 @@ public class RavePayActivity extends AppCompatActivity {
     private void displayPaymentFragment(final PaymentTile foundPaymentTile) {
         View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
         if (fragmentContainerLayout == null) {
-            fragmentContainerLayout = getLayoutInflater().inflate(R.layout.payment_fragment_container_layout, root, false);
+            fragmentContainerLayout
+                    = getLayoutInflater()
+                    .inflate(R.layout.payment_fragment_container_layout, root, false);
+
             root.addView(fragmentContainerLayout);
-            fragmentContainerLayout.findViewById(R.id.choose_another_payment_method_tv).setOnClickListener(new View.OnClickListener() {
+            fragmentContainerLayout
+                    .findViewById(R.id.choose_another_payment_method_tv)
+                    .setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     showAllPaymentTypes();
                 }
             });
         }
+
         if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
             findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
         }
 
-        // Todo: Handle payment fragment switching fluidly
-//        int topToBottomConstraint = ((ConstraintLayout.LayoutParams) fragmentContainerLayout.getLayoutParams()).topToBottom;
-//        int topToTopConstraint = ((ConstraintLayout.LayoutParams) fragmentContainerLayout.getLayoutParams()).topToTop;
-//        if (topToBottomConstraint != topGuide.getId() && topToTopConstraint != topGuide.getId()) {
-//            setPaymentFragmentInPlace(fragmentContainerLayout, foundPaymentTile);
-//        } else hideThenShowFragment(fragmentContainerLayout, foundPaymentTile);
+        int topToBottomConstraint = ((ConstraintLayout.LayoutParams)
+                fragmentContainerLayout.getLayoutParams()).topToBottom;
 
-        setPaymentFragmentInPlace(fragmentContainerLayout, foundPaymentTile);
+        int topToTopConstraint = ((ConstraintLayout.LayoutParams)
+                fragmentContainerLayout.getLayoutParams()).topToTop;
+
+        if (topToBottomConstraint != topGuide.getId() && topToTopConstraint != topGuide.getId()) {
+            setPaymentFragmentInPlace(fragmentContainerLayout, foundPaymentTile);
+        } else hideThenShowFragment(fragmentContainerLayout, foundPaymentTile);
+
     }
 
-    private void hideThenShowFragment(final View layout, final PaymentTile paymentTile) {
-        Transition.TransitionListener transitionListener = new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(@NonNull Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionEnd(@NonNull Transition transition) {
-                setPaymentFragmentInPlace(layout, paymentTile);
-
-            }
-
-            @Override
-            public void onTransitionCancel(@NonNull Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionPause(@NonNull Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionResume(@NonNull Transition transition) {
-
-            }
-        };
-
-        renderAsHidden(layout, transitionListener);
+    private void hideThenShowFragment(final View fragmentContainerLayout, final PaymentTile paymentTile) {
+        fragmentContainerLayout.animate()
+                .setDuration(transitionDuration / 3)
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        addFragmentToLayout(paymentTile);
+                        fragmentContainerLayout
+                                .animate()
+                                .setDuration(transitionDuration * 2 / 3)
+                                .alpha(1.0f);
+                    }
+                });
     }
 
     private void setPaymentFragmentInPlace(View fragmentContainerLayout, PaymentTile foundPaymentTile) {
@@ -309,6 +301,7 @@ public class RavePayActivity extends AppCompatActivity {
         set.connect(fragmentContainerLayout.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
         set.constrainWidth(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(fragmentContainerLayout.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+        set.setVisibility(fragmentContainerLayout.getId(), ConstraintSet.VISIBLE);
 
         addFragmentToLayout(foundPaymentTile);
         if (tileCount == 1)
@@ -317,7 +310,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
-            transition.setDuration(350);
+            transition.setDuration(transitionDuration);
             TransitionManager.beginDelayedTransition(root, transition);
             set.applyTo(root);
         } else {
@@ -386,11 +379,12 @@ public class RavePayActivity extends AppCompatActivity {
         set.connect(tv.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
         set.constrainWidth(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+        set.setVisibility(tv.getId(), ConstraintSet.VISIBLE);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
-            transition.setDuration(350);
+            transition.setDuration(transitionDuration);
             TransitionManager.beginDelayedTransition(root, transition);
             set.applyTo(root);
         } else set.applyTo(root);
@@ -407,10 +401,11 @@ public class RavePayActivity extends AppCompatActivity {
         set.connect(tv.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
         set.constrainWidth(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+        set.setVisibility(tv.getId(), ConstraintSet.VISIBLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
-            transition.setDuration(350);
+            transition.setDuration(transitionDuration);
             TransitionManager.beginDelayedTransition(root, transition);
             set.applyTo(root);
         } else
@@ -418,10 +413,10 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void renderAsHidden(View view) {
-        renderAsHidden(view, null);
+        renderAsHidden(view, false);
     }
 
-    private void renderAsHidden(View view, Transition.TransitionListener transitionListener) {
+    private void renderAsHidden(View view, Boolean fadeOut) {
         if (view != null) {
             ConstraintSet set = new ConstraintSet();
             set.clone(root);
@@ -432,16 +427,15 @@ public class RavePayActivity extends AppCompatActivity {
             set.connect(view.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
             set.constrainWidth(view.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
             set.constrainHeight(view.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            if (fadeOut) set.setVisibility(view.getId(), ConstraintSet.GONE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 AutoTransition transition = new AutoTransition();
-                transition.setDuration(350);
-                if (transitionListener != null) transition.addListener(transitionListener);
+                transition.setDuration(transitionDuration);
                 TransitionManager.beginDelayedTransition(root, transition);
                 set.applyTo(root);
             } else {
                 set.applyTo(root);
-                transitionListener.onTransitionEnd(null);
             }
         }
     }
@@ -500,11 +494,9 @@ public class RavePayActivity extends AppCompatActivity {
 
             singlePaymentTileView.setOnClickListener(null);
         } else {
-            // Hide payment fragment container
-            // Do this first before cloning the constraint set, otherwise, the changes here will be reversed
             View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
             if (fragmentContainerLayout != null) {
-                renderAsHidden(fragmentContainerLayout);
+                renderAsHidden(fragmentContainerLayout, animated);
             }
 
             ConstraintSet set = new ConstraintSet();
@@ -525,6 +517,8 @@ public class RavePayActivity extends AppCompatActivity {
                     set.connect(tv2.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
                     set.constrainWidth(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
                     set.constrainHeight(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.setVisibility(tv2.getId(), ConstraintSet.VISIBLE);
+
                 }
 
             }
@@ -541,12 +535,13 @@ public class RavePayActivity extends AppCompatActivity {
             set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
             set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
             set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
 
 
             if (animated) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     AutoTransition transition = new AutoTransition();
-                    transition.setDuration(350);
+                    transition.setDuration(transitionDuration);
                     TransitionManager.beginDelayedTransition(root, transition);
                     set.applyTo(root);
                 }
