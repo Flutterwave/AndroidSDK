@@ -59,6 +59,10 @@ public class RavePayManager {
     private int frequency = 0;
     private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
 
+    public ArrayList<Integer> getOrderedPaymentTypesList() {
+        return orderedPaymentTypesList;
+    }
+
     public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
         return this;
@@ -80,61 +84,61 @@ public class RavePayManager {
 
     public RavePayManager acceptAchPayments(boolean withAch) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) && withAch)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACH);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_ACH);
         return this;
     }
 
     public RavePayManager acceptCardPayments(boolean withCard) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD) && withCard)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_CARD);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_CARD);
         return this;
     }
 
     public RavePayManager acceptMpesaPayments(boolean withMpesa) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_MPESA) && withMpesa)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_MPESA);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_MPESA);
         return this;
     }
 
     public RavePayManager acceptAccountPayments(boolean withAccount) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT) && withAccount)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACCOUNT);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_ACCOUNT);
         return this;
     }
 
     public RavePayManager acceptGHMobileMoneyPayments(boolean withGHMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_GH_MOBILE_MONEY) && withGHMobileMoney)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_GH_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptUgMobileMoneyPayments(boolean withUgMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UG_MOBILE_MONEY) && withUgMobileMoney)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_UG_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptRwfMobileMoneyPayments(boolean withRwfMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_RW_MOBILE_MONEY) && withRwfMobileMoney)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_RW_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptZmMobileMoneyPayments(boolean withZmMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ZM_MOBILE_MONEY) && withZmMobileMoney)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
         return this;
     }
 
     public RavePayManager acceptUkPayments(boolean withUk) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UK) && withUk)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_UK);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_UK);
         return this;
     }
 
     public RavePayManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY) && withFrancMobileMoney)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_ACH);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
         return this;
     }
 
@@ -162,7 +166,7 @@ public class RavePayManager {
 
     public RavePayManager acceptUssdPayments(boolean withUssd) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_USSD) && withUssd)
-            orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_USSD);
+            orderedPaymentTypesList.add(PAYMENT_TYPE_USSD);
         return this;
     }
 

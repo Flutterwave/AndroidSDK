@@ -522,7 +522,7 @@ public class RavePayActivity extends AppCompatActivity {
         Collections.reverse(orderedPaymentTypesList);
 
         ArrayList<Integer> currencyCheckedPaymentTypesList =
-                PaymentTypesCurrencyChecker.applyCurrencyChecks(
+                new PaymentTypesCurrencyChecker().applyCurrencyChecks(
                         orderedPaymentTypesList,
                         ravePayInitializer.getCurrency()
                 );

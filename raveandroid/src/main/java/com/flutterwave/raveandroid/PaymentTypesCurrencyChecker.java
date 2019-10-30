@@ -16,7 +16,11 @@ import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_M
 
 public class PaymentTypesCurrencyChecker {
 
-    public static ArrayList<Integer> applyCurrencyChecks(
+
+    public PaymentTypesCurrencyChecker() {
+    }
+
+    public ArrayList<Integer> applyCurrencyChecks(
             ArrayList<Integer> orderedPaymentTypesList,
             String acceptedCurrency) {
         ArrayList<Integer> currencyCheckedPaymentTypesList = new ArrayList<>();

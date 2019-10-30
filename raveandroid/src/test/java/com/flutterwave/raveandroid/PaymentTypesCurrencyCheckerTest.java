@@ -26,10 +26,12 @@ public class PaymentTypesCurrencyCheckerTest {
         addAll(paymentTypesNamesList.keySet());
     }};
 
+    PaymentTypesCurrencyChecker currencyChecker = new PaymentTypesCurrencyChecker();
+
 
     @Test
     public void applyCurrencyChecks_NgnPassed_ReturnsAllAndOnlyNigerianPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "NGN");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "NGN");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -47,7 +49,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_GhsPassed_ReturnsAllAndOnlyGhanaianPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "GHS");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "GHS");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -66,7 +68,7 @@ public class PaymentTypesCurrencyCheckerTest {
     @Test
     public void applyCurrencyChecks_KesPassed_ReturnsAllAndOnlyKenyanPaymentMethods() {
         ArrayList<Integer> checkedPaymentTypesList =
-                PaymentTypesCurrencyChecker.applyCurrencyChecks(
+                currencyChecker.applyCurrencyChecks(
                         fullPaymentTypesList,
                         "KES");
 
@@ -87,7 +89,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_UgxPassed_ReturnsAllAndOnlyUgandanPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "UGX");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "UGX");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -106,7 +108,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_ZmwPassed_ReturnsAllAndOnlyZambianPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "ZMW");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "ZMW");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -125,7 +127,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_RwfPassed_ReturnsAllAndOnlyRwandanPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "RWF");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "RWF");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -144,7 +146,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_XofPassed_ReturnsAllAndOnlyFrancoPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "XOF");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "XOF");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -162,7 +164,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_XafPassed_ReturnsAllAndOnlyFrancoPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "XAF");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "XAF");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -181,7 +183,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_UsdPassed_ReturnsAllAndOnlyUsPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "USD");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "USD");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -199,7 +201,7 @@ public class PaymentTypesCurrencyCheckerTest {
 
     @Test
     public void applyCurrencyChecks_GbpPassed_ReturnsAllAndOnlyUkPaymentMethods() {
-        ArrayList<Integer> checkedPaymentTypesList = PaymentTypesCurrencyChecker.applyCurrencyChecks(fullPaymentTypesList, "GBP");
+        ArrayList<Integer> checkedPaymentTypesList = currencyChecker.applyCurrencyChecks(fullPaymentTypesList, "GBP");
 
         assert (checkedPaymentTypesList.contains(PAYMENT_TYPE_CARD));
         assert (!checkedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT));
@@ -218,7 +220,7 @@ public class PaymentTypesCurrencyCheckerTest {
     @Test
     public void applyCurrencyChecks_paymentTypesOrderIsMaintainedAfterChecks() {
         ArrayList<Integer> checkedPaymentTypesList =
-                PaymentTypesCurrencyChecker.applyCurrencyChecks(
+                currencyChecker.applyCurrencyChecks(
                         new ArrayList<Integer>() {{
                             add(PAYMENT_TYPE_CARD);
                             add(PAYMENT_TYPE_BANK_TRANSFER);
