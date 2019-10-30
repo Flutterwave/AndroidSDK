@@ -73,6 +73,9 @@ public class AchPresenterTest {
     TransactionStatusChecker transactionStatusChecker;
     @Mock
     AchPresenter achPresenterMock;
+
+    @Mock
+    ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
     private AchPresenter achPresenter;
 
     @Before
@@ -151,7 +154,8 @@ public class AchPresenterTest {
         when(ravePayInitializer.getlName()).thenReturn(lastName);
         when(ravePayInitializer.getTxRef()).thenReturn(txRef);
         when(ravePayInitializer.getMeta()).thenReturn(meta);
-        when(ravePayInitializer.isWithAch()).thenReturn(isAch);
+        when(ravePayInitializer.getOrderedPaymentTypesList()).thenReturn(orderedPaymentTypesList);
+        when(orderedPaymentTypesList.contains(RaveConstants.PAYMENT_TYPE_ACH)).thenReturn(isAch);
         when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
 
         //act

@@ -2,12 +2,15 @@ package com.flutterwave.raveandroid;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+
 /**
  * Created by hamzafetuga on 21/07/2017.
  */
 
 @Parcel
 public class RavePayInitializer {
+    private final ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
     String email;
     double amount;
     String publicKey;
@@ -21,17 +24,6 @@ public class RavePayInitializer {
     String meta;
     String subAccounts;
     String payment_plan;
-    boolean withAch = false;
-    boolean withMpesa = false;
-    boolean withCard = true;
-    boolean withAccount = true;
-    boolean withGHMobileMoney = false;
-    boolean withUgMobileMoney = false;
-    boolean withRwfMobileMoney = false;
-    boolean withZmMobileMoney = false;
-    boolean withBankTransfer = false;
-    boolean withUk = false;
-    boolean withFrancMobileMoney = false;
     int theme;
     boolean staging = true;
     boolean isPreAuth = false;
@@ -40,18 +32,14 @@ public class RavePayInitializer {
     private boolean isPermanent;
     private int frequency;
     private int duration;
-    private boolean withUssd;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
-                              String lName, boolean withCard,
-                              boolean withAccount, boolean withMpesa, boolean withGHMobileMoney,
-                              boolean withUgMobileMoney, boolean withRwfMobileMoney, boolean withZmMobileMoney,
-                              boolean withAch, boolean withBankTransfer, boolean withUk, boolean withUssd, boolean withFrancMobileMoney, int theme,
+                              String lName, int theme,
                               boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
-                              boolean showStagingLabel, boolean displayFee) {
+                              boolean showStagingLabel, boolean displayFee, ArrayList<Integer> orderedPaymentTypesList) {
         this.email = email;
         this.amount = amount;
         this.publicKey = publicKey;
@@ -62,21 +50,9 @@ public class RavePayInitializer {
         this.country = country;
         this.fName = fName;
         this.lName = lName;
-        this.withAccount = withAccount;
-        this.withGHMobileMoney = withGHMobileMoney;
-        this.withUgMobileMoney = withUgMobileMoney;
-        this.withRwfMobileMoney = withRwfMobileMoney;
-        this.withZmMobileMoney = withZmMobileMoney;
-        this.withBankTransfer = withBankTransfer;
         this.isPermanent = isPermanent;
         this.duration = duration;
         this.frequency = frequency;
-        this.withUssd = withUssd;
-        this.withUk = withUk;
-        this.withFrancMobileMoney = withFrancMobileMoney;
-        this.withMpesa = withMpesa;
-        this.withCard = withCard;
-        this.withAch = withAch;
         this.theme = theme;
         this.staging = staging;
         this.meta = meta;
@@ -85,6 +61,9 @@ public class RavePayInitializer {
         this.isPreAuth = isPreAuth;
         this.showStagingLabel = showStagingLabel;
         this.displayFee = displayFee;
+        if (!orderedPaymentTypesList.isEmpty())
+            this.orderedPaymentTypesList.addAll(orderedPaymentTypesList);
+        else this.orderedPaymentTypesList.add(RaveConstants.PAYMENT_TYPE_CARD);
     }
 
     public RavePayInitializer() {
@@ -96,14 +75,6 @@ public class RavePayInitializer {
 
     public void showStagingLabel(boolean showStagingLabel) {
         this.showStagingLabel = showStagingLabel;
-    }
-
-    public boolean isWithMpesa() {
-        return withMpesa;
-    }
-
-    public void setWithMpesa(boolean withMpesa) {
-        this.withMpesa = withMpesa;
     }
 
     public String getMeta() {
@@ -122,6 +93,10 @@ public class RavePayInitializer {
         return staging;
     }
 
+    public ArrayList<Integer> getOrderedPaymentTypesList() {
+        return orderedPaymentTypesList;
+    }
+
     public void setStaging(boolean staging) {
         this.staging = staging;
     }
@@ -132,60 +107,6 @@ public class RavePayInitializer {
 
     public void setTheme(int theme) {
         this.theme = theme;
-    }
-
-    public boolean isWithAccount() {
-        return withAccount;
-    }
-
-    public void setWithAccount(boolean withAccount) {
-        this.withAccount = withAccount;
-    }
-
-    public boolean isWithGHMobileMoney() {
-        return withGHMobileMoney;
-    }
-
-    public boolean isWithUgMobileMoney() {
-        return withUgMobileMoney;
-    }
-
-    public boolean isWithUk() {
-        return withUk;
-    }
-
-    public boolean isWithFrancMobileMoney() {
-        return withFrancMobileMoney;
-    }
-
-    public boolean isWithRwfMobileMoney() {
-        return withRwfMobileMoney;
-    }
-
-    public boolean isWithZmMobileMoney() {
-        return withZmMobileMoney;
-    }
-
-    public boolean isWithBankTransfer() {
-        return withBankTransfer;
-    }
-
-    public void setWithGHMobileMoney(boolean withGHMobileMoney) {
-        this.withGHMobileMoney = withGHMobileMoney;
-    }
-
-    public boolean isWithCard() {
-        return withCard;
-    }
-
-    public boolean isWithAch() { return withAch; }
-
-    public void setWithAch(boolean withAch) {
-        this.withAch = withAch;
-    }
-
-    public void setWithCard(boolean withCard) {
-        this.withCard = withCard;
     }
 
     public String getEmail() {
@@ -312,13 +233,5 @@ public class RavePayInitializer {
 
     public void setDuration(int duration) {
         this.duration = duration;
-    }
-
-    public boolean isWithUssd() {
-        return withUssd;
-    }
-
-    public void setWithUssd(boolean withUssd) {
-        this.withUssd = withUssd;
     }
 }

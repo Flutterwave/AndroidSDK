@@ -1,65 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rave_pay_activity_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.flutterwave.raveandroid.RavePayActivity">
+    tools:context=".RavePayActivity">
 
-    <include
-        android:id="@+id/main_content"
-        layout="@layout/content_rave_pay" />
-
-    <RelativeLayout
-        android:id="@+id/rave_permission_required_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        android:clickable="true"
-        android:gravity="center"
-        android:padding="30dp"
-        android:visibility="gone">
-
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="7dp"
-            android:gravity="center_horizontal"
-            android:text="@string/permissions_are_required_to_complete_payment"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/requestPermsBtn"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView"
-            android:layout_centerHorizontal="true"
-            android:text="@string/grant_permission"
-            android:textColor="#009688"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/stagingModeBannerLay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="bottom">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@android:color/holo_red_dark"
-            android:gravity="center"
-            android:text="You are currently on staging mode"
-            android:textColor="@android:color/white" />
-
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

@@ -13,7 +13,6 @@ public class RaveConstants {
     public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";//test
     //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
-    //Todo: change back BAse URL
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
     public static String LIVE_URL = "https://api.ravepay.co";
 
@@ -79,7 +78,7 @@ public class RaveConstants {
     public static String validAccountNumberPrompt = "Enter a valid Account Number";
     public static String validAccountNamePrompt = "Enter a valid Account Name";
     public static String validBankNamePrompt = "Enter a valid Bank Name";
-    public static String charge = "You will be charged a total of";
+    public static String charge = "You will be charged a total of ";
     public static String askToContinue = ". Do you want to continue?";
     public static String yes = "YES";
     public static String no = "NO";
@@ -109,6 +108,34 @@ public class RaveConstants {
         put("Zenith bank PLC", "057");
         put("Sterling Bank PLC", "232");
         put("United Bank for Africa", "033");
+    }};
+
+    public static final int PAYMENT_TYPE_CARD = 101;
+    public static final int PAYMENT_TYPE_ACCOUNT = 102;
+    public static final int PAYMENT_TYPE_GH_MOBILE_MONEY = 103;
+    public static final int PAYMENT_TYPE_RW_MOBILE_MONEY = 104;
+    public static final int PAYMENT_TYPE_MPESA = 105;
+    public static final int PAYMENT_TYPE_UG_MOBILE_MONEY = 106;
+    public static final int PAYMENT_TYPE_ACH = 107;
+    public static final int PAYMENT_TYPE_ZM_MOBILE_MONEY = 108;
+    public static final int PAYMENT_TYPE_BANK_TRANSFER = 109;
+    public static final int PAYMENT_TYPE_UK = 110;
+    public static final int PAYMENT_TYPE_USSD = 111;
+    public static final int PAYMENT_TYPE_FRANCO_MOBILE_MONEY = 112;
+
+    public static HashMap<Integer, String> paymentTypesNamesList = new HashMap<Integer, String>() {{
+        put(PAYMENT_TYPE_CARD, "Card");
+        put(PAYMENT_TYPE_ACCOUNT, "Account");
+        put(PAYMENT_TYPE_GH_MOBILE_MONEY, "Ghana Mobile Money");
+        put(PAYMENT_TYPE_RW_MOBILE_MONEY, "Rwanda Mobile Money");
+        put(PAYMENT_TYPE_UG_MOBILE_MONEY, "Uganda Mobile Money");
+        put(PAYMENT_TYPE_ZM_MOBILE_MONEY, "Zambia Mobile Money");
+        put(PAYMENT_TYPE_FRANCO_MOBILE_MONEY, "Francophone Mobile Money");
+        put(PAYMENT_TYPE_MPESA, "M-Pesa");
+        put(PAYMENT_TYPE_ACH, "ACH");
+        put(PAYMENT_TYPE_BANK_TRANSFER, "Bank Transfer");
+        put(PAYMENT_TYPE_UK, "UK Bank Account");
+        put(PAYMENT_TYPE_USSD, "USSD");
     }};
 
 
