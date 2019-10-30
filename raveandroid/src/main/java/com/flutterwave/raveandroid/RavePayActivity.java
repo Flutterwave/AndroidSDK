@@ -7,7 +7,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,7 +49,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
 
 import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
@@ -91,11 +89,6 @@ public class RavePayActivity extends AppCompatActivity {
     private float paymentTilesTextSize;
     View permissionsRequiredLayout;
     private long transitionDuration = 350;
-
-
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
 
     AppComponent appComponent;
 
@@ -152,6 +145,78 @@ public class RavePayActivity extends AppCompatActivity {
         render();
     }
 
+    private void render() {
+        render(false);
+    }
+
+    private void render(boolean animated) {
+        if (tileCount == 1) {
+            View singlePaymentTileView = paymentTiles.get(0).view;
+            singlePaymentTileView.callOnClick(); // Show payment fragment
+            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
+            ((TextView) singlePaymentTileView.findViewById(R.id.rave_payment_type_title_textView)).setGravity(Gravity.CENTER);
+
+            singlePaymentTileView.setOnClickListener(null);
+        } else {
+            View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
+            if (fragmentContainerLayout != null) {
+                renderAsHidden(fragmentContainerLayout, animated);
+            }
+
+            ConstraintSet set = new ConstraintSet();
+            set.clone(root);
+
+            for (int i = 0; i < paymentTiles.size(); i++) {
+
+                View tv2 = paymentTiles.get(i).view;
+
+                int upIndex = 10 - (i + 1);
+                Guideline upGuide = guidelineMap.get(upIndex);
+                Guideline downGuide = guidelineMap.get(upIndex + 1);
+
+                if (upGuide != null && downGuide != null) {
+                    set.connect(tv2.getId(), ConstraintSet.TOP, upGuide.getId(), ConstraintSet.BOTTOM);
+                    set.connect(tv2.getId(), ConstraintSet.BOTTOM, downGuide.getId(), ConstraintSet.TOP);
+                    set.connect(tv2.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+                    set.connect(tv2.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+                    set.constrainWidth(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.constrainHeight(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.setVisibility(tv2.getId(), ConstraintSet.VISIBLE);
+
+                    View arrowIv = tv2.findViewById(R.id.arrowIv2);
+                    if (arrowIv != null)
+                        arrowIv.animate().rotation(0f).setDuration(transitionDuration);
+                }
+
+            }
+            // Set title view
+            View titleView = root.findViewById(R.id.title_container);
+            if (titleView == null) {
+                titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
+                root.addView(titleView);
+            }
+            set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
+            set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+            set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+            set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+            set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
+
+
+            if (animated) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    AutoTransition transition = new AutoTransition();
+                    transition.setDuration(transitionDuration);
+                    TransitionManager.beginDelayedTransition(root, transition);
+                    set.applyTo(root);
+                }
+            } else {
+                set.applyTo(root);
+            }
+
+        }
+    }
 
     private void handleClick(View clickedView) {
 
@@ -181,7 +246,6 @@ public class RavePayActivity extends AppCompatActivity {
             t.isTop = t.view.getId() == clickedView.getId();
             tileMap.put(t.view.getId(), t);
         }
-
 
         Integer tileId = null;
         PaymentTile foundPaymentTile = null;
@@ -248,11 +312,11 @@ public class RavePayActivity extends AppCompatActivity {
             fragmentContainerLayout
                     .findViewById(R.id.choose_another_payment_method_tv)
                     .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showAllPaymentTypes();
-                }
-            });
+                        @Override
+                        public void onClick(View view) {
+                            showAllPaymentTypes();
+                        }
+                    });
         }
 
         if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
@@ -364,7 +428,11 @@ public class RavePayActivity extends AppCompatActivity {
                 return;
         }
 
-        transaction.commit();
+        try {
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -380,6 +448,9 @@ public class RavePayActivity extends AppCompatActivity {
         set.constrainWidth(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.setVisibility(tv.getId(), ConstraintSet.VISIBLE);
+        View arrowIv = tv.findViewById(R.id.arrowIv2);
+        if (arrowIv != null)
+            arrowIv.animate().rotation(180f).setDuration(transitionDuration);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -402,6 +473,10 @@ public class RavePayActivity extends AppCompatActivity {
         set.constrainWidth(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.constrainHeight(tv.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
         set.setVisibility(tv.getId(), ConstraintSet.VISIBLE);
+
+        View arrowIv = tv.findViewById(R.id.arrowIv2);
+        if (arrowIv != null) arrowIv.animate().rotation(0f).setDuration(transitionDuration);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
@@ -476,82 +551,6 @@ public class RavePayActivity extends AppCompatActivity {
         tileMap.put(tileView.getId(), paymentTile);
     }
 
-    private int getRandomColor() {
-        Random rnd = new Random();
-        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    }
-
-    private void render() {
-        render(false);
-    }
-
-    private void render(boolean animated) {
-        if (tileCount == 1) {
-            View singlePaymentTileView = paymentTiles.get(0).view;
-            singlePaymentTileView.callOnClick(); // Show payment fragment
-//            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
-            ((TextView) singlePaymentTileView.findViewById(R.id.rave_payment_type_title_textView)).setGravity(Gravity.CENTER);
-
-            singlePaymentTileView.setOnClickListener(null);
-        } else {
-            View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
-            if (fragmentContainerLayout != null) {
-                renderAsHidden(fragmentContainerLayout, animated);
-            }
-
-            ConstraintSet set = new ConstraintSet();
-            set.clone(root);
-
-            for (int i = 0; i < paymentTiles.size(); i++) {
-
-                View tv2 = paymentTiles.get(i).view;
-
-                int upIndex = 10 - (i + 1);
-                Guideline upGuide = guidelineMap.get(upIndex);
-                Guideline downGuide = guidelineMap.get(upIndex + 1);
-
-                if (upGuide != null && downGuide != null) {
-                    set.connect(tv2.getId(), ConstraintSet.TOP, upGuide.getId(), ConstraintSet.BOTTOM);
-                    set.connect(tv2.getId(), ConstraintSet.BOTTOM, downGuide.getId(), ConstraintSet.TOP);
-                    set.connect(tv2.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-                    set.connect(tv2.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-                    set.constrainWidth(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-                    set.constrainHeight(tv2.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-                    set.setVisibility(tv2.getId(), ConstraintSet.VISIBLE);
-
-                }
-
-            }
-
-            // Set title view
-            View titleView = root.findViewById(R.id.title_container);
-            if (titleView == null) {
-                titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
-                root.addView(titleView);
-            }
-            set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
-            set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
-            set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-            set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-            set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
-
-
-            if (animated) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    AutoTransition transition = new AutoTransition();
-                    transition.setDuration(transitionDuration);
-                    TransitionManager.beginDelayedTransition(root, transition);
-                    set.applyTo(root);
-                }
-            } else {
-                set.applyTo(root);
-            }
-
-        }
-    }
-
     private View createPaymentTileView(String title) {
         View tileView = getLayoutInflater().inflate(R.layout.payment_type_tile_layout, root, false);
         TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
@@ -611,10 +610,6 @@ public class RavePayActivity extends AppCompatActivity {
                 .build();
     }
 
-    public RavePayInitializer getRavePayInitializer() {
-        return ravePayInitializer;
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -660,9 +655,16 @@ public class RavePayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
         super.onBackPressed();
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
+    public RavePayInitializer getRavePayInitializer() {
+        return ravePayInitializer;
     }
 
 }
