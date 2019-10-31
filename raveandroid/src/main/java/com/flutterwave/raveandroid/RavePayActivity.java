@@ -346,6 +346,7 @@ public class RavePayActivity extends AppCompatActivity {
                         addFragmentToLayout(paymentTile);
                         fragmentContainerLayout
                                 .animate()
+                                .setListener(null)
                                 .setDuration(transitionDuration * 2 / 3)
                                 .alpha(1.0f);
                     }
