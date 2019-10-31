@@ -10,6 +10,8 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -47,6 +49,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -63,6 +66,10 @@ public class UssdPresenterTest {
     AmountValidator amountValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
+    @Inject
+    PayloadToJson payloadToJson;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
@@ -133,7 +140,12 @@ public class UssdPresenterTest {
 
     @Test
     public void payWithUssd_chargeCard_onSuccess_onUssdDetailsReceivedCalled() {
-        ussdPresenter.payWithUssd(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        ussdPresenter.payWithUssd(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         ChargeResponse chargeResponse = generateValidChargeResponse();
@@ -147,7 +159,12 @@ public class UssdPresenterTest {
 
     @Test
     public void payWithUssd_chargeCard_onSuccess_nullResponse_onUssdDetailsReceivedCalled() {
-        ussdPresenter.payWithUssd(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        ussdPresenter.payWithUssd(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         ChargeResponse chargeResponse = new ChargeResponse();
@@ -160,7 +177,13 @@ public class UssdPresenterTest {
 
     @Test
     public void payWithUssd_chargeCard_onError_onPaymentErrorCalled() {
-        ussdPresenter.payWithUssd(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        ussdPresenter.payWithUssd(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         String message = generateRandomString();
@@ -387,7 +410,7 @@ public class UssdPresenterTest {
     }
 
     @Test
-    public void processTransaction_displayFeeIsEnabled_payWithUssdCalled() {
+    public void processTransaction_displayFeeIsEnabled_FetchFeeCalled() {
         //arrange
         int amountViewID = generateRandomInt();
         int banksSpinnerViewID = generateRandomInt();
@@ -396,10 +419,8 @@ public class UssdPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         //act
         ussdPresenter.processTransaction(data, ravePayInitializer);
-        ussdPresenterMock.payWithUssd(generatePayload(), generateRandomString());
         //assert
-        verify(view).showProgressIndicator(true);
-        verify(ussdPresenterMock).payWithUssd(any(Payload.class), any(String.class));
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), any(Callbacks.OnGetFeeRequestComplete.class));
 
     }
 
@@ -421,19 +442,22 @@ public class UssdPresenterTest {
     }
 
     @Test
-    public void processTransaction_displayFeeIsDisabled_chargeAccountCalled() {
+    public void processTransaction_displayFeeIsDisabled_CgargeCalled() {
         //arrange
-        int amountViewID = generateRandomInt();
-        int banksSpinnerViewID = generateRandomInt();
-        HashMap<String, ViewObject> data = generateViewData(amountViewID, banksSpinnerViewID);
+        HashMap<String, ViewObject> data = generateViewData();
+        Payload payload = generatePayload();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(isNull(String.class), any(String.class))).thenReturn(generateRandomString());
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
-        Payload payload = generatePayload();
+
         //act
         ussdPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        ussdPresenter.payWithUssd(payload, generateRandomString());
+        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
     }
 
 
@@ -447,6 +471,14 @@ public class UssdPresenterTest {
         viewData.put(fieldAmount, new ViewObject(amountViewID, generateRandomDouble().toString(), TextInputLayout.class));
         viewData.put(fieldUssdBank, new ViewObject(banksSpinnerViewID, RaveConstants.bankNameGtb, AppCompatSpinner.class));
 
+        return viewData;
+    }
+
+    private HashMap<String, ViewObject> generateViewData() {
+
+        HashMap<String, ViewObject> viewData = new HashMap<>();
+        viewData.put(fieldAmount, new ViewObject(generateRandomInt(), generateRandomDouble().toString(), TextInputLayout.class));
+        viewData.put(fieldUssdBank, new ViewObject(generateRandomInt(), generateRandomString(), TextInputLayout.class));
         return viewData;
     }
 

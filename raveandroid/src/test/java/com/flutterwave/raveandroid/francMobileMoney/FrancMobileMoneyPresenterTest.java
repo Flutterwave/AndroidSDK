@@ -7,6 +7,8 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -64,6 +66,10 @@ public class FrancMobileMoneyPresenterTest {
     AmountValidator amountValidator;
     @Inject
     PhoneValidator phoneValidator;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     @Inject
     RavePayInitializer ravePayInitializer;
     @Inject
@@ -132,8 +138,12 @@ public class FrancMobileMoneyPresenterTest {
     public void chargeFranc_onSuccess_requeryTxCalled() {
 
         ChargeResponse chargeResponse = generateValidChargeResponse();
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        francMobileMoneyPresenter.chargeFranc(generatePayload(), generateRandomString());
+        francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -146,8 +156,12 @@ public class FrancMobileMoneyPresenterTest {
 
     @Test
     public void chargeFranc_onError_onPaymentErrorCalled() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        francMobileMoneyPresenter.chargeFranc(generatePayload(), generateRandomString());
+        francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         String message = generateRandomString();
@@ -161,8 +175,12 @@ public class FrancMobileMoneyPresenterTest {
 
     @Test
     public void chargeFranc_onSuccessWithNullData_onPaymentError_noResponse_Called() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        francMobileMoneyPresenter.chargeFranc(generatePayload(), generateRandomString());
+        francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -338,12 +356,16 @@ public class FrancMobileMoneyPresenterTest {
     public void processTransaction_displayFeeIsDisabled_chargeFrancCalled() {
         //arrange
         HashMap<String, ViewObject> data = generateViewData();
+        Payload payload = generatePayload();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
         //act
         francMobileMoneyPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        francMobileMoneyPresenter.chargeFranc(generatePayload(), generateRandomString());
+        francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
     }
 
 

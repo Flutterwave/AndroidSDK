@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -70,6 +71,8 @@ public class UkPresenterTest {
     DeviceIdGetter deviceIdGetter;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Before
     public void setUp() {
@@ -171,6 +174,8 @@ public class UkPresenterTest {
         Payload payload = generatePayload();
         String encryptionKey = generateRandomString();
 
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
         //act
         ukPresenter.chargeUk(payload, encryptionKey);
 
@@ -190,6 +195,7 @@ public class UkPresenterTest {
         //arrange
         Payload payload = generatePayload();
         String encryptionKey = generateRandomString();
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         //act
         ukPresenter.chargeUk(payload, encryptionKey);
@@ -210,6 +216,7 @@ public class UkPresenterTest {
         //arrange
         Payload payload = generatePayload();
         String encryptionKey = generateRandomString();
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         //act
         ukPresenter.chargeUk(payload, encryptionKey);
@@ -302,6 +309,7 @@ public class UkPresenterTest {
         //arrange
         Payload payload = generatePayload();
         String encryptionKey = generateRandomString();
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
         //act
         ukPresenter.chargeUk(payload, encryptionKey);
@@ -416,11 +424,13 @@ public class UkPresenterTest {
         //arrange
         HashMap<String, ViewObject> data = generateViewData();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
         //act
         ukPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        ukPresenter.chargeUk(generatePayload(), generateRandomString());
+        verify(networkRequest).chargeUK(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
     }
 
 

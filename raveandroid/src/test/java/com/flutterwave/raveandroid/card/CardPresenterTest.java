@@ -8,6 +8,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
@@ -99,6 +100,8 @@ public class CardPresenterTest {
     DeviceIdGetter deviceIdGetter;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
     TransactionStatusChecker transactionStatusChecker;
@@ -114,6 +117,7 @@ public class CardPresenterTest {
 
         component.inject(this);
         component.inject(cardPresenter);
+        stubPayloadEncryptor();
 
     }
 
@@ -1196,5 +1200,9 @@ public class CardPresenterTest {
 
     private Double generateRandomDouble() {
         return new Random().nextDouble();
+    }
+
+    private void stubPayloadEncryptor() {
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
     }
 }

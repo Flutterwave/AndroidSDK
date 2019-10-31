@@ -7,6 +7,8 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -62,6 +64,10 @@ public class UgMobileMoneyPresenterTest {
     Context context;
     @Inject
     AmountValidator amountValidator;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     @Inject
     PhoneValidator phoneValidator;
     @Inject
@@ -129,8 +135,12 @@ public class UgMobileMoneyPresenterTest {
 
     @Test
     public void chargeUgMobileMoney_onSuccess_requeryTxCalled() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        presenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        presenter.chargeUgMobileMoney(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> onGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         verify(networkRequest).chargeMobileMoneyWallet(any(ChargeRequestBody.class), onGhanaChargeRequestCompleteArgumentCaptor.capture());
@@ -143,8 +153,12 @@ public class UgMobileMoneyPresenterTest {
 
     @Test
     public void chargeUgMobileMoney_onError_onPaymentErrorCalled() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        presenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        presenter.chargeUgMobileMoney(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> OnGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         String message = generateRandomString();
@@ -158,8 +172,12 @@ public class UgMobileMoneyPresenterTest {
 
     @Test
     public void chargeUgMobileMoney_onSuccessWithNullData_onPaymentError_noResponse_Called() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        presenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        presenter.chargeUgMobileMoney(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnGhanaChargeRequestComplete> onGhanaChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGhanaChargeRequestComplete.class);
         verify(networkRequest).chargeMobileMoneyWallet(any(ChargeRequestBody.class), onGhanaChargeRequestCompleteArgumentCaptor.capture());
@@ -336,13 +354,18 @@ public class UgMobileMoneyPresenterTest {
     @Test
     public void processTransaction_displayFeeIsDisabled_chargeUgMobileMoneyCalled() {
         //arrange
+        Payload payload = generatePayload();
         HashMap<String, ViewObject> data = generateViewData();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
         //act
         presenter.processTransaction(data, ravePayInitializer);
         //assert
-        presenter.chargeUgMobileMoney(generatePayload(), generateRandomString());
+        presenter.chargeUgMobileMoney(payload, generateRandomString());
     }
 
 
