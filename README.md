@@ -111,6 +111,8 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | showStagingLabel(boolean) | Set to `false` to not display a staging label when in staging environment. By default this is set to `true` | `boolean` | Not Required
 | initialize() | Launch the Rave Payment UI  |  N/A | Required
 
+> <strong>Note:</strong> The order in which you call the methods for accepting different payment types is the order in which they will show in the UI.
+
 ###  2. Handle the response
 In the calling activity, override the `onActivityResult` method to receive the payment response as shown below
 
