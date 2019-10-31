@@ -1,12 +1,20 @@
 package com.flutterwave.raveandroid;
 
+import android.annotation.SuppressLint;
+import android.util.Base64;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.scottyab.aescrypt.AESCrypt.encrypt;
-
 @Singleton
 public class PayloadEncryptor {
+
+    private static final String ALGORITHM = "DESede";
+    private static final String TRANSFORMATION = "DESede/ECB/PKCS5Padding";
 
     @Inject
     public PayloadEncryptor() {
@@ -22,6 +30,23 @@ public class PayloadEncryptor {
             }
         }
         return "";
+    }
+
+    private String encrypt(String data, String key) throws Exception {
+
+        try {
+            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+            SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+
+            cipher.init(Cipher.ENCRYPT_MODE, skey);
+            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
+            byte[] buf = cipher.doFinal(plainTextBytes);
+            return Base64.encodeToString(buf, Base64.DEFAULT);
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 
 }

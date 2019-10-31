@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -47,6 +48,8 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
     PhoneValidator phoneValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     private Context context;
     private FrancMobileMoneyContract.View mView;
 
@@ -91,7 +94,7 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
     @Override
     public void chargeFranc(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");

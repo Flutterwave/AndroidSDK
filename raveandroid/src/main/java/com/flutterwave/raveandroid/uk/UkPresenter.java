@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
@@ -42,6 +43,8 @@ public class UkPresenter implements UkContract.UserActionsListener {
     AmountValidator amountValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     private Context context;
     private UkContract.View mView;
 
@@ -85,7 +88,9 @@ public class UkPresenter implements UkContract.UserActionsListener {
     @Override
     public void chargeUk(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        encryptedCardRequestBody = encryptedCardRequestBody.trim();
+        encryptedCardRequestBody = encryptedCardRequestBody.replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");

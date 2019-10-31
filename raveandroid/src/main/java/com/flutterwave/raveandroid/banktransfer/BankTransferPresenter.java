@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.GetEncryptedData;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -55,7 +55,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     PayloadToJson payloadToJson;
     private String beneficiaryName, accountNumber, amount, bankName;
     @Inject
-    GetEncryptedData getEncryptedData;
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
     public BankTransferPresenter(Context context, BankTransferContract.View mView) {
@@ -97,7 +97,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     @Override
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = getEncryptedData.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
         encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();

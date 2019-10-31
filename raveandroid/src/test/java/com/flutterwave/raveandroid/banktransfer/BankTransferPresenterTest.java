@@ -9,6 +9,8 @@ import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
@@ -48,6 +50,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -66,6 +69,10 @@ public class BankTransferPresenterTest {
     RavePayInitializer ravePayInitializer;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -134,7 +141,12 @@ public class BankTransferPresenterTest {
 
     @Test
     public void payWithBankTransfer_chargeCard_onSuccess_onTransferDetailsReceivedCalled() {
-        bankTransferPresenter.payWithBankTransfer(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         ChargeResponse chargeResponse = generateValidChargeResponse();
@@ -149,7 +161,11 @@ public class BankTransferPresenterTest {
 
     @Test
     public void payWithBankTransfer_chargeCard_onSuccess_nullResponse_onTransferDetailsReceivedCalled() {
-        bankTransferPresenter.payWithBankTransfer(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         ChargeResponse chargeResponse = new ChargeResponse();
@@ -162,7 +178,12 @@ public class BankTransferPresenterTest {
 
     @Test
     public void payWithBankTransfer_chargeCard_onError_onPaymentErrorCalled() {
-        bankTransferPresenter.payWithBankTransfer(generatePayload(), generateRandomString());
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         String message = generateRandomString();
@@ -447,15 +468,23 @@ public class BankTransferPresenterTest {
     public void processTransaction_displayFeeIsDisabled_chargeAccountCalled() {
         //arrange
         int viewID = generateRandomInt();
+        Payload payload = generatePayload();
         HashMap<String, ViewObject> data = generateViewData(viewID);
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadBuilder.createBankTransferPayload()).thenReturn(payload);
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(isNull(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        Payload payload = generatePayload();
+        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
         //act
         bankTransferPresenter.processTransaction(data, ravePayInitializer);
         //assert
         bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
+
+
     }
 
     @Test
