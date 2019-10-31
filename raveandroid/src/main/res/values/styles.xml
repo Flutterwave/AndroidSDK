@@ -52,6 +52,10 @@
         <item name="android:textColor">#4a4a4a</item>
     </style>
 
+    <style name="paymentTileDividerStyle">
+        <item name="android:background">@color/divider_color</item>
+    </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -71,6 +75,7 @@
         <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
         <item name="PaymentTileStyle">@style/paymentTileStyle</item>
         <item name="PaymentTileTextStyle">@style/paymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/paymentTileDividerStyle</item>
     </style>
 
 

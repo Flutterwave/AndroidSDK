@@ -143,20 +143,35 @@ The intent's `message` object contains the raw JSON response from the Rave API. 
  sure everything checks out before providing service or goods.
 
 ###  3. Customize the look
-You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors
+You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors.
 
-        <style name="DefaultTheme" parent="AppTheme.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="OTPButtonStyle">@style/otpBtnStyle</item>
-        <item name="PayButtonStyle">@style/payBtnStyle</item>
-        <item name="PinButtonStyle">@style/pinButtonStyle</item>
-        <item name="OTPHeaderStyle">@style/otpHeaderStyle</item>
-        <item name="TabLayoutStyle">@style/tabLayoutStyle</item>
-        <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
-        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
+First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
+
+    <style name="MyCustomTheme" parent="AppTheme.NoActionBar">
+        <item name="colorPrimary">#092342</item>
+        <item name="colorPrimaryDark">#b71c1c</item>
+        <item name="colorAccent">#7cb342</item>
+        <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
+        <item name="PayButtonStyle">@style/payBtnStyle2</item>
+        <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
+        <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
+        <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
+        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle2</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
     </style>
+    
+    
+ Then in your RavePayManager setup, add `.withTheme(<Reference to your style>)` anywhere before calling the `initialize()` function. e.g.
+ ```java
+  new RavePayManager(activity).setAmount(amount)
+                    .setCountry(country)
+                    //...
+                    //...
+                    .withTheme(R.Style.MyCustomTheme)
+                    .initialize();
+```
 ## Configuring Proguard
 To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
 ```

@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     .isPreAuth(isPreAuthSwitch.isChecked())
                     .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
 //                    .setMeta(meta)
-//                    .withTheme(R.style.TestNewTheme)
+                    .withTheme(R.style.TestNewTheme)
                     .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
 
 

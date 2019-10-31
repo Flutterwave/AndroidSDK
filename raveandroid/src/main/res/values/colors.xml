@@ -10,4 +10,5 @@
     <color name="white">#fff</color>
     <color name="black">#000</color>
 	<color name="sisal">#DCD4C9</color>
+    <color name="divider_color">#DCD4C9</color>
 </resources>
