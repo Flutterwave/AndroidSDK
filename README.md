@@ -2,7 +2,7 @@
 
 Rave's Android Drop-In is a readymade UI that allows you to accept card and bank payments in your Android app.
 
-<img alt="Screenshot of Drop-In" src="https://firebasestorage.googleapis.com/v0/b/saveup-9e594.appspot.com/o/Group.png?alt=media&token=e0c89192-b2a4-47e0-a883-3a78005acd2a" width="600"/>
+<img alt="Screenshot of Drop-In" src="https://i.imgur.com/tSHWcsD.png" width="600"/>
 
 ## Before you begin
 - [Create your Rave staging keys from the sandbox environment](https://flutterwavedevelopers.readme.io/blog/how-to-get-your-staging-keys-from-the-rave-sandbox-environment)
