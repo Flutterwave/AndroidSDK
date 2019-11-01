@@ -150,9 +150,9 @@ You can apply a new look by changing the color of certain parts of the UI to hig
 First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
 
     <style name="MyCustomTheme" parent="AppTheme.NoActionBar">
-        <item name="colorPrimary">#092342</item>
-        <item name="colorPrimaryDark">#b71c1c</item>
-        <item name="colorAccent">#7cb342</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
         <item name="PayButtonStyle">@style/payBtnStyle2</item>
         <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
