@@ -162,8 +162,9 @@
 	<string name="how_would_you_like_to_pay">How would you\nlike to pay?</string>
 	<string name="you_are_currently_on_staging_mode">You are currently on staging mode</string>
 	<string name="choose_another_payment_method">Choose another payment method</string>
+    <string name="secured_by_flutterwave">SECURED BY FLUTTERWAVE</string>
 
-	<string-array name="gh_mobile_money_networks">
+    <string-array name="gh_mobile_money_networks">
 		<item>Select network</item>
 		<item>MTN</item>
 		<item>Tigo</item>
