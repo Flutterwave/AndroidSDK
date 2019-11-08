@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.card;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -140,21 +141,21 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     private void initializeViews() {
-        progressContainer =  v.findViewById(R.id.rave_progressContainer);
-        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
-        saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
-        cardExpiryTil =  v.findViewById(R.id.rave_cardExpiryTil);
-        savedCardBtn =  v.findViewById(R.id.rave_savedCardButton);
-        cardExpiryTv =  v.findViewById(R.id.rave_cardExpiryTv);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        cardNoTil =  v.findViewById(R.id.rave_cardNoTil);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        emailTil =  v.findViewById(R.id.rave_emailTil);
-        cardNoTv =  v.findViewById(R.id.rave_cardNoTv);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-        emailEt =  v.findViewById(R.id.rave_emailTv);
-        cvvTil =  v.findViewById(R.id.rave_cvvTil);
-        cvvTv =  v.findViewById(R.id.rave_cvvTv);
+        progressContainer = v.findViewById(R.id.rave_progressContainer);
+        pcidss_tv = v.findViewById(R.id.rave_pcidss_compliant_tv);
+        saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
+        cardExpiryTil = v.findViewById(R.id.rave_cardExpiryTil);
+        savedCardBtn = v.findViewById(R.id.rave_savedCardButton);
+        cardExpiryTv = v.findViewById(R.id.rave_cardExpiryTv);
+        payButton = v.findViewById(R.id.rave_payButton);
+        cardNoTil = v.findViewById(R.id.rave_cardNoTil);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        emailTil = v.findViewById(R.id.rave_emailTil);
+        cardNoTv = v.findViewById(R.id.rave_cardNoTv);
+        amountEt = v.findViewById(R.id.rave_amountTV);
+        emailEt = v.findViewById(R.id.rave_emailTv);
+        cvvTil = v.findViewById(R.id.rave_cvvTil);
+        cvvTv = v.findViewById(R.id.rave_cvvTv);
 
     }
 
@@ -201,18 +202,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-            presenter.processTransaction(dataHashMap, ravePayInitializer);
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
 
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
             view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
             view.setError(message);
         }
 
@@ -575,8 +575,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onChargeCardSuccessful(ChargeResponse response) {
         presenter.requeryTx(response.getData().getFlwRef(),
-                        ravePayInitializer.getPublicKey(),
-                        shouldISaveThisCard);
+                ravePayInitializer.getPublicKey(),
+                shouldISaveThisCard);
     }
 
     @Override
@@ -646,27 +646,34 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     }
                 } else if (editable.length() == 2 && lastInput.endsWith("/")) {
-
-                    int month = Integer.parseInt(input);
-                    if (month <= 12) {
-                        cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
+                    try {
+                        int month = Integer.parseInt(input);
+                        if (month <= 12) {
+                            cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
+                            cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                        } else {
+                            cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
+                            cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                        }
+                    } catch (NumberFormatException ex) {
+                        cardExpiryTv.setText(input.replace("/", ""));
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    } else {
-                        cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
-                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                    } catch (Resources.NotFoundException ex) {
+                        ex.printStackTrace();
                     }
 
                 } else if (editable.length() == 1) {
                     int month = Integer.parseInt(input);
                     if (month > 1) {
-                        cardExpiryTv.setText(cardExpiryToSet);
+                        cardExpiryTv.setText("0" + cardExpiryTv.getText().toString() + "/");
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     }
                 }
-
-                lastInput = cardExpiryTv.getText().toString();
             }
+
+            lastInput = cardExpiryTv.getText().toString();
         }
     }
-
 }
+
+
