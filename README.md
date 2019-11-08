@@ -2,7 +2,7 @@
 
 Rave's Android Drop-In is a readymade UI that allows you to accept card and bank payments in your Android app.
 
-<img alt="Screenshot of Drop-In" src="https://firebasestorage.googleapis.com/v0/b/saveup-9e594.appspot.com/o/Group.png?alt=media&token=e0c89192-b2a4-47e0-a883-3a78005acd2a" width="600"/>
+<img alt="Screenshot of Drop-In" src="https://i.imgur.com/tSHWcsD.png" width="900"/>
 
 ## Before you begin
 - [Create your Rave staging keys from the sandbox environment](https://flutterwavedevelopers.readme.io/blog/how-to-get-your-staging-keys-from-the-rave-sandbox-environment)
@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.39'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.42'
 	}
 
 **Step 3.** Add the required permission
@@ -62,7 +62,12 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
                         .acceptAchPayments(boolean)
                         .acceptGHMobileMoneyPayments(boolean)
                         .acceptUgMobileMoneyPayments(boolean)
+                        .acceptZmMobileMoneyPayments(boolean)
+                        .acceptRwfMobileMoneyPayments(boolean)
+                        .acceptUkPayments(boolean)
                         .acceptBankTransferPayments(boolean)
+                        .acceptUssdPayments(boolean)
+                        .acceptFrancMobileMoneyPayments(boolean)
                         .onStagingEnv(boolean)
                         .setMeta(List<Meta>)
                         .withTheme(styleId)
@@ -89,8 +94,13 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | acceptMpesaPayments(boolean) | Set to `true` if you want to accept Mpesa payments, else set to `false` . For this option to work, you should set your country to `KE` and your currency to `KES` | `boolean` | Not Required |
 | acceptGHMobileMoneyPayments(boolean) | Set to `true` if you want to accept Ghana mobile money payments, else set to `false` . For this option to work, you should set your country to `GH` and your currency to `GHS`| `boolean` | Not Required |
 | acceptUgMobileMoneyPayments(boolean) | Set to `true` if you want to accept Uganda mobile money payments, else set to `false` . For this option to work, you should set your country to `UG` and your currency to `UGX`| `boolean` | Not Required |
+| acceptZmMobileMoneyPayments(boolean) | Set to `true` if you want to accept Zambia mobile money payments, else set to `false` . For this option to work, you should set your country to `NG` and your currency to `ZMW`. `MTN` is the only available network at the moment, see more details in the [API documentation](https://developer.flutterwave.com/reference#zambia-mobile-money).| `boolean` | Not Required |
+| acceptRwfMobileMoneyPayments(boolean) | Set to `true` if you want to accept Rwanda mobile money payments, else set to `false` . For this option to work, you should set your country to `NG` and your currency to `RWF`. See more details in the [API documentation](https://developer.flutterwave.com/reference#rwanda-mobile-money).| `boolean` | Not Required |
+| acceptUkPayments(boolean) | Set to `true` if you want to accept UK Bank Account payments, else set to `false` . For this option to work, you should set your country to `NG`, set currency to `GBP`, set accountbank `String`, set accountname `String`, set accountnumber `String`, set is_uk_bank_charge2 `true`, set payment_type `account`. `Please use your live credentials for this` | `boolean` | Not Required |
 | acceptAchPayments(boolean) | Set to `true` if you want to accept US ACH charges from your customers, else set to `false` . For this option to work, you should set your country to `US` and your currency to `USD`. You also have to set `acceptAccountPayments(true)`| `boolean` | Not Required |
-| acceptBankTransferPayments(boolean) | Set to `true` if you want to accept payments via bank transfer from your customers, else set to `false` . This option is currently only available for Nigerian Naira. See more details in the [API documentation](https://developer.flutterwave.com/v2.0/reference#pay-with-bank-transfer-nigeria).| `boolean` | Not Required |
+| acceptBankTransferPayments(boolean) | Set to `true` if you want to accept payments via bank transfer from your customers, else set to `false`. This option is currently only available for Nigerian Naira. <br/><br/><strong>Note:</strong> By default, the account numbers generated are dynamic. This method has been overloaded for more options as shown below:<br><ul><li>To generate static (permanent) accounts instead, pass in `true` as a second parameter. E.g. <br/>```acceptBankTransferPayments(true, true)```</li><li>To generate accounts that expire at a certain date, or after a certain number of payments, pass in integer values for `duration` and `frequency` as such: <br/>```acceptBankTransferPayments(true, duration, frequency)``` </li></ul>You can get more details in the [API documentation](https://developer.flutterwave.com/v2.0/reference#pay-with-bank-transfer-nigeria).| `boolean`<br/><br/>Optional overloads:<br/>`boolean`, `boolean`<br/><br/>`boolean`, `int`, `int` | Not Required |
+| acceptUssdPayments(boolean) | Set to `true` if you want to accept payments via USSD transfer from your customers, else set to `false` . This option is currently only available for the Nigerian Naira.| `boolean` | Not Required |
+| acceptFrancMobileMoneyPayments(boolean) | Set to `true` if you want to accept Francophone mobile money payments, else set to `false` . For this option to work, you should set your country to `NG` and your currency to `XOF` for West African CFA franc like `Ivory Coast` OR `XAF` for Central African CFA franc like `Cameroon` . See more details in the [API documentation](https://developer.flutterwave.com/reference#mobile-money-francophone).| `boolean` | Not Required |
 | onStagingEnv(boolean) | Set to `true` if you want your transactions to run in the staging environment otherwise set to `false`. Defaults to false  | `boolean` | Not Required
 | setMeta(`List<Meta>`) | Pass in any other custom data you wish to pass. It takes in a `List` of `Meta` objects | List<Meta> | Not Required
 | setSubAccounts(`List<SubAccount>`) | Pass in a `List` of `SubAccount`,if you want to split transaction fee with other people. Subaccounts are your vendors' accounts that you want to settle per transaction. To initialize a `SubAccount` class, do `SubAccount(String subAccountId,String transactionSplitRatio)` or `SubAccount(String subAccountId,String transactionSplitRatio,String transactionChargeType, String transactionCharge)` to also charge the subaccount a fee. [Learn more about split payments and subaccounts](https://developer.flutterwave.com/docs/split-payment).| `List<SubAccount>`| Not Required
@@ -100,6 +110,8 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
 | shouldDisplayFee(boolean) | Set to `false` to not display a dialog for confirming total amount(including charge fee) that Rave will charge. By default this is set to `true` | `boolean` | Not Required
 | showStagingLabel(boolean) | Set to `false` to not display a staging label when in staging environment. By default this is set to `true` | `boolean` | Not Required
 | initialize() | Launch the Rave Payment UI  |  N/A | Required
+
+> <strong>Note:</strong> The order in which you call the methods for accepting different payment types is the order in which they will show in the UI.
 
 ###  2. Handle the response
 In the calling activity, override the `onActivityResult` method to receive the payment response as shown below
@@ -133,20 +145,35 @@ The intent's `message` object contains the raw JSON response from the Rave API. 
  sure everything checks out before providing service or goods.
 
 ###  3. Customize the look
-You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors
+You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors.
 
-        <style name="DefaultTheme" parent="AppTheme.NoActionBar">
+First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
+
+    <style name="MyCustomTheme" parent="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="OTPButtonStyle">@style/otpBtnStyle</item>
-        <item name="PayButtonStyle">@style/payBtnStyle</item>
-        <item name="PinButtonStyle">@style/pinButtonStyle</item>
-        <item name="OTPHeaderStyle">@style/otpHeaderStyle</item>
-        <item name="TabLayoutStyle">@style/tabLayoutStyle</item>
-        <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
-        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
+        <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
+        <item name="PayButtonStyle">@style/payBtnStyle2</item>
+        <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
+        <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
+        <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
+        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle2</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
     </style>
+    
+    
+ Then in your RavePayManager setup, add `.withTheme(<Reference to your style>)` anywhere before calling the `initialize()` function. e.g.
+ ```java
+  new RavePayManager(activity).setAmount(amount)
+                    .setCountry(country)
+                    //...
+                    //...
+                    .withTheme(R.Style.MyCustomTheme)
+                    .initialize();
+```
 ## Configuring Proguard
 To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
 ```

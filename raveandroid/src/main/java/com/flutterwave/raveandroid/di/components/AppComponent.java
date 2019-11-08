@@ -1,16 +1,21 @@
 package com.flutterwave.raveandroid.di.components;
 
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.CardModule;
+import com.flutterwave.raveandroid.di.modules.FrancModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
+import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
+import com.flutterwave.raveandroid.di.modules.UkModule;
+import com.flutterwave.raveandroid.di.modules.UssdModule;
+import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import javax.inject.Singleton;
 
@@ -20,7 +25,7 @@ import dagger.Component;
 @Component(modules = {AndroidModule.class, NetworkModule.class})
 public interface AppComponent {
 
-    void inject(RaveApp raveApp);
+    NetworkRequestImpl networkImpl();
 
     void inject(RavePayActivity ravePayActivity);
 
@@ -28,14 +33,24 @@ public interface AppComponent {
 
     UgandaComponent plus(UgandaModule ugandaModule);
 
+    RwandaComponent plus(RwandaModule rwandaModule);
+
     GhanaComponent plus(GhanaModule ghanaModule);
+
+    ZambiaComponent plus(ZambiaModule zambiaModule);
 
     CardComponent plus(CardModule cardModule);
 
     BankTransferComponent plus(BankTransferModule bankTransferModule);
 
+    UssdComponent plus(UssdModule ussdModule);
+
     AccountComponent plus(AccountModule accountModule);
 
     AchComponent plus(AchModule achModule);
+
+    UkComponent plus(UkModule ukModule);
+
+    FrancComponent plus(FrancModule francModule);
 }
 

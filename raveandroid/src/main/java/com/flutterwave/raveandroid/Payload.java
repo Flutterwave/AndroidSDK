@@ -12,6 +12,13 @@ import java.util.List;
 
 public class Payload
 {
+    private Boolean is_permanent;
+    private Integer duration;
+    private Integer frequency;
+
+    private boolean is_ussd;
+    private String orderRef;
+
     public String getCardBIN() {
         return cardBIN;
     }
@@ -19,6 +26,8 @@ public class Payload
     private String cardBIN;
 
     private boolean is_us_bank_charge;
+
+    private boolean is_uk_bank_charge2;
 
     private String remember_device_mobile_key;
 
@@ -357,7 +366,17 @@ public class Payload
         this.payment_type = payment_type;
     }
 
+    private boolean is_mobile_money_franco;
+
     private String payment_type;
+
+    public boolean getIs_mobile_money_franco() {
+        return is_mobile_money_franco;
+    }
+
+    public void setIs_mobile_money_franco(boolean is_mobile_money_franco) {
+        this.is_mobile_money_franco = is_mobile_money_franco;
+    }
 
     public String getPhonenumber() {
         return phonenumber;
@@ -384,6 +403,8 @@ public class Payload
     private String IP;
 
     private String accountnumber;
+
+    private String accountname;
 
     public String getAccountnumber() {
         return accountnumber;
@@ -615,6 +636,63 @@ public class Payload
 
     public void setIs_bank_transfer(boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
+    }
+
+    public boolean getIs_permanent() {
+        return is_permanent;
+    }
+
+    public void setIs_permanent(boolean is_permanent) {
+        this.is_permanent = is_permanent;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    public boolean getIs_ussd() {
+        return is_ussd;
+    }
+
+    public void setIs_ussd(boolean is_ussd) {
+        this.is_ussd = is_ussd;
+    }
+
+    public String getOrderRef() {
+        return orderRef;
+    }
+
+    public void setOrderRef(String orderRef) {
+        this.orderRef = orderRef;
+
+    }
+
+    public boolean getIs_uk_bank_charge() {
+        return is_uk_bank_charge2;
+    }
+
+    public void setIs_uk_bank_charge2(boolean is_uk_bank_charge2) {
+        this.is_uk_bank_charge2 = is_uk_bank_charge2;
+    }
+
+    public String getAccountname() {
+        return accountname;
+    }
+
+    public void setAccountname(String accountname) {
+        this.accountname = accountname;
     }
 }
 

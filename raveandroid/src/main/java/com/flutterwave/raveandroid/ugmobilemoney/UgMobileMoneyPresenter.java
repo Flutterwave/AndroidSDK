@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -52,9 +53,11 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     PhoneValidator phoneValidator;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
-    UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
+    public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -95,7 +98,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     @Override
     public void chargeUgMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -206,6 +209,12 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
 //                    .setCountry(ravePayInitializer.getCountry())
@@ -214,7 +223,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId())
+                    .setIP(deviceID)
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -222,7 +231,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());

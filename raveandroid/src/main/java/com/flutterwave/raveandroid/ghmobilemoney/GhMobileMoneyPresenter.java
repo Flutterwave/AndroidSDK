@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -19,6 +20,7 @@ import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
 import java.util.HashMap;
@@ -52,10 +54,14 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     @Inject
     PhoneValidator phoneValidator;
     @Inject
+    NetworkValidator networkValidator;
+    @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
-    GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
+    public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -95,7 +101,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     @Override
     public void chargeGhMobileMoney(final Payload payload, final String encryptionKey) {
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -170,6 +176,11 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCountry(ravePayInitializer.getCountry())
@@ -177,7 +188,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId())
+                    .setIP(deviceID)
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
@@ -185,7 +196,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
                     .setPhonenumber(dataHashMap.get(fieldPhone).getData())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (dataHashMap.get(fieldVoucher) != null) {
                 builder.setVoucher(dataHashMap.get(fieldVoucher).getData());
@@ -218,6 +229,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         String phone = dataHashMap.get(fieldPhone).getData();
         Class phoneViewType = dataHashMap.get(fieldPhone).getViewType();
 
+        int networkPosition = Integer.valueOf(dataHashMap.get(RaveConstants.networkPosition).getData());
         ViewObject voucherViewObject = dataHashMap.get(fieldVoucher);
 
         if (voucherViewObject != null) {
@@ -232,10 +244,11 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         }
 
-        int network = Integer.valueOf(dataHashMap.get(fieldNetwork).getData());
+        String network = dataHashMap.get(fieldNetwork).getData();
 
         boolean isAmountValidated = amountValidator.isAmountValid(amount);
         boolean isPhoneValid = phoneValidator.isPhoneValid(phone);
+        boolean isNetworkValid = networkValidator.isNetworkValid(networkPosition);
 
         if (!isAmountValidated) {
             valid = false;
@@ -247,7 +260,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-        if (network == 0) {
+        if (!isNetworkValid) {
             valid = false;
             mView.showToast(validNetworkPrompt);
         }

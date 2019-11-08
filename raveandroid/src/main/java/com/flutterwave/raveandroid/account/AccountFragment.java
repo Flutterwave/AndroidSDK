@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
@@ -106,7 +105,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new AccountModule(this))
                     .inject(this);
         }
@@ -259,7 +258,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         if (getActivity() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

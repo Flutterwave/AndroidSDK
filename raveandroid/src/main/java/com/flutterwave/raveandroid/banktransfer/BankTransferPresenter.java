@@ -4,12 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
  * Created by hfetuga on 27/06/2018.
  */
 
+
 public class BankTransferPresenter implements BankTransferContract.UserActionsListener {
     private static final String ACCOUNT_NUMBER = "account_number";
     private static final String BANK_NAME = "bank_name";
@@ -41,18 +44,21 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     AmountValidator amountValidator;
     @Inject
     NetworkRequestImpl networkRequest;
-
-    private Context context;
-    private BankTransferContract.View mView;
+    public boolean pollingCancelled = false;
+    public boolean hasTransferDetails = false;
+    @Inject
+    DeviceIdGetter deviceIdGetter;
+    BankTransferContract.View mView;
     private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
-    private boolean pollingCancelled = false;
+    @Inject
+    PayloadToJson payloadToJson;
     private String beneficiaryName, accountNumber, amount, bankName;
-    private boolean hasTransferDetails = false;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
-    BankTransferPresenter(Context context, BankTransferContract.View mView) {
-        this.context = context;
+    public BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.mView = mView;
     }
 
@@ -90,8 +96,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
 
     @Override
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
         encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
@@ -143,7 +149,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     public void startPaymentVerification() {
         requeryCountdownTime = System.currentTimeMillis();
         mView.showPollingIndicator(true);
-        requeryTx();
+        requeryTx(flwRef, txRef, publicKey, pollingCancelled, requeryCountdownTime);
     }
 
     @Override
@@ -184,7 +190,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     }
 
     @Override
-    public void requeryTx() {
+    public void requeryTx(final String flwRef, final String txRef, final String publicKey, final boolean pollingCancelled, final long requeryCountdownTime) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
@@ -201,7 +207,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                         mView.onPollingCanceled(flwRef, txRef, responseAsJSONString);
                     } else {
                         if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
-                            requeryTx();
+                            requeryTx(flwRef, txRef, publicKey, pollingCancelled, requeryCountdownTime);
                         } else {
                             mView.showPollingIndicator(false);
                             mView.onPollingTimeout(flwRef, txRef, responseAsJSONString);
@@ -273,14 +279,17 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     .setEmail(ravePayInitializer.getEmail())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(Utils.getDeviceImei(context))
+                    .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
-                    .setDevice_fingerprint(Utils.getDeviceImei(context))
-                    .setNarration(ravePayInitializer.getNarration());
+                    .setDevice_fingerprint(deviceIdGetter.getDeviceId())
+                    .setNarration(ravePayInitializer.getNarration())
+                    .setfrequency(ravePayInitializer.getFrequency())
+                    .setDuration(ravePayInitializer.getDuration())
+                    .setIsPermanent(ravePayInitializer.getIsPermanent());
 
             Payload body = builder.createBankTransferPayload();
 

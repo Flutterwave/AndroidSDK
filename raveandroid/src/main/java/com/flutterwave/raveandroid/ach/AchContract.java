@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.ach;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -33,15 +32,13 @@ public interface AchContract {
     interface UserActionsListener {
         void init(RavePayInitializer ravePayInitializer);
 
-        void onPayButtonClicked(RavePayInitializer ravePayInitializer, String amount);
-
-        void chargeAccount(Payload payload, String encryptionKey, boolean isDisplayFee);
+        void onDataCollected(RavePayInitializer ravePayInitializer, String amount);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
         void onFeeConfirmed(String authUrl, String flwRef);
 
-        void processTransaction(String amount, RavePayInitializer ravePayInitializer);
+        void processTransaction(String amount, RavePayInitializer ravePayInitializer, boolean isDisplayFee);
 
         void onAttachView(View view);
 

@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -85,7 +84,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new GhanaModule(this))
                     .inject(this);
         }
@@ -114,7 +113,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
     private void setUpNetworks() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         networkSpinner.setAdapter(adapter);
@@ -174,7 +173,8 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         dataHashMap.put(RaveConstants.fieldAmount, new ViewObject(amountTil.getId(), amountEt.getText().toString(), TextInputLayout.class));
         dataHashMap.put(RaveConstants.fieldPhone, new ViewObject(phoneTil.getId(), phoneEt.getText().toString(), TextInputLayout.class));
-        dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItemPosition()), Spinner.class));
+        dataHashMap.put(RaveConstants.fieldNetwork, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItem()), Spinner.class));
+        dataHashMap.put(RaveConstants.networkPosition, new ViewObject(networkSpinner.getId(), String.valueOf(networkSpinner.getSelectedItemPosition()), Spinner.class));
 
         if (voucherTil.getVisibility() == View.VISIBLE) {
             dataHashMap.put(RaveConstants.fieldVoucher, new ViewObject(voucherTil.getId(), voucherEt.getText().toString(), TextInputLayout.class));
@@ -248,7 +248,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void displayFee(String charge_amount, final Payload payload) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

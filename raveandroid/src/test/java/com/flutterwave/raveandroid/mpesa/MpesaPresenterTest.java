@@ -7,6 +7,8 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
@@ -42,11 +44,13 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
+import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,6 +68,10 @@ public class MpesaPresenterTest {
     PhoneValidator phoneValidator;
     @Inject
     RavePayInitializer ravePayInitializer;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
@@ -110,11 +118,29 @@ public class MpesaPresenterTest {
 
     }
 
+    @Test
+    public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
+
+        mpesaPresenter.fetchFee(generatePayload());
+
+        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class));
+
+        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
+        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
+
+        verify(view, times(1)).showFetchFeeFailed(transactionError);
+
+    }
 
     @Test
     public void chargeMpesa_onSuccess_requeryTxCalled() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        mpesaPresenter.chargeMpesa(generatePayload(), generateRandomString());
+        mpesaPresenter.chargeMpesa(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -127,8 +153,12 @@ public class MpesaPresenterTest {
 
     @Test
     public void chargeMpesa_onError_onPaymentErrorCalled() {
+        Payload payload = generatePayload();
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
 
-        mpesaPresenter.chargeMpesa(generatePayload(), generateRandomString());
+        mpesaPresenter.chargeMpesa(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         String message = generateRandomString();
@@ -142,8 +172,13 @@ public class MpesaPresenterTest {
 
     @Test
     public void chargeMpesa_onSuccessWithNullData_onPaymentError_noResponse_Called() {
+        Payload payload = generatePayload();
 
-        mpesaPresenter.chargeMpesa(generatePayload(), generateRandomString());
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
+
+        mpesaPresenter.chargeMpesa(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -319,12 +354,16 @@ public class MpesaPresenterTest {
     public void processTransaction_displayFeeIsDisabled_chargeMpesaCalled() {
         //arrange
         HashMap<String, ViewObject> data = generateViewData();
+        Payload payload = generatePayload();
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(false);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
+        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
+        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
+        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
         //act
         mpesaPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        mpesaPresenter.chargeMpesa(generatePayload(), generateRandomString());
+        mpesaPresenter.chargeMpesa(payload, generateRandomString());
     }
 
 

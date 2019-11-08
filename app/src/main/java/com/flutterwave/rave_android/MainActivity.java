@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     EditText countryEt;
     EditText fNameEt;
     EditText lNameEt;
+    EditText durationEt;
+    EditText frequencyEt;
     Button startPayBtn;
     Button addVendorBtn;
     Button clearVendorBtn;
@@ -45,7 +47,14 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat accountSwitch;
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat ugMobileMoneySwitch;
+    SwitchCompat ukbankSwitch;
+    SwitchCompat francMobileMoneySwitch;
+    SwitchCompat rwfMobileMoneySwitch;
+    SwitchCompat zmMobileMoneySwitch;
     SwitchCompat bankTransferSwitch;
+    SwitchCompat isPermanentAccountSwitch;
+    SwitchCompat setExpirySwitch;
+    SwitchCompat ussdSwitch;
     SwitchCompat isLiveSwitch;
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
@@ -56,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     List<Meta> meta = new ArrayList<>();
     List<SubAccount> subAccounts = new ArrayList<>();
     LinearLayout addSubaccountsLayout;
+    LinearLayout expiryDetailsLayout;
     TextView vendorListTXT;
 
     @Override
@@ -73,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         countryEt = findViewById(R.id.countryEt);
         fNameEt = findViewById(R.id.fNameEt);
         lNameEt = findViewById(R.id.lnameEt);
+        durationEt = findViewById(R.id.expiryDaysEt);
+        frequencyEt = findViewById(R.id.frequencyEt);
         startPayBtn = findViewById(R.id.startPaymentBtn);
         cardSwitch = findViewById(R.id.cardPaymentSwitch);
         accountSwitch = findViewById(R.id.accountPaymentSwitch);
@@ -82,7 +94,16 @@ public class MainActivity extends AppCompatActivity {
         shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
+        ukbankSwitch = findViewById(R.id.accountUkbankSwitch);
+        francMobileMoneySwitch = findViewById(R.id.accountfrancMobileMoneySwitch);
+        zmMobileMoneySwitch = findViewById(R.id.accountZmMobileMoneySwitch);
+        rwfMobileMoneySwitch = findViewById(R.id.accountRwfMobileMoneySwitch);
         bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
+        isPermanentAccountSwitch = findViewById(R.id.isPermanentSwitch);
+        setExpirySwitch = findViewById(R.id.setExpirySwitch);
+        bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
+        expiryDetailsLayout = findViewById(R.id.expiry_layout);
+        ussdSwitch = findViewById(R.id.ussd_switch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
@@ -90,6 +111,42 @@ public class MainActivity extends AppCompatActivity {
         clearVendorBtn = findViewById(R.id.clearVendorsBtn);
         vendorListTXT = findViewById(R.id.refIdsTV);
         vendorListTXT.setText("Your current vendor refs are: ");
+
+        bankTransferSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    isPermanentAccountSwitch.setVisibility(View.VISIBLE);
+                    setExpirySwitch.setVisibility(View.VISIBLE);
+                } else {
+                    isPermanentAccountSwitch.setVisibility(View.GONE);
+                    setExpirySwitch.setVisibility(View.GONE);
+                    expiryDetailsLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        isPermanentAccountSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    setExpirySwitch.setVisibility(View.GONE);
+                    expiryDetailsLayout.setVisibility(View.GONE);
+                } else setExpirySwitch.setVisibility(View.VISIBLE);
+            }
+        });
+        setExpirySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    expiryDetailsLayout.setVisibility(View.VISIBLE);
+                    isPermanentAccountSwitch.setVisibility(View.GONE);
+                } else {
+                    expiryDetailsLayout.setVisibility(View.GONE);
+                    isPermanentAccountSwitch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
         encryptionKeyEt.setText(RaveConstants.ENCRYPTION_KEY);
@@ -106,12 +163,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addSubAccountsSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener(){
+        addSubAccountsSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked){
+                if (checked) {
                     addSubaccountsLayout.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     clear();
                 }
             }
@@ -132,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void clear(){
+    private void clear() {
         subAccounts.clear();
         vendorListTXT.setText("Your current vendor refs are: ");
         addSubaccountsLayout.setVisibility(View.GONE);
@@ -151,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
         String country = countryEt.getText().toString();
         String fName = fNameEt.getText().toString();
         String lName = lNameEt.getText().toString();
+        String accountDuration = durationEt.getText().toString();
+        String accountPaymentFrequency = frequencyEt.getText().toString();
 
         boolean valid = true;
 
@@ -164,33 +223,44 @@ public class MainActivity extends AppCompatActivity {
             emailEt.setError("A valid email is required");
         }
 
-        if (publicKey.length() < 1){
+        if (publicKey.length() < 1) {
             valid = false;
             publicKeyEt.setError("A valid public key is required");
         }
 
-        if (encryptionKey.length() < 1){
+        if (encryptionKey.length() < 1) {
             valid = false;
             encryptionKeyEt.setError("A valid encryption key is required");
         }
 
-        if (txRef.length() < 1){
+        if (txRef.length() < 1) {
             valid = false;
             txRefEt.setError("A valid txRef key is required");
         }
 
-        if (currency.length() < 1){
+        if (currency.length() < 1) {
             valid = false;
             currencyEt.setError("A valid currency code is required");
         }
 
-        if (country.length() < 1){
+        if (country.length() < 1) {
             valid = false;
             countryEt.setError("A valid country code is required");
         }
 
+        if (setExpirySwitch.isChecked()) {
+            if (accountDuration.isEmpty()) {
+                valid = false;
+                durationEt.setError("Please enter expiry duration (in days)");
+            }
+            if (accountPaymentFrequency.isEmpty()) {
+                valid = false;
+                frequencyEt.setError("Please enter payment frequency");
+            }
+        }
+
         if (valid) {
-            new RavePayManager(this).setAmount(Double.parseDouble(amount))
+            RavePayManager ravePayManager = new RavePayManager(this).setAmount(Double.parseDouble(amount))
                     .setCountry(country)
                     .setCurrency(currency)
                     .setEmail(email)
@@ -206,15 +276,40 @@ public class MainActivity extends AppCompatActivity {
                     .acceptAchPayments(accountAchSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
+                    .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
+                    .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
+                    .acceptUkPayments(ukbankSwitch.isChecked())
+                    .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
                     .acceptBankTransferPayments(bankTransferSwitch.isChecked())
+                    .acceptUssdPayments(ussdSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
                     .isPreAuth(isPreAuthSwitch.isChecked())
                     .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
-                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked())
 //                    .setMeta(meta)
 //                    .withTheme(R.style.TestNewTheme)
-                    .initialize();
+                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+
+
+            // Customize pay with bank transfer options (optional)
+            if (isPermanentAccountSwitch.isChecked())
+                ravePayManager.acceptBankTransferPayments(true, true);
+            else {
+                if (setExpirySwitch.isChecked()) {
+                    int duration = 0, frequency = 0;
+                    try {
+                        duration = Integer.parseInt(durationEt.getText().toString());
+                        frequency = Integer.parseInt(frequencyEt.getText().toString());
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    ravePayManager.acceptBankTransferPayments(true, duration, frequency);
+                }
+            }
+
+
+            ravePayManager.initialize();
+
 
         }
     }
@@ -232,15 +327,12 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                 Toast.makeText(this, "SUCCESS " + message, Toast.LENGTH_SHORT).show();
-            }
-            else if (resultCode == RavePayActivity.RESULT_ERROR) {
+            } else if (resultCode == RavePayActivity.RESULT_ERROR) {
                 Toast.makeText(this, "ERROR " + message, Toast.LENGTH_SHORT).show();
-            }
-            else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
+            } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                 Toast.makeText(this, "CANCELLED " + message, Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -256,9 +348,11 @@ public class MainActivity extends AppCompatActivity {
         countryEt.setError(null);
         fNameEt.setError(null);
         lNameEt.setError(null);
+        durationEt.setError(null);
+        frequencyEt.setError(null);
     }
 
-    private void addVendorDialog(){
+    private void addVendorDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
@@ -275,30 +369,30 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.dismiss();
             }
         });
-        addVendorBtn.setOnClickListener(new View.OnClickListener(){
+        addVendorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean valid = true;
                 String vendorRef = vendorReferenceET.getText().toString().trim();
                 String vendorRatio = vendorRatioET.getText().toString().trim();
 
-                if(vendorRef.length()<1){
+                if (vendorRef.length() < 1) {
                     vendorReferenceET.setError("Vendor reference is required");
-                    valid =  false;
+                    valid = false;
                 }
-                if(vendorRatioET.length()<1){
+                if (vendorRatioET.length() < 1) {
                     vendorRatioET.setError("Vendor ratio is required");
-                    valid =  false;
+                    valid = false;
                 }
-                if(!valid){
+                if (!valid) {
                     return;
                 }
-                if(subAccounts.size()!=0){
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+", "+ vendorRef +"("+ vendorRatio+")");
-                }else{
-                    vendorListTXT.setText(vendorListTXT.getText().toString()+ vendorRef +"("+vendorRatio+")");
+                if (subAccounts.size() != 0) {
+                    vendorListTXT.setText(vendorListTXT.getText().toString() + ", " + vendorRef + "(" + vendorRatio + ")");
+                } else {
+                    vendorListTXT.setText(vendorListTXT.getText().toString() + vendorRef + "(" + vendorRatio + ")");
                 }
-                subAccounts.add(new SubAccount(vendorRef,vendorRatio));
+                subAccounts.add(new SubAccount(vendorRef, vendorRatio));
                 alertDialog.dismiss();
             }
         });

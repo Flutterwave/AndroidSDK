@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.di;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
@@ -19,6 +20,7 @@ import com.flutterwave.raveandroid.validators.CardNoValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
+import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 import com.flutterwave.raveandroid.validators.UrlValidator;
 
@@ -62,20 +64,23 @@ public class TestAndroidModule {
         return Mockito.mock(EmailValidator.class);
     }
 
-
     @Provides
     @Singleton
     public PhoneValidator providesPhoneValidator() {
         return Mockito.mock(PhoneValidator.class);
     }
 
+    @Provides
+    @Singleton
+    public NetworkValidator providesNetworkValidator() {
+        return Mockito.mock(NetworkValidator.class);
+    }
 
     @Provides
     @Singleton
     public DateOfBirthValidator providesDateOfBirthValidator() {
         return Mockito.mock(DateOfBirthValidator.class);
     }
-
 
     @Provides
     @Singleton
@@ -101,7 +106,6 @@ public class TestAndroidModule {
     public BanksMinimum100AccountPaymentValidator providesBanksMinimum100AccountPaymentValidator() {
         return Mockito.mock(BanksMinimum100AccountPaymentValidator.class);
     }
-
 
     @Provides
     @Singleton
@@ -151,5 +155,10 @@ public class TestAndroidModule {
         return Mockito.mock(PayloadEncryptor.class);
     }
 
+    @Provides
+    @Singleton
+    public Bundle providesBundle() {
+        return Mockito.mock(Bundle.class);
+    }
 
 }

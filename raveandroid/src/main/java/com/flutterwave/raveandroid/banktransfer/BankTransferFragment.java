@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -90,7 +89,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new BankTransferModule(this))
                     .inject(this);
         }
@@ -221,6 +220,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         transferStatusTv.setVisibility(View.VISIBLE);
 
         verifyPaymentButton.setText(getString(R.string.back_to_app));
+
         verifyPaymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -232,12 +232,6 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
                 }
             }
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putAll(presenter.getState());
     }
 
     @Override

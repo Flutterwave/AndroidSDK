@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveApp;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
@@ -67,7 +66,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RaveApp) getActivity().getApplication()).getAppComponent()
+            ((RavePayActivity) getActivity()).getAppComponent()
                     .plus(new AchModule(this))
                     .inject(this);
         }
@@ -96,7 +95,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         int i = view.getId();
         if (i == R.id.rave_payButton) {
             String amount = amountEt.getText().toString();
-            presenter.onPayButtonClicked(ravePayInitializer, amount);
+            presenter.onDataCollected(ravePayInitializer, amount);
         }
     }
 
@@ -105,7 +104,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showFee(final String authUrl, final String flwRef, final String charge_amount, final String currency) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + currency + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + currency + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -133,7 +132,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     @Override
     public void onValidationSuccessful(String amount) {
-        presenter.processTransaction(amount, ravePayInitializer);
+        presenter.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
     }
 
     @Override

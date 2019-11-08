@@ -6,6 +6,9 @@
     <color name="otpColorTheme">#dd7a32</color>
     <color name="pinColorTheme">#dd7a32</color>
     <color name="tabIndicatorColor">@color/colorPrimary</color>
+    <color name="paymentTileBackground">#fbeed8</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
+	<color name="sisal">#DCD4C9</color>
+    <color name="divider_color">#DCD4C9</color>
 </resources>

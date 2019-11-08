@@ -8,9 +8,10 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
+import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Bank;
@@ -89,9 +90,13 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    PayloadToJsonConverter payloadToJsonConverter;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
-    AccountPresenter(Context context, AccountContract.View mView) {
+    public AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
         this.mView = mView;
     }
@@ -120,8 +125,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Override
     public void chargeAccount(final Payload payload, String encryptionKey, final boolean internetBanking) {
 
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");

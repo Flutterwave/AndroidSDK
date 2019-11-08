@@ -32,7 +32,8 @@ public interface BankTransferContract {
 
     interface UserActionsListener {
         void fetchFee(Payload payload);
-        void requeryTx();
+
+        void requeryTx(String flwRef, String txRef, String publicKey, boolean pollingCancelled, long requeryCountdownTime);
         void payWithBankTransfer(Payload body, String encryptionKey);
         void init(RavePayInitializer ravePayInitializer);
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);

@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -72,6 +73,9 @@ public class AchPresenterTest {
     TransactionStatusChecker transactionStatusChecker;
     @Mock
     AchPresenter achPresenterMock;
+
+    @Mock
+    ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
     private AchPresenter achPresenter;
 
     @Before
@@ -113,7 +117,7 @@ public class AchPresenterTest {
 
         achPresenter.init(ravePayInitializer);
 
-        verify(view).onAmountValidated(String.valueOf(amount), View.VISIBLE);
+        verify(view).onAmountValidated("", View.VISIBLE);
         verify(view).showRedirectMessage(false);
 
     }
@@ -150,12 +154,13 @@ public class AchPresenterTest {
         when(ravePayInitializer.getlName()).thenReturn(lastName);
         when(ravePayInitializer.getTxRef()).thenReturn(txRef);
         when(ravePayInitializer.getMeta()).thenReturn(meta);
-        when(ravePayInitializer.isWithAch()).thenReturn(isAch);
+        when(ravePayInitializer.getOrderedPaymentTypesList()).thenReturn(orderedPaymentTypesList);
+        when(orderedPaymentTypesList.contains(RaveConstants.PAYMENT_TYPE_ACH)).thenReturn(isAch);
         when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
 
         //act
-        doCallRealMethod().when(achPresenterMock).processTransaction(any(String.class), any(RavePayInitializer.class));
-        achPresenterMock.processTransaction(amount, ravePayInitializer);
+        doCallRealMethod().when(achPresenterMock).processTransaction(any(String.class), any(RavePayInitializer.class), anyBoolean());
+        achPresenterMock.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
 
         ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
@@ -193,7 +198,7 @@ public class AchPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        achPresenter.processTransaction(amount, ravePayInitializer);
+        achPresenter.processTransaction(amount, ravePayInitializer, ravePayInitializer.getIsDisplayFee());
 
         //assert
         verify(ravePayInitializer).setAmount(Double.parseDouble(amount));
@@ -388,17 +393,20 @@ public class AchPresenterTest {
     }
 
     @Test
-    public void onPayButtonClicked_validAmount_showAmountError_onValidationSuccessfulCalled() {
-        when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(true);
-        achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
+    public void onDataCollected_validAmount_showAmountError_onValidationSuccessfulCalledWithCorrectParams() {
+
+        String amount = generateRandomDouble().toString();
+
+        when(amountValidator.isAmountValid(amount)).thenReturn(true);
+        achPresenter.onDataCollected(ravePayInitializer, amount);
         verify(view).showAmountError(null);
-        verify(view).onValidationSuccessful(any(String.class));
+        verify(view).onValidationSuccessful(amount);
     }
 
     @Test
-    public void onPayButtonClicked_inValidAmount_showAmountErrorWithCorrectParams() {
+    public void onDataCollected_inValidAmount_showAmountErrorWithCorrectParams() {
         when(amountValidator.isAmountValid(ravePayInitializer.getAmount())).thenReturn(false);
-        achPresenter.onPayButtonClicked(ravePayInitializer, anyString());
+        achPresenter.onDataCollected(ravePayInitializer, anyString());
         verify(view).showAmountError(null);
         verify(view).showAmountError(RaveConstants.validAmountPrompt);
     }

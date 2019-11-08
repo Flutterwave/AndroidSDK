@@ -8,6 +8,7 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
+import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
@@ -78,21 +79,25 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardExpiryValidator cardExpiryValidator;
     @Inject
     CardNoValidator cardNoValidator;
+    private Context context;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
 
     @Inject
-    CardPresenter(Context context, CardContract.View mView) {
+    public CardPresenter(Context context, CardContract.View mView) {
         this.mView = mView;
+        this.context = context;
     }
 
     @Override
     public void chargeCard(final Payload payload, final String encryptionKey) {
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 
         final ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -141,9 +146,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
                                 String chargeResponseMessage = response.getData().getChargeResponseMessage();
                                 chargeResponseMessage = chargeResponseMessage == null ? enterOTP : chargeResponseMessage;
                                 mView.showOTPLayout(flwRef, chargeResponseMessage);
+
                             } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
                                 String flwRef = response.getData().getFlwRef();
-
                                 mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
                             }
                         }
@@ -174,7 +179,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setBillingstate(state);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
@@ -184,6 +189,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         mView.showProgressIndicator(true);
 
         networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 
@@ -302,6 +308,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
+            String deviceID = deviceIdGetter.getDeviceId();
+            if (deviceID == null) {
+                deviceID = Utils.getDeviceImei(context);
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
                     .setCardno(dataHashMap.get(fieldcardNoStripped).getData())
@@ -311,14 +322,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     .setEmail(dataHashMap.get(fieldEmail).getData())
                     .setFirstname(ravePayInitializer.getfName())
                     .setLastname(ravePayInitializer.getlName())
-                    .setIP(deviceIdGetter.getDeviceId()).setTxRef(ravePayInitializer.getTxRef())
+                    .setIP(deviceID).setTxRef(ravePayInitializer.getTxRef())
                     .setExpiryyear(dataHashMap.get(fieldCardExpiry).getData().substring(3, 5))
                     .setExpirymonth(dataHashMap.get(fieldCardExpiry).getData().substring(0, 2))
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setDevice_fingerprint(deviceIdGetter.getDeviceId());
+                    .setDevice_fingerprint(deviceID);
 
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
@@ -348,7 +359,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setSuggestedAuth(authModel);
 
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
         ChargeRequestBody body = new ChargeRequestBody();
         body.setAlg("3DES-24");
