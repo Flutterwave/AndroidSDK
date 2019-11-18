@@ -36,6 +36,7 @@ public class AVSVBVFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
+//        logLaunch();
 
         final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
         final TextInputEditText stateEt = v.findViewById(R.id.rave_billStateEt);
@@ -100,6 +101,14 @@ public class AVSVBVFragment extends Fragment {
         });
         return v;
     }
+//
+//    private void logLaunch() {
+//        RavePayActivity ravePayActivity = (RavePayActivity) getActivity();
+//        if (ravePayActivity!=null){
+//            ravePayActivity.getEventLogger().logEvent(new LaunchEvent("AVSVBV Fragment").getEvent(),
+//                    ravePayActivity.getRavePayInitializer().getPublicKey());
+//        }
+//    }
 
     public void goBack(){
         Intent intent = new Intent();

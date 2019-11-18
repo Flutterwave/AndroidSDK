@@ -16,6 +16,8 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
@@ -57,6 +59,7 @@ import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validEmailPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
+
 /**
  * Created by hamzafetuga on 20/07/2017.
  */
@@ -90,6 +93,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    EventLogger eventLogger;
     @Inject
     PayloadToJsonConverter payloadToJsonConverter;
     @Inject
@@ -437,6 +442,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            eventLogger.logEvent(new LaunchEvent("Account Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());

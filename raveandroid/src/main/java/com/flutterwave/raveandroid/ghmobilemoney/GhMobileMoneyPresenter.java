@@ -14,6 +14,8 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -47,6 +49,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     private Context context;
     private GhMobileMoneyContract.View mView;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -275,6 +279,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            eventLogger.logEvent(new LaunchEvent("GH Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {

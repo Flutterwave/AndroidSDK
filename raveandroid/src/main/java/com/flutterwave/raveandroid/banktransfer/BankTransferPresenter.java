@@ -15,6 +15,8 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -40,6 +42,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private static final String FLW_REF = "flwref";
     private static final String PUBLIC_KEY = "pbfkey";
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -234,6 +238,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            eventLogger.logEvent(new LaunchEvent("Bank Transfer Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {

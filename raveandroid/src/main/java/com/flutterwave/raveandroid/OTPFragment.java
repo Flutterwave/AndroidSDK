@@ -36,6 +36,8 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.fragment_ot, container, false);
+//
+//        logLaunch();
 
         initializeViews();
 
@@ -56,6 +58,14 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         otpButton = v.findViewById(R.id.otpButton);
         chargeMessage = v.findViewById(R.id.otpChargeMessage);
     }
+//
+//    private void logLaunch() {
+//        RavePayActivity ravePayActivity = (RavePayActivity) getActivity();
+//        if (ravePayActivity!=null){
+//            ravePayActivity.getEventLogger().logEvent(new LaunchEvent("OTP Fragment").getEvent(),
+//                    ravePayActivity.getRavePayInitializer().getPublicKey());
+//        }
+//    }
 
     @Override
     public void onClick(View view) {

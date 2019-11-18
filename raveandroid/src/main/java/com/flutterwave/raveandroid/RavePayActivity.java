@@ -76,7 +76,6 @@ import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_CANCELLED;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_FINISHED;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_LAUNCHED;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_MINIMIZED;
-import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_SELECTED_PAYMENT_METHOD;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -242,8 +241,6 @@ public class RavePayActivity extends AppCompatActivity {
                     ravePayInitializer.publicKey);
             showAllPaymentTypes();
         } else {
-            eventLogger.logEvent(new Event(EVENT_TITLE_SELECTED_PAYMENT_METHOD, "Selected payment method"),
-                    ravePayInitializer.publicKey);
             showSelectedPaymentType(clickedView);
         }
 
@@ -704,4 +701,7 @@ public class RavePayActivity extends AppCompatActivity {
         return ravePayInitializer;
     }
 
+    public EventLogger getEventLogger() {
+        return eventLogger;
+    }
 }

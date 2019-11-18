@@ -32,6 +32,8 @@ public class PinFragment extends Fragment {
         final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
         final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
 
+//        logLaunch();
+
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +53,14 @@ public class PinFragment extends Fragment {
 
         return v;
     }
+
+//    private void logLaunch() {
+//        VerificationActivity verificationActivity = (VerificationActivity) getActivity();
+//        if (ravePayActivity!=null){
+//            ravePayActivity.getEventLogger().logEvent(new LaunchEvent("PIN Fragment").getEvent(),
+//                    ravePayActivity.getRavePayInitializer().getPublicKey());
+//        }
+//    }
 
     public void goBack(){
         Intent intent = new Intent();

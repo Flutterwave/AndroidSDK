@@ -14,6 +14,8 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -55,6 +57,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    @Inject
+    EventLogger eventLogger;
     private Context context;
     private ZmMobileMoneyContract.View mView;
 
@@ -254,6 +258,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            eventLogger.logEvent(new LaunchEvent("Zambia Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {

@@ -13,6 +13,8 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
@@ -31,6 +33,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Inject
     SharedPrefsRequestImpl sharedMgr;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -54,6 +58,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            eventLogger.logEvent(new LaunchEvent("ACH Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
 
