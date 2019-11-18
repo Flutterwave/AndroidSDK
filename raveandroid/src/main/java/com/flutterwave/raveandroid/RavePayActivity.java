@@ -75,6 +75,8 @@ import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_CANCELLED;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_FINISHED;
 import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_LAUNCHED;
+import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_MINIMIZED;
+import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_SELECTED_PAYMENT_METHOD;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -236,9 +238,12 @@ public class RavePayActivity extends AppCompatActivity {
         PaymentTile paymentTile = tileMap.get(clickedView.getId());
 
         if (paymentTile.isTop) {
+            eventLogger.logEvent(new Event(EVENT_TITLE_MINIMIZED, "Minimized payment method"),
+                    ravePayInitializer.publicKey);
             showAllPaymentTypes();
         } else {
-
+            eventLogger.logEvent(new Event(EVENT_TITLE_SELECTED_PAYMENT_METHOD, "Selected payment method"),
+                    ravePayInitializer.publicKey);
             showSelectedPaymentType(clickedView);
         }
 
