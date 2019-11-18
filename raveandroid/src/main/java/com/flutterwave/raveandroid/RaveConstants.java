@@ -15,6 +15,7 @@ public class RaveConstants {
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
     public static String LIVE_URL = "https://api.ravepay.co";
+    public static String EVENT_LOGGING_URL = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/";
 
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";

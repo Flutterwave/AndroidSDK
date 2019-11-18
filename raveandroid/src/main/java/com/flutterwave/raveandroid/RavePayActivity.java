@@ -31,9 +31,12 @@ import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
+import com.flutterwave.raveandroid.data.Event;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
@@ -49,6 +52,8 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
@@ -67,6 +72,9 @@ import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
+import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_CANCELLED;
+import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_FINISHED;
+import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_LAUNCHED;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -92,11 +100,14 @@ public class RavePayActivity extends AppCompatActivity {
 
     AppComponent appComponent;
 
+    @Inject
+    EventLogger eventLogger;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rave_pay);
-        root = findViewById(R.id.rave_pay_activity_root);
+        root = findViewById(R.id.rave_pay_activity_rootview);
 
         try {
             ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
@@ -104,9 +115,11 @@ public class RavePayActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
-
-
         buildGraph();
+
+        eventLogger.logEvent(new Event(EVENT_TITLE_LAUNCHED, "Launched payment activity"),
+                ravePayInitializer.publicKey);
+
         theme = ravePayInitializer.getTheme();
 
         if (theme != 0) {
@@ -608,7 +621,10 @@ public class RavePayActivity extends AppCompatActivity {
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
                 .networkModule(new NetworkModule(BASE_URL))
+                .eventLoggerModule(new EventLoggerModule())
                 .build();
+
+        appComponent.inject(this);
     }
 
 
@@ -656,8 +672,23 @@ public class RavePayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        setResult(RavePayActivity.RESULT_CANCELLED, new Intent());
+        setRavePayResult(RavePayActivity.RESULT_CANCELLED, new Intent());
         super.onBackPressed();
+    }
+
+    public void setRavePayResult(int result, Intent intent) {
+        if (result == RESULT_CANCELLED) {
+            eventLogger.logEvent(new Event(EVENT_TITLE_CANCELLED, "Payment cancelled"),
+                    ravePayInitializer.publicKey);
+        } else if (result == RESULT_ERROR) {
+            eventLogger.logEvent(new Event(EVENT_TITLE_FINISHED, "Payment error"),
+                    ravePayInitializer.publicKey);
+        } else if (result == RESULT_SUCCESS) {
+            eventLogger.logEvent(new Event(EVENT_TITLE_FINISHED, "Payment successful"),
+                    ravePayInitializer.publicKey);
+        }
+
+        setResult(result, intent);
     }
 
     public AppComponent getAppComponent() {

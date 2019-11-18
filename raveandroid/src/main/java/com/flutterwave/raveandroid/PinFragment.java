@@ -28,9 +28,9 @@ public class PinFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pin, container, false);
-        Button pinBtn = (Button) v.findViewById(R.id.rave_pinButton);
-        final TextInputEditText pinEv = (TextInputEditText) v.findViewById(R.id.rave_pinEv);
-        final TextInputLayout pinTil = (TextInputLayout) v.findViewById(R.id.rave_pinTil);
+        Button pinBtn = v.findViewById(R.id.rave_pinButton);
+        final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
+        final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +56,7 @@ public class PinFragment extends Fragment {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PIN,pin);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

@@ -205,7 +205,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -219,7 +219,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

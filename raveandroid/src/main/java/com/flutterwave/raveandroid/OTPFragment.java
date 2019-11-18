@@ -88,7 +88,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

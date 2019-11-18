@@ -1,7 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.data.ApiService;
-import com.google.gson.Gson;
+import com.flutterwave.raveandroid.data.EventLoggerService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,26 +16,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-@Module
-public class NetworkModule {
+import static com.flutterwave.raveandroid.RaveConstants.EVENT_LOGGING_URL;
 
-    @Inject
-    String baseUrl;
+
+@Module
+public class EventLoggerModule {
+
+    String baseUrl = EVENT_LOGGING_URL;
 
     private Retrofit retrofit;
-    private ApiService apiService;
-
-    public NetworkModule() {
-    }
+    private EventLoggerService eventLoggerService;
 
     @Inject
-    public NetworkModule(String url) {
-        baseUrl = url;
+    public EventLoggerModule() {
     }
 
     @Singleton
     @Provides
-    @Named("mainRetrofit")
+    @Named("eventLoggingRetrofit")
     public Retrofit providesRetrofit() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -58,15 +55,9 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    public Gson gson() {
-        return new Gson();
-    }
-
-    @Singleton
-    @Provides
-    public ApiService providesApiService() {
-        apiService = retrofit.create(ApiService.class);
-        return apiService;
+    public EventLoggerService providesEventLoggerService() {
+        eventLoggerService = retrofit.create(EventLoggerService.class);
+        return eventLoggerService;
     }
 
 }

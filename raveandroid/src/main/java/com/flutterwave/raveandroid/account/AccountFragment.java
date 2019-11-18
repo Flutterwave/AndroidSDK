@@ -292,7 +292,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         intent.putExtra("response", responseAsJSONString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -302,7 +302,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

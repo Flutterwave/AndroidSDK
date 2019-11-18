@@ -442,7 +442,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         intent.putExtra("response", responseAsJSONString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -461,7 +461,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

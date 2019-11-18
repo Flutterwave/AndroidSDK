@@ -220,7 +220,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -232,7 +232,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

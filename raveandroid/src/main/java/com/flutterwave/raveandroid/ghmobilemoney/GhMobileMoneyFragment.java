@@ -284,7 +284,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -298,7 +298,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

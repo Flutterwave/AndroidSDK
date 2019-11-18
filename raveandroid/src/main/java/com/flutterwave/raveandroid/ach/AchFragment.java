@@ -216,7 +216,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -228,7 +228,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }

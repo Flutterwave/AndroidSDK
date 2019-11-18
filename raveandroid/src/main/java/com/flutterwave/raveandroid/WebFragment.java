@@ -37,7 +37,7 @@ public class WebFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_web, container, false);
-        webView = (WebView) v.findViewById(R.id.rave_webview);
+        webView = v.findViewById(R.id.rave_webview);
         authurl = getArguments().getString(EXTRA_AUTH_URL);
         onDisplayInternetBankingPage(authurl);
         return v;
@@ -94,7 +94,7 @@ public class WebFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
