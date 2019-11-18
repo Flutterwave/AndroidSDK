@@ -1,21 +1,32 @@
 package com.flutterwave.raveandroid;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
+
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
     private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
+    public static final String PUBLIC_KEY_EXTRA = "publicKey";
     public static final String INTENT_SENDER = "sender";
     private Fragment fragment;
+    AppComponent appComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_futher_verification);
+        buildGraph();
         if(getIntent()!=null & getIntent().getIntExtra("theme",0)!=0){
             setTheme(getIntent().getIntExtra("theme",0));
         }
@@ -53,6 +64,22 @@ public class VerificationActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private void buildGraph() {
+
+        String BASE_URL = STAGING_URL; //Unused except for construction
+
+
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .networkModule(new NetworkModule(BASE_URL))
+                .eventLoggerModule(new EventLoggerModule())
+                .build();
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 
     @Override

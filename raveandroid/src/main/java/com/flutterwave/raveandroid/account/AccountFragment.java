@@ -148,11 +148,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             Utils.hide_keyboard(requireActivity());
             clearErrors();
             collectData();
-        }
-        else if (i == R.id.rave_bankEditText){
+        } else if (i == R.id.rave_bankEditText) {
             presenter.getBanks();
-        }
-        else if (i == R.id.rave_dobEditText){
+        } else if (i == R.id.rave_dobEditText) {
             if (getActivity() != null) {
                 new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -378,8 +376,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             } else {
                 progessDialog.dismiss();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -393,24 +390,25 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
         this.flwRef = flwRef;
 
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         if (validateInstruction != null) {
             intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
         }
-        intent.putExtra("theme",ravePayInitializer.getTheme());
+        intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_0TP);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == RavePayActivity.RESULT_SUCCESS){
+        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
 
-            if(requestCode==FOR_0TP){
+            if (requestCode == FOR_0TP) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-            }else if(requestCode==FOR_INTERNET_BANKING){
+            } else if (requestCode == FOR_INTERNET_BANKING) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
         } else {
@@ -421,11 +419,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onDisplayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
-        intent.putExtra("theme",ravePayInitializer.getTheme());
-        startActivityForResult(intent,FOR_INTERNET_BANKING);
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra("theme", ravePayInitializer.getTheme());
+        startActivityForResult(intent, FOR_INTERNET_BANKING);
     }
 
     @Override
@@ -465,16 +464,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         dateOfBirthEt.setError(null);
 
         if (String.valueOf(dayOfMonth).length() != 2) {
-               formattedDay = "0" + dayOfMonth;
-        }
-        else {
+            formattedDay = "0" + dayOfMonth;
+        } else {
             formattedDay = dayOfMonth + "";
         }
 
         if (String.valueOf(month + 1).length() != 2) {
-               formattedMonth = "0" + (month + 1);
-        }
-        else {
+            formattedMonth = "0" + (month + 1);
+        } else {
             formattedMonth = (month + 1) + "";
         }
 

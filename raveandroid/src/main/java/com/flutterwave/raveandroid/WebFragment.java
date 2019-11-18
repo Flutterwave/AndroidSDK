@@ -16,6 +16,13 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
+
+import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.VerificationActivity.PUBLIC_KEY_EXTRA;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -25,6 +32,8 @@ public class WebFragment extends Fragment {
     String authurl;
     WebView webView;
     ProgressDialog progessDialog;
+    @Inject
+    EventLogger logger;
 
 
     public WebFragment() {
@@ -40,6 +49,9 @@ public class WebFragment extends Fragment {
         webView = v.findViewById(R.id.rave_webview);
         authurl = getArguments().getString(EXTRA_AUTH_URL);
         onDisplayInternetBankingPage(authurl);
+
+        injectComponents();
+        logLaunch();
         return v;
     }
 
@@ -88,6 +100,23 @@ public class WebFragment extends Fragment {
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
                 goBack();
             }
+        }
+    }
+
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    private void logLaunch() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(new LaunchEvent("Web Fragment").getEvent(),
+                    publicKey);
         }
     }
 

@@ -1,6 +1,10 @@
 package com.flutterwave.raveandroid.di.components;
 
+import com.flutterwave.raveandroid.AVSVBVFragment;
+import com.flutterwave.raveandroid.OTPFragment;
+import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
@@ -32,6 +36,14 @@ public interface AppComponent {
     EventLogger eventLogger();
 
     void inject(RavePayActivity ravePayActivity);
+
+    void inject(AVSVBVFragment avsvbvFragment);
+
+    void inject(OTPFragment otpFragment);
+
+    void inject(PinFragment pinFragment);
+
+    void inject(WebFragment webFragment);
 
     MpesaComponent plus(MpesaModule mpesaModule);
 

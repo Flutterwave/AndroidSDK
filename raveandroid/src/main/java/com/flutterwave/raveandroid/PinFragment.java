@@ -11,12 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
+
+import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.VerificationActivity.PUBLIC_KEY_EXTRA;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PinFragment extends Fragment {
     public static final String EXTRA_PIN = "extraPin";
     private String pin;
+    @Inject
+    EventLogger logger;
 
     public PinFragment() {
         // Required empty public constructor
@@ -32,7 +41,8 @@ public class PinFragment extends Fragment {
         final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
         final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
 
-//        logLaunch();
+        injectComponents();
+        logLaunch();
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,13 +64,22 @@ public class PinFragment extends Fragment {
         return v;
     }
 
-//    private void logLaunch() {
-//        VerificationActivity verificationActivity = (VerificationActivity) getActivity();
-//        if (ravePayActivity!=null){
-//            ravePayActivity.getEventLogger().logEvent(new LaunchEvent("PIN Fragment").getEvent(),
-//                    ravePayActivity.getRavePayInitializer().getPublicKey());
-//        }
-//    }
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    private void logLaunch() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(new LaunchEvent("PIN Fragment").getEvent(),
+                    publicKey);
+        }
+    }
 
     public void goBack(){
         Intent intent = new Intent();

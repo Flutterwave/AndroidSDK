@@ -11,6 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.LaunchEvent;
+
+import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.VerificationActivity.PUBLIC_KEY_EXTRA;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -26,6 +33,9 @@ public class AVSVBVFragment extends Fragment {
     String zipCode;
     String country;
 
+    @Inject
+    EventLogger logger;
+
     public AVSVBVFragment() {
         // Required empty public constructor
     }
@@ -36,7 +46,8 @@ public class AVSVBVFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
-//        logLaunch();
+        injectComponents();
+        logLaunch();
 
         final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
         final TextInputEditText stateEt = v.findViewById(R.id.rave_billStateEt);
@@ -101,22 +112,32 @@ public class AVSVBVFragment extends Fragment {
         });
         return v;
     }
-//
-//    private void logLaunch() {
-//        RavePayActivity ravePayActivity = (RavePayActivity) getActivity();
-//        if (ravePayActivity!=null){
-//            ravePayActivity.getEventLogger().logEvent(new LaunchEvent("AVSVBV Fragment").getEvent(),
-//                    ravePayActivity.getRavePayInitializer().getPublicKey());
-//        }
-//    }
 
-    public void goBack(){
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    private void logLaunch() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+
+            logger.logEvent(new LaunchEvent("OTP Fragment").getEvent(),
+                    publicKey);
+        }
+    }
+
+    public void goBack() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_ADDRESS,address);
-        intent.putExtra(EXTRA_CITY,city);
-        intent.putExtra(EXTRA_ZIPCODE,zipCode);
-        intent.putExtra(EXTRA_COUNTRY,country);
-        intent.putExtra(EXTRA_STATE,state);
+        intent.putExtra(EXTRA_ADDRESS, address);
+        intent.putExtra(EXTRA_CITY, city);
+        intent.putExtra(EXTRA_ZIPCODE, zipCode);
+        intent.putExtra(EXTRA_COUNTRY, country);
+        intent.putExtra(EXTRA_STATE, state);
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

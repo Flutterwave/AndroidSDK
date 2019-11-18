@@ -150,6 +150,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showWebView(String authUrl, String flwRef) {
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
         intent.putExtra("theme",ravePayInitializer.getTheme());
