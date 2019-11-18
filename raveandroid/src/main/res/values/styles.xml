@@ -40,7 +40,7 @@
     </style>
 
     <style name="payBtnStyle" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/green_btn_curved</item>
+        <item name="android:background">@drawable/orange_button_curved</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
