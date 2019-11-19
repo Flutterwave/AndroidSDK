@@ -5,6 +5,7 @@ public class Event {
     public static String EVENT_TITLE_FINISH = "Session Finished";
     public static String EVENT_TITLE_SUBMIT = "Submit";
     public static String EVENT_TITLE_CHARGE = "Charge";
+    public static String EVENT_TITLE_VALIDATE = "Validate";
     public static String EVENT_TITLE_TYPING = "Input";
     public static String EVENT_TITLE_ERROR = "Error";
     public static String EVENT_TITLE_REDIRECT = "Redirect";

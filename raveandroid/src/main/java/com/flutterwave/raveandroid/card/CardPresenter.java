@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -445,6 +446,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setTransaction_reference(flwRef);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ValidationAttemptEvent("Card").getEvent(), PBFPubKey);
 
         networkRequest.validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override

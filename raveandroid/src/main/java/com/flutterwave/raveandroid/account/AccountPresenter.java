@@ -24,6 +24,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -187,6 +188,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setTransactionreference(flwRef);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
 
         networkRequest.validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override
