@@ -234,7 +234,9 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position < getResources().getStringArray(R.array.ussd_banks).length) {
-                    presenter.logEvent(new ListItemSelectedEvent("Bank").getEvent(), ravePayInitializer.getPublicKey());
+                    if (position != 0) {
+                        presenter.logEvent(new ListItemSelectedEvent("Bank").getEvent(), ravePayInitializer.getPublicKey());
+                    }
                     bank = getResources().getStringArray(R.array.ussd_banks)[position];
                 }
             }

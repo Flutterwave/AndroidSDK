@@ -327,6 +327,7 @@ public class RavePayActivity extends AppCompatActivity {
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            eventLogger.logEvent(new ScreenMinimizeEvent("Payment Methods").getEvent(), ravePayInitializer.getPublicKey());
                             showAllPaymentTypes();
                         }
                     });
