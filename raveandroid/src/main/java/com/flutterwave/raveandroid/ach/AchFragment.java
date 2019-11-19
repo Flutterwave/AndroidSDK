@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -114,6 +115,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
@@ -122,6 +124,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 

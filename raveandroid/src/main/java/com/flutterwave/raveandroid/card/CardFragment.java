@@ -38,6 +38,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -552,6 +553,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                     if (why == MANUAL_CARD_CHARGE) {
                         presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
@@ -564,6 +566,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
                 }
             });
 

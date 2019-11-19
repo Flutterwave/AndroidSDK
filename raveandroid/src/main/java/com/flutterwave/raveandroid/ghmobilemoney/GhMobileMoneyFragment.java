@@ -28,6 +28,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
@@ -259,6 +260,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
@@ -268,6 +270,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 

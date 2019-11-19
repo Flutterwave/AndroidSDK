@@ -36,6 +36,7 @@ import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -271,12 +272,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), payload.getPBFPubKey());
                     dialog.dismiss();
                     presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
                 }
             }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), payload.getPBFPubKey());
                     dialog.dismiss();
                 }
             });
