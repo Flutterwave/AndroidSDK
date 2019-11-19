@@ -26,6 +26,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener {
+public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     BankTransferPresenter presenter;
@@ -106,6 +107,8 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         payButton.setOnClickListener(this);
         verifyPaymentButton.setOnClickListener(this);
 
+        amountEt.setOnFocusChangeListener(this);
+
     }
 
     @Override
@@ -128,7 +131,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     private void initializeViews() {
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         amountTil = v.findViewById(R.id.rave_amountTil);
         initiateChargeLayout = v.findViewById(R.id.rave_initiate_payment_layout);
         transferDetailsLayout = v.findViewById(R.id.rave_transfer_details_layout);
@@ -360,6 +363,21 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

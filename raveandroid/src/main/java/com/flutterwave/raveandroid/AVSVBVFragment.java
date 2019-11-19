@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
 
@@ -126,7 +127,17 @@ public class AVSVBVFragment extends Fragment {
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
 
-            logger.logEvent(new LaunchEvent("OTP Fragment").getEvent(),
+            logger.logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent(),
+                    publicKey);
+        }
+    }
+
+    private void logSubmission() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(new SubmitEvent("Address Details").getEvent(),
                     publicKey);
         }
     }
@@ -138,8 +149,9 @@ public class AVSVBVFragment extends Fragment {
         intent.putExtra(EXTRA_ZIPCODE, zipCode);
         intent.putExtra(EXTRA_COUNTRY, country);
         intent.putExtra(EXTRA_STATE, state);
+        logSubmission();
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

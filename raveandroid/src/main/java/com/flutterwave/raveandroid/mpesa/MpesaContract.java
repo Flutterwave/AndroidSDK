@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.mpesa;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.Event;
 
 import java.util.HashMap;
 
@@ -38,5 +39,7 @@ public interface MpesaContract {
         void onAttachView(View view);
 
         void onDetachView();
+
+        void logEvent(Event event, String publicKey);
     }
 }

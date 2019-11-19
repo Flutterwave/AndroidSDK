@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
 
@@ -81,7 +82,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new LaunchEvent("OTP Fragment").getEvent(),
+            logger.logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent(),
                     publicKey);
         }
     }
@@ -97,6 +98,16 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
             } else {
                 goBack();
             }
+        }
+    }
+
+    private void logSubmission() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(new SubmitEvent("OTP").getEvent(),
+                    publicKey);
         }
     }
 
@@ -116,8 +127,9 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public void goBack() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
+        logSubmission();
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

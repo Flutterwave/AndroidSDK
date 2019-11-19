@@ -16,9 +16,11 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -110,6 +112,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
         body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Bank Transfer").getEvent(), payload.getPBFPubKey());
 
         networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
             @Override
@@ -238,7 +242,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
-            eventLogger.logEvent(new LaunchEvent("Bank Transfer Fragment").getEvent(),
+            logEvent(new ScreenLaunchEvent("Bank Transfer Fragment").getEvent(),
                     ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
@@ -315,6 +319,11 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     @Override
     public void onDetachView() {
         this.mView = new NullBankTransferView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 
 

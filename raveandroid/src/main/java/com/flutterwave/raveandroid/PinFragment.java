@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
 
@@ -64,6 +65,16 @@ public class PinFragment extends Fragment {
         return v;
     }
 
+    private void logSubmission() {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(new SubmitEvent("PIN").getEvent(),
+                    publicKey);
+        }
+    }
+
     private void injectComponents() {
         if (getActivity() != null) {
             ((VerificationActivity) getActivity()).getAppComponent()
@@ -76,7 +87,7 @@ public class PinFragment extends Fragment {
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new LaunchEvent("PIN Fragment").getEvent(),
+            logger.logEvent(new ScreenLaunchEvent("PIN Fragment").getEvent(),
                     publicKey);
         }
     }
@@ -84,8 +95,9 @@ public class PinFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PIN,pin);
+        logSubmission();
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

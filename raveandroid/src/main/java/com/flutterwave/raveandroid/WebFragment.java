@@ -17,7 +17,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 
 import javax.inject.Inject;
 
@@ -115,7 +115,7 @@ public class WebFragment extends Fragment {
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new LaunchEvent("Web Fragment").getEvent(),
+            logger.logEvent(new ScreenLaunchEvent("Web Fragment").getEvent(),
                     publicKey);
         }
     }
@@ -123,7 +123,7 @@ public class WebFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }

@@ -35,6 +35,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -56,7 +57,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener {
+public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     AccountPresenter presenter;
@@ -122,6 +123,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         bankEt.setOnClickListener(this);
         payButton.setOnClickListener(this);
         dateOfBirthEt.setOnClickListener(this);
+
+        accountNumberEt.setOnFocusChangeListener(this);
+        amountEt.setOnFocusChangeListener(this);
+        emailEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
+        rave_bvnTil.getEditText().setOnFocusChangeListener(this);
+
+
     }
 
     private void initializeViews() {
@@ -133,7 +142,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         amountTil = v.findViewById(R.id.rave_amountTil);
         payButton = v.findViewById(R.id.rave_payButton);
         rave_bvnTil = v.findViewById(R.id.rave_bvnTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         emailTil = v.findViewById(R.id.rave_emailTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
@@ -480,4 +489,27 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_accountNumberEt) {
+            fieldName = "Account Number";
+        } else if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_emailEt) {
+            fieldName = "Email";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        } else if (i == R.id.rave_bvnEt) {
+            fieldName = "BVN";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+//        presenter.logEvent(new StopTypingEvent(fieldName).getEvent(),ravePayInitializer.getPublicKey());
+    }
 }

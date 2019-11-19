@@ -31,8 +31,10 @@ import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
-import com.flutterwave.raveandroid.data.Event;
 import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
+import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
@@ -72,10 +74,6 @@ import static com.flutterwave.raveandroid.RaveConstants.PERMISSIONS_REQUEST_READ
 import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
-import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_CANCELLED;
-import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_FINISHED;
-import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_LAUNCHED;
-import static com.flutterwave.raveandroid.data.Event.EVENT_TITLE_MINIMIZED;
 
 public class RavePayActivity extends AppCompatActivity {
 
@@ -118,7 +116,7 @@ public class RavePayActivity extends AppCompatActivity {
         }
         buildGraph();
 
-        eventLogger.logEvent(new Event(EVENT_TITLE_LAUNCHED, "Launched payment activity"),
+        eventLogger.logEvent(new ScreenLaunchEvent("Payment Activity").getEvent(),
                 ravePayInitializer.publicKey);
 
         theme = ravePayInitializer.getTheme();
@@ -237,7 +235,7 @@ public class RavePayActivity extends AppCompatActivity {
         PaymentTile paymentTile = tileMap.get(clickedView.getId());
 
         if (paymentTile.isTop) {
-            eventLogger.logEvent(new Event(EVENT_TITLE_MINIMIZED, "Minimized payment method"),
+            eventLogger.logEvent(new ScreenMinimizeEvent("payment methods").getEvent(),
                     ravePayInitializer.publicKey);
             showAllPaymentTypes();
         } else {
@@ -680,13 +678,13 @@ public class RavePayActivity extends AppCompatActivity {
 
     public void setRavePayResult(int result, Intent intent) {
         if (result == RESULT_CANCELLED) {
-            eventLogger.logEvent(new Event(EVENT_TITLE_CANCELLED, "Payment cancelled"),
+            eventLogger.logEvent(new SessionFinishedEvent("Payment cancelled").getEvent(),
                     ravePayInitializer.publicKey);
         } else if (result == RESULT_ERROR) {
-            eventLogger.logEvent(new Event(EVENT_TITLE_FINISHED, "Payment error"),
+            eventLogger.logEvent(new SessionFinishedEvent("Payment error").getEvent(),
                     ravePayInitializer.publicKey);
         } else if (result == RESULT_SUCCESS) {
-            eventLogger.logEvent(new Event(EVENT_TITLE_FINISHED, "Payment successful"),
+            eventLogger.logEvent(new SessionFinishedEvent("Payment successful").getEvent(),
                     ravePayInitializer.publicKey);
         }
 

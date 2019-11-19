@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyContract.View, View.OnClickListener {
+public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -97,6 +98,9 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -105,7 +109,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
 
@@ -335,6 +339,23 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

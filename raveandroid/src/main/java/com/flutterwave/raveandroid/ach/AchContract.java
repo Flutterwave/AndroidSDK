@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.ach;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 public interface AchContract {
@@ -43,6 +44,8 @@ public interface AchContract {
         void onAttachView(View view);
 
         void onDetachView();
+
+        void logEvent(Event event, String publicKey);
     }
 
 }

@@ -32,6 +32,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 
 import java.util.HashMap;
@@ -43,7 +44,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UssdFragment extends Fragment implements UssdContract.View, View.OnClickListener {
+public class UssdFragment extends Fragment implements UssdContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     UssdPresenter presenter;
@@ -197,6 +198,8 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         chooseAnotherBankView.setOnClickListener(this);
         copyReferenceCodeImageView.setOnClickListener(this);
         copyReferenceCodeTv.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -412,6 +415,21 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

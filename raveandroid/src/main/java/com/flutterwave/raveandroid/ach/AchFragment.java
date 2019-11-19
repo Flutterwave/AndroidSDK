@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -30,7 +31,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener {
+public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener
+        , View.OnFocusChangeListener {
 
     @Inject
     AchPresenter presenter;
@@ -81,13 +83,15 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         payInstructionsTv = v.findViewById(R.id.paymentInstructionsTv);
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
     }
 
     @Override
@@ -262,4 +266,18 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         }
     }
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+    }
 }

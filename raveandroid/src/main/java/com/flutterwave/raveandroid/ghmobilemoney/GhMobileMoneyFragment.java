@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
+public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -99,6 +100,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
+        voucherEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -109,7 +114,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
     private void setUpNetworks() {
@@ -357,6 +362,25 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        } else if (i == R.id.rave_voucherEt) {
+            fieldName = "Voucher";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/amount"
-                    android:id="@+id/rave_amountTV"
+                    android:id="@+id/rave_amountEt"
                     android:inputType="numberDecimal"
                     android:layout_below="@+id/rave_card1"
                     />

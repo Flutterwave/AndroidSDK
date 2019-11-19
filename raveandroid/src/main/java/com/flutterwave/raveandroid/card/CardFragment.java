@@ -36,6 +36,7 @@ import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -62,7 +63,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
+public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View, View.OnFocusChangeListener {
 
     @Inject
     CardPresenter presenter;
@@ -137,6 +138,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
         savedCardBtn.setOnClickListener(this);
         payButton.setOnClickListener(this);
+
+        cardExpiryTv.setOnFocusChangeListener(this);
+        cardNoTv.setOnFocusChangeListener(this);
+        amountEt.setOnFocusChangeListener(this);
+        emailEt.setOnFocusChangeListener(this);
+        cvvTv.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -151,8 +158,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         amountTil =  v.findViewById(R.id.rave_amountTil);
         emailTil =  v.findViewById(R.id.rave_emailTil);
         cardNoTv =  v.findViewById(R.id.rave_cardNoTv);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
-        emailEt =  v.findViewById(R.id.rave_emailTv);
+        amountEt = v.findViewById(R.id.rave_amountEt);
+        emailEt = v.findViewById(R.id.rave_emailEt);
         cvvTil =  v.findViewById(R.id.rave_cvvTil);
         cvvTv =  v.findViewById(R.id.rave_cvvTv);
 
@@ -672,6 +679,29 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
                 lastInput = cardExpiryTv.getText().toString();
             }
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_cvvTv) {
+            fieldName = "CVV";
+        } else if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_emailEt) {
+            fieldName = "Email";
+        } else if (i == R.id.rave_cardNoTv) {
+            fieldName = "Card Number";
+        } else if (i == R.id.rave_cardExpiryTv) {
+            fieldName = "Card Expiry";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

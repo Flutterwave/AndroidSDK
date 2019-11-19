@@ -2,6 +2,8 @@ package com.flutterwave.raveandroid.data;
 
 import android.util.Log;
 
+import com.flutterwave.raveandroid.data.events.Event;
+
 import javax.inject.Inject;
 
 public class EventLogger {
@@ -14,18 +16,18 @@ public class EventLogger {
 
     public void logEvent(final Event body, String publicKey) {
         EventBody eventBody = new EventBody(publicKey,
-                body.title,
-                body.message);
+                body.getTitle(),
+                body.getMessage());
 
         networkRequest.logEvent(eventBody, new Callbacks.OnLogEventComplete() {
             @Override
             public void onSuccess(String response) {
-                Log.d("Event log successful", body.title);
+                Log.d("Event log successful", body.getTitle());
             }
 
             @Override
             public void onError(String message) {
-                Log.d("Event log failed", body.title + message);
+                Log.d("Event log failed", body.getMessage() + message);
             }
         });
     }

@@ -15,9 +15,11 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -109,6 +111,9 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
         body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Rwanda Mobile Money").getEvent(), payload.getPBFPubKey());
+
 
         networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
@@ -246,7 +251,7 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
-            eventLogger.logEvent(new LaunchEvent("Rwanda Mobile Money Fragment").getEvent(),
+            logEvent(new ScreenLaunchEvent("Rwanda Mobile Money Fragment").getEvent(),
                     ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
@@ -265,6 +270,11 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     @Override
     public void onDetachView() {
         this.mView = new NullRwfMobileMoneyView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }
 

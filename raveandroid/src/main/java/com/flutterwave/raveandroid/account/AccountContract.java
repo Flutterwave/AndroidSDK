@@ -5,6 +5,7 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import java.util.HashMap;
@@ -84,6 +85,8 @@ public interface AccountContract {
         void init(RavePayInitializer ravePayInitializer);
 
         void onBankSelected(Bank bank);
+
+        void logEvent(Event event, String publicKey);
     }
 
 }

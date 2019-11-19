@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.zmmobilemoney;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.Event;
 
 import java.util.HashMap;
 
@@ -55,5 +56,7 @@ public interface ZmMobileMoneyContract {
         void onAttachView(View view);
 
         void onDetachView();
+
+        void logEvent(Event event, String publicKey);
     }
 }

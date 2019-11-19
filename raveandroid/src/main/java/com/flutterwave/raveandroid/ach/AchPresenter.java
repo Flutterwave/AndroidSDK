@@ -14,10 +14,12 @@ import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.LaunchEvent;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
@@ -58,7 +60,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
-            eventLogger.logEvent(new LaunchEvent("ACH Fragment").getEvent(),
+            logEvent(new ScreenLaunchEvent("ACH Fragment").getEvent(),
                     ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
@@ -131,6 +133,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
         body.setClient(accountRequestBody);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
         networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
 
@@ -230,5 +234,10 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void onDetachView() {
         this.mView = new NullAchView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }

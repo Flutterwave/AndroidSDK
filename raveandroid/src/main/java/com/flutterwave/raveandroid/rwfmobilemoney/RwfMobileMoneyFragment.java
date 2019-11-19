@@ -23,6 +23,7 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.RwandaModule;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import static android.view.View.GONE;
 /**
  * Created by Jeremiah on 10/12/2018.
  */
-public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyContract.View, View.OnClickListener {
+public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     RwfMobileMoneyPresenter presenter;
@@ -88,13 +89,16 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         amountTil = v.findViewById(R.id.rave_amountTil);
         payButton = v.findViewById(R.id.rave_payButton);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
 
@@ -276,6 +280,23 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

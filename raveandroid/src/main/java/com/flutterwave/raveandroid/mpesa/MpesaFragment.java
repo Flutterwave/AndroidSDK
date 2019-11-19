@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import static com.flutterwave.raveandroid.RaveConstants.response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener {
+public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -93,12 +94,15 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
         rave_phoneEtInt = amountEt.getId();
@@ -287,6 +291,23 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 
