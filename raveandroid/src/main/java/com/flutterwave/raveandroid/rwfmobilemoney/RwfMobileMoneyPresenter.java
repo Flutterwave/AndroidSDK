@@ -19,6 +19,7 @@ import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
@@ -149,6 +150,8 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override

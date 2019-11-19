@@ -10,6 +10,7 @@ public class Event {
     public static String EVENT_TITLE_TYPING = "Input";
     public static String EVENT_TITLE_ERROR = "Error";
     public static String EVENT_TITLE_REDIRECT = "Redirect";
+    public static String EVENT_TITLE_REQUERY = "Requery";
     String title;
     String message;
 

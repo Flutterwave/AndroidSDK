@@ -20,6 +20,7 @@ import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
@@ -483,6 +484,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setPBFPubKey(publicKey);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
