@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
@@ -214,6 +215,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private void showInstructionsAndVoucher(boolean show) {
 
         if (show) {
+            presenter.logEvent(new InstructionsDisplayedEvent("Gh Momo").getEvent(), ravePayInitializer.getPublicKey());
             voucherTil.setVisibility(View.VISIBLE);
             instructionsTv.setVisibility(View.VISIBLE);
         }
@@ -340,6 +342,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             });
 
             pollingProgressDialog.show();
+            presenter.logEvent(new InstructionsDisplayedEvent("GH Momo").getEvent(), ravePayInitializer.getPublicKey());
         } else if (active && pollingProgressDialog.isShowing()) {
             //pass
         } else {

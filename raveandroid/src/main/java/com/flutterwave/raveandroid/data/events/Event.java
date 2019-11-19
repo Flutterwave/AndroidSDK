@@ -11,6 +11,7 @@ public class Event {
     public static String EVENT_TITLE_REDIRECT = "Redirect";
     public static String EVENT_TITLE_REQUERY = "Requery";
     public static String EVENT_TITLE_FEE_DISPLAY_RESPONSE = "Fee Display Response";
+    public static String EVENT_TITLE_INSTRUCTION = "Instruction Display";
     String title;
     String message;
 

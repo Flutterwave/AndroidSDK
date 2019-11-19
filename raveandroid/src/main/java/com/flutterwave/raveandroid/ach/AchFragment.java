@@ -23,6 +23,7 @@ import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -147,6 +148,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showRedirectMessage(boolean active) {
 
         if (active) {
+            presenter.logEvent(new InstructionsDisplayedEvent("ACH").getEvent(), ravePayInitializer.getPublicKey());
             payInstructionsTv.setVisibility(View.VISIBLE);
         }
         else {

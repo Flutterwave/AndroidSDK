@@ -26,6 +26,7 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -223,6 +224,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
             final Dialog dialog = new Dialog(getContext());
             dialog.setContentView(R.layout.ukinstruction_layout);
             dialog.setTitle("Flutterwave");
+            presenter.logEvent(new InstructionsDisplayedEvent("UK").getEvent(), ravePayInitializer.getPublicKey());
 
             ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", response.getData().getData().getAmount()));
             ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));

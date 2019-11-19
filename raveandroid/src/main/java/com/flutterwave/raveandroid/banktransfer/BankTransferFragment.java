@@ -28,6 +28,7 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 
@@ -297,6 +298,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void onTransferDetailsReceived(String amount, String accountNumber, String bankName, String beneficiaryName) {
+        presenter.logEvent(new InstructionsDisplayedEvent("Bank Transfer").getEvent(), ravePayInitializer.getPublicKey());
         showTransferDetails(amount, accountNumber, bankName, beneficiaryName);
     }
 
