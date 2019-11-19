@@ -9,6 +9,7 @@ public class Event {
     public static String EVENT_TITLE_CHARGE = "Charge";
     public static String EVENT_TITLE_TYPING = "Input";
     public static String EVENT_TITLE_ERROR = "Error";
+    public static String EVENT_TITLE_REDIRECT = "Redirect";
     String title;
     String message;
 

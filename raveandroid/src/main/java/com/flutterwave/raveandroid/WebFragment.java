@@ -17,7 +17,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RedirectEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 
 import javax.inject.Inject;
 
@@ -51,7 +54,7 @@ public class WebFragment extends Fragment {
         onDisplayInternetBankingPage(authurl);
 
         injectComponents();
-        logLaunch();
+        logEvent(new ScreenLaunchEvent("Web Fragment").getEvent());
         return v;
     }
 
@@ -66,11 +69,38 @@ public class WebFragment extends Fragment {
         webView.loadUrl(authurl);
     }
 
+    private void logEvent(Event event) {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(event,
+                    publicKey);
+        }
+    }
+
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    public void goBack() {
+        Intent intent = new Intent();
+        logEvent(new ScreenMinimizeEvent("Web Fragment").getEvent());
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
     // Manages the behavior when URLs are loaded
     private class MyBrowser extends WebViewClient {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            logEvent(new RedirectEvent(url).getEvent());
             view.loadUrl(url);
             return true;
         }
@@ -78,6 +108,7 @@ public class WebFragment extends Fragment {
         @TargetApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            logEvent(new RedirectEvent(request.getUrl().toString()).getEvent());
             view.loadUrl(request.getUrl().toString());
             return true;
         }
@@ -100,31 +131,6 @@ public class WebFragment extends Fragment {
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
                 goBack();
             }
-        }
-    }
-
-    private void injectComponents() {
-        if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getAppComponent()
-                    .inject(this);
-        }
-    }
-
-    private void logLaunch() {
-        if (getArguments() != null
-                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
-                & logger != null) {
-            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new ScreenLaunchEvent("Web Fragment").getEvent(),
-                    publicKey);
-        }
-    }
-
-    public void goBack(){
-        Intent intent = new Intent();
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
         }
     }
 
