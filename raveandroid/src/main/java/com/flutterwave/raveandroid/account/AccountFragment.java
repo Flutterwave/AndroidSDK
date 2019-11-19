@@ -37,6 +37,7 @@ import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -361,6 +362,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     bankEt.setError(null);
                     bankEt.setText(b.getBankname());
                     bankEt.setTag(b);
+                    presenter.logEvent(new ListItemSelectedEvent("Bank").getEvent(), ravePayInitializer.getPublicKey());
                     presenter.onBankSelected(b);
 
                 }

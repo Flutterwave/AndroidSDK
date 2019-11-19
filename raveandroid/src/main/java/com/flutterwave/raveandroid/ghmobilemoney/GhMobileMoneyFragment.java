@@ -30,6 +30,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
@@ -138,14 +139,17 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                     }
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions =  getResources().getString(R.string.tigo_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.checkStatus);
                         showInstructionsAndVoucher(true);
                         instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
