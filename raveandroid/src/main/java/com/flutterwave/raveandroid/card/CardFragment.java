@@ -37,6 +37,7 @@ import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -64,7 +65,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
+public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View, View.OnFocusChangeListener {
 
     @Inject
     CardPresenter presenter;
@@ -307,6 +308,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentError(String message) {
         dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -409,6 +411,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onValidateError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -531,6 +534,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onTokenRetrievalError(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -574,6 +578,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -687,7 +692,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             lastInput = cardExpiryTv.getText().toString();
         }
     }
-}
+
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {

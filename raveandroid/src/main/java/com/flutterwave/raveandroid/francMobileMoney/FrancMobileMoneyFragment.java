@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
 
@@ -209,6 +210,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     @Override
     public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -240,6 +242,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 

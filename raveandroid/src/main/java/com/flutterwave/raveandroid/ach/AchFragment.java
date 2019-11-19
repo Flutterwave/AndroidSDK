@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -172,6 +173,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     @Override
     public void onPaymentError(String message) {
         dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 

@@ -24,6 +24,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -203,6 +204,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
     @Override
     public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -258,6 +260,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 

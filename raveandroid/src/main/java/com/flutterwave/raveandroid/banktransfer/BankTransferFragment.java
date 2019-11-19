@@ -26,6 +26,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 
@@ -262,6 +263,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     @Override
     public void onPaymentError(String message) {
 //        dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -337,6 +339,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 

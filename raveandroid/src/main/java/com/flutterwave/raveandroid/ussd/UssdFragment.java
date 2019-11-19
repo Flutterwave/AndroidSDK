@@ -32,6 +32,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 
@@ -314,12 +315,14 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
+    public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(message);
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 

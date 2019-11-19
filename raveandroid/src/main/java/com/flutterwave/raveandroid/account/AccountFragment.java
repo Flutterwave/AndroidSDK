@@ -35,6 +35,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -241,6 +242,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onValidateError(String message, String responseAsJSonString) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -285,6 +287,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -316,6 +319,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -392,6 +396,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onGetBanksRequestFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -438,6 +443,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onChargeAccountFailed(String message, String responseAsJSONString) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
