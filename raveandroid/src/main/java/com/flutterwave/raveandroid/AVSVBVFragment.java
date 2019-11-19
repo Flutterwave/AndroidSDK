@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
@@ -22,7 +24,7 @@ import static com.flutterwave.raveandroid.VerificationActivity.PUBLIC_KEY_EXTRA;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AVSVBVFragment extends Fragment {
+public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListener {
     public static final String EXTRA_ADDRESS = "extraAddress";
     public static final String EXTRA_CITY = "extraCity";
     public static final String EXTRA_ZIPCODE = "extraZipCode";
@@ -48,7 +50,7 @@ public class AVSVBVFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
         injectComponents();
-        logLaunch();
+        logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
         final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
         final TextInputEditText stateEt = v.findViewById(R.id.rave_billStateEt);
@@ -60,6 +62,12 @@ public class AVSVBVFragment extends Fragment {
         final TextInputLayout cityTil = v.findViewById(R.id.rave_billCityTil);
         final TextInputLayout zipCodeTil = v.findViewById(R.id.rave_zipTil);
         final TextInputLayout countryTil = v.findViewById(R.id.rave_countryTil);
+
+        addressEt.setOnFocusChangeListener(this);
+        stateEt.setOnFocusChangeListener(this);
+        cityEt.setOnFocusChangeListener(this);
+        zipCodeEt.setOnFocusChangeListener(this);
+        countryEt.setOnFocusChangeListener(this);
 
         Button zipBtn = v.findViewById(R.id.rave_zipButton);
 
@@ -121,23 +129,12 @@ public class AVSVBVFragment extends Fragment {
         }
     }
 
-    private void logLaunch() {
+    private void logEvent(Event event) {
         if (getArguments() != null
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-
-            logger.logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent(),
-                    publicKey);
-        }
-    }
-
-    private void logSubmission() {
-        if (getArguments() != null
-                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
-                & logger != null) {
-            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new SubmitEvent("Address Details").getEvent(),
+            logger.logEvent(event,
                     publicKey);
         }
     }
@@ -149,10 +146,33 @@ public class AVSVBVFragment extends Fragment {
         intent.putExtra(EXTRA_ZIPCODE, zipCode);
         intent.putExtra(EXTRA_COUNTRY, country);
         intent.putExtra(EXTRA_STATE, state);
-        logSubmission();
+        logEvent(new SubmitEvent("Address Details").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_billAddressEt) {
+            fieldName = "Address";
+        } else if (i == R.id.rave_billStateEt) {
+            fieldName = "State";
+        } else if (i == R.id.rave_billCityEt) {
+            fieldName = "City";
+        } else if (i == R.id.rave_zipEt) {
+            fieldName = "Zip Code";
+        } else if (i == R.id.rave_countryEt) {
+            fieldName = "Country";
+        }
+
+        if (hasFocus) {
+            logEvent(new StartTypingEvent(fieldName).getEvent());
         }
     }
 

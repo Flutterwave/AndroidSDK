@@ -13,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
@@ -48,7 +50,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
         v = inflater.inflate(R.layout.fragment_ot, container, false);
         injectComponents();
-        logLaunch();
+        logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
         initializeViews();
 
@@ -61,6 +63,15 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     private void setListeners() {
         otpButton.setOnClickListener(this);
+
+        otpEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    logEvent(new StartTypingEvent("OTP").getEvent());
+                }
+            }
+        });
     }
 
     private void initializeViews() {
@@ -77,12 +88,12 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void logLaunch() {
+    private void logEvent(Event event) {
         if (getArguments() != null
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent(),
+            logger.logEvent(event,
                     publicKey);
         }
     }
@@ -98,16 +109,6 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
             } else {
                 goBack();
             }
-        }
-    }
-
-    private void logSubmission() {
-        if (getArguments() != null
-                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
-                & logger != null) {
-            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new SubmitEvent("OTP").getEvent(),
-                    publicKey);
         }
     }
 
@@ -127,7 +128,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public void goBack() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
-        logSubmission();
+        logEvent(new SubmitEvent("OTP").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

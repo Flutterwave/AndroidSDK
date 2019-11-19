@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.data.events.SubmitEvent;
 
 import javax.inject.Inject;
@@ -39,16 +41,16 @@ public class PinFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pin, container, false);
         Button pinBtn = v.findViewById(R.id.rave_pinButton);
-        final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
+        final TextInputEditText pinEt = v.findViewById(R.id.rave_pinEv);
         final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
 
         injectComponents();
-        logLaunch();
+        logEvent(new ScreenLaunchEvent("PIN Fragment").getEvent());
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pin = pinEv.getText().toString();
+                pin = pinEt.getText().toString();
 
                 pinTil.setError(null);
                 pinTil.setErrorEnabled(false);
@@ -62,17 +64,16 @@ public class PinFragment extends Fragment {
             }
         });
 
-        return v;
-    }
+        pinEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    logEvent(new StartTypingEvent("PIN").getEvent());
+                }
+            }
+        });
 
-    private void logSubmission() {
-        if (getArguments() != null
-                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
-                & logger != null) {
-            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new SubmitEvent("PIN").getEvent(),
-                    publicKey);
-        }
+        return v;
     }
 
     private void injectComponents() {
@@ -82,12 +83,12 @@ public class PinFragment extends Fragment {
         }
     }
 
-    private void logLaunch() {
+    private void logEvent(Event event) {
         if (getArguments() != null
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(new ScreenLaunchEvent("PIN Fragment").getEvent(),
+            logger.logEvent(event,
                     publicKey);
         }
     }
@@ -95,7 +96,7 @@ public class PinFragment extends Fragment {
     public void goBack(){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PIN,pin);
-        logSubmission();
+        logEvent(new SubmitEvent("PIN").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
