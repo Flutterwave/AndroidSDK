@@ -38,9 +38,10 @@
         <br>
         <br>
         <p>1. Dial <b>*110#</b> to generate your transaction voucher.</p>
-        <p>2. Select <b>OPTION 6</b> to generate the voucher.</p>
-        <p>3. Enter your PIN in next prompt.</p>
-        <p>4. Input the voucher generated in the voucher field below.</p>]]>
+        <p>2. Select <b>OPTION 4</b> "Make Payments".</p>
+        <p>3. Select <b>OPTION 4</b> to generate the voucher.</p>
+        <p>4. Enter your PIN in next prompt.</p>
+        <p>5. Input the voucher generated in the voucher field below.</p>]]>
     </string>
 
 	<string name="mtn_validate_instructions">
@@ -60,12 +61,11 @@
 
     <string name="tigo_validate_instructions">
         <![CDATA[
-        <b>Please follow the instruction below to complete your Tigo transaction</b>
+        <b>Please follow the instruction below to complete your transaction</b>
         <br>
         <br>
-        <p>1. Dial <b>5015#</b> to approve your transaction.</p>
-        <p>2. Select the transaction to approve and click on send.</p>
-        <p>3. Select YES to confirm your payment.</p>
+        <p>1. Dial <b>*501*5#</b> to approve your transaction.</p>
+        <p>2. Approve the transaction with your PIN.</p>
         ]]>
     </string>
 
