@@ -34,7 +34,13 @@
 	<string name="bvn">BVN</string>
 	<string name="vodafone_msg">
         <![CDATA[
-        Please Dial <b>*110#</b> and follow the instructions to generate your transaction voucher.]]>
+        <b>Please follow the instruction below to get your voucher code</b>
+        <br>
+        <br>
+        <p>1. Dial <b>*110#</b> to generate your transaction voucher.</p>
+        <p>2. Select <b>OPTION 6</b> to generate the voucher.</p>
+        <p>3. Enter your PIN in next prompt.</p>
+        <p>4. Input the voucher generated in the voucher field below.</p>]]>
     </string>
 
 	<string name="mtn_validate_instructions">
@@ -57,8 +63,8 @@
         <b>Please follow the instruction below to complete your Tigo transaction</b>
         <br>
         <br>
-        <p>1. Dial <b>*501*5#</b> to approve your transaction.</p>
-        <p>2. Follow the menu to select the transaction and approve it.</p>
+        <p>1. Dial <b>5015#</b> to approve your transaction.</p>
+        <p>2. Select the transaction to approve and click on send.</p>
         <p>3. Select YES to confirm your payment.</p>
         ]]>
     </string>
