@@ -37,7 +37,7 @@ public class WebFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_web, container, false);
-        webView = (WebView) v.findViewById(R.id.rave_webview);
+        webView = v.findViewById(R.id.rave_webview);
         authurl = getArguments().getString(EXTRA_AUTH_URL);
         onDisplayInternetBankingPage(authurl);
         return v;
@@ -54,11 +54,18 @@ public class WebFragment extends Fragment {
         webView.loadUrl(authurl);
     }
 
+    private void hideWebview() {
+        webView.setVisibility(View.INVISIBLE);
+    }
+
     // Manages the behavior when URLs are loaded
     private class MyBrowser extends WebViewClient {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+                hideWebview();
+            }
             view.loadUrl(url);
             return true;
         }
@@ -66,6 +73,10 @@ public class WebFragment extends Fragment {
         @TargetApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+            if (request.getUrl().toString().contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+                hideWebview();
+            }
             view.loadUrl(request.getUrl().toString());
             return true;
         }
