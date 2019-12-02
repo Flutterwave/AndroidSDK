@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.42'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.44'
 	}
 
 **Step 3.** Add the required permission
@@ -158,7 +158,6 @@ First specify the theme in your `styles.xml` file. In this theme, you can edit t
         <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
         <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
         <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
-        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle2</item>
         <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
         <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
         <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
