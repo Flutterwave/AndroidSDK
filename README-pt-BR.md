@@ -150,7 +150,6 @@ Você pode aplicar uma nova aparência alterando a cor de certas partes da inter
         <item name="OTPHeaderStyle">@style/otpHeaderStyle</item>
         <item name="TabLayoutStyle">@style/tabLayoutStyle</item>
         <item name="PinHeaderStyle">@style/pinHeaderStyle</item>
-        <item name="SavedCardButtonStyle">@style/svdCardsBtnStyle</item>
     </style>
 ## Configurando Proguard
 Para configurar o Proguard, adicione as seguintes linhas ao seu arquivo de configuração. Eles manterão os arquivos relacionados a este sdk

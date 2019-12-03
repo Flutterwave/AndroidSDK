@@ -50,7 +50,6 @@ public class RavePayManager {
     private Activity activity;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
-    boolean allowSaveCard = true;
     boolean isPreAuth = false;
     boolean showStagingLabel = true;
     boolean displayFee = true;
@@ -61,11 +60,6 @@ public class RavePayManager {
 
     public ArrayList<Integer> getOrderedPaymentTypesList() {
         return orderedPaymentTypesList;
-    }
-
-    public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
-        this.allowSaveCard = allowSaveCard;
-        return this;
     }
 
     public RavePayManager onStagingEnv(boolean staging) {
