@@ -24,7 +24,7 @@ public class WebFragment extends Fragment {
     public static final String EXTRA_AUTH_URL = "authUrl";
     String authurl;
     WebView webView;
-    ProgressDialog progessDialog;
+    ProgressDialog progressDialog;
 
 
     public WebFragment() {
@@ -118,16 +118,16 @@ public class WebFragment extends Fragment {
                 return;
             }
 
-            if (progessDialog == null) {
-                progessDialog = new ProgressDialog(getActivity());
-                progessDialog.setCanceledOnTouchOutside(false);
-                progessDialog.setMessage("Please wait...");
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Please wait...");
             }
 
-            if (active && !progessDialog.isShowing()) {
-                progessDialog.show();
+            if (active && !progressDialog.isShowing()) {
+                progressDialog.show();
             } else {
-                progessDialog.dismiss();
+                progressDialog.dismiss();
             }
         }
         catch (NullPointerException e) {
