@@ -62,7 +62,8 @@ public class ChargeResponse {
         String response_message;
         String accountnumber;
         String bankname;
-
+        private String redirect_url;
+        private String requery_url;
 
 
         public void setFlw_reference(String flw_reference) {
@@ -295,6 +296,22 @@ public class ChargeResponse {
 
         public void setAccountnumber(String accountnumber) {
             this.accountnumber = accountnumber;
+        }
+
+        public String getRedirect_url() {
+            return redirect_url;
+        }
+
+        public void setRedirect_url(String redirect_url) {
+            this.redirect_url = redirect_url;
+        }
+
+        public String getRequery_url() {
+            return requery_url;
+        }
+
+        public void setRequery_url(String requery_url) {
+            this.requery_url = requery_url;
         }
     }
 }

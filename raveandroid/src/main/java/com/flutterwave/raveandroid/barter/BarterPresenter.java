@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.barter;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
@@ -22,6 +23,7 @@ import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -156,10 +158,25 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
                 if (response.getData() != null) {
                     Log.d("resp", responseAsJSONString);
 
-                    String authUrlCrude = response.getData().getAuthurl();
-                    String flwRef = response.getData().getFlwRef();
+                    try {
+                        Uri requeryUri = Uri.parse(response.getData().getRequery_url());
+                        Set<String> args = requeryUri.getQueryParameterNames();
+                        Uri redirectUri = Uri.parse(response.getData().getRedirect_url());
+                        Uri.Builder authUrlBuilder = new Uri.Builder()
+                                .scheme(redirectUri.getScheme())
+                                .authority(redirectUri.getAuthority());
+                        for (String arg : args) {
+                            authUrlBuilder.appendQueryParameter(arg, requeryUri.getQueryParameter(arg));
+                        }
+                        String authUrlCrude = authUrlBuilder.build().toString();
 
-                    mView.loadBarterCheckout(authUrlCrude, flwRef);
+                        String flwRef = response.getData().getFlwRef();
+
+                        mView.loadBarterCheckout(authUrlCrude, flwRef);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        mView.onPaymentError("An error occurred with your payment. Please try again or contact support.");
+                    }
                 } else {
                     mView.onPaymentError(noResponse);
                 }
@@ -246,7 +263,6 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
     public void onDetachView() {
         this.mView = new NullBarterView();
     }
-
 
 
 }
