@@ -33,4 +33,5 @@
     <string name="add_vendor">ADD VENDOR</string>
     <string name="clear">CLEAR</string>
 	<string name="accept_ussd_payments">Accept USSD Payments</string>
+    <string name="accept_barter_payments">Accept Barter Payments</string>
 </resources>
