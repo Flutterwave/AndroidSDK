@@ -19,6 +19,7 @@ import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BARTER;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
@@ -161,6 +162,12 @@ public class RavePayManager {
     public RavePayManager acceptUssdPayments(boolean withUssd) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_USSD) && withUssd)
             orderedPaymentTypesList.add(PAYMENT_TYPE_USSD);
+        return this;
+    }
+
+    public RavePayManager acceptBarterPayments(boolean withBarter) {
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BARTER) && withBarter)
+            orderedPaymentTypesList.add(PAYMENT_TYPE_BARTER);
         return this;
     }
 

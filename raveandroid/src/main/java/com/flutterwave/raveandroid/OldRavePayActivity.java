@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
+import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
@@ -42,6 +43,7 @@ import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BARTER;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
@@ -118,6 +120,9 @@ public class OldRavePayActivity extends AppCompatActivity {
 
         if (orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD)) {
             raveFragments.add(new RaveFragment(new CardFragment(), "Card"));
+        }
+        if (orderedPaymentTypesList.contains(PAYMENT_TYPE_BARTER)) {
+            raveFragments.add(new RaveFragment(new BarterFragment(), "Barter"));
         }
 
         if (orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) || orderedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT)) {

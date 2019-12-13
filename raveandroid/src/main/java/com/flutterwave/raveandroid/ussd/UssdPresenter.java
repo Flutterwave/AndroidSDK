@@ -129,7 +129,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.chargeCard(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 

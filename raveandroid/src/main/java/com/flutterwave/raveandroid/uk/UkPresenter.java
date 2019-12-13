@@ -99,7 +99,7 @@ public class UkPresenter implements UkContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.chargeUK(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeWithPolling(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
 

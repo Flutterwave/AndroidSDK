@@ -76,7 +76,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
-    public void chargeCard(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
+    public void charge(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
 
         Call<String> call = service.charge(body);
@@ -110,9 +110,9 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
-    public void chargeUK(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
+    public void chargeWithPolling(ChargeRequestBody body, final Callbacks.OnChargeRequestComplete callback) {
 
-        Call<String> call = service.chargeUK(body);
+        Call<String> call = service.chargeWithPolling(body);
 
         call.enqueue(new Callback<String>() {
             @Override

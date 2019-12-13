@@ -151,7 +151,7 @@ public class BankTransferPresenterTest {
 
         ChargeResponse chargeResponse = generateValidChargeResponse();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, any(String.class));
 
         verify(view).showProgressIndicator(false);
@@ -170,7 +170,7 @@ public class BankTransferPresenterTest {
 
         ChargeResponse chargeResponse = new ChargeResponse();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         verify(view).onPaymentError("No response data was returned");
@@ -188,7 +188,7 @@ public class BankTransferPresenterTest {
 
         String message = generateRandomString();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, generateRandomString());
 
         verify(view).showProgressIndicator(false);

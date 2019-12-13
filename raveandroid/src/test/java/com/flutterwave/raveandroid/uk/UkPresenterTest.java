@@ -180,7 +180,7 @@ public class UkPresenterTest {
         ukPresenter.chargeUk(payload, encryptionKey);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeUK(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).chargeWithPolling(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
 
@@ -202,7 +202,7 @@ public class UkPresenterTest {
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         String message = generateRandomString();
-        verify(networkRequest).chargeUK(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).chargeWithPolling(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onError(message, generateRandomString());
 
@@ -222,7 +222,7 @@ public class UkPresenterTest {
         ukPresenter.chargeUk(payload, encryptionKey);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeUK(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).chargeWithPolling(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
 
@@ -430,7 +430,7 @@ public class UkPresenterTest {
         //act
         ukPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        verify(networkRequest).chargeUK(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
+        verify(networkRequest).chargeWithPolling(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
     }
 
 
