@@ -32,7 +32,7 @@ public interface BarterContract {
 
         void onPaymentSuccessful(String responseAsString);
 
-        void onPaymentFailed(String message, String responseAsJSONString);
+        void onPaymentFailed(String responseAsJSONString);
 
         void onPollingRoundComplete(String flwRef, String publicKey);
 

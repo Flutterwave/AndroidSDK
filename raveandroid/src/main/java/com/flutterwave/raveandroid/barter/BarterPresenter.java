@@ -204,7 +204,7 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                    mView.onPaymentFailed(responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     mView.onPollingRoundComplete(flwRef, publicKey);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
@@ -212,13 +212,13 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
                     mView.onPaymentSuccessful(responseAsJSONString);
                 } else {
                     mView.showProgressIndicator(false);
-                    mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mView.onPaymentFailed(responseAsJSONString);
                 }
             }
 
             @Override
             public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(message, responseAsJSONString);
+                mView.onPaymentFailed(responseAsJSONString);
             }
         });
     }

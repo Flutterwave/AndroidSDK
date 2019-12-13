@@ -58,7 +58,7 @@ public class NullBarterView implements BarterContract.View {
     }
 
     @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
+    public void onPaymentFailed(String responseAsJSONString) {
 
     }
 

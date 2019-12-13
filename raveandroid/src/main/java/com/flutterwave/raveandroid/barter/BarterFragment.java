@@ -226,11 +226,15 @@ public class BarterFragment extends Fragment implements BarterContract.View {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-            //just to be sure this v sent the receiving intent
-            if (requestCode == FOR_BARTER_CHECKOUT) {
-                presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+        //just to be sure this v sent the receiving intent
+        if (requestCode == FOR_BARTER_CHECKOUT) {
+            if (data.hasExtra(response)) {
+                if (resultCode == RavePayActivity.RESULT_SUCCESS)
+                    onPaymentSuccessful(data.getStringExtra(response));
+                else if (resultCode == RavePayActivity.RESULT_ERROR)
+                    onPaymentFailed(data.getStringExtra(response));
             }
+            presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -277,7 +281,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
+    public void onPaymentFailed(String responseAsJSONString) {
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
