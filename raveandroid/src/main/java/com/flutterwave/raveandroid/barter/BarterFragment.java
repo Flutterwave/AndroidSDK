@@ -21,10 +21,10 @@ import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
+import com.flutterwave.raveandroid.verification.VerificationActivity;
+import com.flutterwave.raveandroid.verification.web.WebFragment;
 
 import java.util.HashMap;
 

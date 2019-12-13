@@ -19,10 +19,10 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.VerificationActivity;
-import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.verification.VerificationActivity;
+import com.flutterwave.raveandroid.verification.web.WebFragment;
 
 import javax.inject.Inject;
 

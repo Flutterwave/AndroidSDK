@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.verification;
 
 
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,18 +40,18 @@ public class AVSVBVFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
 
-        final TextInputEditText addressEt = (TextInputEditText) v.findViewById(R.id.rave_billAddressEt);
-        final TextInputEditText stateEt = (TextInputEditText) v.findViewById(R.id.rave_billStateEt);
-        final TextInputEditText cityEt = (TextInputEditText) v.findViewById(R.id.rave_billCityEt);
-        final TextInputEditText zipCodeEt = (TextInputEditText) v.findViewById(R.id.rave_zipEt);
-        final TextInputEditText countryEt = (TextInputEditText) v.findViewById(R.id.rave_countryEt);
-        final TextInputLayout addressTil = (TextInputLayout) v.findViewById(R.id.rave_billAddressTil);
-        final TextInputLayout stateTil = (TextInputLayout) v.findViewById(R.id.rave_billStateTil);
-        final TextInputLayout cityTil = (TextInputLayout) v.findViewById(R.id.rave_billCityTil);
-        final TextInputLayout zipCodeTil = (TextInputLayout) v.findViewById(R.id.rave_zipTil);
-        final TextInputLayout countryTil = (TextInputLayout) v.findViewById(R.id.rave_countryTil);
+        final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
+        final TextInputEditText stateEt = v.findViewById(R.id.rave_billStateEt);
+        final TextInputEditText cityEt = v.findViewById(R.id.rave_billCityEt);
+        final TextInputEditText zipCodeEt = v.findViewById(R.id.rave_zipEt);
+        final TextInputEditText countryEt = v.findViewById(R.id.rave_countryEt);
+        final TextInputLayout addressTil = v.findViewById(R.id.rave_billAddressTil);
+        final TextInputLayout stateTil = v.findViewById(R.id.rave_billStateTil);
+        final TextInputLayout cityTil = v.findViewById(R.id.rave_billCityTil);
+        final TextInputLayout zipCodeTil = v.findViewById(R.id.rave_zipTil);
+        final TextInputLayout countryTil = v.findViewById(R.id.rave_countryTil);
 
-        Button zipBtn = (Button) v.findViewById(R.id.rave_zipButton);
+        Button zipBtn = v.findViewById(R.id.rave_zipButton);
 
         zipBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -24,19 +24,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.verification.OTPFragment;
+import com.flutterwave.raveandroid.verification.VerificationActivity;
+import com.flutterwave.raveandroid.verification.web.WebFragment;
 
 import java.util.Calendar;
 import java.util.HashMap;

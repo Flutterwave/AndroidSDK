@@ -24,22 +24,22 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.AVSVBVFragment;
-import com.flutterwave.raveandroid.OTPFragment;
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PinFragment;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.VerificationActivity;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.verification.AVSVBVFragment;
+import com.flutterwave.raveandroid.verification.OTPFragment;
+import com.flutterwave.raveandroid.verification.PinFragment;
+import com.flutterwave.raveandroid.verification.VerificationActivity;
+import com.flutterwave.raveandroid.verification.web.WebFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
