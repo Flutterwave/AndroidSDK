@@ -98,6 +98,7 @@ public class RaveConstants {
     public static String wait = "Please wait...";
     public static String cancelPayment = "CANCEL PAYMENT";
     public static String bankNameGtb = "Guaranty Trust Bank";
+    public static final String BARTER_CHECKOUT = "barter";
 
 
     public static HashMap<String, String> ussdBanksList = new HashMap<String, String>() {{

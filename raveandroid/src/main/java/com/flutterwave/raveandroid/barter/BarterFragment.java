@@ -26,11 +26,15 @@ import com.flutterwave.raveandroid.di.modules.BarterModule;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
+import org.parceler.Parcels;
+
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.response;
 
@@ -176,7 +180,10 @@ public class BarterFragment extends Fragment implements BarterContract.View {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
+        intent.putExtra(WebFragment.EXTRA_PUBLIC_KEY, ravePayInitializer.getPublicKey());
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, BARTER_CHECKOUT);
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_BARTER_CHECKOUT);
 

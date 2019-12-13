@@ -16,6 +16,7 @@ import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
 import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
+import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import javax.inject.Singleton;
@@ -53,6 +54,8 @@ public interface AppComponent {
     UkComponent plus(UkModule ukModule);
 
     BarterComponent plus(BarterModule barterModule);
+
+    WebComponent plus(WebModule webModule);
 
     FrancComponent plus(FrancModule francModule);
 }

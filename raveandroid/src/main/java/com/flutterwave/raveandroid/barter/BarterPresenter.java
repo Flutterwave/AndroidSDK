@@ -170,7 +170,8 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
                         }
                         String authUrlCrude = authUrlBuilder.build().toString();
 
-                        String flwRef = response.getData().getFlwRef();
+                        String flwRef = response.getData().getFlw_reference();
+                        if (flwRef == null) flwRef = response.getData().getFlwRef();
 
                         mView.loadBarterCheckout(authUrlCrude, flwRef);
                     } catch (Exception e) {
@@ -194,7 +195,7 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
     public void requeryTx(final String flwRef, final String publicKey) {
 
         RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
+        body.setOrder_ref(flwRef); // Uses Order ref instead of flwref
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
