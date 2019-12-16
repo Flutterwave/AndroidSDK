@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.di.components.AppComponent;
@@ -49,6 +50,8 @@ public class RavePayManager {
     private String subAccounts = "";
     private String payment_plan;
     private Activity activity;
+    private Fragment supportFragment;
+    private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
     boolean isPreAuth = false;
@@ -75,6 +78,14 @@ public class RavePayManager {
 
     public RavePayManager(Activity activity) {
         this.activity = activity;
+    }
+
+    public RavePayManager(Fragment fragment) {
+        this.supportFragment = fragment;
+    }
+
+    public RavePayManager(android.app.Fragment fragment) {
+        this.fragment = fragment;
     }
 
     public RavePayManager acceptAchPayments(boolean withAch) {
@@ -256,6 +267,14 @@ public class RavePayManager {
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             activity.startActivityForResult(intent, RAVE_REQUEST_CODE);
+        } else if (supportFragment != null && supportFragment.getContext() != null) {
+            Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);
+            intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+            supportFragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
+        } else if (fragment != null && fragment.getActivity() != null) {
+            Intent intent = new Intent(fragment.getActivity(), RavePayActivity.class);
+            intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+            fragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
         } else {
             Log.d(RAVEPAY, "Context is required!");
         }
@@ -304,8 +323,6 @@ public class RavePayManager {
     }
 
     private AppComponent setUpGraph() {
-
-
         String baseUrl;
 
         if (staging) {
@@ -314,11 +331,23 @@ public class RavePayManager {
             baseUrl = LIVE_URL;
         }
 
-        return DaggerAppComponent.builder()
-                .androidModule(new AndroidModule(activity))
-                .networkModule(new NetworkModule(baseUrl))
-                .build();
-
-
+        if (activity != null) {
+            return DaggerAppComponent.builder()
+                    .androidModule(new AndroidModule(activity))
+                    .networkModule(new NetworkModule(baseUrl))
+                    .build();
+        } else if (supportFragment != null && supportFragment.getContext() != null) {
+            return DaggerAppComponent.builder()
+                    .androidModule(new AndroidModule(supportFragment.getContext()))
+                    .networkModule(new NetworkModule(baseUrl))
+                    .build();
+        } else if (fragment != null && fragment.getActivity() != null) {
+            return DaggerAppComponent.builder()
+                    .androidModule(new AndroidModule(fragment.getActivity()))
+                    .networkModule(new NetworkModule(baseUrl))
+                    .build();
+        } else {
+            throw new IllegalArgumentException("Context is required");
+        }
     }
 }
