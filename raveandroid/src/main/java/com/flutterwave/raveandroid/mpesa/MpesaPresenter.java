@@ -13,8 +13,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -43,6 +48,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     private Context context;
     private MpesaContract.View mView;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -108,6 +115,9 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("MPesa").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -145,6 +155,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -250,6 +262,8 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer!=null) {
+            logEvent(new ScreenLaunchEvent("MPesa Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -266,5 +280,10 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     @Override
     public void onDetachView() {
         this.mView = new NullMpesaView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }

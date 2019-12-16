@@ -14,8 +14,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -45,6 +50,9 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
     private Context context;
     private UgMobileMoneyContract.View mView;
+
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -107,6 +115,9 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("UG Mobile Money").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
@@ -142,6 +153,8 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -251,6 +264,8 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("UG Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -268,6 +283,11 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     @Override
     public void onDetachView() {
         this.mView = new NullUgMobileMoneyView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }
 

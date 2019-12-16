@@ -57,4 +57,10 @@ public class Callbacks {
         void onSuccess(FeeCheckResponse response);
         void onError(String message);
     }
+
+    public interface OnLogEventComplete {
+        void onSuccess(String response);
+
+        void onError(String message);
+    }
 }

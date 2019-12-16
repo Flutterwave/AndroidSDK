@@ -28,6 +28,8 @@ public interface DataRequest {
         void chargeToken(Payload payload, Callbacks.OnChargeRequestComplete callback);
         void getFee(FeeCheckRequestBody body, Callbacks.OnGetFeeRequestComplete callback);
 
+        void logEvent(EventBody body, Callbacks.OnLogEventComplete callback);
+
     }
 
     interface SharedPrefsRequest {

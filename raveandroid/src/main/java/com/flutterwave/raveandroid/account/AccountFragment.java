@@ -32,6 +32,10 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.OTPFragment;
@@ -56,7 +60,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener {
+public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     AccountPresenter presenter;
@@ -122,6 +126,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         bankEt.setOnClickListener(this);
         payButton.setOnClickListener(this);
         dateOfBirthEt.setOnClickListener(this);
+
+        accountNumberEt.setOnFocusChangeListener(this);
+        amountEt.setOnFocusChangeListener(this);
+        emailEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
+        rave_bvnTil.getEditText().setOnFocusChangeListener(this);
+
+
     }
 
     private void initializeViews() {
@@ -133,7 +145,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         amountTil = v.findViewById(R.id.rave_amountTil);
         payButton = v.findViewById(R.id.rave_payButton);
         rave_bvnTil = v.findViewById(R.id.rave_bvnTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         emailTil = v.findViewById(R.id.rave_emailTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
@@ -148,11 +160,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             Utils.hide_keyboard(requireActivity());
             clearErrors();
             collectData();
-        }
-        else if (i == R.id.rave_bankEditText){
+        } else if (i == R.id.rave_bankEditText) {
             presenter.getBanks();
-        }
-        else if (i == R.id.rave_dobEditText){
+        } else if (i == R.id.rave_dobEditText) {
             if (getActivity() != null) {
                 new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -234,6 +244,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void onValidateError(String message, String responseAsJSonString) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -262,12 +273,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), payload.getPBFPubKey());
                     dialog.dismiss();
                     presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
                 }
             }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), payload.getPBFPubKey());
                     dialog.dismiss();
                 }
             });
@@ -278,6 +291,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -292,7 +306,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         intent.putExtra("response", responseAsJSONString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -302,13 +316,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -347,6 +362,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                     bankEt.setError(null);
                     bankEt.setText(b.getBankname());
                     bankEt.setTag(b);
+                    presenter.logEvent(new ListItemSelectedEvent("Bank").getEvent(), ravePayInitializer.getPublicKey());
                     presenter.onBankSelected(b);
 
                 }
@@ -378,14 +394,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             } else {
                 progessDialog.dismiss();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onGetBanksRequestFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -393,24 +409,25 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
         this.flwRef = flwRef;
 
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"otp");
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         if (validateInstruction != null) {
             intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
         }
-        intent.putExtra("theme",ravePayInitializer.getTheme());
+        intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_0TP);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == RavePayActivity.RESULT_SUCCESS){
+        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
 
-            if(requestCode==FOR_0TP){
+            if (requestCode == FOR_0TP) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-            }else if(requestCode==FOR_INTERNET_BANKING){
+            } else if (requestCode == FOR_INTERNET_BANKING) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
         } else {
@@ -421,15 +438,17 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     @Override
     public void onDisplayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(),VerificationActivity.class);
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL,authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
-        intent.putExtra("theme",ravePayInitializer.getTheme());
-        startActivityForResult(intent,FOR_INTERNET_BANKING);
+        Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra("theme", ravePayInitializer.getTheme());
+        startActivityForResult(intent, FOR_INTERNET_BANKING);
     }
 
     @Override
     public void onChargeAccountFailed(String message, String responseAsJSONString) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -465,16 +484,14 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         dateOfBirthEt.setError(null);
 
         if (String.valueOf(dayOfMonth).length() != 2) {
-               formattedDay = "0" + dayOfMonth;
-        }
-        else {
+            formattedDay = "0" + dayOfMonth;
+        } else {
             formattedDay = dayOfMonth + "";
         }
 
         if (String.valueOf(month + 1).length() != 2) {
-               formattedMonth = "0" + (month + 1);
-        }
-        else {
+            formattedMonth = "0" + (month + 1);
+        } else {
             formattedMonth = (month + 1) + "";
         }
 
@@ -483,4 +500,27 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_accountNumberEt) {
+            fieldName = "Account Number";
+        } else if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_emailEt) {
+            fieldName = "Email";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        } else if (i == R.id.rave_bvnEt) {
+            fieldName = "BVN";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+//        presenter.logEvent(new StopTypingEvent(fieldName).getEvent(),ravePayInitializer.getPublicKey());
+    }
 }

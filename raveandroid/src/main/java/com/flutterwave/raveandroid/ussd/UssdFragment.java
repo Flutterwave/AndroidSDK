@@ -32,6 +32,12 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 
 import java.util.HashMap;
@@ -43,7 +49,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UssdFragment extends Fragment implements UssdContract.View, View.OnClickListener {
+public class UssdFragment extends Fragment implements UssdContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     UssdPresenter presenter;
@@ -104,6 +110,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
 
     @Override
     public void onUssdDetailsReceived(String ussdCode, String referenceCode) {
+        presenter.logEvent(new InstructionsDisplayedEvent("USSD").getEvent(), ravePayInitializer.getPublicKey());
         setValidationInstructions(ussdCode, referenceCode);
         showValidationLayout(true);
     }
@@ -197,6 +204,8 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         chooseAnotherBankView.setOnClickListener(this);
         copyReferenceCodeImageView.setOnClickListener(this);
         copyReferenceCodeTv.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -226,6 +235,9 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position < getResources().getStringArray(R.array.ussd_banks).length) {
+                    if (position != 0) {
+                        presenter.logEvent(new ListItemSelectedEvent("Bank").getEvent(), ravePayInitializer.getPublicKey());
+                    }
                     bank = getResources().getStringArray(R.array.ussd_banks)[position];
                 }
             }
@@ -295,6 +307,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.payWithUssd(payload, ravePayInitializer.getEncryptionKey());
 
@@ -304,6 +317,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -311,12 +325,14 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
+    public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(message);
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -336,6 +352,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                     presenter.cancelPolling();
                 }
@@ -354,7 +371,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
 
@@ -383,7 +400,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
                 Intent intent = new Intent();
                 intent.putExtra("response", responseAsJSONString);
                 if (getActivity() != null) {
-                    getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+                    ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
                     getActivity().finish();
                 }
             }
@@ -396,7 +413,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         intent.putExtra("response", responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -412,6 +429,21 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

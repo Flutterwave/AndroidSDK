@@ -13,9 +13,14 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
@@ -31,6 +36,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Inject
     SharedPrefsRequestImpl sharedMgr;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -54,6 +61,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("ACH Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
 
@@ -126,6 +135,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
+
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
 
             @Override
@@ -184,6 +195,8 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new RequeryEvent().getEvent(), publicKey);
+
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
@@ -224,5 +237,10 @@ public class AchPresenter implements AchContract.UserActionsListener {
     @Override
     public void onDetachView() {
         this.mView = new NullAchView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }

@@ -27,6 +27,12 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 
 import java.util.HashMap;
@@ -38,7 +44,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener {
+public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -99,6 +105,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
+        voucherEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -109,7 +119,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
     private void setUpNetworks() {
@@ -130,14 +140,17 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                     }
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions =  getResources().getString(R.string.tigo_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
                     else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.checkStatus);
                         showInstructionsAndVoucher(true);
                         instructionsTv.setText(Html.fromHtml(getResources().getString(R.string.vodafone_msg)));
@@ -207,6 +220,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private void showInstructionsAndVoucher(boolean show) {
 
         if (show) {
+            presenter.logEvent(new InstructionsDisplayedEvent("Gh Momo").getEvent(), ravePayInitializer.getPublicKey());
             voucherTil.setVisibility(View.VISIBLE);
             instructionsTv.setVisibility(View.VISIBLE);
         }
@@ -253,6 +267,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.chargeGhMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
@@ -262,6 +277,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -269,8 +285,9 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
+    public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(message);
     }
 
     @Override
@@ -284,7 +301,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -298,13 +315,14 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -324,11 +342,13 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                 }
             });
 
             pollingProgressDialog.show();
+            presenter.logEvent(new InstructionsDisplayedEvent("GH Momo").getEvent(), ravePayInitializer.getPublicKey());
         } else if (active && pollingProgressDialog.isShowing()) {
             //pass
         } else {
@@ -357,6 +377,25 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        } else if (i == R.id.rave_voucherEt) {
+            fieldName = "Voucher";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

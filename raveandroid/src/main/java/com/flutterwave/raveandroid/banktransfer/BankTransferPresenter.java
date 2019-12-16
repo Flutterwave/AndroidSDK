@@ -15,8 +15,13 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -40,6 +45,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private static final String FLW_REF = "flwref";
     private static final String PUBLIC_KEY = "pbfkey";
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -106,6 +113,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
         body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Bank Transfer").getEvent(), payload.getPBFPubKey());
 
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
@@ -196,6 +205,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
 
+        logEvent(new RequeryEvent().getEvent(), publicKey);
+
         networkRequest.requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
@@ -234,6 +245,8 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Bank Transfer Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -309,6 +322,11 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     @Override
     public void onDetachView() {
         this.mView = new NullBankTransferView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 
 

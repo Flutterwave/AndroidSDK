@@ -14,10 +14,21 @@ import android.widget.Button;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
+import com.flutterwave.raveandroid.data.events.SubmitEvent;
+
+import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AVSVBVFragment extends Fragment {
+public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListener {
     public static final String EXTRA_ADDRESS = "extraAddress";
     public static final String EXTRA_CITY = "extraCity";
     public static final String EXTRA_ZIPCODE = "extraZipCode";
@@ -29,6 +40,9 @@ public class AVSVBVFragment extends Fragment {
     String zipCode;
     String country;
 
+    @Inject
+    EventLogger logger;
+
     public AVSVBVFragment() {
         // Required empty public constructor
     }
@@ -39,6 +53,8 @@ public class AVSVBVFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
+        injectComponents();
+        logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
         final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
         final TextInputEditText stateEt = v.findViewById(R.id.rave_billStateEt);
@@ -50,6 +66,12 @@ public class AVSVBVFragment extends Fragment {
         final TextInputLayout cityTil = v.findViewById(R.id.rave_billCityTil);
         final TextInputLayout zipCodeTil = v.findViewById(R.id.rave_zipTil);
         final TextInputLayout countryTil = v.findViewById(R.id.rave_countryTil);
+
+        addressEt.setOnFocusChangeListener(this);
+        stateEt.setOnFocusChangeListener(this);
+        cityEt.setOnFocusChangeListener(this);
+        zipCodeEt.setOnFocusChangeListener(this);
+        countryEt.setOnFocusChangeListener(this);
 
         Button zipBtn = v.findViewById(R.id.rave_zipButton);
 
@@ -104,16 +126,57 @@ public class AVSVBVFragment extends Fragment {
         return v;
     }
 
-    public void goBack(){
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    private void logEvent(Event event) {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(event,
+                    publicKey);
+        }
+    }
+
+    public void goBack() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_ADDRESS,address);
-        intent.putExtra(EXTRA_CITY,city);
-        intent.putExtra(EXTRA_ZIPCODE,zipCode);
-        intent.putExtra(EXTRA_COUNTRY,country);
-        intent.putExtra(EXTRA_STATE,state);
+        intent.putExtra(EXTRA_ADDRESS, address);
+        intent.putExtra(EXTRA_CITY, city);
+        intent.putExtra(EXTRA_ZIPCODE, zipCode);
+        intent.putExtra(EXTRA_COUNTRY, country);
+        intent.putExtra(EXTRA_STATE, state);
+        logEvent(new SubmitEvent("Address Details").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_billAddressEt) {
+            fieldName = "Address";
+        } else if (i == R.id.rave_billStateEt) {
+            fieldName = "State";
+        } else if (i == R.id.rave_billCityEt) {
+            fieldName = "City";
+        } else if (i == R.id.rave_zipEt) {
+            fieldName = "Zip Code";
+        } else if (i == R.id.rave_countryEt) {
+            fieldName = "Country";
+        }
+
+        if (hasFocus) {
+            logEvent(new StartTypingEvent(fieldName).getEvent());
         }
     }
 

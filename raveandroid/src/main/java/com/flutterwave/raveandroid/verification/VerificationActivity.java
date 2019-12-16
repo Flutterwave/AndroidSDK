@@ -22,20 +22,30 @@ import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
+
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
+
 public class VerificationActivity extends AppCompatActivity {
     private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
+    public static final String PUBLIC_KEY_EXTRA = "publicKey";
     public static final String INTENT_SENDER = "sender";
     public static String BASE_URL;
     private Fragment fragment;
+    AppComponent appComponent;
 
     RavePayInitializer ravePayInitializer;
-    AppComponent appComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_futher_verification);
+        buildGraph();
         if(getIntent()!=null & getIntent().getIntExtra("theme",0)!=0){
             setTheme(getIntent().getIntExtra("theme",0));
         }
@@ -58,7 +68,6 @@ public class VerificationActivity extends AppCompatActivity {
                         fragment.setArguments(getIntent().getExtras());
                         break;
                     case BARTER_CHECKOUT:
-                        buildGraph();
                         fragment = new WebFragment();
                         fragment.setArguments(getIntent().getExtras());
                         break;
@@ -80,15 +89,14 @@ public class VerificationActivity extends AppCompatActivity {
         }
     }
 
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
         fragment.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    public AppComponent getAppComponent() {
-        return appComponent;
     }
 
     private void buildGraph() {

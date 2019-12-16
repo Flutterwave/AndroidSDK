@@ -32,6 +32,9 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -63,7 +66,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View {
+public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View, View.OnFocusChangeListener {
 
     @Inject
     CardPresenter presenter;
@@ -138,24 +141,30 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
         savedCardBtn.setOnClickListener(this);
         payButton.setOnClickListener(this);
+
+        cardExpiryTv.setOnFocusChangeListener(this);
+        cardNoTv.setOnFocusChangeListener(this);
+        amountEt.setOnFocusChangeListener(this);
+        emailEt.setOnFocusChangeListener(this);
+        cvvTv.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
-        progressContainer = v.findViewById(R.id.rave_progressContainer);
-        pcidss_tv = v.findViewById(R.id.rave_pcidss_compliant_tv);
-        saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
-        cardExpiryTil = v.findViewById(R.id.rave_cardExpiryTil);
-        savedCardBtn = v.findViewById(R.id.rave_savedCardButton);
-        cardExpiryTv = v.findViewById(R.id.rave_cardExpiryTv);
-        payButton = v.findViewById(R.id.rave_payButton);
-        cardNoTil = v.findViewById(R.id.rave_cardNoTil);
-        amountTil = v.findViewById(R.id.rave_amountTil);
-        emailTil = v.findViewById(R.id.rave_emailTil);
-        cardNoTv = v.findViewById(R.id.rave_cardNoTv);
-        amountEt = v.findViewById(R.id.rave_amountTV);
-        emailEt = v.findViewById(R.id.rave_emailTv);
-        cvvTil = v.findViewById(R.id.rave_cvvTil);
-        cvvTv = v.findViewById(R.id.rave_cvvTv);
+        progressContainer =  v.findViewById(R.id.rave_progressContainer);
+        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
+        saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
+        cardExpiryTil =  v.findViewById(R.id.rave_cardExpiryTil);
+        savedCardBtn =  v.findViewById(R.id.rave_savedCardButton);
+        cardExpiryTv =  v.findViewById(R.id.rave_cardExpiryTv);
+        payButton =  v.findViewById(R.id.rave_payButton);
+        cardNoTil =  v.findViewById(R.id.rave_cardNoTil);
+        amountTil =  v.findViewById(R.id.rave_amountTil);
+        emailTil =  v.findViewById(R.id.rave_emailTil);
+        cardNoTv =  v.findViewById(R.id.rave_cardNoTv);
+        amountEt = v.findViewById(R.id.rave_amountEt);
+        emailEt = v.findViewById(R.id.rave_emailEt);
+        cvvTil =  v.findViewById(R.id.rave_cvvTil);
+        cvvTv =  v.findViewById(R.id.rave_cvvTv);
 
     }
 
@@ -236,6 +245,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.payLoad = payload;
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
@@ -299,6 +309,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onPaymentError(String message) {
         dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -312,6 +323,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onPinAuthModelSuggested(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "pin");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_PIN);
@@ -374,6 +386,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.flwRef = flwRef;
         dismissDialog();
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, chargeResponseMessage);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         intent.putExtra("theme", ravePayInitializer.getTheme());
@@ -399,6 +412,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onValidateError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -414,6 +428,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
@@ -442,7 +457,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         intent.putExtra("response", responseAsJSONString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -461,7 +476,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
@@ -520,6 +535,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void onTokenRetrievalError(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -537,6 +553,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                     if (why == MANUAL_CARD_CHARGE) {
                         presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
@@ -549,6 +566,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
                 }
             });
 
@@ -563,6 +581,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -583,6 +602,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
         this.payLoad = payload;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
@@ -599,6 +619,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
@@ -674,6 +695,29 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             lastInput = cardExpiryTv.getText().toString();
         }
     }
+
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_cvvTv) {
+            fieldName = "CVV";
+        } else if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_emailEt) {
+            fieldName = "Email";
+        } else if (i == R.id.rave_cardNoTv) {
+            fieldName = "Card Number";
+        } else if (i == R.id.rave_cardExpiryTv) {
+            fieldName = "Card Expiry";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+    }
+
 }
-
-

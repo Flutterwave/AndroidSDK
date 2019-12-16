@@ -22,6 +22,10 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
 
 import java.util.HashMap;
@@ -37,7 +41,7 @@ import static com.flutterwave.raveandroid.RaveConstants.response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMoneyContract.View, View.OnClickListener {
+public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -92,12 +96,15 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
         rave_phoneEtInt = amountEt.getId();
@@ -189,6 +196,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
                     presenter.chargeFranc(payload, ravePayInitializer.getEncryptionKey());
 
                 }
@@ -196,6 +204,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
                 }
             });
 
@@ -205,6 +214,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     @Override
     public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -219,7 +229,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         intent.putExtra(response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -229,13 +239,14 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -254,6 +265,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                 }
             });
@@ -286,6 +298,23 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

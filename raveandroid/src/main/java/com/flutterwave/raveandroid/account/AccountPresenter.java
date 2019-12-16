@@ -16,9 +16,15 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Bank;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -57,6 +63,7 @@ import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validEmailPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
+
 /**
  * Created by hamzafetuga on 20/07/2017.
  */
@@ -90,6 +97,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     TransactionStatusChecker transactionStatusChecker;
     @Inject
     NetworkRequestImpl networkRequest;
+    @Inject
+    EventLogger eventLogger;
     @Inject
     PayloadToJsonConverter payloadToJsonConverter;
     @Inject
@@ -135,6 +144,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
+
         networkRequest.chargeAccount(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -177,6 +188,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setTransactionreference(flwRef);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
 
         networkRequest.validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override
@@ -246,6 +259,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setPBFPubKey(publicKey);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -437,6 +452,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Account Fragment").getEvent(), ravePayInitializer.getPublicKey());
 
             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
@@ -476,4 +492,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
     }
 
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
+    }
 }

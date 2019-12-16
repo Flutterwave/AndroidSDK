@@ -27,6 +27,11 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 
 import java.util.HashMap;
@@ -38,7 +43,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyContract.View, View.OnClickListener {
+public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -97,6 +102,9 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -105,7 +113,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
         phoneTil = v.findViewById(R.id.rave_phoneTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
 
@@ -127,6 +135,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
                     }
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
+                        presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
                     }
@@ -231,6 +240,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.chargeZmMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
@@ -240,6 +250,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -247,8 +258,9 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
+    public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(message);
     }
 
     @Override
@@ -262,7 +274,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -276,13 +288,14 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -302,6 +315,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                 }
             });
@@ -335,6 +349,23 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

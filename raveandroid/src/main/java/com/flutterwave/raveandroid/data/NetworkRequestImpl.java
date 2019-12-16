@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import okhttp3.OkHttpClient;
@@ -34,6 +35,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static com.flutterwave.raveandroid.RaveConstants.EVENT_LOGGING_URL;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
@@ -43,22 +45,24 @@ import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 @Singleton
 public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
-    private static String BASE_URL = "";
-    Retrofit retrofit;
+    Retrofit mainRetrofit;
+    Retrofit eventLoggingRetrofit;
     ApiService service;
+    EventLoggerService eventLoggerService;
     Gson gson;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
-    public NetworkRequestImpl(Retrofit retrofit, ApiService service, Gson gson) {
-        this.retrofit = retrofit;
+    public NetworkRequestImpl(@Named("mainRetrofit") Retrofit mainRetrofit,
+                              @Named("eventLoggingRetrofit") Retrofit eventLoggingRetrofit,
+                              ApiService service,
+                              EventLoggerService eventLoggerService,
+                              Gson gson) {
+        this.mainRetrofit = mainRetrofit;
+        this.eventLoggingRetrofit = eventLoggingRetrofit;
         this.service = service;
+        this.eventLoggerService = eventLoggerService;
         this.gson = gson;
-    }
-
-    public NetworkRequestImpl(boolean isLive) {
-        createService(isLive);
-        gson = new Gson();
     }
 
     private ErrorBody parseErrorJson(String errorStr) {
@@ -67,8 +71,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             Type type = new TypeToken<ErrorBody>() {
             }.getType();
             return gson.fromJson(errorStr, type);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ErrorBody("error", errorParsingError);
         }
@@ -86,7 +89,8 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(Call<String> call, Response<String> response) {
 
                 if (response.isSuccessful()) {
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
                 } else {
@@ -158,8 +162,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     }.getType();
                     MobileMoneyChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -189,11 +192,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -223,10 +226,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
-                    callback.onSuccess(chargeResponse, response.body());                }
-                else {
+                    callback.onSuccess(chargeResponse, response.body());
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -244,7 +248,6 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             }
         });
     }
-
 
 
     @Override
@@ -268,11 +271,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Type type = new TypeToken<RequeryResponsev2>() {}.getType();
+                    Type type = new TypeToken<RequeryResponsev2>() {
+                    }.getType();
                     RequeryResponsev2 requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -312,11 +315,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Type type = new TypeToken<RequeryResponse>() {}.getType();
+                    Type type = new TypeToken<RequeryResponse>() {
+                    }.getType();
                     RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -356,11 +359,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Type type = new TypeToken<RequeryResponse>() {}.getType();
+                    Type type = new TypeToken<RequeryResponse>() {
+                    }.getType();
                     RequeryResponse requeryResponse = gson.fromJson(jsonResponse, type);
                     callback.onSuccess(requeryResponse, jsonResponse);
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -378,6 +381,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             }
         });
     }
+
     @Override
     public void getBanks(final Callbacks.OnGetBanksRequestComplete callback) {
 
@@ -389,15 +393,13 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             public void onResponse(@NonNull Call<List<Bank>> call, @NonNull Response<List<Bank>> response) {
                 if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
-                }
-                else {
+                } else {
                     try {
-                        ErrorBody error = (ErrorBody) retrofit.
+                        ErrorBody error = (ErrorBody) mainRetrofit.
                                 responseBodyConverter(ErrorBody.class, new Annotation[0])
                                 .convert(response.errorBody());
                         callback.onError(error.getMessage());
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         callback.onError("An error occurred while retrieving banks");
                     }
@@ -421,11 +423,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -457,11 +459,11 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
                 if (response.isSuccessful()) {
 
-                    Type type = new TypeToken<ChargeResponse>() {}.getType();
+                    Type type = new TypeToken<ChargeResponse>() {
+                    }.getType();
                     ChargeResponse chargeResponse = gson.fromJson(response.body(), type);
                     callback.onSuccess(chargeResponse, response.body());
-                }
-                else {
+                } else {
                     try {
                         String errorBody = response.errorBody().string();
                         ErrorBody error = parseErrorJson(errorBody);
@@ -470,8 +472,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                                 error.getData() != null &&
                                 error.getData().getCode().contains("expired")) {
                             callback.onError("expired", errorBody);
-                        }
-                        else {
+                        } else {
                             callback.onError(error.getMessage(), errorBody);
                         }
                     } catch (IOException | NullPointerException e) {
@@ -504,7 +505,7 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
                 }
                 else {
                     try {
-                        ErrorBody error = (ErrorBody) retrofit.
+                        ErrorBody error = (ErrorBody) mainRetrofit.
                                 responseBodyConverter(ErrorBody.class, new Annotation[0])
                                 .convert(response.errorBody());
                         callback.onError(error.getMessage());
@@ -523,31 +524,36 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
         });
     }
 
-    private void createService(boolean isLive) {
+    @Override
+    public void logEvent(EventBody body, final Callbacks.OnLogEventComplete callback) {
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS).build();
+        Call<String> call = eventLoggerService.logEvent(body);
 
-        if (!isLive) {
-            BASE_URL = STAGING_URL;
-        } else {
-            BASE_URL = LIVE_URL;
-        }
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .client(okHttpClient)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
 
-        service = retrofit.create(ApiService.class);
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        ErrorBody error = (ErrorBody) eventLoggingRetrofit.
+                                responseBodyConverter(ErrorBody.class, new Annotation[0])
+                                .convert(response.errorBody());
+                        callback.onError(error.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callback.onError(errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
     }
 
 }

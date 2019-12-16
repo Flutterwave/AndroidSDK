@@ -24,6 +24,11 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 
@@ -39,7 +44,7 @@ import static com.flutterwave.raveandroid.RaveConstants.response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UkFragment extends Fragment implements UkContract.View, View.OnClickListener {
+public class UkFragment extends Fragment implements UkContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -92,12 +97,14 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         rave_phoneEtInt = amountEt.getId();
     }
 
@@ -184,6 +191,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
                     presenter.chargeUk(payload, ravePayInitializer.getEncryptionKey());
 
                 }
@@ -191,6 +199,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
                 }
             });
 
@@ -200,6 +209,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
     @Override
     public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -215,6 +225,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
             final Dialog dialog = new Dialog(getContext());
             dialog.setContentView(R.layout.ukinstruction_layout);
             dialog.setTitle("Flutterwave");
+            presenter.logEvent(new InstructionsDisplayedEvent("UK").getEvent(), ravePayInitializer.getPublicKey());
 
             ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", response.getData().getData().getAmount()));
             ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
@@ -238,7 +249,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         intent.putExtra(response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -248,13 +259,14 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
 
     @Override
     public void onPaymentError(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
@@ -273,6 +285,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                 }
             });
@@ -309,4 +322,18 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         }
     }
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+    }
 }

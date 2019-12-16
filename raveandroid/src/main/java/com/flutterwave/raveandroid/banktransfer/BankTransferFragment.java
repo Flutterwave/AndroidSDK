@@ -26,6 +26,11 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 
 import java.util.HashMap;
@@ -37,7 +42,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener {
+public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     BankTransferPresenter presenter;
@@ -106,6 +111,8 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         payButton.setOnClickListener(this);
         verifyPaymentButton.setOnClickListener(this);
 
+        amountEt.setOnFocusChangeListener(this);
+
     }
 
     @Override
@@ -128,7 +135,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     private void initializeViews() {
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         amountTil = v.findViewById(R.id.rave_amountTil);
         initiateChargeLayout = v.findViewById(R.id.rave_initiate_payment_layout);
         transferDetailsLayout = v.findViewById(R.id.rave_transfer_details_layout);
@@ -184,6 +191,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                     presenter.cancelPolling();
                 }
@@ -227,7 +235,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
                 Intent intent = new Intent();
                 intent.putExtra("response", responseAsJSONString);
                 if (getActivity() != null) {
-                    getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+                    ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
                     getActivity().finish();
                 }
             }
@@ -259,6 +267,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     @Override
     public void onPaymentError(String message) {
 //        dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -273,7 +282,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         intent.putExtra("response", responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -283,7 +292,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
 
@@ -291,6 +300,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void onTransferDetailsReceived(String amount, String accountNumber, String bankName, String beneficiaryName) {
+        presenter.logEvent(new InstructionsDisplayedEvent("Bank Transfer").getEvent(), ravePayInitializer.getPublicKey());
         showTransferDetails(amount, accountNumber, bankName, beneficiaryName);
     }
 
@@ -317,6 +327,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.payWithBankTransfer(payload, ravePayInitializer.getEncryptionKey());
 
@@ -326,6 +337,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -334,6 +346,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
     @Override
     public void showFetchFeeFailed(String s) {
+        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }
 
@@ -360,6 +373,21 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 }

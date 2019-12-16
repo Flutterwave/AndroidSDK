@@ -14,8 +14,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -55,6 +60,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    @Inject
+    EventLogger eventLogger;
     private Context context;
     private ZmMobileMoneyContract.View mView;
 
@@ -108,6 +115,9 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("Zambia Mobile Money").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
@@ -142,6 +152,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -254,6 +266,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Zambia Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -271,6 +285,11 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     @Override
     public void onDetachView() {
         this.mView = new NullZmMobileMoneyView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 
 }

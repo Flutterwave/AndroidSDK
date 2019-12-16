@@ -14,8 +14,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -43,6 +48,8 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActionsListener {
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -106,6 +113,9 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("Rwanda Mobile Money").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
@@ -140,6 +150,8 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -242,6 +254,8 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Rwanda Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -259,6 +273,11 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     @Override
     public void onDetachView() {
         this.mView = new NullRwfMobileMoneyView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }
 

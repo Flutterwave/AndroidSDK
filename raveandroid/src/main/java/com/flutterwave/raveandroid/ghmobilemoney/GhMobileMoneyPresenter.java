@@ -14,8 +14,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -47,6 +52,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     private Context context;
     private GhMobileMoneyContract.View mView;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -110,6 +117,9 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("GH Mobile Money").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
@@ -144,6 +154,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -275,6 +287,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("GH Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -294,6 +308,10 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         this.mView = new NullGhMobileMoneyView();
     }
 
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
+    }
 }
 
 

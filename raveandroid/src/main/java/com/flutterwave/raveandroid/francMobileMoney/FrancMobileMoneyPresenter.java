@@ -13,8 +13,13 @@ import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -40,6 +45,8 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserActionsListener {
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -103,6 +110,9 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("Francophone Mobile Money").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -138,6 +148,8 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
         body.setPBFPubKey(publicKey);
 
         mView.showPollingIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
 
@@ -242,6 +254,8 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Francophone Mobile Money Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
             if (isAmountValid) {
@@ -258,5 +272,10 @@ public class FrancMobileMoneyPresenter implements FrancMobileMoneyContract.UserA
     @Override
     public void onDetachView() {
         this.mView = new NullfrancMobileMoneyView();
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }

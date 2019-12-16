@@ -1,6 +1,8 @@
 package com.flutterwave.raveandroid.di.components;
 
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
@@ -8,6 +10,7 @@ import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
 import com.flutterwave.raveandroid.di.modules.CardModule;
+import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
@@ -18,18 +21,31 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
+import com.flutterwave.raveandroid.verification.AVSVBVFragment;
+import com.flutterwave.raveandroid.verification.OTPFragment;
+import com.flutterwave.raveandroid.verification.PinFragment;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AndroidModule.class, NetworkModule.class})
+@Component(modules = {AndroidModule.class, NetworkModule.class, EventLoggerModule.class})
 public interface AppComponent {
 
     NetworkRequestImpl networkImpl();
 
+    EventLogger eventLogger();
+
     void inject(RavePayActivity ravePayActivity);
+
+    void inject(AVSVBVFragment avsvbvFragment);
+
+    void inject(OTPFragment otpFragment);
+
+    void inject(PinFragment pinFragment);
+
+    void inject(WebFragment webFragment);
 
     MpesaComponent plus(MpesaModule mpesaModule);
 

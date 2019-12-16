@@ -1,12 +1,11 @@
 package com.flutterwave.raveandroid.card;
 
 
-import android.app.Activity;
-
 import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
+import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
@@ -103,6 +102,8 @@ public interface CardContract {
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
 
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
+
+        void logEvent(Event event, String publicKey);
 
 
 

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -35,6 +36,7 @@ public class NetworkModule {
 
     @Singleton
     @Provides
+    @Named("mainRetrofit")
     public Retrofit providesRetrofit() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

@@ -24,6 +24,10 @@ import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
 
 import java.util.HashMap;
@@ -36,7 +40,7 @@ import static android.view.View.GONE;
 /**
  * Created by Jeremiah on 10/12/2018.
  */
-public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener {
+public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     private View v;
     private Button payButton;
@@ -93,6 +97,9 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
+        phoneEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
@@ -100,7 +107,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         amountTil =  v.findViewById(R.id.rave_amountTil);
         payButton = v.findViewById(R.id.rave_payButton);
         phoneTil =  v.findViewById(R.id.rave_phoneTil);
-        amountEt =  v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt =  v.findViewById(R.id.rave_phoneEt);
     }
 
@@ -189,6 +196,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.chargeUgMobileMoney(payload, ravePayInitializer.getEncryptionKey());
 
@@ -197,6 +205,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -204,8 +213,9 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
-        showToast(s);
+    public void showFetchFeeFailed(String message) {
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(message);
     }
 
 
@@ -220,7 +230,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -232,7 +242,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
@@ -240,6 +250,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onPaymentError(String message) {
 //        dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -259,6 +270,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
                 }
             });
@@ -289,6 +301,23 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
         super.onDetach();
         if (presenter != null) {
             presenter.onDetachView();
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_phoneEt) {
+            fieldName = "Phone Number";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
     }
 

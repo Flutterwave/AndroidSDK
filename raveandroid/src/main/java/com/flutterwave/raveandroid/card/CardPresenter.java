@@ -14,9 +14,15 @@ import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.ValidateChargeBody;
+import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -59,6 +65,7 @@ import static com.flutterwave.raveandroid.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validCvvPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validExpiryDatePrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -67,6 +74,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     private CardContract.View mView;
 
+    @Inject
+    EventLogger eventLogger;
     @Inject
     NetworkRequestImpl networkRequest;
     @Inject
@@ -105,6 +114,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
+
 
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
@@ -187,6 +199,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
+
+
+        logEvent(new ChargeAttemptEvent("AVS Card").getEvent(), payload.getPBFPubKey());
+
 
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
 
@@ -368,6 +384,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -428,6 +447,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+        logEvent(new ValidationAttemptEvent("Card").getEvent(), PBFPubKey);
+
         networkRequest.validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -466,6 +487,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setPBFPubKey(publicKey);
 
         mView.showProgressIndicator(true);
+
+        logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
@@ -546,6 +569,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
+
+        logEvent(new ChargeAttemptEvent("Card Token").getEvent(), payload.getPBFPubKey());
+
+
         networkRequest.chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
             @Override
             public void onSuccess(ChargeResponse response, String responseAsJSONString) {
@@ -586,6 +613,8 @@ public class CardPresenter implements CardContract.UserActionsListener {
     public void init(RavePayInitializer ravePayInitializer) {
 
         if (ravePayInitializer != null) {
+            logEvent(new ScreenLaunchEvent("Card Fragment").getEvent(),
+                    ravePayInitializer.getPublicKey());
 
             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
@@ -601,5 +630,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 mView.onAmountValidated("", View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    public void logEvent(Event event, String publicKey) {
+        eventLogger.logEvent(event, publicKey);
     }
 }

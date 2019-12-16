@@ -19,10 +19,14 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
+import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
-import com.flutterwave.raveandroid.verification.web.WebFragment;
 
 import javax.inject.Inject;
 
@@ -30,7 +34,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener {
+public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener
+        , View.OnFocusChangeListener {
 
     @Inject
     AchPresenter presenter;
@@ -81,13 +86,15 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     private void setListeners() {
         payButton.setOnClickListener(this);
+
+        amountEt.setOnFocusChangeListener(this);
     }
 
     private void initializeViews() {
         payInstructionsTv = v.findViewById(R.id.paymentInstructionsTv);
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
     }
 
     @Override
@@ -109,6 +116,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
                 presenter.onFeeConfirmed(authUrl, flwRef);
 
@@ -117,6 +125,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.logEvent(new FeeDisplayResponseEvent(false).getEvent(), ravePayInitializer.getPublicKey());
             }
         });
 
@@ -139,6 +148,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showRedirectMessage(boolean active) {
 
         if (active) {
+            presenter.logEvent(new InstructionsDisplayedEvent("ACH").getEvent(), ravePayInitializer.getPublicKey());
             payInstructionsTv.setVisibility(View.VISIBLE);
         }
         else {
@@ -150,6 +160,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showWebView(String authUrl, String flwRef) {
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
         intent.putExtra("theme",ravePayInitializer.getTheme());
@@ -167,6 +178,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     @Override
     public void onPaymentError(String message) {
         dismissDialog();
+        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -216,7 +228,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
         }
     }
@@ -228,7 +240,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
+            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
@@ -261,4 +273,18 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         }
     }
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+    }
 }

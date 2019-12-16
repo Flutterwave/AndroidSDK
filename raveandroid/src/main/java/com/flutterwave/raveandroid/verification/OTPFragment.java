@@ -15,6 +15,16 @@ import android.widget.TextView;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 
+import com.flutterwave.raveandroid.data.EventLogger;
+import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.data.events.StartTypingEvent;
+import com.flutterwave.raveandroid.data.events.SubmitEvent;
+
+import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -25,6 +35,9 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     TextInputLayout otpTil;
     TextView chargeMessage;
     Button otpButton;
+
+    @Inject
+    EventLogger logger;
 
     public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
     View v;
@@ -39,6 +52,8 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.fragment_ot, container, false);
+        injectComponents();
+        logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
         initializeViews();
 
@@ -51,6 +66,15 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     private void setListeners() {
         otpButton.setOnClickListener(this);
+
+        otpEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    logEvent(new StartTypingEvent("OTP").getEvent());
+                }
+            }
+        });
     }
 
     private void initializeViews() {
@@ -58,6 +82,23 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         otpEt = v.findViewById(R.id.otpEv);
         otpButton = v.findViewById(R.id.otpButton);
         chargeMessage = v.findViewById(R.id.otpChargeMessage);
+    }
+
+    private void injectComponents() {
+        if (getActivity() != null) {
+            ((VerificationActivity) getActivity()).getAppComponent()
+                    .inject(this);
+        }
+    }
+
+    private void logEvent(Event event) {
+        if (getArguments() != null
+                & getArguments().getString(PUBLIC_KEY_EXTRA) != null
+                & logger != null) {
+            String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
+            logger.logEvent(event,
+                    publicKey);
+        }
     }
 
     @Override
@@ -87,9 +128,10 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void goBack(){
+    public void goBack() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
+        logEvent(new SubmitEvent("OTP").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();
