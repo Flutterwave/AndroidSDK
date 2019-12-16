@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.verification;
 
 
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,9 +31,9 @@ public class PinFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pin, container, false);
-        Button pinBtn = (Button) v.findViewById(R.id.rave_pinButton);
-        final TextInputEditText pinEv = (TextInputEditText) v.findViewById(R.id.rave_pinEv);
-        final TextInputLayout pinTil = (TextInputLayout) v.findViewById(R.id.rave_pinTil);
+        Button pinBtn = v.findViewById(R.id.rave_pinButton);
+        final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
+        final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -150,7 +150,7 @@ public class UssdPresenterTest {
 
         ChargeResponse chargeResponse = generateValidChargeResponse();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, any(String.class));
 
         verify(view).showProgressIndicator(false);
@@ -169,7 +169,7 @@ public class UssdPresenterTest {
 
         ChargeResponse chargeResponse = new ChargeResponse();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         verify(view).onPaymentError("No response data was returned");
@@ -188,7 +188,7 @@ public class UssdPresenterTest {
 
         String message = generateRandomString();
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, generateRandomString());
 
         verify(view).showProgressIndicator(false);
@@ -457,7 +457,7 @@ public class UssdPresenterTest {
         //act
         ussdPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
+        verify(networkRequest).charge(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
     }
 
 

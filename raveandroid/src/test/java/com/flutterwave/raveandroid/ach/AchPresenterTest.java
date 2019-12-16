@@ -221,7 +221,7 @@ public class AchPresenterTest {
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
 
         verify(sharedPrefsRequest).saveFlwRef(any(String.class));
@@ -246,7 +246,7 @@ public class AchPresenterTest {
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
 
         verify(sharedPrefsRequest).saveFlwRef(any(String.class));
@@ -272,7 +272,7 @@ public class AchPresenterTest {
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), any(String.class));
         verify(view).showProgressIndicator(false);
@@ -296,7 +296,7 @@ public class AchPresenterTest {
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
         verify(view).showProgressIndicator(false);
@@ -320,7 +320,7 @@ public class AchPresenterTest {
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onError(message, generateRandomString());
 

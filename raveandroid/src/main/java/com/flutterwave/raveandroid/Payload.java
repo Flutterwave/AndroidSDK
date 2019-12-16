@@ -18,6 +18,7 @@ public class Payload
 
     private boolean is_ussd;
     private String orderRef;
+    private String is_barter;
 
     public String getCardBIN() {
         return cardBIN;
@@ -693,6 +694,14 @@ public class Payload
 
     public void setAccountname(String accountname) {
         this.accountname = accountname;
+    }
+
+    public String getIs_barter() {
+        return is_barter;
+    }
+
+    public void setIs_barter(String is_barter) {
+        this.is_barter = is_barter;
     }
 }
 

@@ -265,7 +265,7 @@ public class CardPresenterTest {
         cardPresenter.processTransaction(data, ravePayInitializer);
         //assert
         verify(networkRequest)
-                .chargeCard(any(ChargeRequestBody.class),
+                .charge(any(ChargeRequestBody.class),
                         any(Callbacks.OnChargeRequestComplete.class));
     }
 
@@ -322,7 +322,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCard(payload, generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -342,7 +342,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCard(payload, generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -361,7 +361,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCard(payload, generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         verify(view).showProgressIndicator(false);
@@ -380,7 +380,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCard(payload, generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -403,7 +403,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -428,7 +428,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -453,7 +453,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -478,7 +478,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -502,7 +502,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -524,7 +524,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -549,7 +549,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -572,7 +572,7 @@ public class CardPresenterTest {
         verify(view).showProgressIndicator(true);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -587,7 +587,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCard(generatePayload(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
         verify(view).onPaymentError(anyString());
 
@@ -599,7 +599,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
         verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
 
@@ -618,7 +618,7 @@ public class CardPresenterTest {
         payload.setPin(ziporPin);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
         verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
 
@@ -636,7 +636,7 @@ public class CardPresenterTest {
         payload.setPin(ziporPin);
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
         verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
 
@@ -858,7 +858,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, generateRandomString());
         verify(view).onPaymentError(message);
 
@@ -869,7 +869,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(PIN), generateRandomString());
         verify(view).showOTPLayout(anyString(), anyString());
 
@@ -880,7 +880,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(AVS_VBVSECURECODE), generateRandomString());
         verify(view).onAVSVBVSecureCodeModelUsed(anyString(), anyString());
 
@@ -892,7 +892,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
         verify(view).onPaymentError(unknownResCodemsg);
 
@@ -903,7 +903,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth("unknown Auth"), generateRandomString());
         verify(view).onPaymentError(unknownAuthmsg);
 
@@ -914,7 +914,7 @@ public class CardPresenterTest {
 
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
         verify(view).onPaymentError(invalidChargeCode);
 
@@ -926,7 +926,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse(), generateRandomString());
         verify(view).onChargeCardSuccessful(any(ChargeResponse.class));
 
@@ -942,7 +942,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, generateRandomString());
 
         //assert
@@ -967,7 +967,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -993,7 +993,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithAVSModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
@@ -1011,7 +1011,7 @@ public class CardPresenterTest {
         //act
         cardPresenter.chargeCardWithAVSModel(payload, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
 
         //assert
@@ -1028,7 +1028,7 @@ public class CardPresenterTest {
         //act
         cardPresenter.chargeCardWithAVSModel(payload, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth("unknown Auth"), generateRandomString());
 
         //assert
@@ -1045,7 +1045,7 @@ public class CardPresenterTest {
         //act
         cardPresenter.chargeCardWithAVSModel(payload, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
 
         //assert

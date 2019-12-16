@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.verification;
 
 
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RavePayActivity;
 
 /**
  * A simple {@link Fragment} subclass.

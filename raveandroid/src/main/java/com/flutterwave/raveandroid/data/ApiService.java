@@ -24,7 +24,7 @@ public interface ApiService {
 
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
-    Call<String> chargeUK(@Body ChargeRequestBody body);
+    Call<String> chargeWithPolling(@Body ChargeRequestBody body);
 
     @POST("/flwv3-pug/getpaidx/api/validatecharge")
     Call<String> validateCardCharge(@Body ValidateChargeBody body);

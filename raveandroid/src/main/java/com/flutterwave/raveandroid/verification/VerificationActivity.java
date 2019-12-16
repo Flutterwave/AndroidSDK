@@ -1,16 +1,36 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.verification;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.NetworkModule;
+import com.flutterwave.raveandroid.verification.web.WebFragment;
+
+import org.parceler.Parcels;
+
+import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
+import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
     private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
     public static final String INTENT_SENDER = "sender";
+    public static String BASE_URL;
     private Fragment fragment;
+
+    RavePayInitializer ravePayInitializer;
+    AppComponent appComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +57,11 @@ public class VerificationActivity extends AppCompatActivity {
                         fragment = new WebFragment();
                         fragment.setArguments(getIntent().getExtras());
                         break;
+                    case BARTER_CHECKOUT:
+                        buildGraph();
+                        fragment = new WebFragment();
+                        fragment.setArguments(getIntent().getExtras());
+                        break;
                     case "avsvbv":
                         fragment = new AVSVBVFragment();
                         fragment.setArguments(getIntent().getExtras());
@@ -59,5 +84,32 @@ public class VerificationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
+    private void buildGraph() {
+
+        try {
+            ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
+
+            if (ravePayInitializer.isStaging()) {
+                BASE_URL = STAGING_URL;
+            } else {
+                BASE_URL = LIVE_URL;
+            }
+
+            appComponent = DaggerAppComponent.builder()
+                    .androidModule(new AndroidModule(this))
+                    .networkModule(new NetworkModule(BASE_URL))
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(RAVEPAY, "Error building graph");
+        }
+
     }
 }

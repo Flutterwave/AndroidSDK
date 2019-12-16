@@ -94,6 +94,14 @@
                 android:checked="false"
                 android:text="@string/accept_ussd_payments" />
 
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/barter_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/accept_barter_payments" />
+
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/addSubAccountsSwitch"

@@ -146,7 +146,7 @@ public class FrancMobileMoneyPresenterTest {
         francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
@@ -165,7 +165,7 @@ public class FrancMobileMoneyPresenterTest {
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         String message = generateRandomString();
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onError(message, generateRandomString());
 
@@ -183,7 +183,7 @@ public class FrancMobileMoneyPresenterTest {
         francMobileMoneyPresenter.chargeFranc(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-        verify(networkRequest).chargeCard(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
+        verify(networkRequest).charge(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
 
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
 
