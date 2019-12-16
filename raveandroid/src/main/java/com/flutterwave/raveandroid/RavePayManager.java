@@ -322,8 +322,6 @@ public class RavePayManager {
     }
 
     private AppComponent setUpGraph() {
-
-
         String baseUrl;
 
         if (staging) {
@@ -348,12 +346,7 @@ public class RavePayManager {
                     .networkModule(new NetworkModule(baseUrl))
                     .build();
         } else {
-            return DaggerAppComponent.builder()
-                    .androidModule(new AndroidModule(new Activity()))
-                    .networkModule(new NetworkModule(baseUrl))
-                    .build();
+            throw new IllegalArgumentException("Context is required");
         }
-
-
     }
 }
