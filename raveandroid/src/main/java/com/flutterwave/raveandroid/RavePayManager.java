@@ -266,11 +266,11 @@ public class RavePayManager {
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             activity.startActivityForResult(intent, RAVE_REQUEST_CODE);
-        } else if (supportFragment != null) {
+        } else if (supportFragment != null && supportFragment.getContext() != null) {
             Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             supportFragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
-        } else if (fragment != null) {
+        } else if (fragment != null && fragment.getActivity() != null) {
             Intent intent = new Intent(fragment.getActivity(), RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
             fragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
@@ -337,14 +337,19 @@ public class RavePayManager {
                     .androidModule(new AndroidModule(activity))
                     .networkModule(new NetworkModule(baseUrl))
                     .build();
-        } else if (supportFragment != null) {
+        } else if (supportFragment != null && supportFragment.getContext() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(supportFragment.getContext()))
                     .networkModule(new NetworkModule(baseUrl))
                     .build();
-        } else {
+        } else if (fragment != null && fragment.getActivity() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(fragment.getActivity()))
+                    .networkModule(new NetworkModule(baseUrl))
+                    .build();
+        } else {
+            return DaggerAppComponent.builder()
+                    .androidModule(new AndroidModule(new Activity()))
                     .networkModule(new NetworkModule(baseUrl))
                     .build();
         }
