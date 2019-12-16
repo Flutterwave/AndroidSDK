@@ -29,9 +29,9 @@ public class RavePayInitializer {
     boolean isPreAuth = false;
     boolean displayFee = true;
     boolean showStagingLabel;
-    private boolean isPermanent;
-    private int frequency;
-    private int duration;
+    boolean isPermanent;
+    int frequency;
+    int duration;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
