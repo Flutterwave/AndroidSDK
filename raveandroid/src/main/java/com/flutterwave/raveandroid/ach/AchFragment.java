@@ -28,11 +28,9 @@ import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
-import org.parceler.Parcels;
-
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 /**
@@ -163,7 +161,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showWebView(String authUrl, String flwRef) {
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
+        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");

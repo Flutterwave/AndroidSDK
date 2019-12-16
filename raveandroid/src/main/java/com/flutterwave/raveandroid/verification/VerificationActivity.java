@@ -15,17 +15,15 @@ import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
-import org.parceler.Parcels;
-
 import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
     private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
     public static final String PUBLIC_KEY_EXTRA = "publicKey";
+    public static final String EXTRA_IS_STAGING = "isStaging";
     public static final String INTENT_SENDER = "sender";
     public static String BASE_URL;
     private Fragment fragment;
@@ -89,9 +87,9 @@ public class VerificationActivity extends AppCompatActivity {
     }
 
     private void buildGraph() {
-        ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
+        boolean isStaging = getIntent().getBooleanExtra(EXTRA_IS_STAGING, false);
 
-        if (ravePayInitializer.isStaging()) {
+        if (isStaging) {
             BASE_URL = STAGING_URL;
         } else {
             BASE_URL = LIVE_URL;

@@ -26,17 +26,15 @@ import com.flutterwave.raveandroid.di.modules.BarterModule;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
-import org.parceler.Parcels;
-
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
-import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.response;
+import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 public class BarterFragment extends Fragment implements BarterContract.View {
@@ -182,7 +180,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
         intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
         intent.putExtra(WebFragment.EXTRA_PUBLIC_KEY, ravePayInitializer.getPublicKey());
-        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
+        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, BARTER_CHECKOUT);
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_BARTER_CHECKOUT);
@@ -228,13 +226,12 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //just to be sure this v sent the receiving intent
         if (requestCode == FOR_BARTER_CHECKOUT) {
-            if (data.hasExtra(response)) {
+            if (data != null && data.hasExtra(response)) {
                 if (resultCode == RavePayActivity.RESULT_SUCCESS)
                     onPaymentSuccessful(data.getStringExtra(response));
                 else if (resultCode == RavePayActivity.RESULT_ERROR)
                     onPaymentFailed(data.getStringExtra(response));
-            }
-            presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+            } else presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
