@@ -72,7 +72,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
                              Bundle savedInstanceState) {
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_uk, container, false);
+        v = inflater.inflate(R.layout.fragment_barter, container, false);
 
         initializeViews();
 
@@ -94,7 +94,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     private void initializeViews() {
         payButton = v.findViewById(R.id.rave_payButton);
         amountTil = v.findViewById(R.id.rave_amountTil);
-        amountEt = v.findViewById(R.id.rave_amountTV);
+        amountEt = v.findViewById(R.id.rave_amountEt);
     }
 
     private void setListeners() {
