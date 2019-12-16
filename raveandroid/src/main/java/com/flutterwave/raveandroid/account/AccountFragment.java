@@ -42,12 +42,15 @@ import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
+import org.parceler.Parcels;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldBVN;
@@ -410,6 +413,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
         this.flwRef = flwRef;
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         if (validateInstruction != null) {
@@ -439,6 +443,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     public void onDisplayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");

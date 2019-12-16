@@ -28,7 +28,11 @@ import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
+import org.parceler.Parcels;
+
 import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 
 
 /**
@@ -150,8 +154,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
         if (active) {
             presenter.logEvent(new InstructionsDisplayedEvent("ACH").getEvent(), ravePayInitializer.getPublicKey());
             payInstructionsTv.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             payInstructionsTv.setVisibility(View.GONE);
         }
     }
@@ -160,10 +163,11 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     public void showWebView(String authUrl, String flwRef) {
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE,"web");
-        intent.putExtra("theme",ravePayInitializer.getTheme());
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_ACH);
     }
 
@@ -184,12 +188,12 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode==RavePayActivity.RESULT_SUCCESS){
+        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
             //just to be sure this fragment sent the receiving intent
-            if(requestCode == FOR_ACH){
+            if (requestCode == FOR_ACH) {
                 presenter.requeryTx(ravePayInitializer.getPublicKey());
             }
-        }else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -215,8 +219,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
             } else {
                 progressDialog.dismiss();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }

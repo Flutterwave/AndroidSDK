@@ -11,6 +11,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
@@ -18,16 +19,7 @@ import org.parceler.Parcels;
 
 import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
 import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
-import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
-
-import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
-import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
-import com.flutterwave.raveandroid.di.modules.NetworkModule;
-
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
@@ -46,15 +38,15 @@ public class VerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_futher_verification);
         buildGraph();
-        if(getIntent()!=null & getIntent().getIntExtra("theme",0)!=0){
-            setTheme(getIntent().getIntExtra("theme",0));
+        if (getIntent() != null & getIntent().getIntExtra("theme", 0) != 0) {
+            setTheme(getIntent().getIntExtra("theme", 0));
         }
         if (findViewById(R.id.frame_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-            if(getIntent()!=null & getIntent().getStringExtra(ACTIVITY_MOTIVE)!=null){
-                switch (getIntent().getStringExtra(ACTIVITY_MOTIVE).toLowerCase()){
+            if (getIntent() != null & getIntent().getStringExtra(ACTIVITY_MOTIVE) != null) {
+                switch (getIntent().getStringExtra(ACTIVITY_MOTIVE).toLowerCase()) {
                     case "otp":
                         fragment = new OTPFragment();
                         fragment.setArguments(getIntent().getExtras());
@@ -64,9 +56,6 @@ public class VerificationActivity extends AppCompatActivity {
                         fragment.setArguments(getIntent().getExtras());
                         break;
                     case "web":
-                        fragment = new WebFragment();
-                        fragment.setArguments(getIntent().getExtras());
-                        break;
                     case BARTER_CHECKOUT:
                         fragment = new WebFragment();
                         fragment.setArguments(getIntent().getExtras());
@@ -76,14 +65,14 @@ public class VerificationActivity extends AppCompatActivity {
                         fragment.setArguments(getIntent().getExtras());
                         break;
                     default:
-                        Log.e(TAG,"No extra value matching motives");
+                        Log.e(TAG, "No extra value matching motives");
                 }
             }
 
-            if(fragment!=null){
+            if (fragment != null) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.frame_container, fragment).commit();
-            }else{
+            } else {
                 finish();
             }
         }
@@ -100,24 +89,19 @@ public class VerificationActivity extends AppCompatActivity {
     }
 
     private void buildGraph() {
+        ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
 
-        try {
-            ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
-
-            if (ravePayInitializer.isStaging()) {
-                BASE_URL = STAGING_URL;
-            } else {
-                BASE_URL = LIVE_URL;
-            }
-
-            appComponent = DaggerAppComponent.builder()
-                    .androidModule(new AndroidModule(this))
-                    .networkModule(new NetworkModule(BASE_URL))
-                    .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(RAVEPAY, "Error building graph");
+        if (ravePayInitializer.isStaging()) {
+            BASE_URL = STAGING_URL;
+        } else {
+            BASE_URL = LIVE_URL;
         }
 
+
+        appComponent = DaggerAppComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .networkModule(new NetworkModule(BASE_URL))
+                .eventLoggerModule(new EventLoggerModule())
+                .build();
     }
 }

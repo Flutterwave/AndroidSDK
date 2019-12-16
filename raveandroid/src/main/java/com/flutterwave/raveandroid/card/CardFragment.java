@@ -44,6 +44,8 @@ import com.flutterwave.raveandroid.verification.PinFragment;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
+import org.parceler.Parcels;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,6 +57,7 @@ import javax.inject.Inject;
 import static com.flutterwave.raveandroid.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.RaveConstants.NOAUTH_INTERNATIONAL;
 import static com.flutterwave.raveandroid.RaveConstants.PIN;
+import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.RaveConstants.TOKEN_CHARGE;
 import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
@@ -150,21 +153,21 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     private void initializeViews() {
-        progressContainer =  v.findViewById(R.id.rave_progressContainer);
-        pcidss_tv =  v.findViewById(R.id.rave_pcidss_compliant_tv);
-        saveCardSwitch =  v.findViewById(R.id.rave_saveCardSwitch);
-        cardExpiryTil =  v.findViewById(R.id.rave_cardExpiryTil);
-        savedCardBtn =  v.findViewById(R.id.rave_savedCardButton);
-        cardExpiryTv =  v.findViewById(R.id.rave_cardExpiryTv);
-        payButton =  v.findViewById(R.id.rave_payButton);
-        cardNoTil =  v.findViewById(R.id.rave_cardNoTil);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
-        emailTil =  v.findViewById(R.id.rave_emailTil);
-        cardNoTv =  v.findViewById(R.id.rave_cardNoTv);
+        progressContainer = v.findViewById(R.id.rave_progressContainer);
+        pcidss_tv = v.findViewById(R.id.rave_pcidss_compliant_tv);
+        saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
+        cardExpiryTil = v.findViewById(R.id.rave_cardExpiryTil);
+        savedCardBtn = v.findViewById(R.id.rave_savedCardButton);
+        cardExpiryTv = v.findViewById(R.id.rave_cardExpiryTv);
+        payButton = v.findViewById(R.id.rave_payButton);
+        cardNoTil = v.findViewById(R.id.rave_cardNoTil);
+        amountTil = v.findViewById(R.id.rave_amountTil);
+        emailTil = v.findViewById(R.id.rave_emailTil);
+        cardNoTv = v.findViewById(R.id.rave_cardNoTv);
         amountEt = v.findViewById(R.id.rave_amountEt);
         emailEt = v.findViewById(R.id.rave_emailEt);
-        cvvTil =  v.findViewById(R.id.rave_cvvTil);
-        cvvTv =  v.findViewById(R.id.rave_cvvTv);
+        cvvTil = v.findViewById(R.id.rave_cvvTil);
+        cvvTv = v.findViewById(R.id.rave_cvvTv);
 
     }
 
@@ -245,7 +248,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.payLoad = payload;
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
@@ -323,6 +328,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onPinAuthModelSuggested(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "pin");
         intent.putExtra("theme", ravePayInitializer.getTheme());
@@ -386,6 +392,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         this.flwRef = flwRef;
         dismissDialog();
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, chargeResponseMessage);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
@@ -428,6 +435,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
@@ -602,6 +610,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
         this.payLoad = payload;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
@@ -619,6 +628,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
+        intent.putExtra(RAVE_PARAMS, Parcels.wrap(ravePayInitializer));
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
