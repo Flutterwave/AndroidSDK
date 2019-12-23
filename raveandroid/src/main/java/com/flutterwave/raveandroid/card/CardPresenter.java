@@ -325,9 +325,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceImei(context);
-            }
+
 
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))

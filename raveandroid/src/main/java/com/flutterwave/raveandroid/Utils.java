@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -40,16 +39,8 @@ public class Utils {
     private static final String CHARSET_NAME = "UTF-8";
     private static final String UTF_8 = "utf-8";
 
-    public static String getDeviceImei(Context c) {
-
-        TelephonyManager mTelephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-        @SuppressLint("MissingPermission") String ip = mTelephonyManager.getDeviceId();
-
-        if (ip == null) {
-            ip = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-
-        return ip;
+    public static String getDeviceId(Context c) {
+        return Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     public static void hide_keyboard(Activity activity) {

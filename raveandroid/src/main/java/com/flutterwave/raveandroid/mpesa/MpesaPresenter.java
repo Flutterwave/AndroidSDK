@@ -225,7 +225,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
             String deviceID = deviceIdGetter.getDeviceId();
             if (deviceID == null) {
-                deviceID = Utils.getDeviceImei(context);
+                deviceID = Utils.getDeviceId(context);
             }
 
             PayloadBuilder builder = new PayloadBuilder();

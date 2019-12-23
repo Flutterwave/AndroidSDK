@@ -519,9 +519,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 .setEmail(ravePayInitializer.getEmail())
                 .setFirstname(ravePayInitializer.getfName())
                 .setLastname(ravePayInitializer.getlName())
-                .setIP(Utils.getDeviceImei(getActivity()))
+                .setIP(Utils.getDeviceId(getActivity()))
                 .setTxRef(ravePayInitializer.getTxRef())
-                .setDevice_fingerprint(Utils.getDeviceImei(getActivity()))
+                .setDevice_fingerprint(Utils.getDeviceId(getActivity()))
                 .setMeta(ravePayInitializer.getMeta());
 
         Payload body = builder.createPayload();

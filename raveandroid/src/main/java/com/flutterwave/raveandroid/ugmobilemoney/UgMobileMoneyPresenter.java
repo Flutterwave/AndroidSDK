@@ -224,7 +224,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
             String deviceID = deviceIdGetter.getDeviceId();
             if (deviceID == null) {
-                deviceID = Utils.getDeviceImei(context);
+                deviceID = Utils.getDeviceId(context);
             }
 
 

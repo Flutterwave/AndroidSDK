@@ -32,15 +32,10 @@ A versão mínima suportada do SDK é 15
 	     implementation 'com.github.Flutterwave:rave-android:1.0.42'
 	}
 
-**Passo 3.** Adicione a permissão necessária
+**Passo 3.** Adicione a permissão de `INTERNET` ao seu android manifest
 
-Adicione as permissões de `READ_PHONE_PERMISSION` e `INTERNET` ao seu android manifest
-
-     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
      <uses-permission android:name="android.permission.INTERNET" />
 
-> **PERMISSÃO NECESSÁRIA**
-> Esta biblioteca requer o ** READ_PHONE_PERMISSION ** para obter o número da compilação para detecção e sinalização de fraude, conforme recomendado aqui https://developer.android.com/training/articles/user-data-ids.html#i_abuse_detection_detecting_high_value_stolen_credentials
 
 ## Uso
 
