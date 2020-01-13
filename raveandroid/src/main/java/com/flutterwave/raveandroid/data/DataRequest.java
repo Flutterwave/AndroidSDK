@@ -20,6 +20,8 @@ public interface DataRequest {
         void chargeMobileMoneyWallet(ChargeRequestBody chargeRequestBody, Callbacks.OnGhanaChargeRequestComplete callback);
         void validateChargeCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
         void validateAccountCard(ValidateChargeBody cardRequestBody, Callbacks.OnValidateChargeCardRequestComplete callback);
+
+        void sendRaveOtp(SendOtpRequestBody requestBody, Callbacks.OnSendRaveOTPRequestComplete callback);
         void requeryTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);
         void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, Callbacks.OnRequeryRequestComplete callback);
         void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, Callbacks.OnRequeryRequestv2Complete callback);
@@ -30,14 +32,23 @@ public interface DataRequest {
 
         void logEvent(EventBody body, Callbacks.OnLogEventComplete callback);
 
+        void saveCardToRave(SaveCardRequestBody saveCardRequestBody, Callbacks.OnSaveCardRequestComplete callback);
+
+        void lookupSavedCards(
+                LookupSavedCardsRequestBody requestBody,
+                final Callbacks.OnLookupSavedCardsRequestComplete callback);
+
     }
 
     interface SharedPrefsRequest {
-        void saveCardDetsToSave(CardDetsToSave cardDetsToSave);
-        CardDetsToSave retrieveCardDetsToSave();
-        void saveACard(SavedCard card, String SECKEY, String email);
-        List<SavedCard> getSavedCards(String email);
+        void saveCardToSharedPreference(List<SavedCard> card, String email, String publicKey);
+
+        List<SavedCard> getSavedCards(String phoneNumber, String publicKey);
         void saveFlwRef(String flwRef);
         String fetchFlwRef();
+
+        void savePhoneNumber(String phoneNumber);
+
+        String fetchPhoneNumber();
     }
 }

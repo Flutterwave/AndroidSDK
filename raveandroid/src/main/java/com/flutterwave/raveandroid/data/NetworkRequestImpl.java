@@ -7,9 +7,12 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
+import com.flutterwave.raveandroid.responses.SendRaveOtpResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,24 +23,15 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
-
-import static com.flutterwave.raveandroid.RaveConstants.EVENT_LOGGING_URL;
-import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -339,6 +333,108 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
     }
 
     @Override
+    public void saveCardToRave(SaveCardRequestBody saveCardRequestBody, final Callbacks.OnSaveCardRequestComplete callback) {
+
+        Call<String> call = service.saveCardToRave(saveCardRequestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Type type = new TypeToken<SaveCardResponse>() {
+                    }.getType();
+                    SaveCardResponse saveCardResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(saveCardResponse, jsonResponse);
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
+    public void lookupSavedCards(LookupSavedCardsRequestBody requestBody,
+                                 final Callbacks.OnLookupSavedCardsRequestComplete callback) {
+
+        Call<String> call = service.lookupSavedCards(requestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Type type = new TypeToken<LookupSavedCardsResponse>() {
+                    }.getType();
+                    LookupSavedCardsResponse lookupSavedCardsResponse = gson.fromJson(jsonResponse, type);
+                    callback.onSuccess(lookupSavedCardsResponse, jsonResponse);
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+    @Override
+    public void sendRaveOtp(SendOtpRequestBody requestBody,
+                            final Callbacks.OnSendRaveOTPRequestComplete callback) {
+
+        Call<String> call = service.sendRaveOtp(requestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonResponse = response.body();
+                if (response.isSuccessful()) {
+                    Type sendOtpType = new TypeToken<SendRaveOtpResponse>() {
+                    }.getType();
+                    SendRaveOtpResponse sendRaveOtpResponse = gson.fromJson(jsonResponse, sendOtpType);
+                    callback.onSuccess(sendRaveOtpResponse, jsonResponse);
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
+    }
+
+
+    @Override
     public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
 
@@ -502,15 +598,13 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
 
                 if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
-                }
-                else {
+                } else {
                     try {
                         ErrorBody error = (ErrorBody) mainRetrofit.
                                 responseBodyConverter(ErrorBody.class, new Annotation[0])
                                 .convert(response.errorBody());
                         callback.onError(error.getMessage());
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         callback.onError("An error occurred while retrieving transaction charge");
                     }

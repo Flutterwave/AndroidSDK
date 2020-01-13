@@ -54,4 +54,12 @@ public interface ApiService {
     @POST("/flwv3-pug/getpaidx/api/fee")
     Call<FeeCheckResponse> checkFee(@Body FeeCheckRequestBody body);
 
+    @POST("/v2/gpx/devices/save")
+    Call<String> saveCardToRave(@Body SaveCardRequestBody body);
+
+    @POST("/v2/gpx/users/lookup")
+    Call<String> lookupSavedCards(@Body LookupSavedCardsRequestBody requestBody);
+
+    @POST("/v2/gpx/users/send_otp")
+    Call<String> sendRaveOtp(@Body SendOtpRequestBody requestBody);
 }
