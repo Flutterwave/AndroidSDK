@@ -14,13 +14,8 @@ import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;
 
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -34,10 +29,6 @@ public class Utils {
 
     private static final String ALGORITHM = "DESede";
     private static final String TRANSFORMATION = "DESede/ECB/PKCS5Padding";
-    private static final String TARGET = "FLWSECK-";
-    private static final String MD5 = "MD5";
-    private static final String CHARSET_NAME = "UTF-8";
-    private static final String UTF_8 = "utf-8";
 
     public static String getDeviceId(Context c) {
         return Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -106,33 +97,6 @@ public class Utils {
         return gson.toJson(subAccounts, type);
     }
 
-    public static byte[] RSAEncrypt(String plaintext) {
-        PublicKey key = getKey("baA/RgjURU3I0uqH3iRos3NbE8fT+lP8SDXKymsnfdPrMQAEoMBuXtoaQiJ1i5tuBG9EgSEOH1LAZEaAsvwClw==");
-        byte[] ciphertext = null;
-        try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            ciphertext = cipher.doFinal(plaintext.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ciphertext;
-    }
-
-    public static PublicKey getKey(String key) {
-        try {
-            byte[] byteKey = Base64.decode(key.getBytes(Charset.forName("UTF-16")), Base64.DEFAULT);
-            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-
-            return kf.generatePublic(X509publicKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public static String getEncryptedData(String unEncryptedString, String encryptionKey) {
 
         if (unEncryptedString != null && encryptionKey != null) {
@@ -176,16 +140,6 @@ public class Utils {
             return "";
         }
 
-    }
-
-    private static String getMd5(String md5) throws Exception {
-        MessageDigest md = MessageDigest.getInstance(MD5);
-        byte[] array = md.digest(md5.getBytes(CHARSET_NAME));
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100), 1, 3);
-        }
-        return sb.toString();
     }
 
     public static String obfuscateCardNumber(String first6, String last4) {

@@ -6,13 +6,13 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0.43"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -28,6 +28,7 @@ android {
     lintOptions {
         abortOnError false
     }
+
 }
 
 dependencies {
@@ -45,6 +46,7 @@ dependencies {
     implementation 'org.parceler:parceler-api:1.1.9'
     annotationProcessor 'org.parceler:parceler:1.1.9'
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    implementation 'com.babylon.certificatetransparency:certificatetransparency-android:0.2.0'
     implementation 'com.scottyab:aescrypt:0.0.1'
     testImplementation 'junit:junit:4.12'
     // dagger 2
