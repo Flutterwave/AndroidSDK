@@ -9,13 +9,21 @@ public class PhoneNumberObfuscator {
     }
 
     public String obfuscatePhoneNumber(String phonenumber) {
-        String first5 = phonenumber.substring(0, 5);
+        int firstPartLength = phonenumber.length() - 8;
+        int asterisksLength = phonenumber.length() - 4;
+
+
         String last4 = phonenumber.substring(phonenumber.length() - 4);
-        String exes = "";
-        for (int i = 0; i < phonenumber.length() - 9; i++) {
-            exes += "*";
+        String firstPart = "";
+        String asterisks = "";
+        if (firstPartLength > 1) {
+            firstPart = phonenumber.substring(0, firstPartLength);
+            asterisksLength = phonenumber.length() - 4 - firstPartLength;
         }
-        String obcuredPhoneNumber = first5 + exes + last4;
-        return obcuredPhoneNumber;
+
+        for (int i = 0; i < asterisksLength; i++) {
+            asterisks += "*";
+        }
+        return firstPart + asterisks + last4;
     }
 }
