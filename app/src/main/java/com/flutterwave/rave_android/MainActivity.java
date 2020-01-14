@@ -274,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
                     .setfName(fName)
                     .setlName(lName)
                     .setPhoneNumber(phoneNumber)
-                    .allowSaveCardFeature(false)
                     .setNarration(narration)
                     .setPublicKey(publicKey)
                     .setEncryptionKey(encryptionKey)
