@@ -93,7 +93,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public static final String INTENT_SENDER = "cardFrag";
     private static final String RAVEPAY = "ravepay";
     private View v;
-    Button useASavedCardButton;
+    TextView useASavedCardTv;
     TextView useAnotherCardTv;
     private Button payButton;
     private TextView pcidss_tv;
@@ -171,7 +171,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private void setListeners() {
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
         payButton.setOnClickListener(this);
-        useASavedCardButton.setOnClickListener(this);
+        useASavedCardTv.setOnClickListener(this);
 
         cardExpiryTv.setOnFocusChangeListener(this);
         cardNoTv.setOnFocusChangeListener(this);
@@ -214,8 +214,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cvvTil = v.findViewById(R.id.rave_cvvTil);
         cvvTv = v.findViewById(R.id.rave_cvvTv);
         useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
-        useASavedCardButton = (Button) v.findViewById(R.id.rave_use_saved_card_button);
-        useASavedCardButton.setVisibility(GONE);
+        useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
+        useASavedCardTv.setVisibility(GONE);
         saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
         saveCardPhoneNoEt = (EditText) v.findViewById(R.id.save_card_phoneNoTV);
         saveCardEmailEt = (EditText) v.findViewById(R.id.save_card_emailTv);
@@ -232,7 +232,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             clearErrors();
             collectData();
         }
-        if (i == R.id.rave_use_saved_card_button) {
+        if (i == R.id.rave_use_saved_card_tv) {
             if (!hasSavedCards) {
                 showToast("You have no saved Cards");
             } else {
@@ -537,8 +537,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void setHasSavedCards(boolean b) {
         hasSavedCards = b;
-        if (b) useASavedCardButton.setVisibility(VISIBLE);
-        else useASavedCardButton.setVisibility(GONE);
+        if (b) useASavedCardTv.setVisibility(VISIBLE);
+        else useASavedCardTv.setVisibility(GONE);
     }
 
     /**
