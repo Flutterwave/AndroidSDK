@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     EditText lNameEt;
     EditText durationEt;
     EditText frequencyEt;
+    EditText phoneNumberEt;
     Button startPayBtn;
     Button addVendorBtn;
     Button clearVendorBtn;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat accountAchSwitch;
     SwitchCompat addSubAccountsSwitch;
     SwitchCompat isPreAuthSwitch;
+    SwitchCompat allowSavedCardsSwitch;
     SwitchCompat shouldDisplayFeeSwitch;
     SwitchCompat shouldShowStagingLabelSwitch;
     List<Meta> meta = new ArrayList<>();
@@ -84,10 +86,12 @@ public class MainActivity extends AppCompatActivity {
         countryEt = findViewById(R.id.countryEt);
         fNameEt = findViewById(R.id.fNameEt);
         lNameEt = findViewById(R.id.lnameEt);
+        phoneNumberEt = findViewById(R.id.phoneNumberEt);
         durationEt = findViewById(R.id.expiryDaysEt);
         frequencyEt = findViewById(R.id.frequencyEt);
         startPayBtn = findViewById(R.id.startPaymentBtn);
         cardSwitch = findViewById(R.id.cardPaymentSwitch);
+        allowSavedCardsSwitch = findViewById(R.id.allowSavedCardsSwitch);
         accountSwitch = findViewById(R.id.accountPaymentSwitch);
         accountAchSwitch = findViewById(R.id.accountAchSwitch);
         isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
@@ -210,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
         String country = countryEt.getText().toString();
         String fName = fNameEt.getText().toString();
         String lName = lNameEt.getText().toString();
+        String phoneNumber = phoneNumberEt.getText().toString();
         String accountDuration = durationEt.getText().toString();
         String accountPaymentFrequency = frequencyEt.getText().toString();
 
@@ -268,6 +273,8 @@ public class MainActivity extends AppCompatActivity {
                     .setEmail(email)
                     .setfName(fName)
                     .setlName(lName)
+                    .setPhoneNumber(phoneNumber)
+                    .allowSaveCardFeature(false)
                     .setNarration(narration)
                     .setPublicKey(publicKey)
                     .setEncryptionKey(encryptionKey)
@@ -275,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
                     .acceptMpesaPayments(isMpesaSwitch.isChecked())
                     .acceptAccountPayments(accountSwitch.isChecked())
                     .acceptCardPayments(cardSwitch.isChecked())
+                    .allowSaveCardFeature(allowSavedCardsSwitch.isChecked())
                     .acceptAchPayments(accountAchSwitch.isChecked())
                     .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
                     .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())

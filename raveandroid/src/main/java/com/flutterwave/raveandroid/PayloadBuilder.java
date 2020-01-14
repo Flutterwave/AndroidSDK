@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.SubAccount;
 
 import java.util.List;
@@ -23,9 +24,12 @@ public class PayloadBuilder {
     private String network;
     private String bvn;
     private String voucher;
+    private String otp;
     private boolean isPreAuth = false;
     private boolean is_us_bank_charge = false;
     private boolean is_bank_transfer = false;
+    private boolean is_saved_card_charge = false;
+    private SavedCard savedCard;
     private boolean isPermanent;
     private int frequency;
     private int duration;
@@ -352,6 +356,30 @@ public class PayloadBuilder {
         return payload;
     }
 
+    public Payload createSavedCardChargePayload() {
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+
+        Payload payload = new Payload(metaObj, subaccountsObj, narration,
+                pbfPubKey, ip, lastname,
+                firstname, currency, country,
+                amount, email, device_fingerprint,
+                txRef, is_saved_card_charge, phonenumber);
+
+        if (payment_plan != null) {
+            payload.setPayment_plan(payment_plan);
+        }
+
+        if (isPreAuth) {
+            payload.setCharge_type("preauth");
+        }
+
+        payload.setCardBIN(savedCard.getMasked_pan().substring(0, 6));
+        payload.setCard_hash(savedCard.getCardHash());
+        payload.setDevice_key(phonenumber);
+        return payload;
+
+    }
 
     public PayloadBuilder setMeta(String meta) {
         this.meta = meta;
@@ -371,6 +399,28 @@ public class PayloadBuilder {
     public PayloadBuilder setNetwork(String network) {
         this.network = network;
         return this;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public PayloadBuilder setOtp(String otp) {
+        this.otp = otp;
+        return this;
+    }
+
+    public boolean isIs_saved_card_charge() {
+        return is_saved_card_charge;
+    }
+
+    public PayloadBuilder setIs_saved_card_charge(boolean is_saved_card_charge) {
+        this.is_saved_card_charge = is_saved_card_charge;
+        return this;
+    }
+
+    public SavedCard getSavedCard() {
+        return savedCard;
     }
 
     public String getExpirymonth() {
@@ -525,4 +575,8 @@ public class PayloadBuilder {
         return this;
     }
 
+    public PayloadBuilder setSavedCard(SavedCard savedCard) {
+        this.savedCard = savedCard;
+        return this;
+    }
 }

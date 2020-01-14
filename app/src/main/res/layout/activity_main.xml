@@ -242,6 +242,14 @@
                 android:text="@string/accept_card_payments" />
 
             <android.support.v7.widget.SwitchCompat
+                android:id="@+id/allowSavedCardsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/allow_saved_cards" />
+
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/accountPaymentSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -350,6 +358,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/last_name"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/phoneNumberEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/phone_number"
                 android:textSize="14sp" />
 
             <Button

@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-
 import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
@@ -31,6 +30,8 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.PUBL
 public class OTPFragment extends Fragment implements View.OnClickListener {
 
     public static final String EXTRA_OTP = "extraOTP";
+    public static final String IS_SAVED_CARD_CHARGE = "is_saved_card_charge";
+    private Boolean isSavedCardCharge = false;
     TextInputEditText otpEt;
     TextInputLayout otpTil;
     TextView chargeMessage;
@@ -59,9 +60,19 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
         setChargeMessage();
 
+        setIsSavedCardCharge();
+
         setListeners();
 
         return v;
+    }
+
+    private void setIsSavedCardCharge() {
+        if (getArguments() != null) {
+            if (getArguments().containsKey(IS_SAVED_CARD_CHARGE)) {
+                isSavedCardCharge = getArguments().getBoolean(IS_SAVED_CARD_CHARGE);
+            }
+        }
     }
 
     private void setListeners() {
@@ -131,7 +142,11 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public void goBack() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_OTP, otp);
+        //inform onActivityResult of if this is a saved card charge and how to handle.
+        intent.putExtra(IS_SAVED_CARD_CHARGE, isSavedCardCharge);
+
         logEvent(new SubmitEvent("OTP").getEvent());
+
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
             getActivity().finish();

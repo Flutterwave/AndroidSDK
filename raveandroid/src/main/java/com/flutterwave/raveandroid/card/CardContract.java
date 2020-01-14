@@ -7,7 +7,9 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,22 +67,50 @@ public interface CardContract {
 
         void onNoAuthUsed(String flwRef, String publicKey);
 
+        void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString);
+
+        void onCardSaveFailed(String message, String responseAsJSONString);
+
+        void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString);
+
+        void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString);
+
+        void showOTPLayoutForSavedCard(Payload payload, String authInstruction);
+
+        void onSendRaveOtpFailed(String message, String responseAsJSONString);
+
+        String getPhoneNumber();
+
+        void setPhoneNumber(String phoneNumber);
+
+        void showSavedCardsLayout(List<SavedCard> savedCardsList);
+
+        void setHasSavedCards(boolean b);
+
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
         void showFieldError(int viewID, String message, Class<?> viewtype);
 
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
+        void onPaymentSuccessful(String status, String flwRef, String responseAsString, String email);
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
+
+        void onPhoneNumberValidated(String phoneNumber);
+
+        void showCardSavingOption(boolean b);
     }
 
     interface UserActionsListener {
 
         void onDetachView();
 
+        void saveCardToRave(String phoneNumber, String email, String FlwRef, String publicKey, String verifyResponse);
+
         void chargeToken(Payload payload);
 
         void fetchFee(Payload payload, int reason);
+
+        void retrieveSavedCardsFromMemory(String email, String publicKey);
 
         void onAttachView(CardContract.View view);
 
@@ -92,21 +122,34 @@ public interface CardContract {
 
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
-        void requeryTx(String flwRef, String publicKey, boolean shouldISaveCard);
+        void requeryTx(String flwRef, String publicKey);
 
         void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey);
 
         void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef);
 
+        void sendRaveOTP(Payload payload);
+
         void chargeCardWithAVSModel(Payload payload, String address, String city, String zipCode,
                                     String country, String state, String avsVbvsecurecode, String encryptionKey);
+
+        void lookupSavedCards(String publicKey, String phoneNumber, String verifyResponseAsJSONString);
+
+        void saveCardToSharedPreferences(LookupSavedCardsResponse response, String publicKey);
+
+        void chargeSavedCard(Payload payload, String encryptionKey);
+
+        void checkForSavedCardsInMemory(RavePayInitializer ravePayInitializer);
+
+        List<SavedCard> getSavedCards();
 
         void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
 
         void logEvent(Event event, String publicKey);
 
+        void onDataForSavedCardChargeCollected(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer);
 
-
+        void processSavedCardTransaction(SavedCard savedCard, RavePayInitializer ravePayInitializer);
     }
 
 }

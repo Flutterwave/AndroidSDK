@@ -34,4 +34,5 @@
     <string name="clear">CLEAR</string>
 	<string name="accept_ussd_payments">Accept USSD Payments</string>
     <string name="accept_barter_payments">Accept Barter Payments</string>
+    <string name="allow_saved_cards">Allow saved cards</string>
 </resources>

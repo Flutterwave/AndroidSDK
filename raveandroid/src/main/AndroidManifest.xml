@@ -13,6 +13,9 @@
         <activity
             android:name=".verification.VerificationActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".card.savedcards.SavedCardsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 @Parcel
 public class RavePayInitializer {
     private final ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
+    String phoneNumber = "";
+    private boolean saveCardFeatureAllowed = true;
     String email;
     double amount;
     String publicKey;
@@ -36,7 +38,7 @@ public class RavePayInitializer {
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
-                              String lName, int theme,
+                              String lName, int theme, String phoneNumber, boolean saveCardFeatureAllowed,
                               boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee, ArrayList<Integer> orderedPaymentTypesList) {
@@ -59,6 +61,8 @@ public class RavePayInitializer {
         this.subAccounts = subAccounts;
         this.payment_plan = payment_plan;
         this.isPreAuth = isPreAuth;
+        this.phoneNumber = phoneNumber;
+        this.saveCardFeatureAllowed = saveCardFeatureAllowed;
         this.showStagingLabel = showStagingLabel;
         this.displayFee = displayFee;
         if (!orderedPaymentTypesList.isEmpty())
@@ -181,6 +185,16 @@ public class RavePayInitializer {
         this.fName = fName;
     }
 
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+
     public String getlName() {
         return lName;
     }
@@ -233,5 +247,9 @@ public class RavePayInitializer {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public boolean isSaveCardFeatureAllowed() {
+        return saveCardFeatureAllowed;
     }
 }

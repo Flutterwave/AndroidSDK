@@ -6,7 +6,9 @@ import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.responses.SaveCardResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,56 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
 
     @Override
     public void onNoAuthUsed(String flwRef, String secretKey) {
+
+    }
+
+    @Override
+    public void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public void onCardSaveFailed(String message, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString) {
+
+    }
+
+    @Override
+    public void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString) {
+
+    }
+
+    @Override
+    public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
+
+    }
+
+    @Override
+    public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
+
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return null;
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+
+    }
+
+    @Override
+    public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
+
+    }
+
+    @Override
+    public void setHasSavedCards(boolean b) {
 
     }
 
@@ -83,7 +135,7 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString, String email) {
 
     }
 
@@ -155,6 +207,16 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
 
     @Override
     public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
+
+    }
+
+    @Override
+    public void onPhoneNumberValidated(String phoneNumber) {
+
+    }
+
+    @Override
+    public void showCardSavingOption(boolean b) {
 
     }
 }

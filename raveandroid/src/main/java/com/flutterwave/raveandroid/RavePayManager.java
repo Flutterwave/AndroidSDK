@@ -46,6 +46,7 @@ public class RavePayManager {
     private String country = "NG";
     private String fName = "";
     private String lName = "";
+    boolean allowSaveCard = true;
     private String meta = "";
     private String subAccounts = "";
     private String payment_plan;
@@ -55,6 +56,7 @@ public class RavePayManager {
     private int theme = R.style.DefaultTheme;
     boolean staging = true;
     boolean isPreAuth = false;
+    private String phoneNumber = "";
     boolean showStagingLabel = true;
     boolean displayFee = true;
     private boolean isPermanent = false;
@@ -64,6 +66,11 @@ public class RavePayManager {
 
     public ArrayList<Integer> getOrderedPaymentTypesList() {
         return orderedPaymentTypesList;
+    }
+
+    public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
+        this.allowSaveCard = allowSaveCard;
+        return this;
     }
 
     public RavePayManager onStagingEnv(boolean staging) {
@@ -255,6 +262,11 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
     public RavePayManager setPaymentPlan(String payment_plan) {
         this.payment_plan = payment_plan;
         return this;
@@ -309,6 +321,8 @@ public class RavePayManager {
                 fName,
                 lName,
                 theme,
+                phoneNumber,
+                allowSaveCard,
                 isPermanent,
                 duration,
                 frequency,

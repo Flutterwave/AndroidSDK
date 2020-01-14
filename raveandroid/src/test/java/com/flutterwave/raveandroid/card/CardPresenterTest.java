@@ -787,7 +787,7 @@ public class CardPresenterTest {
         when(ravePayInitializer.getCurrency()).thenReturn(generateRandomString());
 
         cardPresenter.verifyRequeryResponse(requeryResponse, responseAsJsonString, ravePayInitializer, flwRef);
-        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), flwRef, responseAsJsonString);
+        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), flwRef, responseAsJsonString, ravePayInitializer.getEmail());
 
     }
 
@@ -1060,7 +1060,7 @@ public class CardPresenterTest {
         String flwRef = generateRandomString();
 
         //act
-        cardPresenter.requeryTx(flwRef, generateRandomString(), generateRandomBoolean());
+        cardPresenter.requeryTx(flwRef, generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -1080,7 +1080,7 @@ public class CardPresenterTest {
         String responseAsString = generateRandomString();
 
         //act
-        cardPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomBoolean());
+        cardPresenter.requeryTx(generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
