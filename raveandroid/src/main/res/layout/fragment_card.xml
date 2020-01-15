@@ -199,7 +199,6 @@
                         android:gravity="center_horizontal|center_vertical"
                         android:padding="16dp"
                         android:text="@string/use_a_saved_card"
-                        android:textColor="#0000EE"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
