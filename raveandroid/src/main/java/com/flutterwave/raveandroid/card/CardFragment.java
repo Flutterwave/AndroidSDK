@@ -592,9 +592,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onCardSaveSuccessful(SaveCardResponse response, String verifyResponseAsJSONString, String phoneNumber) {
-        showToast("Card Saved Successfully");
-
-
         // Perform lookup of saved savedCards and save to phone storage
         presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), phoneNumber, verifyResponseAsJSONString);
 
