@@ -120,7 +120,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private LinearLayout saveNewCardLayout;
     private EditText saveCardEmailEt;
     private EditText saveCardPhoneNoEt;
-    private String phoneNumber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -514,16 +513,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    @Override
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
         Intent intent = new Intent(getContext(), SavedCardsActivity.class);
         Type savedCardsListType = new TypeToken<List<SavedCard>>() {
@@ -602,7 +591,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onCardSaveSuccessful(SaveCardResponse response, String verifyResponseAsJSONString) {
+    public void onCardSaveSuccessful(SaveCardResponse response, String verifyResponseAsJSONString, String phoneNumber) {
         showToast("Card Saved Successfully");
 
 
@@ -746,17 +735,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param status               = status of the transaction
      * @param flwRef               = reference of the payment transaction
      * @param responseAsJSONString = full json response from the payment transaction
-     * @param email
+     * @param ravePayInitializer The ravePayInitializer used to initiate payment
      */
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString, String email) {
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
         dismissDialog();
 
         if (shouldISaveThisCard && flwRef != null) {
             presenter.setCardSaveInProgress(true);
             presenter.saveCardToRave(
-                    phoneNumber,
-                    email,
+                    ravePayInitializer.getPhoneNumber(),
+                    ravePayInitializer.getPhoneNumber(),
                     flwRef,
                     ravePayInitializer.getPublicKey(),
                     responseAsJSONString);

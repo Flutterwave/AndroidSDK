@@ -162,17 +162,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                         if (suggested_auth.equals(PIN)) {
                             mView.onPinAuthModelSuggested(payload);
-                        }
-                        else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
+                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
                             mView.onAVS_VBVSECURECODEModelSuggested(payload);
                         } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
                             mView.onNoAuthInternationalSuggested(payload);
-                        }
-                        else {
+                        } else {
                             mView.onPaymentError(unknownAuthmsg);
                         }
-                    }
-                    else {
+                    } else {
                         String authModelUsed = response.getData().getAuthModelUsed();
 
                         if (authModelUsed != null) {
@@ -196,8 +193,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError(noResponse);
                 }
 
@@ -316,9 +312,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
                         mView.onChargeCardSuccessful(response);
-                    }
-
-                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
                         String authModelUsed = response.getData().getAuthModelUsed();
 
                         if (authModelUsed.equalsIgnoreCase(PIN)) {
@@ -329,16 +323,13 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         } else if (authModelUsed.equalsIgnoreCase(VBV)) {
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        }
-                        else {
+                        } else {
                             mView.onPaymentError(unknownAuthmsg);
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError(unknownResCodemsg);
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError(invalidChargeCode);
                 }
 
@@ -459,7 +450,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Override
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
@@ -543,8 +534,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
-        }
-        else if (authModel.equalsIgnoreCase(PIN)){
+        } else if (authModel.equalsIgnoreCase(PIN)) {
             payload.setPin(zipOrPin);
         }
 
@@ -574,9 +564,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                     if (chargeResponseCode.equalsIgnoreCase("00")) {
                         mView.onChargeCardSuccessful(response);
-                    }
-
-                    else if (chargeResponseCode.equalsIgnoreCase("02")) {
+                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
 
                         String authModelUsed = response.getData().getAuthModelUsed();
 
@@ -588,17 +576,13 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         } else if (authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)) {
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        }
-
-                        else {
+                        } else {
                             mView.onPaymentError(unknownAuthmsg);
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError(unknownResCodemsg);
                     }
-                }
-                else {
+                } else {
                     mView.onPaymentError(invalidChargeCode);
                 }
 
@@ -636,12 +620,10 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                     if (status.equalsIgnoreCase(success)) {
                         mView.onValidateSuccessful(status, responseAsJSONString);
-                    }
-                    else {
+                    } else {
                         mView.onValidateError(message);
                     }
-                }
-                else {
+                } else {
                     mView.onValidateCardChargeFailed(flwRef, responseAsJSONString);
                 }
             }
@@ -691,15 +673,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
                 );
 
         if (wasTxSuccessful) {
-            mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString, ravePayInitializer.getEmail());
-        }
-        else {
+            mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString, ravePayInitializer);
+        } else {
             mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
         }
     }
 
     @Override
-    public void saveCardToRave(String phoneNumber, String email, String FlwRef, String publicKey, final String verifyResponse) {
+    public void saveCardToRave(final String phoneNumber, String email, String FlwRef, String publicKey, final String verifyResponse) {
         SaveCardRequestBody body = new SaveCardRequestBody();
         body.setDevice(deviceIdGetter.getDeviceId());
         body.setDevice_email(email);
@@ -712,7 +693,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         networkRequest.saveCardToRave(body, new Callbacks.OnSaveCardRequestComplete() {
             @Override
             public void onSuccess(SaveCardResponse response, String responseAsJSONString) {
-                mView.onCardSaveSuccessful(response, verifyResponse);
+                mView.onCardSaveSuccessful(response, verifyResponse, phoneNumber);
             }
 
             @Override
@@ -792,12 +773,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload, reason);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     mView.showFetchFeeFailed(transactionError);
                 }
-             }
+            }
 
             @Override
             public void onError(String message) {
@@ -811,7 +791,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     @Override
     public void retrieveSavedCardsFromMemory(String phoneNumber, String publicKey) {
-        savedCards = sharedManager.getSavedCards(phoneNumber, publicKey);
+        if (phoneNumber != null)
+            if (!phoneNumber.isEmpty())
+                savedCards = sharedManager.getSavedCards(phoneNumber, publicKey);
     }
 
     private void retrievePhoneNumberFromMemory(RavePayInitializer ravePayInitializer) {
@@ -819,7 +801,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         if (ravePayInitializer.getPhoneNumber() == null || ravePayInitializer.getPhoneNumber().isEmpty()) {
             ravePayInitializer.setPhoneNumber(phoneNumber);
         }
-        mView.setPhoneNumber(phoneNumber);
     }
 
     @Override
@@ -829,7 +810,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         }
 
         retrievePhoneNumberFromMemory(ravePayInitializer);
-        retrieveSavedCardsFromMemory(mView.getPhoneNumber(), ravePayInitializer.getPublicKey());
+        retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
 
         if (!savedCards.isEmpty()) {
             mView.setHasSavedCards(true);
@@ -866,8 +847,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     mView.onPaymentError(tokenNotFound);
                 } else if (responseAsJSONString.contains(expired)) {
                     mView.onPaymentError(tokenExpired);
-                }
-                else {
+                } else {
                     mView.onPaymentError(message);
                 }
 

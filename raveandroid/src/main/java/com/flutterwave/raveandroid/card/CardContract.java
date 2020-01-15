@@ -67,7 +67,7 @@ public interface CardContract {
 
         void onNoAuthUsed(String flwRef, String publicKey);
 
-        void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString);
+        void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString, String phoneNumber);
 
         void onCardSaveFailed(String message, String responseAsJSONString);
 
@@ -79,10 +79,6 @@ public interface CardContract {
 
         void onSendRaveOtpFailed(String message, String responseAsJSONString);
 
-        String getPhoneNumber();
-
-        void setPhoneNumber(String phoneNumber);
-
         void showSavedCardsLayout(List<SavedCard> savedCardsList);
 
         void setHasSavedCards(boolean b);
@@ -91,7 +87,7 @@ public interface CardContract {
 
         void showFieldError(int viewID, String message, Class<?> viewtype);
 
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString, String email);
+        void onPaymentSuccessful(String status, String flwRef, String responseAsString, RavePayInitializer ravePayInitializer);
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef);
 

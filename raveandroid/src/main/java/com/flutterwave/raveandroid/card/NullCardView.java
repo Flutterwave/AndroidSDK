@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.card;
 import android.view.View;
 
 import com.flutterwave.raveandroid.Payload;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
@@ -35,7 +36,7 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString) {
+    public void onCardSaveSuccessful(SaveCardResponse response, String responseAsJSONString, String phoneNumber) {
 
     }
 
@@ -64,15 +65,6 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
 
     }
 
-    @Override
-    public String getPhoneNumber() {
-        return null;
-    }
-
-    @Override
-    public void setPhoneNumber(String phoneNumber) {
-
-    }
 
     @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
@@ -91,6 +83,11 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewtype) {
+
+    }
+
+    @Override
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsString, RavePayInitializer ravePayInitializer) {
 
     }
 
@@ -131,11 +128,6 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
 
     @Override
     public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
-
-    }
-
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString, String email) {
 
     }
 
