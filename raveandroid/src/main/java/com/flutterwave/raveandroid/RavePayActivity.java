@@ -581,7 +581,6 @@ public class RavePayActivity extends AppCompatActivity {
 
     private void generateGuides(int count) {
 
-
         for (int i = 0; i <= count; i++) {
             Guideline guideline = createGuideline(this, HORIZONTAL);
             root.addView(guideline);
@@ -624,9 +623,6 @@ public class RavePayActivity extends AppCompatActivity {
 
         appComponent.inject(this);
     }
-
-
-
 
 
     @Override
