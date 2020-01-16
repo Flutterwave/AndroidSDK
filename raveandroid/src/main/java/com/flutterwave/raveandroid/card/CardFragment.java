@@ -369,13 +369,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 progessDialog = new ProgressDialog(getActivity());
                 progessDialog.setCanceledOnTouchOutside(false);
                 progessDialog.setMessage(getResources().getString(R.string.wait));
+                if (active && !progessDialog.isShowing()) {
+                    progessDialog.show();
+                } else {
+                    progessDialog.dismiss();
+                }
             }
 
-            if (active && !progessDialog.isShowing()) {
-                progessDialog.show();
-            } else {
-                progessDialog.dismiss();
-            }
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

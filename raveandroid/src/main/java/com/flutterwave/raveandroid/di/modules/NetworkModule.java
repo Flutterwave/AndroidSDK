@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.di.modules;
 
+import com.babylon.certificatetransparency.BasicAndroidCTLogger;
+import com.babylon.certificatetransparency.CTInterceptorBuilder;
 import com.flutterwave.raveandroid.data.ApiService;
 import com.google.gson.Gson;
 
@@ -43,7 +45,16 @@ public class NetworkModule {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
+
+        CTInterceptorBuilder ctInterceptorBuilder = new CTInterceptorBuilder();
+        BasicAndroidCTLogger basicAndroidCTLogger = new BasicAndroidCTLogger(true);
+        ctInterceptorBuilder.includeHost("ravesandboxapi.flutterwave.com")
+                .includeHost("rave-webhook.herokuapp.com/receivepayment")
+                .includeHost("kgelfdz7mf.execute-api.us-east-1.amazonaws.com/")
+                .includeHost("api.ravepay.co");
+        ctInterceptorBuilder.setLogger(basicAndroidCTLogger);
+
+        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(ctInterceptorBuilder.build()).addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS).build();
 
