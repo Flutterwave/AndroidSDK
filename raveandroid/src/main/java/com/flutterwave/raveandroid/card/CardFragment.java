@@ -72,6 +72,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
@@ -120,6 +121,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private LinearLayout saveNewCardLayout;
     private EditText saveCardEmailEt;
     private EditText saveCardPhoneNoEt;
+    private TextInputLayout saveCardEmailTil;
+    private TextInputLayout saveCardPhoneNoTil;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -218,6 +221,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
         saveCardPhoneNoEt = (EditText) v.findViewById(R.id.save_card_phoneNoTV);
         saveCardEmailEt = (EditText) v.findViewById(R.id.save_card_emailTv);
+        saveCardPhoneNoTil = (TextInputLayout) v.findViewById(R.id.save_card_phoneNoTil);
+        saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
         saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
 
 
@@ -260,6 +265,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         dataHashMap.put(fieldCvv, new ViewObject(cvvTil.getId(), cvvTv.getText().toString(), TextInputLayout.class));
         dataHashMap.put(fieldCardExpiry, new ViewObject(cardExpiryTil.getId(), cardExpiryTv.getText().toString(), TextInputLayout.class));
         dataHashMap.put(fieldcardNoStripped, new ViewObject(cardNoTil.getId(), cardNoTv.getText().toString(), TextInputLayout.class));
+        dataHashMap.put(fieldPhone, new ViewObject(saveCardPhoneNoTil.getId(), saveCardPhoneNoEt.getText().toString(), TextInputLayout.class));
 
         presenter.onDataCollected(dataHashMap);
     }
