@@ -748,7 +748,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             presenter.setCardSaveInProgress(true);
             presenter.saveCardToRave(
                     ravePayInitializer.getPhoneNumber(),
-                    ravePayInitializer.getPhoneNumber(),
+                    ravePayInitializer.getEmail(),
                     flwRef,
                     ravePayInitializer.getPublicKey(),
                     responseAsJSONString);
