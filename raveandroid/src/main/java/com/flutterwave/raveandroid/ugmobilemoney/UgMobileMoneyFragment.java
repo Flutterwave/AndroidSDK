@@ -238,7 +238,9 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
-        if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) { pollingProgressDialog.dismiss(); }
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.dismiss();
+        }
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
@@ -266,7 +268,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
         }
 
-        if (active && !pollingProgressDialog.isShowing()) {
+        if (active && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

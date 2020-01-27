@@ -282,7 +282,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
-        if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.dismiss();
         }
         Intent intent = new Intent();
@@ -311,7 +311,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
             pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
         }
 
-        if (active && !pollingProgressDialog.isShowing()) {
+        if (active && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancelPayment), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

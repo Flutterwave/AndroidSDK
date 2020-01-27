@@ -249,7 +249,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
             pollingProgressDialog.setMessage(getResources().getString(R.string.checkStatus));
         }
 
-        if (active && !pollingProgressDialog.isShowing()) {
+        if (active && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

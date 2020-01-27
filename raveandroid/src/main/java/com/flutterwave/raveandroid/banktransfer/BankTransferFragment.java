@@ -187,7 +187,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             pollingProgressDialog.setMessage("Checking transaction status. \nPlease wait");
         }
 
-        if (active && !pollingProgressDialog.isShowing()) {
+        if (active && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
