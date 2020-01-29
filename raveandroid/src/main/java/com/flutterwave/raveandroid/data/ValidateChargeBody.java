@@ -6,6 +6,9 @@ package com.flutterwave.raveandroid.data;
 
 public class ValidateChargeBody {
     String transaction_reference;
+    String transactionreference;
+    String PBFPubKey;
+    String otp;
 
     public String getTransactionreference() {
         return transactionreference;
@@ -14,10 +17,6 @@ public class ValidateChargeBody {
     public void setTransactionreference(String transactionreference) {
         this.transactionreference = transactionreference;
     }
-
-    String transactionreference;
-    String PBFPubKey;
-    String otp;
 
     public String getTransaction_reference() {
         return transaction_reference;

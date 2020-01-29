@@ -19,7 +19,9 @@ public interface AccountContract {
 
     interface View {
         void showToast(String message);
+
         void showBanks(List<Bank> banks);
+
         void showProgressIndicator(boolean active);
 
         void onGetBanksRequestFailed(String message);

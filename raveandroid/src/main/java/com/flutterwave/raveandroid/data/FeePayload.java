@@ -9,6 +9,8 @@ public class FeePayload {
     String amount;
     String PBFPubKey;
     String currency;
+    String ptype;
+    String card6;
 
     public String getAmount() {
         return amount;
@@ -49,9 +51,6 @@ public class FeePayload {
     public void setCard6(String card6) {
         this.card6 = card6;
     }
-
-    String ptype;
-    String card6;
 
 
 }

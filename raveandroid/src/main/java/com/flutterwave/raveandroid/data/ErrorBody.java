@@ -5,12 +5,14 @@ package com.flutterwave.raveandroid.data;
  */
 
 public class ErrorBody {
+    String status;
+    String message;
+    Data data;
+
     public ErrorBody(String status, String message) {
         this.status = status;
         this.message = message;
     }
-
-    String status;
 
     public String getStatus() {
         return status;
@@ -28,25 +30,20 @@ public class ErrorBody {
         this.message = message;
     }
 
-    String message;
-
     public Data getData() {
         return data;
     }
-
-    Data data;
 
 
 //    String data;
 
     public static class Data {
         boolean is_error;
+        String code;
 
         public String getCode() {
             return code;
         }
-
-        String code;
     }
 }
 

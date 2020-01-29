@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class RavePayInitializer {
     private final ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
     String phoneNumber = "";
-    private boolean saveCardFeatureAllowed = true;
     String email;
     double amount;
     String publicKey;
@@ -34,6 +33,7 @@ public class RavePayInitializer {
     boolean isPermanent;
     int frequency;
     int duration;
+    private boolean saveCardFeatureAllowed = true;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
@@ -89,20 +89,24 @@ public class RavePayInitializer {
         this.meta = meta;
     }
 
-    public String getSubAccount(){return subAccounts;}
+    public String getSubAccount() {
+        return subAccounts;
+    }
 
-    public void setSubAccount(String subAccounts){this.subAccounts=subAccounts;}
+    public void setSubAccount(String subAccounts) {
+        this.subAccounts = subAccounts;
+    }
 
     public boolean isStaging() {
         return staging;
     }
 
-    public ArrayList<Integer> getOrderedPaymentTypesList() {
-        return orderedPaymentTypesList;
-    }
-
     public void setStaging(boolean staging) {
         this.staging = staging;
+    }
+
+    public ArrayList<Integer> getOrderedPaymentTypesList() {
+        return orderedPaymentTypesList;
     }
 
     public int getTheme() {
@@ -215,7 +219,9 @@ public class RavePayInitializer {
         this.isPreAuth = isPreAuth;
     }
 
-    public boolean getIsPreAuth() { return  isPreAuth; }
+    public boolean getIsPreAuth() {
+        return isPreAuth;
+    }
 
     public boolean getIsDisplayFee() {
         return displayFee;

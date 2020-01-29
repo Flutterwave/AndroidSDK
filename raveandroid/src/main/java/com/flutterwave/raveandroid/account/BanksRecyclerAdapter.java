@@ -52,13 +52,13 @@ public class BanksRecyclerAdapter extends RecyclerView.Adapter<BanksRecyclerAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView bankNameTv;
         Bank bank;
+        private TextView bankNameTv;
 
 
         ViewHolder(View v) {
             super(v);
-            bankNameTv = (TextView) v.findViewById(R.id.bankNameTv);
+            bankNameTv = v.findViewById(R.id.bankNameTv);
             v.setOnClickListener(this);
         }
 

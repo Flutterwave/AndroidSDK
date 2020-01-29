@@ -42,6 +42,8 @@ import static android.view.View.GONE;
  */
 public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
+    @Inject
+    UgMobileMoneyPresenter presenter;
     private View v;
     private Button payButton;
     private TextView instructionsTv;
@@ -50,12 +52,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
-    private ProgressDialog pollingProgressDialog ;
-
-
-    @Inject
-    UgMobileMoneyPresenter presenter;
-
+    private ProgressDialog pollingProgressDialog;
     private String validateInstructions;
     private RavePayInitializer ravePayInitializer;
 
@@ -103,12 +100,12 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     private void initializeViews() {
-        instructionsTv =  v.findViewById(R.id.instructionsTv);
-        amountTil =  v.findViewById(R.id.rave_amountTil);
+        instructionsTv = v.findViewById(R.id.instructionsTv);
+        amountTil = v.findViewById(R.id.rave_amountTil);
         payButton = v.findViewById(R.id.rave_payButton);
-        phoneTil =  v.findViewById(R.id.rave_phoneTil);
+        phoneTil = v.findViewById(R.id.rave_phoneTil);
         amountEt = v.findViewById(R.id.rave_amountEt);
-        phoneEt =  v.findViewById(R.id.rave_phoneEt);
+        phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
 
     @Override
@@ -124,8 +121,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         if (show) {
             instructionsTv.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             instructionsTv.setVisibility(View.GONE);
         }
     }
@@ -168,8 +164,10 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void showProgressIndicator(boolean active) {
 
-        if (getActivity().isFinishing()) { return; }
-        if(progressDialog == null) {
+        if (getActivity().isFinishing()) {
+            return;
+        }
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setMessage(getResources().getString(R.string.wait));
@@ -177,8 +175,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         if (active && !progressDialog.isShowing()) {
             progressDialog.show();
-        }
-        else {
+        } else {
             progressDialog.dismiss();
         }
     }
@@ -288,7 +285,12 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     @Override
     public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
+            try {
+                Thread.sleep(1000);
+                presenter.requeryTx(flwRef, txRef, publicKey);
+            } catch (InterruptedException ignore) {
+
+            }
         }
     }
 

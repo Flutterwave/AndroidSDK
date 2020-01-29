@@ -20,16 +20,15 @@ import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
-    private static final String TAG = VerificationActivity.class.getName();
     public static final String ACTIVITY_MOTIVE = "activityMotive";
     public static final String PUBLIC_KEY_EXTRA = "publicKey";
     public static final String EXTRA_IS_STAGING = "isStaging";
     public static final String INTENT_SENDER = "sender";
+    private static final String TAG = VerificationActivity.class.getName();
     public static String BASE_URL;
-    private Fragment fragment;
     AppComponent appComponent;
-
     RavePayInitializer ravePayInitializer;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

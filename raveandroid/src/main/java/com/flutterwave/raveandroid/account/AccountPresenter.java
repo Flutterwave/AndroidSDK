@@ -70,9 +70,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class AccountPresenter implements AccountContract.UserActionsListener {
 
-    private Context context;
-    private AccountContract.View mView;
-
     @Inject
     EmailValidator emailValidator;
     @Inject
@@ -103,6 +100,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     PayloadToJsonConverter payloadToJsonConverter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    private Context context;
+    private AccountContract.View mView;
 
     @Inject
     public AccountPresenter(Context context, AccountContract.View mView) {

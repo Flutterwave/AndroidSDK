@@ -55,7 +55,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private TextInputEditText phoneEt;
     private TextInputEditText amountEt;
     private ProgressDialog progressDialog;
-    private ProgressDialog pollingProgressDialog ;
+    private ProgressDialog pollingProgressDialog;
 
     private int rave_phoneEtInt;
     private RavePayInitializer ravePayInitializer;
@@ -286,7 +286,13 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
 
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
+            try {
+                Thread.sleep(1000);
+                presenter.requeryTx(flwRef, txRef, publicKey);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
 
     }

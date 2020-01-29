@@ -11,17 +11,17 @@ public class RaveFragment {
     Fragment fragment;
     String title;
 
+    public RaveFragment(Fragment fragment, String title) {
+        this.fragment = fragment;
+        this.title = title;
+    }
+
     public Fragment getFragment() {
         return fragment;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public RaveFragment(Fragment fragment, String title) {
-        this.fragment = fragment;
-        this.title = title;
     }
 
 }

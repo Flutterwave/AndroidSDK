@@ -82,20 +82,20 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
  */
 public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View, View.OnFocusChangeListener {
 
-    @Inject
-    CardPresenter presenter;
-
     public static final int FOR_PIN = 444;
     public static final int FOR_OTP = 666;
     public static final int FOR_AVBVV = 333;
     public static final int FOR_INTERNET_BANKING = 555;
+    public static final String INTENT_SENDER = "cardFrag";
     private static final int FOR_SAVED_CARDS = 777;
     private static final String STATE_PRESENTER_SAVEDCARDS = "presenter_saved_cards";
-    public static final String INTENT_SENDER = "cardFrag";
     private static final String RAVEPAY = "ravepay";
-    private View v;
+    @Inject
+    CardPresenter presenter;
     TextView useASavedCardTv;
     TextView useAnotherCardTv;
+    Boolean hasSavedCards = false;
+    private View v;
     private Button payButton;
     private TextView pcidss_tv;
     private AlertDialog dialog;
@@ -107,7 +107,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private ProgressDialog progessDialog;
     private TextInputLayout amountTil;
     private TextInputEditText amountEt;
-
     private String flwRef;
     private Payload payLoad;
     private TextInputEditText cardNoTv;
@@ -117,7 +116,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private FrameLayout progressContainer;
     private RavePayInitializer ravePayInitializer;
     private boolean shouldISaveThisCard = false;
-    Boolean hasSavedCards = false;
     private LinearLayout saveNewCardLayout;
     private EditText saveCardEmailEt;
     private EditText saveCardPhoneNoEt;
@@ -215,15 +213,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         emailEt = v.findViewById(R.id.rave_emailEt);
         cvvTil = v.findViewById(R.id.rave_cvvTil);
         cvvTv = v.findViewById(R.id.rave_cvvTv);
-        useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
-        useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
+        useAnotherCardTv = v.findViewById(R.id.rave_use_new_card_tv);
+        useASavedCardTv = v.findViewById(R.id.rave_use_saved_card_tv);
         useASavedCardTv.setVisibility(GONE);
-        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
-        saveCardPhoneNoEt = (EditText) v.findViewById(R.id.save_card_phoneNoTV);
-        saveCardEmailEt = (EditText) v.findViewById(R.id.save_card_emailTv);
-        saveCardPhoneNoTil = (TextInputLayout) v.findViewById(R.id.save_card_phoneNoTil);
-        saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
-        saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
+        saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
+        saveCardPhoneNoEt = v.findViewById(R.id.save_card_phoneNoTV);
+        saveCardEmailEt = v.findViewById(R.id.save_card_emailTv);
+        saveCardPhoneNoTil = v.findViewById(R.id.save_card_phoneNoTil);
+        saveCardEmailTil = v.findViewById(R.id.save_card_emailTil);
+        saveNewCardLayout = v.findViewById(R.id.rave_layout_for_saving_card);
 
 
     }
@@ -738,7 +736,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param status               = status of the transaction
      * @param flwRef               = reference of the payment transaction
      * @param responseAsJSONString = full json response from the payment transaction
-     * @param ravePayInitializer The ravePayInitializer used to initiate payment
+     * @param ravePayInitializer   The ravePayInitializer used to initiate payment
      */
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
@@ -850,6 +848,37 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         startActivityForResult(intent, FOR_INTERNET_BANKING);
     }
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        int i = view.getId();
+
+        String fieldName = "";
+
+        if (i == R.id.rave_cvvTv) {
+            fieldName = "CVV";
+        } else if (i == R.id.rave_amountEt) {
+            fieldName = "Amount";
+        } else if (i == R.id.rave_emailEt) {
+            fieldName = "Email";
+        } else if (i == R.id.rave_cardNoTv) {
+            fieldName = "Card Number";
+        } else if (i == R.id.rave_cardExpiryTv) {
+            fieldName = "Card Expiry";
+        }
+
+        if (hasFocus) {
+            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
+        }
+    }
+
+    @Override
+    public void onChargeCardSuccessful(ChargeResponse response) {
+        presenter
+                .requeryTx(response.getData().getFlwRef(),
+                        ravePayInitializer.getPublicKey()
+                );
+    }
+
     private class ExpiryWatcher implements TextWatcher {
 
         private final Calendar calendar;
@@ -918,38 +947,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
             lastInput = cardExpiryTv.getText().toString();
         }
-    }
-
-
-    @Override
-    public void onFocusChange(View view, boolean hasFocus) {
-        int i = view.getId();
-
-        String fieldName = "";
-
-        if (i == R.id.rave_cvvTv) {
-            fieldName = "CVV";
-        } else if (i == R.id.rave_amountEt) {
-            fieldName = "Amount";
-        } else if (i == R.id.rave_emailEt) {
-            fieldName = "Email";
-        } else if (i == R.id.rave_cardNoTv) {
-            fieldName = "Card Number";
-        } else if (i == R.id.rave_cardExpiryTv) {
-            fieldName = "Card Expiry";
-        }
-
-        if (hasFocus) {
-            presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
-        }
-    }
-
-    @Override
-    public void onChargeCardSuccessful(ChargeResponse response) {
-        presenter
-                .requeryTx(response.getData().getFlwRef(),
-                        ravePayInitializer.getPublicKey()
-                );
     }
 
 

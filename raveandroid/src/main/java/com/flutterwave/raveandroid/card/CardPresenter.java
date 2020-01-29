@@ -86,8 +86,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class CardPresenter implements CardContract.UserActionsListener {
 
-    private CardContract.View mView;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -102,7 +100,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardExpiryValidator cardExpiryValidator;
     @Inject
     CardNoValidator cardNoValidator;
-    private Context context;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
@@ -116,8 +113,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Inject
     Gson gson;
     List<SavedCard> savedCards;
+    private CardContract.View mView;
+    private Context context;
     private boolean cardSaveInProgress = false;
     private String requeryInstruction = "Transaction is under processing, please use transaction requery to check status";
+
+    @Inject
+    public CardPresenter(Context context, CardContract.View mView) {
+        this.mView = mView;
+        this.context = context;
+    }
 
     public boolean isCardSaveInProgress() {
         return cardSaveInProgress;
@@ -125,13 +130,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     public void setCardSaveInProgress(boolean cardSaveInProgress) {
         this.cardSaveInProgress = cardSaveInProgress;
-    }
-
-
-    @Inject
-    public CardPresenter(Context context, CardContract.View mView) {
-        this.mView = mView;
-        this.context = context;
     }
 
     @Override

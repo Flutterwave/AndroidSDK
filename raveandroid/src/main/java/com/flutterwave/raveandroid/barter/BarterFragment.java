@@ -40,11 +40,9 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 public class BarterFragment extends Fragment implements BarterContract.View {
 
 
+    public static final int FOR_BARTER_CHECKOUT = 5555;
     @Inject
     BarterPresenter presenter;
-
-    public static final int FOR_BARTER_CHECKOUT = 5555;
-
     private View v;
     private Button payButton;
     private TextInputLayout amountTil;
@@ -290,7 +288,13 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     @Override
     public void onPollingRoundComplete(String flwRef, String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, publicKey);
+            try {
+                Thread.sleep(1000);
+                presenter.requeryTx(flwRef, publicKey);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

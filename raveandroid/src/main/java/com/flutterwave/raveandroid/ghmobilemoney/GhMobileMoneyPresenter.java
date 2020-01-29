@@ -49,9 +49,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validVoucherPrompt;
  */
 
 public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActionsListener {
-    private Context context;
-    private GhMobileMoneyContract.View mView;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -66,6 +63,8 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    private Context context;
+    private GhMobileMoneyContract.View mView;
 
     @Inject
     public GhMobileMoneyPresenter(Context context, GhMobileMoneyContract.View mView) {

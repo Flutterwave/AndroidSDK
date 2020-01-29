@@ -96,6 +96,29 @@ public class WebFragment extends Fragment {
         }
     }
 
+    public void showProgressIndicator(boolean active) {
+
+        try {
+            if (getActivity().isFinishing()) {
+                return;
+            }
+
+            if (progessDialog == null) {
+                progessDialog = new ProgressDialog(getActivity());
+                progessDialog.setCanceledOnTouchOutside(false);
+                progessDialog.setMessage("Please wait...");
+            }
+
+            if (active && !progessDialog.isShowing()) {
+                progessDialog.show();
+            } else {
+                progessDialog.dismiss();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Manages the behavior when URLs are loaded
     private class MyBrowser extends WebViewClient {
         @SuppressWarnings("deprecation")
@@ -132,31 +155,6 @@ public class WebFragment extends Fragment {
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
                 goBack();
             }
-        }
-    }
-
-
-    public void showProgressIndicator(boolean active) {
-
-        try {
-            if (getActivity().isFinishing()) {
-                return;
-            }
-
-            if (progessDialog == null) {
-                progessDialog = new ProgressDialog(getActivity());
-                progessDialog.setCanceledOnTouchOutside(false);
-                progessDialog.setMessage("Please wait...");
-            }
-
-            if (active && !progessDialog.isShowing()) {
-                progessDialog.show();
-            } else {
-                progessDialog.dismiss();
-            }
-        }
-        catch (NullPointerException e) {
-            e.printStackTrace();
         }
     }
 }

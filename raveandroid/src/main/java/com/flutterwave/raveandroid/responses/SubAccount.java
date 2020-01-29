@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class SubAccount {
-    public static final String FLAT="flat";
-    public static final String PERCENTAGE="percentage";
+    public static final String FLAT = "flat";
+    public static final String PERCENTAGE = "percentage";
 
     @SerializedName("id")
     @Expose
@@ -20,17 +20,17 @@ public class SubAccount {
     @Expose
     private String transactionCharge;
 
-    public SubAccount(){
+    public SubAccount() {
 
     }
 
-    public SubAccount(String id, String transactionSplitRatio){
+    public SubAccount(String id, String transactionSplitRatio) {
         this.id = id;
         this.transactionSplitRatio = transactionSplitRatio;
     }
 
-    public SubAccount(String id, String transactionSplitRatio, String transactionChargeType, String transactionCharge){
-        this.id=id;
+    public SubAccount(String id, String transactionSplitRatio, String transactionChargeType, String transactionCharge) {
+        this.id = id;
         this.transactionSplitRatio = transactionSplitRatio;
         this.transactionChargeType = transactionChargeType;
         this.transactionCharge = transactionCharge;

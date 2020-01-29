@@ -18,7 +18,7 @@ import java.util.List;
  * Created by hamzafetuga on 25/07/2017.
  */
 
-public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecyclerAdapter.ViewHolder>{
+public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecyclerAdapter.ViewHolder> {
 
     private List<SavedCard> cards;
     private Callbacks.SavedCardSelectedListener savedCardSelectedListener;
@@ -54,17 +54,17 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        SavedCard card;
         private TextView cardTypeTv;
         private TextView maskedPanTv;
         private ImageView cardBrandIv;
-        SavedCard card;
 
 
         ViewHolder(View v) {
             super(v);
-            cardTypeTv = (TextView) v.findViewById(R.id.card_type_tv);
-            maskedPanTv = (TextView) v.findViewById(R.id.masked_pan_tv);
-            cardBrandIv = (ImageView) v.findViewById(R.id.rave_card_brand_imageview);
+            cardTypeTv = v.findViewById(R.id.card_type_tv);
+            maskedPanTv = v.findViewById(R.id.masked_pan_tv);
+            cardBrandIv = v.findViewById(R.id.rave_card_brand_imageview);
 
             v.setOnClickListener(this);
         }

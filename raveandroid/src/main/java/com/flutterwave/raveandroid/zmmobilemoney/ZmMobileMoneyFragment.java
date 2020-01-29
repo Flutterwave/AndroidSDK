@@ -331,7 +331,13 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     @Override
     public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
+            try {
+                Thread.sleep(1000);
+                presenter.requeryTx(flwRef, txRef, publicKey);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

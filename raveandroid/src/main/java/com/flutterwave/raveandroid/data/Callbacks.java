@@ -20,21 +20,25 @@ public class Callbacks {
 
     public interface OnGhanaChargeRequestComplete {
         void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString);
+
         void onError(String message, String responseAsJSONString);
     }
 
     public interface OnChargeRequestComplete {
         void onSuccess(ChargeResponse response, String responseAsJSONString);
+
         void onError(String message, String responseAsJSONString);
     }
 
     public interface OnValidateChargeCardRequestComplete {
         void onSuccess(ChargeResponse response, String responseAsJSONString);
+
         void onError(String message, String responseAsJSONString);
     }
 
     public interface OnRequeryRequestComplete {
         void onSuccess(RequeryResponse response, String responseAsJSONString);
+
         void onError(String message, String responseAsJSONString);
     }
 
@@ -58,11 +62,13 @@ public class Callbacks {
 
     public interface OnRequeryRequestv2Complete {
         void onSuccess(RequeryResponsev2 response, String responseAsJSONString);
+
         void onError(String message, String responseAsJSONString);
     }
 
     public interface OnGetBanksRequestComplete {
         void onSuccess(List<Bank> banks);
+
         void onError(String message);
     }
 
@@ -76,6 +82,7 @@ public class Callbacks {
 
     public interface OnGetFeeRequestComplete {
         void onSuccess(FeeCheckResponse response);
+
         void onError(String message);
     }
 

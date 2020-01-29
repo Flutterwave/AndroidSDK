@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 
-
 import com.flutterwave.raveandroid.R;
 
 import java.util.regex.Pattern;
@@ -19,12 +18,12 @@ class CreditCardTextWatcher implements TextWatcher {
 
     private static final char space = ' ';
     private final int mDefaultDrawableResId = R.drawable.creditcard;
+    String lastFormattedText;
     private int mCurrentDrawableResId = 0;
     private Drawable mCurrentDrawable;
-    String lastFormattedText;
     private SparseArray<Pattern> mCCPatterns = null;
 
-    CreditCardTextWatcher(){
+    CreditCardTextWatcher() {
         init();
     }
 
