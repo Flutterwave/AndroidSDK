@@ -236,6 +236,9 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.dismiss();
+        }
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {

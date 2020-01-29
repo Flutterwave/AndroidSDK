@@ -368,6 +368,9 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
 
     @Override
     public void onPaymentFailed(String message, final String responseAsJSONString) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.dismiss();
+        }
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {

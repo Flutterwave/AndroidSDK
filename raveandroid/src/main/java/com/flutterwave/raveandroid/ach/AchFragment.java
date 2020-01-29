@@ -171,7 +171,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     private void dismissDialog() {
 
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

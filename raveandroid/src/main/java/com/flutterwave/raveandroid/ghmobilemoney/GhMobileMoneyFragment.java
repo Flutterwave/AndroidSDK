@@ -309,7 +309,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
-        if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.dismiss();
         }
         Intent intent = new Intent();

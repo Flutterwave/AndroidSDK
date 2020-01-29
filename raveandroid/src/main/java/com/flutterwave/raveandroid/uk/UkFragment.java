@@ -256,6 +256,9 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
+            pollingProgressDialog.dismiss();
+        }
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
