@@ -39,9 +39,9 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener
         , View.OnFocusChangeListener {
 
+    public static final int FOR_ACH = 892;
     @Inject
     AchPresenter presenter;
-
     private View v;
     private Button payButton;
     private TextInputLayout amountTil;
@@ -49,8 +49,6 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     private TextView payInstructionsTv;
     private ProgressDialog progressDialog;
     private RavePayInitializer ravePayInitializer;
-
-    public static final int FOR_ACH = 892;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -171,7 +169,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
     private void dismissDialog() {
 
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

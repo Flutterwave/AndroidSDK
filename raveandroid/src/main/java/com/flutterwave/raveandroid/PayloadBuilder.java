@@ -33,44 +33,13 @@ public class PayloadBuilder {
     private boolean isPermanent;
     private int frequency;
     private int duration;
-
-    public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
-        this.is_mobile_money_gh = is_mobile_money_gh;
-        return this;
-    }
-
-    public PayloadBuilder setIs_mobile_money_ug(String is_mobile_money_ug) {
-        this.is_mobile_money_ug = is_mobile_money_ug;
-        return this;
-    }
-
     private String is_mobile_money_rwf;
-
-    public PayloadBuilder setIs_bank_transfer(boolean is_bank_transfer) {
-        this.is_bank_transfer = is_bank_transfer;
-        return this;
-    }
-
-
     private String is_mobile_money_gh;
     private String is_mobile_money_ug;
-
-    public PayloadBuilder setIs_mobile_money_rwf(String is_mobile_money_rwf) {
-        this.is_mobile_money_rwf = is_mobile_money_rwf;
-        return this;
-    }
-
     private String phonenumber;
-
     private String txRef;
     private String meta = "";
     private String subAccounts = "";
-
-    public PayloadBuilder setCustomer_phone(String customer_phone) {
-        this.customer_phone = customer_phone;
-        return this;
-    }
-
     private String customer_phone;
     private String narration;
     private String pin;
@@ -78,28 +47,8 @@ public class PayloadBuilder {
     private String accountnumber;
     private String accountname;
 
-    public PayloadBuilder setAccountnumber(String accountnumber) {
-        this.accountnumber = accountnumber;
-        return this;
-    }
-
-    public PayloadBuilder setAccountbank(String accountbank) {
-        this.accountbank = accountbank;
-        return this;
-    }
-
-    public PayloadBuilder setPin(String pin) {
-        this.pin = pin;
-        return this;
-    }
-
-    public PayloadBuilder setExpirymonth(String expirymonth) {
-        this.expirymonth = expirymonth;
-        return this;
-    }
-
-    public PayloadBuilder setVoucher(String voucher) {
-        this.voucher = voucher;
+    public PayloadBuilder setIs_mobile_money_rwf(String is_mobile_money_rwf) {
+        this.is_mobile_money_rwf = is_mobile_money_rwf;
         return this;
     }
 
@@ -118,16 +67,6 @@ public class PayloadBuilder {
         return this;
     }
 
-    public PayloadBuilder setLastname(String lastname) {
-        this.lastname = lastname;
-        return this;
-    }
-
-    public PayloadBuilder setFirstname(String firstname) {
-        this.firstname = firstname;
-        return this;
-    }
-
     public PayloadBuilder setIsPreAuth(boolean isPreAuth) {
         this.isPreAuth = isPreAuth;
         return this;
@@ -138,58 +77,8 @@ public class PayloadBuilder {
         return this;
     }
 
-    public PayloadBuilder setCurrency(String currency) {
-        this.currency = currency;
-        return this;
-    }
-
-    public PayloadBuilder setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-        return this;
-    }
-
-    public PayloadBuilder setCountry(String country) {
-        this.country = country;
-        return this;
-    }
-
-    public PayloadBuilder setAmount(String amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    public PayloadBuilder setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public PayloadBuilder setExpiryyear(String expiryyear) {
-        this.expiryyear = expiryyear;
-        return this;
-    }
-
-    public PayloadBuilder setCvv(String cvv) {
-        this.cvv = cvv;
-        return this;
-    }
-
     public PayloadBuilder setPaymentPlan(String payment_plan) {
         this.payment_plan = payment_plan;
-        return this;
-    }
-
-    public PayloadBuilder setDevice_fingerprint(String device_fingerprint) {
-        this.device_fingerprint = device_fingerprint;
-        return this;
-    }
-
-    public PayloadBuilder setCardno(String cardno) {
-        this.cardno = cardno;
-        return this;
-    }
-
-    public PayloadBuilder setTxRef(String txRef) {
-        this.txRef = txRef;
         return this;
     }
 
@@ -252,7 +141,6 @@ public class PayloadBuilder {
         }
         return payload;
     }
-
 
     public Payload createUssdPayload() {
         List<Meta> metaObj = Utils.pojofyMetaString(meta);
@@ -381,23 +269,8 @@ public class PayloadBuilder {
 
     }
 
-    public PayloadBuilder setMeta(String meta) {
-        this.meta = meta;
-        return this;
-    }
-
     public PayloadBuilder setSubAccount(String subAccounts) {
         this.subAccounts = subAccounts;
-        return this;
-    }
-
-    public PayloadBuilder setNarration(String narration) {
-        this.narration = narration;
-        return this;
-    }
-
-    public PayloadBuilder setNetwork(String network) {
-        this.network = network;
         return this;
     }
 
@@ -423,8 +296,18 @@ public class PayloadBuilder {
         return savedCard;
     }
 
+    public PayloadBuilder setSavedCard(SavedCard savedCard) {
+        this.savedCard = savedCard;
+        return this;
+    }
+
     public String getExpirymonth() {
         return expirymonth;
+    }
+
+    public PayloadBuilder setExpirymonth(String expirymonth) {
+        this.expirymonth = expirymonth;
+        return this;
     }
 
     public String getPbfPubKey() {
@@ -439,40 +322,90 @@ public class PayloadBuilder {
         return lastname;
     }
 
+    public PayloadBuilder setLastname(String lastname) {
+        this.lastname = lastname;
+        return this;
+    }
+
     public String getFirstname() {
         return firstname;
+    }
+
+    public PayloadBuilder setFirstname(String firstname) {
+        this.firstname = firstname;
+        return this;
     }
 
     public String getCurrency() {
         return currency;
     }
 
+    public PayloadBuilder setCurrency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+
     public String getCountry() {
         return country;
+    }
+
+    public PayloadBuilder setCountry(String country) {
+        this.country = country;
+        return this;
     }
 
     public String getAmount() {
         return amount;
     }
 
+    public PayloadBuilder setAmount(String amount) {
+        this.amount = amount;
+        return this;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public PayloadBuilder setEmail(String email) {
+        this.email = email;
+        return this;
     }
 
     public String getExpiryyear() {
         return expiryyear;
     }
 
+    public PayloadBuilder setExpiryyear(String expiryyear) {
+        this.expiryyear = expiryyear;
+        return this;
+    }
+
     public String getCvv() {
         return cvv;
+    }
+
+    public PayloadBuilder setCvv(String cvv) {
+        this.cvv = cvv;
+        return this;
     }
 
     public String getDevice_fingerprint() {
         return device_fingerprint;
     }
 
+    public PayloadBuilder setDevice_fingerprint(String device_fingerprint) {
+        this.device_fingerprint = device_fingerprint;
+        return this;
+    }
+
     public String getCardno() {
         return cardno;
+    }
+
+    public PayloadBuilder setCardno(String cardno) {
+        this.cardno = cardno;
+        return this;
     }
 
     public String getPayment_plan() {
@@ -483,12 +416,22 @@ public class PayloadBuilder {
         return network;
     }
 
+    public PayloadBuilder setNetwork(String network) {
+        this.network = network;
+        return this;
+    }
+
     public String getBvn() {
         return bvn;
     }
 
     public String getVoucher() {
         return voucher;
+    }
+
+    public PayloadBuilder setVoucher(String voucher) {
+        this.voucher = voucher;
+        return this;
     }
 
     public boolean isPreAuth() {
@@ -503,24 +446,54 @@ public class PayloadBuilder {
         return is_bank_transfer;
     }
 
+    public PayloadBuilder setIs_bank_transfer(boolean is_bank_transfer) {
+        this.is_bank_transfer = is_bank_transfer;
+        return this;
+    }
+
     public String getIs_mobile_money_gh() {
         return is_mobile_money_gh;
+    }
+
+    public PayloadBuilder setIs_mobile_money_gh(String is_mobile_money_gh) {
+        this.is_mobile_money_gh = is_mobile_money_gh;
+        return this;
     }
 
     public String getIs_mobile_money_ug() {
         return is_mobile_money_ug;
     }
 
+    public PayloadBuilder setIs_mobile_money_ug(String is_mobile_money_ug) {
+        this.is_mobile_money_ug = is_mobile_money_ug;
+        return this;
+    }
+
     public String getPhonenumber() {
         return phonenumber;
+    }
+
+    public PayloadBuilder setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+        return this;
     }
 
     public String getTxRef() {
         return txRef;
     }
 
+    public PayloadBuilder setTxRef(String txRef) {
+        this.txRef = txRef;
+        return this;
+    }
+
     public String getMeta() {
         return meta;
+    }
+
+    public PayloadBuilder setMeta(String meta) {
+        this.meta = meta;
+        return this;
     }
 
     public String getSubAccounts() {
@@ -531,20 +504,45 @@ public class PayloadBuilder {
         return customer_phone;
     }
 
+    public PayloadBuilder setCustomer_phone(String customer_phone) {
+        this.customer_phone = customer_phone;
+        return this;
+    }
+
     public String getNarration() {
         return narration;
+    }
+
+    public PayloadBuilder setNarration(String narration) {
+        this.narration = narration;
+        return this;
     }
 
     public String getPin() {
         return pin;
     }
 
+    public PayloadBuilder setPin(String pin) {
+        this.pin = pin;
+        return this;
+    }
+
     public String getAccountbank() {
         return accountbank;
     }
 
+    public PayloadBuilder setAccountbank(String accountbank) {
+        this.accountbank = accountbank;
+        return this;
+    }
+
     public String getAccountnumber() {
         return accountnumber;
+    }
+
+    public PayloadBuilder setAccountnumber(String accountnumber) {
+        this.accountnumber = accountnumber;
+        return this;
     }
 
     public PayloadBuilder setIsPermanent(boolean permanent) {
@@ -555,7 +553,6 @@ public class PayloadBuilder {
     public boolean getPermanent() {
         return isPermanent;
     }
-
 
     public int getFrequency() {
         return frequency;
@@ -572,11 +569,6 @@ public class PayloadBuilder {
 
     public PayloadBuilder setDuration(int duration) {
         this.duration = duration;
-        return this;
-    }
-
-    public PayloadBuilder setSavedCard(SavedCard savedCard) {
-        this.savedCard = savedCard;
         return this;
     }
 }

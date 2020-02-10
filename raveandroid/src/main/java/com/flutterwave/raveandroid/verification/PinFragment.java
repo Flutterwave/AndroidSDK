@@ -13,7 +13,6 @@ import android.widget.Button;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-
 import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
@@ -29,9 +28,9 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.PUBL
  */
 public class PinFragment extends Fragment {
     public static final String EXTRA_PIN = "extraPin";
-    private String pin;
     @Inject
     EventLogger logger;
+    private String pin;
 
     public PinFragment() {
         // Required empty public constructor
@@ -61,8 +60,7 @@ public class PinFragment extends Fragment {
 
                 if (pin.length() != 4) {
                     pinTil.setError("Enter a valid pin");
-                }
-                else {
+                } else {
                     goBack();
                 }
             }
@@ -97,9 +95,9 @@ public class PinFragment extends Fragment {
         }
     }
 
-    public void goBack(){
+    public void goBack() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_PIN,pin);
+        intent.putExtra(EXTRA_PIN, pin);
         logEvent(new SubmitEvent("PIN").getEvent());
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);

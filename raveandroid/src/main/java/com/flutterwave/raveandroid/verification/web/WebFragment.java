@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -101,6 +102,83 @@ public class WebFragment extends Fragment implements WebContract.View {
         webView.setVisibility(View.INVISIBLE);
     }
 
+    public void goBack() {
+        Intent intent = new Intent();
+        if (getActivity() != null) {
+            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
+            getActivity().finish();
+        }
+    }
+
+    private void goBack(int result, String responseAsJSONString) {
+        Intent intent = new Intent();
+        intent.putExtra(response, responseAsJSONString);
+        if (getActivity() != null) {
+            getActivity().setResult(result, intent);
+            getActivity().finish();
+        }
+    }
+
+    public void showProgressIndicator(boolean active) {
+
+        try {
+            if (getActivity().isFinishing()) {
+                return;
+            }
+
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Please wait...");
+            }
+
+            if (active && !progressDialog.isShowing()) {
+                progressDialog.show();
+            } else {
+                progressDialog.dismiss();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPaymentSuccessful(String responseAsString) {
+        goBack(RavePayActivity.RESULT_SUCCESS, responseAsString);
+    }
+
+    @Override
+    public void onPaymentFailed(String message, String responseAsJSONString) {
+        goBack(RavePayActivity.RESULT_ERROR, responseAsJSONString);
+    }
+
+    @Override
+    public void onPollingRoundComplete(final String flwRef, final String publicKey) {
+
+        Handler handler = new Handler();
+        Runnable r = new Runnable() {
+            public void run() {
+                presenter.requeryTx(flwRef, publicKey);
+            }
+        };
+        handler.postDelayed(r, 1000);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onAttachView(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) {
+            presenter.onDetachView();
+        }
+    }
+
     // Manages the behavior when URLs are loaded
     private class MyBrowser extends WebViewClient {
         @SuppressWarnings("deprecation")
@@ -142,76 +220,6 @@ public class WebFragment extends Fragment implements WebContract.View {
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
                 goBack();
             }
-        }
-    }
-
-    public void goBack() {
-        Intent intent = new Intent();
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
-    }
-
-    private void goBack(int result, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(result, intent);
-            getActivity().finish();
-        }
-    }
-
-
-    public void showProgressIndicator(boolean active) {
-
-        try {
-            if (getActivity().isFinishing()) {
-                return;
-            }
-
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.setMessage("Please wait...");
-            }
-
-            if (active && !progressDialog.isShowing()) {
-                progressDialog.show();
-            } else {
-                progressDialog.dismiss();
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onPaymentSuccessful(String responseAsString) {
-        goBack(RavePayActivity.RESULT_SUCCESS, responseAsString);
-    }
-
-    @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
-        goBack(RavePayActivity.RESULT_ERROR, responseAsJSONString);
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String publicKey) {
-        presenter.requeryTx(flwRef, publicKey);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        presenter.onAttachView(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (presenter != null) {
-            presenter.onDetachView();
         }
     }
 }

@@ -44,25 +44,24 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     private static final String TX_REF = "txref";
     private static final String FLW_REF = "flwref";
     private static final String PUBLIC_KEY = "pbfkey";
-
+    public boolean pollingCancelled = false;
+    public boolean hasTransferDetails = false;
     @Inject
     EventLogger eventLogger;
     @Inject
     AmountValidator amountValidator;
     @Inject
     NetworkRequestImpl networkRequest;
-    public boolean pollingCancelled = false;
-    public boolean hasTransferDetails = false;
     @Inject
     DeviceIdGetter deviceIdGetter;
     BankTransferContract.View mView;
-    private String txRef = null, flwRef = null, publicKey = null;
-    private long requeryCountdownTime = 0;
     @Inject
     PayloadToJson payloadToJson;
-    private String beneficiaryName, accountNumber, amount, bankName;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    private String txRef = null, flwRef = null, publicKey = null;
+    private long requeryCountdownTime = 0;
+    private String beneficiaryName, accountNumber, amount, bankName;
 
     @Inject
     public BankTransferPresenter(Context context, BankTransferContract.View mView) {

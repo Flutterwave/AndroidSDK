@@ -64,6 +64,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
@@ -85,8 +86,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class CardPresenter implements CardContract.UserActionsListener {
 
-    private CardContract.View mView;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -101,7 +100,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     CardExpiryValidator cardExpiryValidator;
     @Inject
     CardNoValidator cardNoValidator;
-    private Context context;
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
@@ -115,8 +113,16 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Inject
     Gson gson;
     List<SavedCard> savedCards;
+    private CardContract.View mView;
+    private Context context;
     private boolean cardSaveInProgress = false;
     private String requeryInstruction = "Transaction is under processing, please use transaction requery to check status";
+
+    @Inject
+    public CardPresenter(Context context, CardContract.View mView) {
+        this.mView = mView;
+        this.context = context;
+    }
 
     public boolean isCardSaveInProgress() {
         return cardSaveInProgress;
@@ -124,13 +130,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
     public void setCardSaveInProgress(boolean cardSaveInProgress) {
         this.cardSaveInProgress = cardSaveInProgress;
-    }
-
-
-    @Inject
-    public CardPresenter(Context context, CardContract.View mView) {
-        this.mView = mView;
-        this.context = context;
     }
 
     @Override
@@ -453,6 +452,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
         if (ravePayInitializer != null) {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
+
+            if (dataHashMap.containsKey(fieldPhone)) {
+                String phoneNumber = dataHashMap.get(fieldPhone).getData();
+                if (!phoneNumber.isEmpty()) ravePayInitializer.setPhoneNumber(phoneNumber);
+            }
 
             String deviceID = deviceIdGetter.getDeviceId();
 

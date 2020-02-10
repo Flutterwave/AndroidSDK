@@ -54,7 +54,8 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
 
         init();
         Gson gson = new Gson();
-        Type type = new TypeToken<List<SavedCard>>() {}.getType();
+        Type type = new TypeToken<List<SavedCard>>() {
+        }.getType();
         String savedCardsJson = gson.toJson(savedCards, type);
 
         editor.putString(SAVED_CARDS_PREFIX + phoneNumber + publicKey, savedCardsJson).apply();
@@ -71,8 +72,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
             Type type = new TypeToken<List<SavedCard>>() {
             }.getType();
             return gson.fromJson(savedCardsJson, type);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }

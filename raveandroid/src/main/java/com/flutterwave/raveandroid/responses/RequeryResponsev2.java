@@ -6,6 +6,10 @@ package com.flutterwave.raveandroid.responses;
 
 public class RequeryResponsev2 {
 
+    String status;
+    String message;
+    Data data;
+
     public String getStatus() {
         return status;
     }
@@ -22,10 +26,6 @@ public class RequeryResponsev2 {
         this.message = message;
     }
 
-    String status;
-    String message;
-    Data data;
-
     public Data getData() {
         return data;
     }
@@ -38,6 +38,8 @@ public class RequeryResponsev2 {
 
         String txref;
         String flwref;
+        String chargecode;
+        String status;
 
         public String getTxref() {
             return txref;
@@ -70,8 +72,5 @@ public class RequeryResponsev2 {
         public void setStatus(String status) {
             this.status = status;
         }
-
-        String chargecode;
-        String status;
     }
 }

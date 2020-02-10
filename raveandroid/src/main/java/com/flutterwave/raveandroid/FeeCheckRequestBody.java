@@ -16,53 +16,43 @@ public class FeeCheckRequestBody {
 
     private String currency;
 
-    public String getAmount ()
-    {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount (String amount)
-    {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
-    public String getPBFPubKey ()
-    {
+    public String getPBFPubKey() {
         return PBFPubKey;
     }
 
-    public void setPBFPubKey (String PBFPubKey)
-    {
+    public void setPBFPubKey(String PBFPubKey) {
         this.PBFPubKey = PBFPubKey;
     }
 
-    public String getPtype ()
-    {
+    public String getPtype() {
         return ptype;
     }
 
-    public void setPtype (String ptype)
-    {
+    public void setPtype(String ptype) {
         this.ptype = ptype;
     }
 
-    public String getCard6 ()
-    {
+    public String getCard6() {
         return card6;
     }
 
-    public void setCard6 (String card6)
-    {
+    public void setCard6(String card6) {
         this.card6 = card6;
     }
 
-    public String getCurrency ()
-    {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency (String currency)
-    {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

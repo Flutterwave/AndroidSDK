@@ -1,5 +1,3 @@
-
-
 package com.flutterwave.raveandroid.ussd;
 
 import com.flutterwave.raveandroid.Payload;

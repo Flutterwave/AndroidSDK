@@ -7,6 +7,7 @@ package com.flutterwave.raveandroid.data;
 public class RequeryRequestBodyv2 {
 
     String SECKEY;
+    String txref;
 
     public String getSECKEY() {
         return SECKEY;
@@ -23,6 +24,4 @@ public class RequeryRequestBodyv2 {
     public void setTxref(String txref) {
         this.txref = txref;
     }
-
-    String txref;
 }

@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 
-
 import com.flutterwave.raveandroid.R;
 
 import java.util.regex.Matcher;
@@ -22,12 +21,12 @@ import java.util.regex.Pattern;
 public class CreditCardView extends TextInputEditText {
 
 
-    private SparseArray<Pattern> mCCPatterns = null;
     //default credit card image
     private final int mDefaultDrawableResId = R.drawable.creditcard;
+    String lastFormattedText;
+    private SparseArray<Pattern> mCCPatterns = null;
     private int mCurrentDrawableResId = 0;
     private Drawable mCurrentDrawable;
-    String lastFormattedText;
 
     public CreditCardView(Context context) {
         super(context);

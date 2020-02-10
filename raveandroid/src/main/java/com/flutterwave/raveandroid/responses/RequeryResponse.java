@@ -9,25 +9,26 @@ import java.util.List;
 public class RequeryResponse {
 
     String status;
+    Data data;
 
     public Data getData() {
         return data;
     }
 
-    Data data;
+    public void setData(Data data) {
+        this.data = data;
+    }
 
     public String getStatus() {
         return status;
     }
 
-
-    public void setData(Data data) {
-        this.data = data;
-    }
-
     public static class Data {
 
         Data data;
+        String chargeResponseCode;
+        CardDets card;
+        String status;
 
         public Data getData() {
             return data;
@@ -37,17 +38,17 @@ public class RequeryResponse {
             this.data = data;
         }
 
-        String chargeResponseCode;
+        public String getChargeResponseCode() {
+            return chargeResponseCode;
+        }
 
-        public String getChargeResponseCode() { return chargeResponseCode; }
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
+        }
 
         public CardDets getCard() {
             return card;
         }
-
-        CardDets card;
-
-        String status;
 
         public String getStatus() {
             return status;
@@ -56,65 +57,51 @@ public class RequeryResponse {
         public void setStatus(String status) {
             this.status = status;
         }
-
-        public void setChargeResponseCode(String chargeResponseCode) {
-            this.chargeResponseCode = chargeResponseCode;
-        }
     }
 
-    public static class Card_tokens
-    {
+    public static class Card_tokens {
         private String embedtoken;
 
         private String shortcode;
 
-        public String getEmbedtoken ()
-        {
+        public String getEmbedtoken() {
             return embedtoken;
         }
 
-        public String getShortcode ()
-        {
+        public String getShortcode() {
             return shortcode;
         }
 
     }
 
-    public static class CardDets
-    {
+    public static class CardDets {
         private String cardBIN;
 
         private List<Card_tokens> card_tokens;
 
         private String brand;
 
-        public String getCardBIN ()
-        {
+        public String getCardBIN() {
             return cardBIN;
         }
 
-        public void setCardBIN (String cardBIN)
-        {
+        public void setCardBIN(String cardBIN) {
             this.cardBIN = cardBIN;
         }
 
-        public List<Card_tokens> getCard_tokens ()
-        {
+        public List<Card_tokens> getCard_tokens() {
             return card_tokens;
         }
 
-        public void setCard_tokens (List<Card_tokens> card_tokens)
-        {
+        public void setCard_tokens(List<Card_tokens> card_tokens) {
             this.card_tokens = card_tokens;
         }
 
-        public String getBrand ()
-        {
+        public String getBrand() {
             return brand;
         }
 
-        public void setBrand (String brand)
-        {
+        public void setBrand(String brand) {
             this.brand = brand;
         }
     }

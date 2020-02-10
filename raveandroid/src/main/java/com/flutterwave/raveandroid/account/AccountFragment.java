@@ -63,11 +63,10 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
  */
 public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
 
-    @Inject
-    AccountPresenter presenter;
-
     public static final int FOR_0TP = 222;
     public static final int FOR_INTERNET_BANKING = 111;
+    @Inject
+    AccountPresenter presenter;
     private View v;
     private String flwRef;
     private EditText bankEt;

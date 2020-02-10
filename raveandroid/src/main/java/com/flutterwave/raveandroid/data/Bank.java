@@ -18,15 +18,15 @@ public class Bank {
         return bankcode;
     }
 
+    public void setBankcode(String bankcode) {
+        this.bankcode = bankcode;
+    }
+
     public boolean isInternetbanking() {
         return internetbanking;
     }
 
     public void setInternetbanking(boolean internetbanking) {
         this.internetbanking = internetbanking;
-    }
-
-    public void setBankcode(String bankcode) {
-        this.bankcode = bankcode;
     }
 }

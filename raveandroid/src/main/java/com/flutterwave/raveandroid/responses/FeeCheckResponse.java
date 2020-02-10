@@ -12,33 +12,27 @@ public class FeeCheckResponse {
 
     private Data data;
 
-    public String getMessage ()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage (String message)
-    {
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public String getStatus ()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus (String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Data getData ()
-    {
+    public Data getData() {
         return data;
     }
 
-    public void setData (Data data)
-    {
+    public void setData(Data data) {
         this.data = data;
     }
 
@@ -51,43 +45,35 @@ public class FeeCheckResponse {
 
         private String ravefee;
 
-        public String getFee ()
-        {
+        public String getFee() {
             return fee;
         }
 
-        public void setFee (String fee)
-        {
+        public void setFee(String fee) {
             this.fee = fee;
         }
 
-        public String getCharge_amount ()
-        {
+        public String getCharge_amount() {
             return charge_amount;
         }
 
-        public void setCharge_amount (String charge_amount)
-        {
+        public void setCharge_amount(String charge_amount) {
             this.charge_amount = charge_amount;
         }
 
-        public String getMerchantfee ()
-        {
+        public String getMerchantfee() {
             return merchantfee;
         }
 
-        public void setMerchantfee (String merchantfee)
-        {
+        public void setMerchantfee(String merchantfee) {
             this.merchantfee = merchantfee;
         }
 
-        public String getRavefee ()
-        {
+        public String getRavefee() {
             return ravefee;
         }
 
-        public void setRavefee (String ravefee)
-        {
+        public void setRavefee(String ravefee) {
             this.ravefee = ravefee;
         }
     }

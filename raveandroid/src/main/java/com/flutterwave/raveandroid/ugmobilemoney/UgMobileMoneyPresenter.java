@@ -48,9 +48,6 @@ import static com.flutterwave.raveandroid.RaveConstants.validPhonePrompt;
 
 public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
 
-    private Context context;
-    private UgMobileMoneyContract.View mView;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -63,6 +60,8 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    private Context context;
+    private UgMobileMoneyContract.View mView;
 
     @Inject
     public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
@@ -87,8 +86,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
 
                 try {
                     mView.displayFee(response.getData().getCharge_amount(), payload);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     mView.showFetchFeeFailed(transactionError);
                 }
@@ -130,8 +128,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
                     String flwRef = response.getData().getFlwRef();
                     String txRef = response.getData().getTx_ref();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                }
-                else {
+                } else {
                     mView.onPaymentError(noResponse);
                 }
 
@@ -161,16 +158,13 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
-                else if (response.getData().getChargeResponseCode().equals("02")){
+                } else if (response.getData().getChargeResponseCode().equals("02")) {
 //                    Log.d("Requery response",responseAsJSONString);
                     mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                }
-                else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mView.showPollingIndicator(false);
                     mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
-                }
-                else {
+                } else {
                     mView.showProgressIndicator(false);
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 }
@@ -186,7 +180,7 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     @Override
     public void onDataCollected(HashMap<String, ViewObject> dataHashMap) {
 
-         boolean valid = true;
+        boolean valid = true;
 
         int amountID = dataHashMap.get(fieldAmount).getViewId();
         String amount = dataHashMap.get(fieldAmount).getData();
@@ -205,20 +199,20 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
         }
 
         if (!isPhoneValid) {
-                valid = false;
+            valid = false;
             mView.showFieldError(phoneID, validPhonePrompt, phoneViewType);
         }
 
-         if (valid) {
-             mView.onValidationSuccessful(dataHashMap);
-         }
+        if (valid) {
+            mView.onValidationSuccessful(dataHashMap);
+        }
 
     }
 
     @Override
     public void processTransaction(HashMap<String, ViewObject> dataHashMap, RavePayInitializer ravePayInitializer) {
 
-        if (ravePayInitializer!=null) {
+        if (ravePayInitializer != null) {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 

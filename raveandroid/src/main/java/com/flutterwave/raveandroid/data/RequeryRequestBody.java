@@ -6,6 +6,8 @@ package com.flutterwave.raveandroid.data;
 
 public class RequeryRequestBody {
 
+    String PBFPubKey;
+    String flw_ref;
     private String order_ref;
 
     public String getPBFPubKey() {
@@ -16,8 +18,6 @@ public class RequeryRequestBody {
         this.PBFPubKey = PBFPubKey;
     }
 
-    String PBFPubKey;
-
     public String getFlw_ref() {
         return flw_ref;
     }
@@ -25,8 +25,6 @@ public class RequeryRequestBody {
     public void setFlw_ref(String flw_ref) {
         this.flw_ref = flw_ref;
     }
-
-    String flw_ref;
 
     public String getOrder_ref() {
         return order_ref;

@@ -34,11 +34,8 @@ import javax.inject.Inject;
 import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 
 public class UssdPresenter implements UssdContract.UserActionsListener {
-    private Context context;
     public UssdContract.View mView;
-
     public boolean pollingCancelled = false;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -51,6 +48,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
     DeviceIdGetter deviceIdGetter;
     @Inject
     NetworkRequestImpl networkRequest;
+    private Context context;
     private String txRef = null, flwRef = null, publicKey = null, ussdCode = null, referenceCode = null;
     private long requeryCountdownTime = 0;
 

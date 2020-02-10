@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -61,7 +62,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private TextInputLayout voucherTil;
     private TextInputEditText voucherEt;
     private ProgressDialog progressDialog;
-    private ProgressDialog pollingProgressDialog ;
+    private ProgressDialog pollingProgressDialog;
 
     private String network;
     private String validateInstructions;
@@ -122,6 +123,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         amountEt = v.findViewById(R.id.rave_amountEt);
         phoneEt = v.findViewById(R.id.rave_phoneEt);
     }
+
     private void setUpNetworks() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
                 R.array.gh_mobile_money_networks, android.R.layout.simple_spinner_item);
@@ -143,13 +145,11 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
                         presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
                         showInstructionsAndVoucher(false);
-                    }
-                    else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
+                    } else if (network.equalsIgnoreCase(RaveConstants.tigo)) {
                         presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
-                        validateInstructions =  getResources().getString(R.string.tigo_validate_instructions);
+                        validateInstructions = getResources().getString(R.string.tigo_validate_instructions);
                         showInstructionsAndVoucher(false);
-                    }
-                    else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
+                    } else if (network.equalsIgnoreCase(RaveConstants.vodafone)) {
                         presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.checkStatus);
                         showInstructionsAndVoucher(true);
@@ -200,12 +200,11 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
 
-        if (viewType == TextInputLayout.class){
-            TextInputLayout view  =  v.findViewById(viewID);
+        if (viewType == TextInputLayout.class) {
+            TextInputLayout view = v.findViewById(viewID);
             view.setError(message);
-        }
-        else if (viewType == EditText.class){
-            EditText view  =  v.findViewById(viewID);
+        } else if (viewType == EditText.class) {
+            EditText view = v.findViewById(viewID);
             view.setError(message);
         }
 
@@ -223,8 +222,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             presenter.logEvent(new InstructionsDisplayedEvent("Gh Momo").getEvent(), ravePayInitializer.getPublicKey());
             voucherTil.setVisibility(View.VISIBLE);
             instructionsTv.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             voucherTil.setVisibility(View.GONE);
             instructionsTv.setVisibility(View.GONE);
         }
@@ -239,7 +237,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
             }
         }
 
-        if(progressDialog == null) {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setMessage(getResources().getString(R.string.wait));
@@ -247,8 +245,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         if (active && !progressDialog.isShowing()) {
             progressDialog.show();
-        }
-        else {
+        } else {
             progressDialog.dismiss();
         }
     }
@@ -309,7 +306,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
 
-        if (pollingProgressDialog != null && !pollingProgressDialog.isShowing()) {
+        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
             pollingProgressDialog.dismiss();
         }
         Intent intent = new Intent();
@@ -357,9 +354,17 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
+    public void onPollingRoundComplete(final String flwRef, final String txRef, final String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
+
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                public void run() {
+                    presenter.requeryTx(flwRef, txRef, publicKey);
+                }
+            };
+            handler.postDelayed(r, 1000);
+
         }
     }
 

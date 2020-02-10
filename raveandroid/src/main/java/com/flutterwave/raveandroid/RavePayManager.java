@@ -36,6 +36,11 @@ import static com.flutterwave.raveandroid.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 
 public class RavePayManager {
+    boolean allowSaveCard = true;
+    boolean staging = true;
+    boolean isPreAuth = false;
+    boolean showStagingLabel = true;
+    boolean displayFee = true;
     private String email;
     private double amount = -1;
     private String publicKey;
@@ -46,7 +51,6 @@ public class RavePayManager {
     private String country = "NG";
     private String fName = "";
     private String lName = "";
-    boolean allowSaveCard = true;
     private String meta = "";
     private String subAccounts = "";
     private String payment_plan;
@@ -54,15 +58,23 @@ public class RavePayManager {
     private Fragment supportFragment;
     private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
-    boolean staging = true;
-    boolean isPreAuth = false;
     private String phoneNumber = "";
-    boolean showStagingLabel = true;
-    boolean displayFee = true;
     private boolean isPermanent = false;
     private int duration = 0;
     private int frequency = 0;
     private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
+
+    public RavePayManager(Activity activity) {
+        this.activity = activity;
+    }
+
+    public RavePayManager(Fragment fragment) {
+        this.supportFragment = fragment;
+    }
+
+    public RavePayManager(android.app.Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     public ArrayList<Integer> getOrderedPaymentTypesList() {
         return orderedPaymentTypesList;
@@ -81,18 +93,6 @@ public class RavePayManager {
     public RavePayManager withTheme(int theme) {
         this.theme = theme;
         return this;
-    }
-
-    public RavePayManager(Activity activity) {
-        this.activity = activity;
-    }
-
-    public RavePayManager(Fragment fragment) {
-        this.supportFragment = fragment;
-    }
-
-    public RavePayManager(android.app.Fragment fragment) {
-        this.fragment = fragment;
     }
 
     public RavePayManager acceptAchPayments(boolean withAch) {

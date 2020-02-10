@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -40,11 +41,9 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 public class BarterFragment extends Fragment implements BarterContract.View {
 
 
+    public static final int FOR_BARTER_CHECKOUT = 5555;
     @Inject
     BarterPresenter presenter;
-
-    public static final int FOR_BARTER_CHECKOUT = 5555;
-
     private View v;
     private Button payButton;
     private TextInputLayout amountTil;
@@ -288,9 +287,17 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String publicKey) {
+    public void onPollingRoundComplete(final String flwRef, final String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, publicKey);
+
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                public void run() {
+                    presenter.requeryTx(flwRef, publicKey);
+                }
+            };
+            handler.postDelayed(r, 1000);
+
         }
     }
 

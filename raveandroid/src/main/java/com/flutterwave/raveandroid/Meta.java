@@ -6,12 +6,13 @@ package com.flutterwave.raveandroid;
 
 public class Meta {
 
+    String metavalue;
+    String metaname;
+
     public Meta(String metaname, String metavalue) {
         this.metaname = metaname;
         this.metavalue = metavalue;
     }
-
-    String metavalue;
 
     public String getMetavalue() {
         return metavalue;
@@ -28,6 +29,4 @@ public class Meta {
     public void setMetaname(String metaname) {
         this.metaname = metaname;
     }
-
-    String metaname;
 }

@@ -31,7 +31,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     public static final String EXTRA_OTP = "extraOTP";
     public static final String IS_SAVED_CARD_CHARGE = "is_saved_card_charge";
-    private Boolean isSavedCardCharge = false;
+    public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
     TextInputEditText otpEt;
     TextInputLayout otpTil;
     TextView chargeMessage;
@@ -39,10 +39,9 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     @Inject
     EventLogger logger;
-
-    public static final String EXTRA_CHARGE_MESSAGE = "extraChargeMessage";
     View v;
     String otp;
+    private Boolean isSavedCardCharge = false;
 
     public OTPFragment() {
         // Required empty public constructor

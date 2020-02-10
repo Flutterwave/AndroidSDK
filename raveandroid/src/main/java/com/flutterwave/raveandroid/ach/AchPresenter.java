@@ -31,11 +31,8 @@ import javax.inject.Inject;
 public class AchPresenter implements AchContract.UserActionsListener {
 
     Context context;
-    private AchContract.View mView;
-
     @Inject
     SharedPrefsRequestImpl sharedMgr;
-
     @Inject
     EventLogger eventLogger;
     @Inject
@@ -50,6 +47,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
     PayloadToJsonConverter payloadToJsonConverter;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    private AchContract.View mView;
 
     @Inject
     public AchPresenter(Context context, AchContract.View mView) {
@@ -155,17 +153,14 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
                         if (isDisplayFee) {
                             mView.showFee(authUrl, flwRef, chargedAmount, currency);
-                        }
-                        else {
+                        } else {
                             mView.showWebView(authUrl, flwRef);
                         }
-                    }
-                    else {
+                    } else {
                         mView.onPaymentError(RaveConstants.no_authurl_was_returnedmsg);
                     }
 
-                }
-                else {
+                } else {
                     mView.onPaymentError(RaveConstants.noResponse);
                 }
 
@@ -223,8 +218,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         if (wasTxSuccessful) {
             mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
-        }
-        else {
+        } else {
             mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
         }
     }

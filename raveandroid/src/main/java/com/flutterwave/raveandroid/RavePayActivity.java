@@ -75,28 +75,24 @@ import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
 public class RavePayActivity extends AppCompatActivity {
 
     public static String BASE_URL;
+    public static int RESULT_SUCCESS = 111;
+    public static int RESULT_ERROR = 222;
+    public static int RESULT_CANCELLED = 333;
     View.OnClickListener onClickListener;
+    RavePayInitializer ravePayInitializer;
+    int theme;
+    AppComponent appComponent;
+    @Inject
+    EventLogger eventLogger;
     private HashMap<Integer, Guideline> guidelineMap = new HashMap<>();
     private ArrayList<PaymentTile> paymentTiles = new ArrayList<>();
     private HashMap<Integer, PaymentTile> tileMap = new HashMap<>();
     private Guideline topGuide;
-    RavePayInitializer ravePayInitializer;
     private Guideline bottomGuide;
     private ConstraintLayout root;
-
-
-    public static int RESULT_SUCCESS = 111;
-    public static int RESULT_ERROR = 222;
-    public static int RESULT_CANCELLED = 333;
     private int tileCount = 0;
-    int theme;
     private float paymentTilesTextSize;
     private long transitionDuration = 350;
-
-    AppComponent appComponent;
-
-    @Inject
-    EventLogger eventLogger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -581,7 +577,6 @@ public class RavePayActivity extends AppCompatActivity {
 
     private void generateGuides(int count) {
 
-
         for (int i = 0; i <= count; i++) {
             Guideline guideline = createGuideline(this, HORIZONTAL);
             root.addView(guideline);
@@ -624,9 +619,6 @@ public class RavePayActivity extends AppCompatActivity {
 
         appComponent.inject(this);
     }
-
-
-
 
 
     @Override

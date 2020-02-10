@@ -38,14 +38,10 @@ public class MobileMoneyChargeResponse {
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
-
-        public void setFlwRef(String flwRef) {
-            this.flwRef = flwRef;
-        }
-
-        public void setAuthurl(String authurl) {
-            this.authurl = authurl;
-        }
+        String txRef;
+        String chargeResponseMessage;
+        String authurl;
+        String redirectUrl;
 
         public String getTx_ref() {
             return txRef;
@@ -55,26 +51,24 @@ public class MobileMoneyChargeResponse {
             this.txRef = txRef;
         }
 
-        String txRef;
-        String chargeResponseMessage;
-        String authurl;
-
         public String getRedirectUrl() {
             return redirectUrl;
         }
-
-        public void setChargeResponseCode(String chargeResponseCode) {
-            this.chargeResponseCode = chargeResponseCode;
-        }
-
-        String redirectUrl;
 
         public String getAuthurl() {
             return authurl;
         }
 
+        public void setAuthurl(String authurl) {
+            this.authurl = authurl;
+        }
+
         public String getFlwRef() {
             return flwRef;
+        }
+
+        public void setFlwRef(String flwRef) {
+            this.flwRef = flwRef;
         }
 
         public String getChargeResponseMessage() {
@@ -89,6 +83,9 @@ public class MobileMoneyChargeResponse {
             return chargeResponseCode;
         }
 
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
+        }
 
         public String getSuggested_auth() {
             return suggested_auth;
