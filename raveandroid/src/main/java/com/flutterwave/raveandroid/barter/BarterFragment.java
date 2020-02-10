@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -286,14 +287,16 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String publicKey) {
+    public void onPollingRoundComplete(final String flwRef, final String publicKey) {
         if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            try {
-                Thread.sleep(1000);
-                presenter.requeryTx(flwRef, publicKey);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                public void run() {
+                    presenter.requeryTx(flwRef, publicKey);
+                }
+            };
+            handler.postDelayed(r, 1000);
 
         }
     }

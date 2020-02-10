@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -152,13 +153,15 @@ public class WebFragment extends Fragment implements WebContract.View {
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String publicKey) {
-        try {
-            Thread.sleep(1000);
-            presenter.requeryTx(flwRef, publicKey);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void onPollingRoundComplete(final String flwRef, final String publicKey) {
+
+        Handler handler = new Handler();
+        Runnable r = new Runnable() {
+            public void run() {
+                presenter.requeryTx(flwRef, publicKey);
+            }
+        };
+        handler.postDelayed(r, 1000);
 
     }
 
