@@ -11,6 +11,7 @@ import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+import com.flutterwave.raveandroid.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.responses.SaveCardResponse;
 import com.flutterwave.raveandroid.responses.SendRaveOtpResponse;
 import com.google.gson.Gson;
@@ -541,6 +542,37 @@ public class NetworkRequestImpl implements DataRequest.NetworkRequest {
             }
         });
 
+    }
+
+    @Override
+    public void chargeSaBankAccount(ChargeRequestBody requestBody, final Callbacks.OnSaChargeRequestComplete callback) {
+        Call<String> call = service.charge(requestBody);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    Type type = new TypeToken<SaBankAccountResponse>() {
+                    }.getType();
+                    SaBankAccountResponse chargeResponse = gson.fromJson(response.body(), type);
+                    callback.onSuccess(chargeResponse, response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        ErrorBody error = parseErrorJson(errorBody);
+                        callback.onError(error.getMessage(), errorBody);
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                        callback.onError("error", errorParsingError);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onError(t.getMessage(), "");
+            }
+        });
     }
 
     @Override

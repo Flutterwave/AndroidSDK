@@ -41,6 +41,7 @@ import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
+import com.flutterwave.raveandroid.sabankaccount.SaBankAccountFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
 import com.flutterwave.raveandroid.uk.UkFragment;
 import com.flutterwave.raveandroid.ussd.UssdFragment;
@@ -64,6 +65,7 @@ import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBI
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_SA_BANK_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
@@ -433,6 +435,9 @@ public class RavePayActivity extends AppCompatActivity {
                 break;
             case PAYMENT_TYPE_ZM_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
+                break;
+            case PAYMENT_TYPE_SA_BANK_ACCOUNT:
+                transaction.replace(R.id.payment_fragment_container, new SaBankAccountFragment());
                 break;
             default:
                 Log.d("Adding Payment Fragment", "Payment type does not exist in payment types list");

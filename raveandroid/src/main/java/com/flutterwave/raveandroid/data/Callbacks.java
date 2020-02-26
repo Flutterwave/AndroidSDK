@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponsev2;
+import com.flutterwave.raveandroid.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.responses.SaveCardResponse;
 import com.flutterwave.raveandroid.responses.SendRaveOtpResponse;
 
@@ -25,6 +26,11 @@ public class Callbacks {
 
     public interface OnChargeRequestComplete {
         void onSuccess(ChargeResponse response, String responseAsJSONString);
+        void onError(String message, String responseAsJSONString);
+    }
+
+    public interface OnSaChargeRequestComplete{
+        void onSuccess(SaBankAccountResponse response, String responseAsJSONString);
         void onError(String message, String responseAsJSONString);
     }
 

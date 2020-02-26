@@ -27,6 +27,7 @@ public interface DataRequest {
         void requeryTxv2(RequeryRequestBodyv2 requeryRequestBody, Callbacks.OnRequeryRequestv2Complete callback);
         void getBanks(Callbacks.OnGetBanksRequestComplete callback);
         void chargeAccount(ChargeRequestBody accountRequestBody, Callbacks.OnChargeRequestComplete callback);
+        void chargeSaBankAccount(ChargeRequestBody accountRequestBody, Callbacks.OnSaChargeRequestComplete callback);
         void chargeToken(Payload payload, Callbacks.OnChargeRequestComplete callback);
         void getFee(FeeCheckRequestBody body, Callbacks.OnGetFeeRequestComplete callback);
 
