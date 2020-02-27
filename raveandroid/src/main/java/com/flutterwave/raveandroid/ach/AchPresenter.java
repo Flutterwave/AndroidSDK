@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
@@ -55,6 +56,19 @@ public class AchPresenter implements AchContract.UserActionsListener {
     public AchPresenter(Context context, AchContract.View mView) {
         this.context = context;
         this.mView = mView;
+    }
+
+    public AchPresenter(Context context, AchContract.View mView, AppComponent appComponent){
+        this.context = context;
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.networkRequest = appComponent.networkImpl();
+        this.amountValidator = appComponent.amountValidator();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.transactionStatusChecker = appComponent.transactionStatusChecker();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.payloadToJsonConverter = appComponent.payloadToJsonConverter();
+        this.sharedMgr = appComponent.sharedManager();
     }
 
     @Override

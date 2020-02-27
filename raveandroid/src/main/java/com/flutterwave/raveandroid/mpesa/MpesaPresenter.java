@@ -20,6 +20,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -65,6 +66,17 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
     public MpesaPresenter(Context context, MpesaContract.View mView) {
         this.context = context;
         this.mView = mView;
+    }
+
+    public MpesaPresenter(Context context, MpesaContract.View mView, AppComponent appComponent){
+        this.context = context;
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.amountValidator = appComponent.amountValidator();
+        this.phoneValidator = appComponent.phoneValidator();
+        this.networkRequest = appComponent.networkImpl();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
     }
 
     @Override
