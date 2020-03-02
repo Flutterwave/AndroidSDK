@@ -6,7 +6,6 @@ import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Meta;
 import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RaveConstants;
@@ -21,7 +20,6 @@ import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.responses.SaBankAccountResponse;
@@ -392,20 +390,6 @@ public class SaBankAccountPresenterTest {
 
         chargeResponse.getData().getData().setRedirectUrl(null);
 
-        return chargeResponse;
-    }
-
-    private PayloadBuilder generatePayloadBuilder() {
-        PayloadBuilder payloadBuilder = new PayloadBuilder();
-        payloadBuilder.setPaymentPlan(generateRandomString());
-        return payloadBuilder;
-    }
-
-    private ChargeResponse generateRandomChargeResponse() {
-        ChargeResponse chargeResponse = new ChargeResponse();
-        chargeResponse.setData(new ChargeResponse.Data());
-        chargeResponse.getData().setChargeResponseCode("00");
-        chargeResponse.getData().setAuthurl(null);
         return chargeResponse;
     }
 
