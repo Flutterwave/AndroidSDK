@@ -787,7 +787,7 @@ public class CardPresenterTest {
         when(ravePayInitializer.getCurrency()).thenReturn(generateRandomString());
 
         cardPresenter.verifyRequeryResponse(requeryResponse, responseAsJsonString, ravePayInitializer, flwRef);
-        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), flwRef, responseAsJsonString, ravePayInitializer.getEmail());
+        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), flwRef, responseAsJsonString, ravePayInitializer);
 
     }
 

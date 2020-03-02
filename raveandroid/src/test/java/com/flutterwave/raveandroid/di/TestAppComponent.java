@@ -18,6 +18,8 @@ import com.flutterwave.raveandroid.mpesa.MpesaPresenter;
 import com.flutterwave.raveandroid.mpesa.MpesaPresenterTest;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenter;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenterTest;
+import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenter;
+import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenterTest;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenter;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.uk.UkPresenter;
@@ -38,6 +40,8 @@ public interface TestAppComponent extends AppComponent {
     void inject(CardPresenterTest cardPresenterTest);
 
     void inject(AccountPresenterTest accountPresenterTest);
+
+    void inject(SaBankAccountPresenterTest accountPresenterTest);
 
     void inject(BankTransferPresenterTest bankTransferPresenterTest);
 
@@ -64,6 +68,8 @@ public interface TestAppComponent extends AppComponent {
     void inject(CardPresenter cardPresenter);
 
     void inject(AccountPresenter accountPresenter);
+
+    void inject(SaBankAccountPresenter accountPresenter);
 
     void inject(BankTransferPresenter bankTransferPresenter);
 
