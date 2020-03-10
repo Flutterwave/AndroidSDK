@@ -188,11 +188,6 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
-
-    }
-
-    @Override
     public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
 
     }
