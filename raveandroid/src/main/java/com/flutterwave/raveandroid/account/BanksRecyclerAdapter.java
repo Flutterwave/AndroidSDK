@@ -32,7 +32,7 @@ public class BanksRecyclerAdapter extends RecyclerView.Adapter<BanksRecyclerAdap
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View v = inflater.inflate(R.layout.select_bank_list_item, parent, false);
+        View v = inflater.inflate(R.layout.rave_select_bank_list_item, parent, false);
         return new ViewHolder(v);
     }
 

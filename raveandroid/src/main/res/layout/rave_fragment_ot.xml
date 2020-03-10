@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".verification.OTPFragment">
 
-    <include layout="@layout/otp_layout"/>
+    <include layout="@layout/rave_otp_layout" />
 
 </FrameLayout>

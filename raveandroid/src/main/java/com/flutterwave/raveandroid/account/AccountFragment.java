@@ -94,7 +94,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_account, container, false);
+        v = inflater.inflate(R.layout.rave_fragment_account, container, false);
 
         initializeViews();
 
@@ -350,7 +350,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             bottomSheetDialog = new BottomSheetDialog(getActivity());
 
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View v = inflater.inflate(R.layout.add_exisiting_bank, null, false);
+            View v = inflater.inflate(R.layout.rave_add_exisiting_bank, null, false);
             RecyclerView recyclerView = v.findViewById(R.id.rave_recycler);
 
             BanksRecyclerAdapter adapter = new BanksRecyclerAdapter();

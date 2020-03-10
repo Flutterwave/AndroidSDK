@@ -24,10 +24,8 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
-import com.flutterwave.raveandroid.card.CardPresenter;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
-import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.di.modules.SaBankModule;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
@@ -36,7 +34,6 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.RaveConstants.response;
 import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
@@ -73,7 +70,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
         // Inflate the layout for this fragment
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_sa_bank_account, container, false);
+        v = inflater.inflate(R.layout.rave_fragment_sa_bank_account, container, false);
 
         initializeViews();
 

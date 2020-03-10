@@ -137,7 +137,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_card, container, false);
+        v = inflater.inflate(R.layout.rave_fragment_card, container, false);
 
         initializeViews();
 

@@ -22,7 +22,7 @@
         android:id="@+id/rave_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/select_bank_list_item" />
+        tools:listitem="@layout/rave_select_bank_list_item" />
 
 
 </LinearLayout>

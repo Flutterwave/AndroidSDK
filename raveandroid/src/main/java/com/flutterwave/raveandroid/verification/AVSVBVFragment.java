@@ -13,7 +13,6 @@ import android.widget.Button;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-
 import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
@@ -52,7 +51,7 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_avsvbv, container, false);
+        View v = inflater.inflate(R.layout.rave_fragment_avsvbv, container, false);
         injectComponents();
         logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 

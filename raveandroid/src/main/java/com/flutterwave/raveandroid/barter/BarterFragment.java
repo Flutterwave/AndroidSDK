@@ -70,7 +70,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
                              Bundle savedInstanceState) {
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_barter, container, false);
+        v = inflater.inflate(R.layout.rave_fragment_barter, container, false);
 
         initializeViews();
 

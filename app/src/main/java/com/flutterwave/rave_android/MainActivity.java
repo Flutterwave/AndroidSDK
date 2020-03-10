@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.add_vendor_layout, null);
+        View dialogView = inflater.inflate(R.layout.rave_add_vendor_layout, null);
         dialogBuilder.setView(dialogView);
         final EditText vendorReferenceET = dialogView.findViewById(R.id.vendorReferecnceET);
         final EditText vendorRatioET = dialogView.findViewById(R.id.vendorRatioET);
