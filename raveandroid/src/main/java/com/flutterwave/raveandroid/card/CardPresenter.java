@@ -549,7 +549,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
 
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
+    public void chargeCardWithSuggestedAuthModel(final Payload payload, String zipOrPin, String authModel, String encryptionKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
@@ -595,6 +595,22 @@ public class CardPresenter implements CardContract.UserActionsListener {
                         } else if (authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)) {
                             String flwRef = response.getData().getFlwRef();
                             mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
+                        } else if (authModelUsed.equalsIgnoreCase(VBV)) {
+                            String authUrlCrude = response.getData().getAuthurl();
+                            String flwRef = response.getData().getFlwRef();
+
+                            mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
+                        } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+                                || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
+                                || authModelUsed.toLowerCase().contains("otp")) {
+                            String flwRef = response.getData().getFlwRef();
+                            String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                            chargeResponseMessage = chargeResponseMessage == null ? enterOTP : chargeResponseMessage;
+                            mView.showOTPLayout(flwRef, chargeResponseMessage);
+
+                        } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
+                            String flwRef = response.getData().getFlwRef();
+                            mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
                         } else {
                             mView.onPaymentError(unknownAuthmsg);
                         }
