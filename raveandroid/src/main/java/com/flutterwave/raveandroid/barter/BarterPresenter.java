@@ -17,6 +17,7 @@ import com.flutterwave.raveandroid.card.ChargeRequestBody;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -50,6 +51,15 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
     public BarterPresenter(Context context, BarterContract.View mView) {
         this.context = context;
         this.mView = mView;
+    }
+
+    public BarterPresenter(Context context, BarterContract.View mView, AppComponent appComponent){
+        this.mView = mView;
+        this.context = context;
+        this.amountValidator = appComponent.amountValidator();
+        this.networkRequest = appComponent.networkImpl();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
     }
 
     @Override

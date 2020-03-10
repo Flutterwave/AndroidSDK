@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -67,6 +68,17 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
     public RwfMobileMoneyPresenter(Context context, RwfMobileMoneyContract.View mView) {
         this.context = context;
         this.mView = mView;
+    }
+
+    public RwfMobileMoneyPresenter(Context context, RwfMobileMoneyContract.View mView, AppComponent appComponent){
+        this.context = context;
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.amountValidator = appComponent.amountValidator();
+        this.phoneValidator = appComponent.phoneValidator();
+        this.networkRequest = appComponent.networkImpl();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
     }
 
     @Override

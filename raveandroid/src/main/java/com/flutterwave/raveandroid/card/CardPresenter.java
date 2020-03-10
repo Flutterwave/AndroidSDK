@@ -30,6 +30,7 @@ import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
@@ -131,6 +132,24 @@ public class CardPresenter implements CardContract.UserActionsListener {
     public CardPresenter(Context context, CardContract.View mView) {
         this.mView = mView;
         this.context = context;
+    }
+
+    public CardPresenter(Context context, CardContract.View mView, AppComponent appComponent){
+        this.context = context;
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.networkRequest = appComponent.networkImpl();
+        this.amountValidator = appComponent.amountValidator();
+        this.cvvValidator = appComponent.cvvValidator();
+        this.emailValidator = appComponent.emailValidator();
+        this.cardExpiryValidator = appComponent.cardExpiryValidator();
+        this.cardNoValidator = appComponent.cardNoValidator();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.phoneNumberObfuscator = appComponent.phoneNumberObfuscator();
+        this.transactionStatusChecker = appComponent.transactionStatusChecker();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.sharedManager = appComponent.sharedManager();
+        this.gson = appComponent.gson();
     }
 
     @Override

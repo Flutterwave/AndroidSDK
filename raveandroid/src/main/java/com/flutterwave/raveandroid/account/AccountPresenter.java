@@ -25,6 +25,7 @@ import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -108,6 +109,27 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     public AccountPresenter(Context context, AccountContract.View mView) {
         this.context = context;
         this.mView = mView;
+    }
+
+    public AccountPresenter(Context context, AccountContract.View mView, AppComponent appComponent){
+        this.context = context;
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.networkRequest = appComponent.networkImpl();
+        this.amountValidator = appComponent.amountValidator();
+        this.phoneValidator = appComponent.phoneValidator();
+        this.emailValidator = appComponent.emailValidator();
+        this.dateOfBirthValidator = appComponent.dateOfBirthValidator();
+        this.bvnValidator = appComponent.bvnValidator();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.accountNoValidator = appComponent.accountNoValidator();
+        this.transactionStatusChecker = appComponent.transactionStatusChecker();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.bankCodeValidator = appComponent.bankCodeValidator();
+        this.urlValidator = appComponent.urlValidator();
+        this.minimum100AccountPaymentValidator = appComponent.minimum100AccountPaymentValidator();
+        this.payloadToJsonConverter = appComponent.payloadToJsonConverter();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
     }
 
     @Override

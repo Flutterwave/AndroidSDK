@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.verification.web;
 import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.RequeryRequestBody;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
 
 import javax.inject.Inject;
@@ -17,6 +18,11 @@ public class WebPresenter implements WebContract.UserActionsListener {
     @Inject
     public WebPresenter(WebContract.View mView) {
         this.mView = mView;
+    }
+
+    public WebPresenter(WebContract.View mView, AppComponent appComponent){
+        this.mView = mView;
+        this.networkRequest = appComponent.networkImpl();
     }
 
     @Override

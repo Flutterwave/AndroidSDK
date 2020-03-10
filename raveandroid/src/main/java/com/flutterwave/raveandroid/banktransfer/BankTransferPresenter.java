@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.responses.ChargeResponse;
 import com.flutterwave.raveandroid.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.responses.RequeryResponse;
@@ -51,22 +52,33 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
     AmountValidator amountValidator;
     @Inject
     NetworkRequestImpl networkRequest;
-    public boolean pollingCancelled = false;
-    public boolean hasTransferDetails = false;
     @Inject
     DeviceIdGetter deviceIdGetter;
+    @Inject
+    PayloadToJson payloadToJson;
+    @Inject
+    PayloadEncryptor payloadEncryptor;
+
+    public boolean pollingCancelled = false;
+    public boolean hasTransferDetails = false;
     BankTransferContract.View mView;
     private String txRef = null, flwRef = null, publicKey = null;
     private long requeryCountdownTime = 0;
-    @Inject
-    PayloadToJson payloadToJson;
     private String beneficiaryName, accountNumber, amount, bankName;
-    @Inject
-    PayloadEncryptor payloadEncryptor;
 
     @Inject
     public BankTransferPresenter(Context context, BankTransferContract.View mView) {
         this.mView = mView;
+    }
+
+    public BankTransferPresenter(BankTransferContract.View mView, AppComponent appComponent){
+        this.mView = mView;
+        this.eventLogger = appComponent.eventLogger();
+        this.networkRequest = appComponent.networkImpl();
+        this.amountValidator = appComponent.amountValidator();
+        this.payloadToJson = appComponent.payloadToJson();
+        this.deviceIdGetter = appComponent.deviceIdGetter();
+        this.payloadEncryptor = appComponent.payloadEncryptor();
     }
 
     @Override

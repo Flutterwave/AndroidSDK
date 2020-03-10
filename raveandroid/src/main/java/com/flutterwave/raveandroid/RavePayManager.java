@@ -26,6 +26,7 @@ import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBI
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_SA_BANK_ACCOUNT;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
 import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
@@ -146,6 +147,12 @@ public class RavePayManager {
     public RavePayManager acceptUkPayments(boolean withUk) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UK) && withUk)
             orderedPaymentTypesList.add(PAYMENT_TYPE_UK);
+        return this;
+    }
+
+    public RavePayManager acceptSaBankPayments(boolean withSaBankAccount) {
+        if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_SA_BANK_ACCOUNT) && withSaBankAccount)
+            orderedPaymentTypesList.add(PAYMENT_TYPE_SA_BANK_ACCOUNT);
         return this;
     }
 

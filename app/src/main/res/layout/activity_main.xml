@@ -234,6 +234,15 @@
                 android:text="@string/uk_bank" />
 
             <android.support.v7.widget.SwitchCompat
+                android:id="@+id/accountSaBankSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/sa_bank" />
+
+
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/cardPaymentSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

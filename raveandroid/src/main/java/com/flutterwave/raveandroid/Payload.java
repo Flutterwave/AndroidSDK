@@ -430,6 +430,16 @@ public class Payload
         this.is_mobile_money_franco = is_mobile_money_franco;
     }
 
+    private String is_sa_call_pay;
+
+    public void setIs_sa_call_pay(String is_sa_call_pay){
+        this.is_sa_call_pay = is_sa_call_pay;
+    }
+
+    private String getIs_sa_call_pay(){
+        return is_sa_call_pay;
+    }
+
     public String getPhonenumber() {
         return phonenumber;
     }
