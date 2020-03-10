@@ -246,42 +246,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     public void chargeSavedCard(Payload payload, String encryptionKey) {
         if (payload.getOtp() == null || payload.getOtp() == "") {
             sendRaveOTP(payload);
-        } else {
-            // Charge saved card
-            String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-            String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-
-            final ChargeRequestBody body = new ChargeRequestBody();
-            body.setAlg("3DES-24");
-            body.setPBFPubKey(payload.getPBFPubKey());
-            body.setClient(encryptedCardRequestBody);
-
-            mView.showProgressIndicator(true);
-
-            networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
-                @Override
-                public void onSuccess(ChargeResponse response, String responseAsJSONString) {
-
-                    mView.showProgressIndicator(false);
-
-                    if (response.getData() != null) {
-                        Log.d("Saved card charge", responseAsJSONString);
-                        mView.onChargeCardSuccessful(response);
-
-                    } else {
-                        mView.onPaymentError("No response data was returned");
-                    }
-
-                }
-
-                @Override
-                public void onError(String message, String responseAsJSONString) {
-
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentError(message);
-                }
-            });
-        }
+        } else chargeCard(payload, encryptionKey);
     }
 
     @Override
