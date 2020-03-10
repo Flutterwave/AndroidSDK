@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.48'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.49'
 	}
 
 **Step 3.** Add the  `INTERNET` permission to your android manifest
