@@ -47,7 +47,7 @@ public class SavedCardsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View v = inflater.inflate(R.layout.rave_fragment_saved_cards, container, false);
+        final View v = inflater.inflate(R.layout.rave_sdk_fragment_saved_cards, container, false);
 
         useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
 

@@ -41,7 +41,7 @@ public class PinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.rave_fragment_pin, container, false);
+        View v = inflater.inflate(R.layout.rave_sdk_fragment_pin, container, false);
         Button pinBtn = v.findViewById(R.id.rave_pinButton);
         final TextInputEditText pinEv = v.findViewById(R.id.rave_pinEv);
         final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);

@@ -74,7 +74,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.rave_fragment_gh_mobile_money, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_gh_mobile_money, container, false);
 
         initializeViews();
 

@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".verification.PinFragment">
 
-    <include layout="@layout/rave_pin_layout" />
+    <include layout="@layout/rave_sdk_pin_layout" />
 
 </FrameLayout>

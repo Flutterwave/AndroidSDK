@@ -70,7 +70,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
         // Inflate the layout for this fragment
         injectComponents();
 
-        v = inflater.inflate(R.layout.rave_fragment_sa_bank_account, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_sa_bank_account, container, false);
 
         initializeViews();
 

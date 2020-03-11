@@ -58,7 +58,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.rave_fragment_ach, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_ach, container, false);
 
         initializeViews();
 

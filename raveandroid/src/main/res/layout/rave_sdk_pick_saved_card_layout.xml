@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            tools:listitem="@layout/rave_card_preview_item"
+            tools:listitem="@layout/rave_sdk_card_preview_item"
             tools:layout_editor_absoluteX="24dp" />
 
 

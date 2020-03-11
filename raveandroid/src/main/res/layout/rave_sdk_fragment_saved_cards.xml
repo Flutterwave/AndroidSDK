@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".verification.AVSVBVFragment">
+    tools:context=".card.savedcards.SavedCardsActivity">
 
-    <include layout="@layout/rave_avsvbv_layout" />
+    <include
+        layout="@layout/rave_sdk_pick_saved_card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

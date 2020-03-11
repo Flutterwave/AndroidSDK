@@ -66,7 +66,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.rave_fragment_francophone, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_francophone, container, false);
 
         initializeViews();
 

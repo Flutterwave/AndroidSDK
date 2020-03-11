@@ -51,7 +51,7 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.rave_fragment_avsvbv, container, false);
+        View v = inflater.inflate(R.layout.rave_sdk_fragment_avsvbv, container, false);
         injectComponents();
         logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
