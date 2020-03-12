@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".verification.AVSVBVFragment">
+    tools:context=".verification.PinFragment">
 
-    <include layout="@layout/avsvbv_layout"/>
+    <include layout="@layout/rave_sdk_pin_layout" />
 
 </FrameLayout>

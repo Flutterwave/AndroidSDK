@@ -33,7 +33,7 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View v = inflater.inflate(R.layout.card_preview_item, parent, false);
+        View v = inflater.inflate(R.layout.rave_sdk_card_preview_item, parent, false);
         return new ViewHolder(v);
     }
 

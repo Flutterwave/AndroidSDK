@@ -67,7 +67,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_mpesa, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_mpesa, container, false);
 
         initializeViews();
 

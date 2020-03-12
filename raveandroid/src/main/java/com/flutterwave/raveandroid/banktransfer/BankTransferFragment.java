@@ -79,7 +79,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
             presenter.restoreState(savedInstanceState);
         }
 
-        v = inflater.inflate(R.layout.fragment_bank_transfer, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_bank_transfer, container, false);
 
         initializeViews();
 

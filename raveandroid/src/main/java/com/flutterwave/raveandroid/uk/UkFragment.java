@@ -68,7 +68,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_uk, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_uk, container, false);
 
         initializeViews();
 
@@ -223,7 +223,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
 
         if (getContext() != null) {
             final Dialog dialog = new Dialog(getContext());
-            dialog.setContentView(R.layout.ukinstruction_layout);
+            dialog.setContentView(R.layout.rave_sdk_ukinstruction_layout);
             dialog.setTitle("Flutterwave");
             presenter.logEvent(new InstructionsDisplayedEvent("UK").getEvent(), ravePayInitializer.getPublicKey());
 

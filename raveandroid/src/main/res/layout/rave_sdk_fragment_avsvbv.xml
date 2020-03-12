@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".verification.OTPFragment">
+    tools:context=".verification.AVSVBVFragment">
 
-    <include layout="@layout/otp_layout"/>
+    <include layout="@layout/rave_sdk_avsvbv_layout" />
 
 </FrameLayout>

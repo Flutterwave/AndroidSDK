@@ -85,7 +85,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_ussd, container, false);
+        rootView = inflater.inflate(R.layout.rave_sdk_fragment_ussd, container, false);
 
         injectComponents();
         initializeViews();

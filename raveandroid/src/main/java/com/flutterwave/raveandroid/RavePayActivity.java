@@ -103,7 +103,7 @@ public class RavePayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rave_pay);
+        setContentView(R.layout.rave_sdk_activity_rave_pay);
         root = findViewById(R.id.rave_pay_activity_rootview);
 
         try {
@@ -200,7 +200,7 @@ public class RavePayActivity extends AppCompatActivity {
             // Set title view
             View titleView = root.findViewById(R.id.title_container);
             if (titleView == null) {
-                titleView = getLayoutInflater().inflate(R.layout.rave_payment_title_layout, root, false);
+                titleView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
                 root.addView(titleView);
             }
             set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
@@ -315,7 +315,7 @@ public class RavePayActivity extends AppCompatActivity {
         if (fragmentContainerLayout == null) {
             fragmentContainerLayout
                     = getLayoutInflater()
-                    .inflate(R.layout.payment_fragment_container_layout, root, false);
+                    .inflate(R.layout.rave_sdk_payment_fragment_container_layout, root, false);
 
             root.addView(fragmentContainerLayout);
             fragmentContainerLayout
@@ -569,7 +569,7 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private View createPaymentTileView(String title) {
-        View tileView = getLayoutInflater().inflate(R.layout.payment_type_tile_layout, root, false);
+        View tileView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_type_tile_layout, root, false);
         TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
         tileView.setId(ViewCompat.generateViewId());
         String fullTitle = "Pay with " + title;

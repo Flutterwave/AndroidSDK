@@ -52,7 +52,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        v = inflater.inflate(R.layout.fragment_ot, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_ot, container, false);
         injectComponents();
         logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 

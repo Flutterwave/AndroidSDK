@@ -60,7 +60,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_rwf_mobile_money, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_rwf_mobile_money, container, false);
 
         initializeViews();
 

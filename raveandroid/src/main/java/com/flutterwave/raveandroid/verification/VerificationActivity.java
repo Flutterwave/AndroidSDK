@@ -34,7 +34,7 @@ public class VerificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_futher_verification);
+        setContentView(R.layout.rave_sdk_activity_futher_verification);
         buildGraph();
         if (getIntent() != null & getIntent().getIntExtra("theme", 0) != 0) {
             setTheme(getIntent().getIntExtra("theme", 0));

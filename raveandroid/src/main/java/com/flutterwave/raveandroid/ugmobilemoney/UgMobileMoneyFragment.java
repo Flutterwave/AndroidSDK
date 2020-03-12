@@ -65,7 +65,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
 
         injectComponents();
 
-        v = inflater.inflate(R.layout.fragment_ug_mobile_money, container, false);
+        v = inflater.inflate(R.layout.rave_sdk_fragment_ug_mobile_money, container, false);
 
         initializeViews();
 
