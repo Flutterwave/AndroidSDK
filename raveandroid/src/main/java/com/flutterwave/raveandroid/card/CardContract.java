@@ -59,8 +59,6 @@ public interface CardContract {
 
         void onTokenRetrieved(String flwRef, String cardBIN, String token);
 
-        void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef);
-
         void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
 
         void onNoAuthInternationalSuggested(Payload payload);

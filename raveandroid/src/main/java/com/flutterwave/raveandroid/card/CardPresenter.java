@@ -66,14 +66,12 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
-import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static com.flutterwave.raveandroid.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.RaveConstants.tokenNotFound;
 import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.unknownAuthmsg;
-import static com.flutterwave.raveandroid.RaveConstants.unknownResCodemsg;
 import static com.flutterwave.raveandroid.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.RaveConstants.validCvvPrompt;
@@ -134,7 +132,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
         this.context = context;
     }
 
-    public CardPresenter(Context context, CardContract.View mView, AppComponent appComponent){
+    public CardPresenter(Context context, CardContract.View mView, AppComponent appComponent) {
         this.context = context;
         this.mView = mView;
         this.eventLogger = appComponent.eventLogger();
@@ -152,6 +150,13 @@ public class CardPresenter implements CardContract.UserActionsListener {
         this.gson = appComponent.gson();
     }
 
+    /**
+     * Makes a generic call to the charge endpoint with the payload provided. Handles both conditions
+     * for initial charge request and when the suggested auth has been added.
+     *
+     * @param payload       {@link Payload} object to be sent.
+     * @param encryptionKey Rave encryption key gotten from dashboard
+     */
     @Override
     public void chargeCard(final Payload payload, final String encryptionKey) {
 
@@ -189,33 +194,44 @@ public class CardPresenter implements CardContract.UserActionsListener {
                             mView.onPaymentError(unknownAuthmsg);
                         }
                     } else {
-                        String authModelUsed = response.getData().getAuthModelUsed();
+                        // Check if transaction is already successful
+                        if (response.getData().getChargeResponseCode() != null && response.getData().getChargeResponseCode().equalsIgnoreCase("00")) {
+                            mView.onChargeCardSuccessful(response);
 
-                        if (authModelUsed != null) {
+                        } else {
 
-                            if (authModelUsed.equalsIgnoreCase(VBV)) {
-                                String authUrlCrude = response.getData().getAuthurl();
-                                String flwRef = response.getData().getFlwRef();
+                            String authModelUsed = response.getData().getAuthModelUsed();
 
-                                mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
-                            } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
-                                    || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
-                                    || authModelUsed.toLowerCase().contains("otp")) {
-                                String flwRef = response.getData().getFlwRef();
-                                String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                                chargeResponseMessage = chargeResponseMessage == null ? enterOTP : chargeResponseMessage;
-                                mView.showOTPLayout(flwRef, chargeResponseMessage);
+                            if (authModelUsed != null) {
 
-                            } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
-                                String flwRef = response.getData().getFlwRef();
-                                mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
+                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)) {
+                                    String authUrlCrude = response.getData().getAuthurl();
+                                    String flwRef = response.getData().getFlwRef();
+
+                                    mView.onVBVAuthModelUsed(authUrlCrude, flwRef);
+                                } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+                                        || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
+                                        || authModelUsed.toLowerCase().contains("otp")
+                                        || authModelUsed.equalsIgnoreCase(PIN)) {
+                                    String flwRef = response.getData().getFlwRef();
+                                    String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                                    chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
+                                    mView.showOTPLayout(flwRef, chargeResponseMessage);
+
+                                } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
+                                    String flwRef = response.getData().getFlwRef();
+                                    mView.onNoAuthUsed(flwRef, payload.getPBFPubKey());
+                                } else {
+                                    mView.onPaymentError(unknownAuthmsg);
+                                }
+                            } else {
+                                mView.onPaymentError(unknownAuthmsg);
                             }
                         }
                     }
                 } else {
                     mView.onPaymentError(noResponse);
                 }
-
             }
 
             @Override
@@ -230,42 +246,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
     public void chargeSavedCard(Payload payload, String encryptionKey) {
         if (payload.getOtp() == null || payload.getOtp() == "") {
             sendRaveOTP(payload);
-        } else {
-            // Charge saved card
-            String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-            String encryptedCardRequestBody = Utils.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-
-            final ChargeRequestBody body = new ChargeRequestBody();
-            body.setAlg("3DES-24");
-            body.setPBFPubKey(payload.getPBFPubKey());
-            body.setClient(encryptedCardRequestBody);
-
-            mView.showProgressIndicator(true);
-
-            networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
-                @Override
-                public void onSuccess(ChargeResponse response, String responseAsJSONString) {
-
-                    mView.showProgressIndicator(false);
-
-                    if (response.getData() != null) {
-                        Log.d("Saved card charge", responseAsJSONString);
-                        mView.onChargeCardSuccessful(response);
-
-                    } else {
-                        mView.onPaymentError("No response data was returned");
-                    }
-
-                }
-
-                @Override
-                public void onError(String message, String responseAsJSONString) {
-
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentError(message);
-                }
-            });
-        }
+        } else chargeCard(payload, encryptionKey);
     }
 
     @Override
@@ -305,61 +286,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
         payload.setBillingcountry(country);
         payload.setBillingstate(state);
 
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-
         logEvent(new ChargeAttemptEvent("AVS Card").getEvent(), payload.getPBFPubKey());
 
-
-        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
-
-            @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null && response.getData().getChargeResponseCode() != null) {
-                    String chargeResponseCode = response.getData().getChargeResponseCode();
-
-                    if (chargeResponseCode.equalsIgnoreCase("00")) {
-                        mView.onChargeCardSuccessful(response);
-                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
-                        String authModelUsed = response.getData().getAuthModelUsed();
-
-                        if (authModelUsed.equalsIgnoreCase(PIN)) {
-                            String flwRef = response.getData().getFlwRef();
-                            String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
-                            mView.showOTPLayout(flwRef, chargeResponseMessage);
-                        } else if (authModelUsed.equalsIgnoreCase(VBV)) {
-                            String flwRef = response.getData().getFlwRef();
-                            mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        } else {
-                            mView.onPaymentError(unknownAuthmsg);
-                        }
-                    } else {
-                        mView.onPaymentError(unknownResCodemsg);
-                    }
-                } else {
-                    mView.onPaymentError(invalidChargeCode);
-                }
-
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
+        chargeCard(payload, encryptionKey);
 
     }
 
@@ -549,7 +478,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
 
     @Override
-    public void chargeCardWithSuggestedAuthModel(Payload payload, String zipOrPin, String authModel, String encryptionKey) {
+    public void chargeCardWithSuggestedAuthModel(final Payload payload, String zipOrPin, String authModel, String encryptionKey) {
 
         if (authModel.equalsIgnoreCase(AVS_VBVSECURECODE)) {
             payload.setBillingzip(zipOrPin);
@@ -559,60 +488,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         payload.setSuggestedAuth(authModel);
 
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
-
-
-        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
-            @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null && response.getData().getChargeResponseCode() != null) {
-                    String chargeResponseCode = response.getData().getChargeResponseCode();
-
-                    if (chargeResponseCode.equalsIgnoreCase("00")) {
-                        mView.onChargeCardSuccessful(response);
-                    } else if (chargeResponseCode.equalsIgnoreCase("02")) {
-
-                        String authModelUsed = response.getData().getAuthModelUsed();
-
-                        if (authModelUsed.equalsIgnoreCase(PIN)) {
-                            String flwRef = response.getData().getFlwRef();
-                            String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                            chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? "Enter your one  time password (OTP)" : chargeResponseMessage;
-                            mView.showOTPLayout(flwRef, chargeResponseMessage);
-                        } else if (authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)) {
-                            String flwRef = response.getData().getFlwRef();
-                            mView.onAVSVBVSecureCodeModelUsed(response.getData().getAuthurl(), flwRef);
-                        } else {
-                            mView.onPaymentError(unknownAuthmsg);
-                        }
-                    } else {
-                        mView.onPaymentError(unknownResCodemsg);
-                    }
-                } else {
-                    mView.onPaymentError(invalidChargeCode);
-                }
-
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
+        chargeCard(payload, encryptionKey);
 
     }
 

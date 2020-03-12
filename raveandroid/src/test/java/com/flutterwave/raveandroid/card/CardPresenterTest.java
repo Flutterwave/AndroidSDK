@@ -58,14 +58,12 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
-import static com.flutterwave.raveandroid.RaveConstants.invalidChargeCode;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
 import static com.flutterwave.raveandroid.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.RaveConstants.tokenNotFound;
 import static com.flutterwave.raveandroid.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.RaveConstants.unknownAuthmsg;
-import static com.flutterwave.raveandroid.RaveConstants.unknownResCodemsg;
 import static com.flutterwave.raveandroid.RaveConstants.validExpiryDatePrompt;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -870,7 +868,7 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(PIN), generateRandomString());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuthModelUsed(PIN), generateRandomString());
         verify(view).showOTPLayout(anyString(), anyString());
 
     }
@@ -881,8 +879,8 @@ public class CardPresenterTest {
         cardPresenter.chargeCardWithSuggestedAuthModel(generatePayload(), generateRandomString(), generateRandomString(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuth(AVS_VBVSECURECODE), generateRandomString());
-        verify(view).onAVSVBVSecureCodeModelUsed(anyString(), anyString());
+        captor.getAllValues().get(0).onSuccess(generateValidChargeResponseWithAuthModelUsed(AVS_VBVSECURECODE), generateRandomString());
+        verify(view).onVBVAuthModelUsed(anyString(), anyString());
 
     }
 
@@ -894,7 +892,7 @@ public class CardPresenterTest {
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
-        verify(view).onPaymentError(unknownResCodemsg);
+        verify(view).onPaymentError(anyString());
 
     }
 
@@ -916,7 +914,7 @@ public class CardPresenterTest {
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
         verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
-        verify(view).onPaymentError(invalidChargeCode);
+        verify(view).onPaymentError(anyString());
 
     }
 
@@ -997,7 +995,7 @@ public class CardPresenterTest {
         captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
-        verify(view).onAVSVBVSecureCodeModelUsed(authurl, flwref);
+        verify(view).onVBVAuthModelUsed(authurl, flwref);
 
     }
 
@@ -1015,7 +1013,7 @@ public class CardPresenterTest {
         captor.getAllValues().get(0).onSuccess(generateRandomChargeResponse(), generateRandomString());
 
         //assert
-        verify(view).onPaymentError(unknownResCodemsg);
+        verify(view).onPaymentError(anyString());
 
     }
 
@@ -1049,7 +1047,7 @@ public class CardPresenterTest {
         captor.getAllValues().get(0).onSuccess(generateNullChargeResponse(), generateRandomString());
 
         //assert
-        verify(view).onPaymentError(invalidChargeCode);
+        verify(view).onPaymentError(any(String.class));
 
     }
 
@@ -1133,6 +1131,15 @@ public class CardPresenterTest {
         ChargeResponse chargeResponse = generateRandomChargeResponse();
         chargeResponse.getData().setAuthModelUsed(auth);
         chargeResponse.getData().setSuggested_auth(auth);
+        chargeResponse.getData().setAuthurl(generateRandomString());
+        chargeResponse.getData().setFlwRef(generateRandomString());
+        chargeResponse.getData().setChargeResponseCode("02");
+        return chargeResponse;
+    }
+
+    private ChargeResponse generateValidChargeResponseWithAuthModelUsed(String auth) {
+        ChargeResponse chargeResponse = generateRandomChargeResponse();
+        chargeResponse.getData().setAuthModelUsed(auth);
         chargeResponse.getData().setAuthurl(generateRandomString());
         chargeResponse.getData().setFlwRef(generateRandomString());
         chargeResponse.getData().setChargeResponseCode("02");

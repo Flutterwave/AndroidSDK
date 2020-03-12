@@ -542,11 +542,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     /**
-     * Called when the auth model suggested is VBV. It opens a webview
+     * Called when the auth model suggested is VBV. It opens a WebView
      * that loads the authURL
      *
-     * @param authUrlCrude = URL to display in webview
-     * @param flwRef       = reference of the payment transaction
+     * @param authUrlCrude URL to display in webview
+     * @param flwRef Reference of the payment transaction
      */
     @Override
     public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
@@ -823,25 +823,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_AVBVV);
-    }
-
-    /**
-     * Called when the auth model suggested is AVS_VBVSecureCode. It opens a webview
-     * that loads the authURL
-     *
-     * @param authurl = URL to display in webview
-     * @param flwRef  = reference of the payment transaction
-     */
-    @Override
-    public void onAVSVBVSecureCodeModelUsed(String authurl, String flwRef) {
-        this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_INTERNET_BANKING);
     }
 
     private class ExpiryWatcher implements TextWatcher {
