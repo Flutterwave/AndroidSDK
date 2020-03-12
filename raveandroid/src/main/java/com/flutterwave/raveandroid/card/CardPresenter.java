@@ -65,6 +65,7 @@ import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.RaveConstants.fieldCvv;
 import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.RaveConstants.success;
@@ -401,6 +402,11 @@ public class CardPresenter implements CardContract.UserActionsListener {
         if (ravePayInitializer != null) {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
+
+            if (dataHashMap.containsKey(fieldPhone)) {
+                String phoneNumber = dataHashMap.get(fieldPhone).getData();
+                if (!phoneNumber.isEmpty()) ravePayInitializer.setPhoneNumber(phoneNumber);
+            }
 
             String deviceID = deviceIdGetter.getDeviceId();
 
