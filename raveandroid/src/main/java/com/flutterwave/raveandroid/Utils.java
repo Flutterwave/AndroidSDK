@@ -37,7 +37,6 @@ public class Utils {
     private static final String TARGET = "FLWSECK-";
     private static final String MD5 = "MD5";
     private static final String CHARSET_NAME = "UTF-8";
-    static final String UTF_8 = "utf-8";
 
     public static String getDeviceId(Context c) {
         return Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);

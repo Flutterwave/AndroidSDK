@@ -12,6 +12,8 @@ public class PayloadEncryptor {
 
     private static final String ALGORITHM = "DESede";
     private static final String TRANSFORMATION = "DESede/ECB/PKCS5Padding";
+    private static final String UTF_8 = "utf-8";
+
 
     @Inject
     public PayloadEncryptor() {
@@ -32,12 +34,12 @@ public class PayloadEncryptor {
     private String encrypt(String data, String key) throws Exception {
 
         try {
-            byte[] keyBytes = key.getBytes(Utils.UTF_8);
+            byte[] keyBytes = key.getBytes(UTF_8);
             SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
             cipher.init(Cipher.ENCRYPT_MODE, skey);
-            byte[] plainTextBytes = data.getBytes(Utils.UTF_8);
+            byte[] plainTextBytes = data.getBytes(UTF_8);
             byte[] buf = cipher.doFinal(plainTextBytes);
             return Base64.encodeToString(buf, Base64.DEFAULT);
         } catch (Exception e) {
