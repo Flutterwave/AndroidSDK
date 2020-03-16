@@ -1,9 +1,6 @@
 package com.flutterwave.raveandroid;
 
-import android.annotation.SuppressLint;
 import android.util.Base64;
-
-import java.nio.charset.StandardCharsets;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,12 +32,12 @@ public class PayloadEncryptor {
     private String encrypt(String data, String key) throws Exception {
 
         try {
-            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+            byte[] keyBytes = key.getBytes(Utils.UTF_8);
             SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
             cipher.init(Cipher.ENCRYPT_MODE, skey);
-            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
+            byte[] plainTextBytes = data.getBytes(Utils.UTF_8);
             byte[] buf = cipher.doFinal(plainTextBytes);
             return Base64.encodeToString(buf, Base64.DEFAULT);
         } catch (Exception e) {
