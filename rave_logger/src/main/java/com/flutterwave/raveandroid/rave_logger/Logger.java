@@ -14,7 +14,8 @@ public class Logger {
     private NetworkRequestExecutor executor;
 
     @Inject
-    public Logger(LoggerService service, NetworkRequestExecutor executor) {
+    public Logger(LoggerService service,
+                  NetworkRequestExecutor executor) {
         this.service = service;
         this.executor = executor;
     }

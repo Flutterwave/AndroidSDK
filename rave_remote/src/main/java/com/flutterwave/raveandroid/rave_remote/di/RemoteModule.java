@@ -24,8 +24,7 @@ public class RemoteModule {
 
     @Singleton
     @Provides
-    @Named("staging")
-    public Retrofit providesRetrofitStaging() {
+    public Retrofit providesRetrofit() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -36,26 +35,6 @@ public class RemoteModule {
 
         return new Retrofit.Builder()
                 .baseUrl(STAGING_URL)
-                .client(okHttpClient)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-    }
-
-    @Singleton
-    @Provides
-    @Named("live")
-    public Retrofit providesRetrofitLive() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS).build();
-
-        return new Retrofit.Builder()
-                .baseUrl(LIVE_URL)
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

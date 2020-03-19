@@ -4,6 +4,9 @@ import com.flutterwave.raveandroid.rave_logger.LoggerService;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -18,8 +21,7 @@ public class LoggerModule {
     // move to commons module
     private String EVENT_LOGGING_URL = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/";
 
-    @Provides
-    public Retrofit providesRetrofit() {
+    private Retrofit providesRetrofit() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -36,8 +38,9 @@ public class LoggerModule {
                 .build();
     }
 
+    @Singleton
     @Provides
-    public LoggerService providesLoggerService(Retrofit retrofit) {
-        return retrofit.create(LoggerService.class);
+    public LoggerService providesLoggerService() {
+        return providesRetrofit().create(LoggerService.class);
     }
 }
