@@ -1,1 +1,6 @@
 include ':app', ':raveandroid'
+include ':rave_core'
+include ':rave_remote'
+include ':rave_logger'
+include ':rave_cache'
+include ':rave_java_commons'
