@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_remote;
 
-import com.flutterwave.raveandroid.rave_core.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_core.models.ChargeRequestBody;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

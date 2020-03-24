@@ -1,6 +1,8 @@
 package com.flutterwave.raveandroid.rave_remote;
 
 
+import com.flutterwave.raveandroid.rave_core.models.Bank;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;

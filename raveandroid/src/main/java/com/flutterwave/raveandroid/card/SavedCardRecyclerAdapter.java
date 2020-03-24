@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.SavedCard;
 
 import java.util.List;
 

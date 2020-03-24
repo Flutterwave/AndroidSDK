@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_core;
+package com.flutterwave.raveandroid.rave_core.models;
 
 public class ChargeResponse {
         String status;

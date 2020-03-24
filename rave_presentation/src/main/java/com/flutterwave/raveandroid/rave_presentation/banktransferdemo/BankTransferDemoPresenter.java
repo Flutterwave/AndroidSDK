@@ -1,8 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.banktransferdemo;
 
-import android.content.Context;
-
-import com.flutterwave.raveandroid.rave_core.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_core.models.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 

@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid.data;
 
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.rave_remote.SavedCard;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.EventBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;

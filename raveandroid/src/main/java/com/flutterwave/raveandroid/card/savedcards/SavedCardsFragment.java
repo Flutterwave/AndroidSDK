@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.card.SavedCardRecyclerAdapter;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.SavedCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

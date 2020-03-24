@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_remote;
+package com.flutterwave.raveandroid.rave_core.models;
 
 /**
  * Created by hamzafetuga on 20/07/2017.

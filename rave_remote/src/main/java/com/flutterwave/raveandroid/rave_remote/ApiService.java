@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote;
 
 
+import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;

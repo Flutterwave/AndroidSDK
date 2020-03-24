@@ -1,6 +1,11 @@
-package com.flutterwave.raveandroid.rave_core;
+package com.flutterwave.raveandroid.rave_core.models;
+
+/**
+ * Created by hamzafetuga on 25/07/2017.
+ */
 
 public class SavedCard {
+
     String cardHash;
     String email;
     String masked_pan;
@@ -38,4 +43,6 @@ public class SavedCard {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 }

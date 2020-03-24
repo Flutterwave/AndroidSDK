@@ -3,7 +3,7 @@ package com.flutterwave.raveandroid.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.flutterwave.raveandroid.rave_remote.SavedCard;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

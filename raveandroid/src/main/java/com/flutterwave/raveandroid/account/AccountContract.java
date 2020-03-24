@@ -4,8 +4,8 @@ package com.flutterwave.raveandroid.account;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.Event;
+import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_remote.Bank;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import java.util.HashMap;

@@ -1,15 +1,10 @@
 package com.flutterwave.raveandroid.rave_remote;
 
-import com.flutterwave.raveandroid.rave_core.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_core.ChargeResponse;
+import com.flutterwave.raveandroid.rave_core.models.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_java_commons.Callback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
-import com.google.gson.Gson;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import retrofit2.Retrofit;
 
 public class RemoteRepository {
 

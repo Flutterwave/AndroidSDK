@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.rave_remote.SavedCard;
 
 import java.util.List;
 
