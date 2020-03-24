@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+
 import org.parceler.Parcel;
 
 import java.util.ArrayList;

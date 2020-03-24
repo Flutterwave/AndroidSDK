@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -27,14 +26,15 @@ import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.di.modules.SaBankModule;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.RaveConstants.response;
 import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 /**
@@ -210,7 +210,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
@@ -230,7 +230,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
     @Override
     public void onPaymentSuccessful(String status, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(response, responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);

@@ -8,7 +8,9 @@ import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.flutterwave.raveandroid.responses.SubAccount;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.scottyab.aescrypt.AESCrypt;

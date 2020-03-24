@@ -15,12 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Meta;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayManager;
 import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.responses.SubAccount;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 
 import java.util.ArrayList;
 import java.util.List;

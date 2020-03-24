@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -27,15 +26,16 @@ import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
-import static com.flutterwave.raveandroid.RaveConstants.response;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
 
 //import com.flutterwave.raveandroid.di.components.DaggerApplicationComponents_MpesaComponents;
 

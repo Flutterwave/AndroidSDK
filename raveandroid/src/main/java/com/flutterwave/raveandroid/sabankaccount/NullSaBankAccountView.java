@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.sabankaccount;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import java.util.HashMap;
 

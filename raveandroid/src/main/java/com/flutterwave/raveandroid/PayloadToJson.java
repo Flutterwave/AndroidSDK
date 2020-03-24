@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

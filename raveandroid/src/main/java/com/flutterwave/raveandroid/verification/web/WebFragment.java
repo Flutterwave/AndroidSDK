@@ -17,15 +17,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.di.modules.WebModule;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import javax.inject.Inject;
-
-import static com.flutterwave.raveandroid.RaveConstants.response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -155,7 +153,7 @@ public class WebFragment extends Fragment implements WebContract.View {
 
     private void goBack(int result, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             getActivity().setResult(result, intent);
             getActivity().finish();

@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.data.ApiService;
+import com.flutterwave.raveandroid.rave_remote.ApiService;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;

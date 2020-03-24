@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -30,15 +29,16 @@ import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.UkModule;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.RaveConstants.response;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 
 
 /**
@@ -246,7 +246,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();
-        intent.putExtra(response, responseAsString);
+        intent.putExtra(RaveConstants.response, responseAsString);
 
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -257,7 +257,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
+        intent.putExtra(RaveConstants.response, responseAsJSONString);
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();

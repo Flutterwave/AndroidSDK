@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid.account;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.Bank;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.Bank;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import java.util.HashMap;
 import java.util.List;

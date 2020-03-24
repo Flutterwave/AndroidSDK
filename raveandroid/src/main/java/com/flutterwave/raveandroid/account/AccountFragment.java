@@ -24,20 +24,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.Bank;
-import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.Bank;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
@@ -48,13 +48,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.RaveConstants.fieldAccount;
-import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.RaveConstants.fieldBVN;
-import static com.flutterwave.raveandroid.RaveConstants.fieldBankCode;
-import static com.flutterwave.raveandroid.RaveConstants.fieldDOB;
-import static com.flutterwave.raveandroid.RaveConstants.fieldEmail;
-import static com.flutterwave.raveandroid.RaveConstants.fieldPhone;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldBVN;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldBankCode;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldDOB;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldEmail;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 

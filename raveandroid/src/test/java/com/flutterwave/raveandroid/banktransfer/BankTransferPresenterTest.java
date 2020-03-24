@@ -5,27 +5,27 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.Meta;
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJson;
-import com.flutterwave.raveandroid.RaveConstants;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.card.ChargeRequestBody;
-import com.flutterwave.raveandroid.data.Callbacks;
-import com.flutterwave.raveandroid.data.NetworkRequestImpl;
-import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
-import com.flutterwave.raveandroid.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.SubAccount;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import org.junit.Before;
@@ -42,7 +42,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.RaveConstants.fieldAmount;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -398,7 +398,7 @@ public class BankTransferPresenterTest {
 
         bankTransferPresenter.onDataCollected(hashMap);
 
-        verify(view, times(failedValidations)).showFieldError(viewID, RaveConstants.validAmountPrompt, hashMap.get(RaveConstants.fieldAmount).getViewType());
+        verify(view, times(failedValidations)).showFieldError(viewID, RaveConstants.validAmountPrompt, hashMap.get(fieldAmount).getViewType());
 
     }
 

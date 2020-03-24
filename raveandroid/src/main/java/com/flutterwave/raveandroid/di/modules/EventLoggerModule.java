@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.data.EventLoggerService;
+import com.flutterwave.raveandroid.rave_remote.EventLoggerService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +16,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import static com.flutterwave.raveandroid.RaveConstants.EVENT_LOGGING_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EVENT_LOGGING_URL;
 
 
 @Module

@@ -1,15 +1,15 @@
 package com.flutterwave.raveandroid.card;
 
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.SavedCard;
 import com.flutterwave.raveandroid.data.events.Event;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
-import com.flutterwave.raveandroid.responses.LookupSavedCardsResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.SaveCardResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.SavedCard;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.HashMap;
 import java.util.List;

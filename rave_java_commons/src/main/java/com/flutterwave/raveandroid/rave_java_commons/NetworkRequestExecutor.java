@@ -1,11 +1,7 @@
 package com.flutterwave.raveandroid.rave_java_commons;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.sun.istack.internal.NotNull;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import javax.inject.Inject;
 

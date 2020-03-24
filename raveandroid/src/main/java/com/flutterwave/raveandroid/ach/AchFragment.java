@@ -25,7 +25,7 @@ import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import javax.inject.Inject;

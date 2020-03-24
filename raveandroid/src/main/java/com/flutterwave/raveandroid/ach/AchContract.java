@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.ach;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.data.events.Event;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 public interface AchContract {
 

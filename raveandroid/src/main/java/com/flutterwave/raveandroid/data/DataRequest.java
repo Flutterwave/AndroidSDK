@@ -1,8 +1,17 @@
 package com.flutterwave.raveandroid.data;
 
-import com.flutterwave.raveandroid.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.Payload;
-import com.flutterwave.raveandroid.card.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_remote.SavedCard;
+import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.EventBody;
+import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBodyv2;
+import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 
 import java.util.List;
 

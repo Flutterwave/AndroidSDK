@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.barter;
 
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 

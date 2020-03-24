@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RedirectEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import javax.inject.Inject;

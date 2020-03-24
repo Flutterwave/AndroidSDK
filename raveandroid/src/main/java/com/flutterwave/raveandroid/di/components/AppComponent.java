@@ -9,7 +9,6 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.NetworkRequestImpl;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
@@ -29,6 +28,7 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
+import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -46,6 +46,7 @@ import com.flutterwave.raveandroid.verification.AVSVBVFragment;
 import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.PinFragment;
 import com.google.gson.Gson;
+
 import javax.inject.Singleton;
 
 import dagger.Component;

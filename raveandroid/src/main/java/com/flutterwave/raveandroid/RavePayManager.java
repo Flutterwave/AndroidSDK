@@ -9,32 +9,33 @@ import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
-import com.flutterwave.raveandroid.responses.SubAccount;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACCOUNT;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ACH;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_BARTER;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_CARD;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_MPESA;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_SA_BANK_ACCOUNT;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_UK;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_USSD;
-import static com.flutterwave.raveandroid.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
-import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
-import static com.flutterwave.raveandroid.RaveConstants.RAVE_PARAMS;
-import static com.flutterwave.raveandroid.RaveConstants.RAVE_REQUEST_CODE;
-import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_BARTER;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_CARD;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_FRANCO_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_GH_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_MPESA;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_RW_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_SA_BANK_ACCOUNT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_UG_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_UK;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_USSD;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
 public class RavePayManager {
     private String email;

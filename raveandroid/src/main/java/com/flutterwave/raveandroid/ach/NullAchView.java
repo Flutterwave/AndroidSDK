@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.ach;
 
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 public class NullAchView implements AchContract.View {
     @Override

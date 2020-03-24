@@ -1,11 +1,11 @@
 package com.flutterwave.raveandroid.verification.web;
 
 
-import com.flutterwave.raveandroid.data.Callbacks;
-import com.flutterwave.raveandroid.data.NetworkRequestImpl;
-import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 

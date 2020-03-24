@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.uk;
 
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 
 import java.util.HashMap;
 

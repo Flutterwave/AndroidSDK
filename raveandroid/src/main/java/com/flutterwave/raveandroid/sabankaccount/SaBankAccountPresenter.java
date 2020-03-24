@@ -1,43 +1,40 @@
 package com.flutterwave.raveandroid.sabankaccount;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.Payload;
 import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.WebFragment;
-import com.flutterwave.raveandroid.card.ChargeRequestBody;
-import com.flutterwave.raveandroid.data.Callbacks;
 import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.NetworkRequestImpl;
-import com.flutterwave.raveandroid.data.RequeryRequestBody;
 import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.responses.MobileMoneyChargeResponse;
-import com.flutterwave.raveandroid.responses.RequeryResponse;
-import com.flutterwave.raveandroid.responses.SaBankAccountResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
-import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
-import static com.flutterwave.raveandroid.RaveConstants.inValidRedirectUrl;
-import static com.flutterwave.raveandroid.RaveConstants.noResponse;
-import static com.flutterwave.raveandroid.RaveConstants.transactionError;
+
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.inValidRedirectUrl;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
 public class SaBankAccountPresenter implements SaBankAccountContract.UserActionsListener {
     @Inject

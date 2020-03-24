@@ -15,9 +15,9 @@ import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
-import static com.flutterwave.raveandroid.RaveConstants.BARTER_CHECKOUT;
-import static com.flutterwave.raveandroid.RaveConstants.LIVE_URL;
-import static com.flutterwave.raveandroid.RaveConstants.STAGING_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.LIVE_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
 public class VerificationActivity extends AppCompatActivity {
     private static final String TAG = VerificationActivity.class.getName();

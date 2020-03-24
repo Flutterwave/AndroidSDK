@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.flutterwave.raveandroid.rave_remote.SavedCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 
 /**
  * Created by hamzafetuga on 25/07/2017.

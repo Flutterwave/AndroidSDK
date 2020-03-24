@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.data.Bank;
-import com.flutterwave.raveandroid.data.Callbacks;
+import com.flutterwave.raveandroid.rave_remote.Bank;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
 
 import java.util.List;
 
