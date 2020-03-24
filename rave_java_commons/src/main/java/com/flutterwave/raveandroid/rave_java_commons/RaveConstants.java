@@ -146,4 +146,6 @@ public class RaveConstants {
     }};
 
 
+    public static final String responseParsingError = "Error parsing server response";
+    public static String errorParsingError = "An error occurred parsing the error response";
 }

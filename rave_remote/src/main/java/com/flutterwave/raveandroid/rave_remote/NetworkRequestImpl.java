@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.rave_remote;
 import android.support.annotation.NonNull;
 
 import com.flutterwave.raveandroid.rave_core.models.Bank;
+import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ErrorBody;
@@ -54,6 +55,7 @@ public class NetworkRequestImpl {
     ApiService service;
     EventLoggerService eventLoggerService;
     Gson gson;
+    private NetworkRequestExecutor executor;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
@@ -61,12 +63,14 @@ public class NetworkRequestImpl {
                               @Named("eventLoggingRetrofit") Retrofit eventLoggingRetrofit,
                               ApiService service,
                               EventLoggerService eventLoggerService,
-                              Gson gson) {
+                              Gson gson,
+                              NetworkRequestExecutor executor) {
         this.mainRetrofit = mainRetrofit;
         this.eventLoggingRetrofit = eventLoggingRetrofit;
         this.service = service;
         this.eventLoggerService = eventLoggerService;
         this.gson = gson;
+        this.executor = executor;
     }
 
     private ErrorBody parseErrorJson(String errorStr) {
@@ -80,6 +84,28 @@ public class NetworkRequestImpl {
             return new ErrorBody("error", errorParsingError);
         }
 
+    }
+
+
+    public void charge(ChargeRequestBody body, final ResultCallback callback) {
+        executor.execute(service.charge(body), new TypeToken<ChargeResponse>() {
+                }.getType(),
+                new com.flutterwave.raveandroid.rave_java_commons.Callback<ChargeResponse>() {
+                    @Override
+                    public void onSuccess(ChargeResponse response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(String responseAsJSONString) {
+                        callback.onError(responseAsJSONString);
+                    }
+
+                    @Override
+                    public void onFailure(String exceptionMessage) {
+                        callback.onError(exceptionMessage);
+                    }
+                });
     }
 
 

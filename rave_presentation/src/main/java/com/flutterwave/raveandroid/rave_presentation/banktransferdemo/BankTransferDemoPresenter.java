@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.rave_presentation.banktransferdemo;
 
-import com.flutterwave.raveandroid.rave_core.models.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
+import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 
 import javax.inject.Inject;
 
@@ -23,17 +23,18 @@ public class BankTransferDemoPresenter implements BankTransferDemoContract.UserA
 
         mView.showProgressIndicator(true);
 
-        repository.charge(new ChargeRequestBody(), new ResultCallback() {
+        repository.charge(new ChargeRequestBody(), new ResultCallback<String>() {
             @Override
-            public void onResult(boolean status, String response) {
+            public void onSuccess(String response) {
                 mView.showProgressIndicator(false);
+                mView.showMessage("Yaay! " + response);
+            }
 
-                if (status) {
-                    mView.showMessage("Yaay! " + response);
-                }
-                else {
-                    mView.showMessage("nah! " + response);
-                }
+            @Override
+            public void onError(String message) {
+                mView.showProgressIndicator(false);
+                mView.showMessage("nah! " + message);
+
             }
         });
     }
