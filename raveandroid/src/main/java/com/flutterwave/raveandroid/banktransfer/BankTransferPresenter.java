@@ -141,9 +141,11 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
                     flwRef = response.getData().getFlw_reference();
                     txRef = response.getData().getTx_ref();
                     publicKey = payload.getPBFPubKey();
-                    beneficiaryName = response.getData().getNote().substring(
-                            response.getData().getNote().indexOf("to ") + 3
-                    );
+                    if (response.getData().getNote() != null && response.getData().getNote().contains("to ")) {
+                        beneficiaryName = response.getData().getNote().substring(
+                                response.getData().getNote().indexOf("to ") + 3
+                        );
+                    }
                     amount = response.getData().getAmount();
                     accountNumber = response.getData().getAccountnumber();
                     bankName = response.getData().getBankname();
