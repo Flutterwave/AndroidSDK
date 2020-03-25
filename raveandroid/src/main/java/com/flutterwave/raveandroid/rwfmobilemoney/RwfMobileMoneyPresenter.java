@@ -109,7 +109,7 @@ public class RwfMobileMoneyPresenter implements RwfMobileMoneyContract.UserActio
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(transactionError);
+                mView.showFetchFeeFailed(message);
             }
         });
     }
