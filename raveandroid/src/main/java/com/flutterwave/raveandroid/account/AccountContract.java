@@ -28,15 +28,15 @@ public interface AccountContract {
 
         void onDisplayInternetBankingPage(String authurl, String flwRef);
 
-        void onChargeAccountFailed(String message, String responseAsJSONString);
+        void onChargeAccountFailed(String message);
 
         void onPaymentSuccessful(String status, String responseAsJSONString);
 
         void onPaymentFailed(String status, String responseAsJSONString);
 
-        void onValidationSuccessful(String flwRef, String responseAsJSONString);
+        void onValidationSuccessful(String flwRef);
 
-        void onValidateError(String message, String responseAsJSONString);
+        void onValidateError(String message);
 
         void onPaymentError(String s);
 

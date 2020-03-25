@@ -3,8 +3,8 @@ package com.flutterwave.raveandroid.data;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.data.events.Event;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.EventBody;
 
 import javax.inject.Inject;
@@ -22,7 +22,7 @@ public class EventLogger {
                 body.getTitle(),
                 body.getMessage());
 
-        networkRequest.logEvent(eventBody, new Callbacks.OnLogEventComplete() {
+        networkRequest.logEvent(eventBody, new ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
                 Log.d("Event log successful", body.getTitle());

@@ -1,7 +1,6 @@
 package com.flutterwave.raveandroid.rave_remote;
 
 
-import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
@@ -10,9 +9,6 @@ import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBodyv2;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -53,13 +49,13 @@ public interface ApiService {
     Call<String> requeryTx_v2(@Body RequeryRequestBodyv2 body);
 
     @GET("/flwv3-pug/getpaidx/api/flwpbf-banks.js?json=1")
-    Call<List<Bank>> getBanks();
+    Call<String> getBanks();
 
     @POST("/flwv3-pug/getpaidx/api/tokenized/charge")
     Call<String> chargeToken(@Body Payload payload);
 
     @POST("/flwv3-pug/getpaidx/api/fee")
-    Call<FeeCheckResponse> checkFee(@Body FeeCheckRequestBody body);
+    Call<String> checkFee(@Body FeeCheckRequestBody body);
 
     @POST("/v2/gpx/devices/save")
     Call<String> saveCardToRave(@Body SaveCardRequestBody body);

@@ -19,6 +19,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
@@ -89,7 +90,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -130,15 +131,13 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
         logEvent(new ChargeAttemptEvent("MPesa").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
 
                 mView.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    Log.d("resp", responseAsJSONString);
-
                     String flwRef = response.getData().getFlwRef();
                     String txRef = response.getData().getTx_ref();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
@@ -150,7 +149,7 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }

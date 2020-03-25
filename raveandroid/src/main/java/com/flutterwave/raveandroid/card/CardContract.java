@@ -51,7 +51,7 @@ public interface CardContract {
 
         void showOTPLayout(String flwRef, String chargeResponseMessage);
 
-        void onValidateSuccessful(String message, String responseAsString);
+        void onValidateSuccessful(String message);
 
         void displayFee(String charge_amount, Payload payload, int why);
 
@@ -59,7 +59,7 @@ public interface CardContract {
 
         void onTokenRetrieved(String flwRef, String cardBIN, String token);
 
-        void onValidateCardChargeFailed(String flwRef, String responseAsJSON);
+        void onValidateCardChargeFailed(String flwRef);
 
         void onNoAuthInternationalSuggested(Payload payload);
 
@@ -69,13 +69,13 @@ public interface CardContract {
 
         void onCardSaveFailed(String message, String responseAsJSONString);
 
-        void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString);
+        void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String verifyResponseAsJSONString);
 
-        void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString);
+        void onLookupSavedCardsFailed(String message, String verifyResponseAsJSONString);
 
         void showOTPLayoutForSavedCard(Payload payload, String authInstruction);
 
-        void onSendRaveOtpFailed(String message, String responseAsJSONString);
+        void onSendRaveOtpFailed(String message);
 
         void showSavedCardsLayout(List<SavedCard> savedCardsList);
 

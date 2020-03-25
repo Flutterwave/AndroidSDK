@@ -2,10 +2,12 @@ package com.flutterwave.raveandroid.rave_logger;
 
 import android.util.Log;
 
-import com.flutterwave.raveandroid.rave_java_commons.Callback;
+import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 
 import javax.inject.Inject;
+
+import okhttp3.ResponseBody;
 
 public class Logger {
 
@@ -21,19 +23,19 @@ public class Logger {
     }
 
     public void logEvent(final RaveEvent event) {
-        executor.execute(service.logEvent(event), new Callback<String>() {
+        executor.execute(service.logEvent(event), new ExecutorCallback<String>() {
             @Override
-            public void onSuccess(String responseAsJSONString) {
+            public void onSuccess(String responseAsJSONString, String responseAsJsonString) {
                 Log.d(RAVE_LOGGER_TAG, event.getTitle());
             }
 
             @Override
-            public void onError(String responseAsJSONString) {
-                Log.d(RAVE_LOGGER_TAG, responseAsJSONString);
+            public void onError(ResponseBody responseBody) {
+                Log.d(RAVE_LOGGER_TAG, responseBody);
             }
 
             @Override
-            public void onFailure(String exceptionMessage) {
+            public void onCallFailure(String exceptionMessage) {
                 Log.d(RAVE_LOGGER_TAG, exceptionMessage);
             }
         });

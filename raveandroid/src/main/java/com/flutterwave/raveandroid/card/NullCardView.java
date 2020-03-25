@@ -46,12 +46,12 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString) {
+    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String verifyResponseAsJSONString) {
 
     }
 
     @Override
-    public void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString) {
+    public void onLookupSavedCardsFailed(String message, String verifyResponseAsJSONString) {
 
     }
 
@@ -61,7 +61,7 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
+    public void onSendRaveOtpFailed(String message) {
 
     }
 
@@ -117,7 +117,7 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onValidateSuccessful(String message, String responseAsString) {
+    public void onValidateSuccessful(String message) {
 
     }
 
@@ -188,7 +188,7 @@ public class NullCardView implements View.OnClickListener, CardContract.View {
     }
 
     @Override
-    public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
+    public void onValidateCardChargeFailed(String flwRef) {
 
     }
 

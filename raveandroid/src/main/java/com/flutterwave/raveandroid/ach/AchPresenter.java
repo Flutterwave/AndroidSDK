@@ -20,6 +20,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
@@ -151,10 +152,9 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
-
+        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
 
                 mView.showProgressIndicator(false);
 
@@ -186,7 +186,7 @@ public class AchPresenter implements AchContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }

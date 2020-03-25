@@ -350,7 +350,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onValidateCardChargeFailed(String flwRef, String responseAsJSON) {
+    public void onValidateCardChargeFailed(String flwRef) {
 
         dismissDialog();
 
@@ -514,7 +514,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onSendRaveOtpFailed(String message, String responseAsJSONString) {
+    public void onSendRaveOtpFailed(String message) {
         showToast(message);
     }
 
@@ -575,12 +575,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     /**
      * Called when a payment that requires validation has been completed
-     *
      * @param status               = status of the payment (success)
-     * @param responseAsJSONString = full json response from the payment
      */
     @Override
-    public void onValidateSuccessful(String status, String responseAsJSONString) {
+    public void onValidateSuccessful(String status) {
         presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
 
     }
@@ -620,7 +618,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String responseAsJSONString, String verifyResponseAsJSONString) {
+    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String verifyResponseAsJSONString) {
         //Save details to phone
         presenter.saveCardToSharedPreferences(response, ravePayInitializer.getPublicKey());
         // Save details in app memory
@@ -642,7 +640,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onLookupSavedCardsFailed(String message, String responseAsJSONString, String verifyResponseAsJSONString) {
+    public void onLookupSavedCardsFailed(String message, String verifyResponseAsJSONString) {
         Intent intent = new Intent();
         intent.putExtra("response", verifyResponseAsJSONString);
 

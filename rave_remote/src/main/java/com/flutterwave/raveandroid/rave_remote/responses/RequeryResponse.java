@@ -25,6 +25,10 @@ public class RequeryResponse {
         this.data = data;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public static class Data {
 
         Data data;

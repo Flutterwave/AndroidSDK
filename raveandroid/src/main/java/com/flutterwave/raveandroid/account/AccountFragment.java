@@ -244,7 +244,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onValidateError(String message, String responseAsJSonString) {
+    public void onValidateError(String message) {
         presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
@@ -261,7 +261,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onValidationSuccessful(String flwRef, String responseAsJsonString) {
+    public void onValidationSuccessful(String flwRef) {
         presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
     }
 
@@ -450,7 +450,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onChargeAccountFailed(String message, String responseAsJSONString) {
+    public void onChargeAccountFailed(String message) {
         presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }

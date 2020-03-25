@@ -23,6 +23,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
@@ -137,7 +138,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getBanks(new Callbacks.OnGetBanksRequestComplete() {
+        networkRequest.getBanks(new ResultCallback<List<Bank>>() {
             @Override
             public void onSuccess(List<Bank> banks) {
                 mView.showProgressIndicator(false);
@@ -147,7 +148,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             @Override
             public void onError(String message) {
                 mView.showProgressIndicator(false);
-                mView.onGetBanksRequestFailed(message);
+                mView.onGetBanksRequestFailed("An error occurred while retrieving banks");
             }
         });
 
@@ -168,9 +169,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.chargeAccount(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
                 mView.showProgressIndicator(false);
 
                 if (response.getData() != null) {
@@ -194,9 +195,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
-                mView.onChargeAccountFailed(message, responseAsJSONString);
+                mView.onChargeAccountFailed(message);
             }
         });
     }
@@ -213,9 +214,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
 
-        networkRequest.validateAccountCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        networkRequest.validateAccountCharge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
                 mView.showProgressIndicator(false);
 
                 if (response.getStatus() != null) {
@@ -223,9 +224,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase(success)) {
-                        mView.onValidationSuccessful(flwRef, responseAsJSONString);
+                        mView.onValidationSuccessful(flwRef);
                     } else {
-                        mView.onValidateError(status, responseAsJSONString);
+                        mView.onValidateError(status);
                     }
                 } else {
                     mView.onPaymentError(invalidCharge);
@@ -233,7 +234,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }
@@ -253,7 +254,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);

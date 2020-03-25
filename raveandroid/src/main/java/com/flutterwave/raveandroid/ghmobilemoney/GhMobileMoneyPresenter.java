@@ -20,6 +20,7 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -96,7 +97,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -133,15 +134,13 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
         logEvent(new ChargeAttemptEvent("GH Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeMobileMoneyWallet(body, new Callbacks.OnGhanaChargeRequestComplete() {
+        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
             @Override
-            public void onSuccess(MobileMoneyChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(MobileMoneyChargeResponse response) {
 
                 mView.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    Log.d("resp", responseAsJSONString);
-
                     String flwRef = response.getData().getFlwRef();
                     String txRef = response.getData().getTx_ref();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
@@ -152,7 +151,7 @@ public class GhMobileMoneyPresenter implements GhMobileMoneyContract.UserActions
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }

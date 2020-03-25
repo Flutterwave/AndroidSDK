@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
@@ -115,7 +116,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -152,15 +153,13 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
         logEvent(new ChargeAttemptEvent("USSD").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
 
                 mView.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    Log.d("resp", responseAsJSONString);
-
                     flwRef = response.getData().getUssdData().getFlw_reference();
                     publicKey = payload.getPBFPubKey();
                     String note = null;
@@ -182,7 +181,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }

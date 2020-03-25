@@ -45,7 +45,7 @@ public class NullAccountView implements AccountContract.View {
     }
 
     @Override
-    public void onChargeAccountFailed(String message, String responseAsJSONString) {
+    public void onChargeAccountFailed(String message) {
 
     }
 
@@ -60,12 +60,12 @@ public class NullAccountView implements AccountContract.View {
     }
 
     @Override
-    public void onValidationSuccessful(String flwRef, String responseAsJSONString) {
+    public void onValidationSuccessful(String flwRef) {
 
     }
 
     @Override
-    public void onValidateError(String message, String responseAsJSONString) {
+    public void onValidateError(String message) {
 
     }
 

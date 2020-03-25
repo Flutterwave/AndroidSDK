@@ -62,7 +62,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.expired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCvv;
@@ -71,8 +70,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldP
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenExpired;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenNotFound;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.unknownAuthmsg;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
@@ -261,9 +258,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.sendRaveOtp(body, new Callbacks.OnSendRaveOTPRequestComplete() {
+        networkRequest.sendRaveOtp(body, new ResultCallback<SendRaveOtpResponse>() {
             @Override
-            public void onSuccess(SendRaveOtpResponse response, String responseAsJSONString) {
+            public void onSuccess(SendRaveOtpResponse response) {
                 mView.showProgressIndicator(false);
                 String authInstruction = "Enter the one time password (OTP) sent to " +
                         phoneNumberObfuscator.obfuscatePhoneNumber(payload
@@ -272,9 +269,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
-                mView.onSendRaveOtpFailed(message, responseAsJSONString);
+                mView.onSendRaveOtpFailed(message);
             }
         });
     }
@@ -512,9 +509,9 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         logEvent(new ValidationAttemptEvent("Card").getEvent(), PBFPubKey);
 
-        networkRequest.validateChargeCard(body, new Callbacks.OnValidateChargeCardRequestComplete() {
+        networkRequest.validateCardCharge(body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
                 mView.showProgressIndicator(false);
 
                 if (response.getStatus() != null) {
@@ -522,17 +519,17 @@ public class CardPresenter implements CardContract.UserActionsListener {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase(success)) {
-                        mView.onValidateSuccessful(status, responseAsJSONString);
+                        mView.onValidateSuccessful(status);
                     } else {
                         mView.onValidateError(message);
                     }
                 } else {
-                    mView.onValidateCardChargeFailed(flwRef, responseAsJSONString);
+                    mView.onValidateCardChargeFailed(flwRef);
                 }
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }
@@ -593,14 +590,14 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.saveCardToRave(body, new Callbacks.OnSaveCardRequestComplete() {
+        networkRequest.saveCardToRave(body, new ResultCallback<SaveCardResponse>() {
             @Override
-            public void onSuccess(SaveCardResponse response, String responseAsJSONString) {
+            public void onSuccess(SaveCardResponse response) {
                 mView.onCardSaveSuccessful(response, verifyResponse, phoneNumber);
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.onCardSaveFailed(message, verifyResponse);
             }
         });
@@ -616,18 +613,18 @@ public class CardPresenter implements CardContract.UserActionsListener {
         body.setPublic_key(publicKey);
 
 
-        networkRequest.lookupSavedCards(body, new Callbacks.OnLookupSavedCardsRequestComplete() {
+        networkRequest.lookupSavedCards(body, new ResultCallback<LookupSavedCardsResponse>() {
             @Override
-            public void onSuccess(LookupSavedCardsResponse response, String responseAsJSONString) {
+            public void onSuccess(LookupSavedCardsResponse response) {
                 mView.showProgressIndicator(false);
                 mView.setHasSavedCards(true);
-                mView.onLookupSavedCardsSuccessful(response, responseAsJSONString, verifyResponseAsJSONString);
+                mView.onLookupSavedCardsSuccessful(response, verifyResponseAsJSONString);
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
-                mView.onLookupSavedCardsFailed(message, responseAsJSONString, verifyResponseAsJSONString);
+                mView.onLookupSavedCardsFailed(message, verifyResponseAsJSONString);
             }
         });
     }
@@ -669,7 +666,7 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -734,26 +731,18 @@ public class CardPresenter implements CardContract.UserActionsListener {
         logEvent(new ChargeAttemptEvent("Card Token").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeToken(payload, new Callbacks.OnChargeRequestComplete() {
+        networkRequest.chargeToken(payload, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(ChargeResponse response, String responseAsJSONString) {
+            public void onSuccess(ChargeResponse response) {
                 mView.showProgressIndicator(false);
                 mView.onChargeTokenComplete(response);
 
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
-
-                if (responseAsJSONString.contains(tokenNotFound)) {
-                    mView.onPaymentError(tokenNotFound);
-                } else if (responseAsJSONString.contains(expired)) {
-                    mView.onPaymentError(tokenExpired);
-                } else {
                     mView.onPaymentError(message);
-                }
-
             }
         });
 

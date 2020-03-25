@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -97,7 +98,7 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
 
         mView.showProgressIndicator(true);
 
-        networkRequest.getFee(body, new Callbacks.OnGetFeeRequestComplete() {
+        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
                 mView.showProgressIndicator(false);
@@ -238,15 +239,13 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
         logEvent(new ChargeAttemptEvent("SA Bank Account").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeSaBankAccount(body, new Callbacks.OnSaChargeRequestComplete() {
+        networkRequest.chargeSaBankAccount(body, new ResultCallback<SaBankAccountResponse>() {
             @Override
-            public void onSuccess(SaBankAccountResponse response, String responseAsJSONString) {
+            public void onSuccess(SaBankAccountResponse response) {
 
                 mView.showProgressIndicator(false);
 
                 if (response.getData().getData().getRedirectUrl() != null) {
-                    Log.d("resp", responseAsJSONString);
-
                     String authUrl = response.getData().getData().getRedirectUrl();
                     String flwRef = response.getData().getData().getFlwReference();
 
@@ -260,7 +259,7 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
             }
 
             @Override
-            public void onError(String message, String responseAsJSONString) {
+            public void onError(String message) {
                 mView.showProgressIndicator(false);
                 mView.onPaymentError(message);
             }
