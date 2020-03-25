@@ -98,7 +98,7 @@ public class UkPresenter implements UkContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(transactionError);
+                mView.showFetchFeeFailed(message);
             }
         });
     }

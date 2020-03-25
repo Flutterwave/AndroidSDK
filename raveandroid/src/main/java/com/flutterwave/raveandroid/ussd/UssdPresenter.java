@@ -131,7 +131,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(transactionError);
+                mView.showFetchFeeFailed(message);
             }
         });
     }

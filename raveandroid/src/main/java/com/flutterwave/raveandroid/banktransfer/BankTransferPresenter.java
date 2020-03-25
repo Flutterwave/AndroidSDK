@@ -108,7 +108,7 @@ public class BankTransferPresenter implements BankTransferContract.UserActionsLi
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed("An error occurred while retrieving transaction fee");
+                mView.showFetchFeeFailed(message);
             }
         });
     }

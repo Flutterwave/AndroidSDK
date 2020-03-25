@@ -113,7 +113,7 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(transactionError);
+                mView.showFetchFeeFailed(message);
             }
         });
     }
