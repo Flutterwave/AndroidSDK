@@ -3,9 +3,9 @@ package com.flutterwave.raveandroid.rave_java_commons;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.inject.Inject;
@@ -54,23 +54,11 @@ public class NetworkRequestExecutor {
         });
     }
 
-    Type getType(final Class<?> rawClass, final Class<?> parameter) {
-        return new ParameterizedType() {
-            @Override
-            public Type[] getActualTypeArguments() {
-                return new Type[]{parameter};
-            }
 
-            @Override
-            public Type getRawType() {
-                return rawClass;
-            }
-
-            @Override
-            public Type getOwnerType() {
-                return null;
-            }
-        };
+    public void execute(Call<String> call,
+                        final Callback<String> callback) {
+        execute(call, new TypeToken<String>() {
+        }.getType(), callback);
     }
 }
 

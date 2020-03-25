@@ -21,7 +21,7 @@ public class Logger {
     }
 
     public void logEvent(final RaveEvent event) {
-        executor.execute(service.logEvent(event), new Callback() {
+        executor.execute(service.logEvent(event), new Callback<String>() {
             @Override
             public void onSuccess(String responseAsJSONString) {
                 Log.d(RAVE_LOGGER_TAG, event.getTitle());
