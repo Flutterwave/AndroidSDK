@@ -9,7 +9,7 @@ import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
-import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -42,8 +42,8 @@ public class TestAndroidModule {
 
     @Provides
     @Singleton
-    public SharedPrefsRequestImpl providesSharedPrefsRequestImpl() {
-        return Mockito.mock(SharedPrefsRequestImpl.class);
+    public SharedPrefsRepo providesSharedPrefsRequestImpl() {
+        return Mockito.mock(SharedPrefsRepo.class);
     }
 
     @Provides

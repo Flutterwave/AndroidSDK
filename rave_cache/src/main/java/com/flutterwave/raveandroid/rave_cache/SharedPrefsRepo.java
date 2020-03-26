@@ -1,5 +1,6 @@
-package com.flutterwave.raveandroid.data;
+package com.flutterwave.raveandroid.rave_cache;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -19,7 +20,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPA
  * Created by hamzafetuga on 25/07/2017.
  */
 
-public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
+public class SharedPrefsRepo {
 
     private static final String SAVED_CARDS_PREFIX = "EXTRA_SAVED_CARDS";
     private static final String PHONE_NUMBER = "phone_number";
@@ -29,13 +30,15 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
     String FLW_REF_KEY = "flw_ref_key";
     Gson gson;
 
+    @SuppressLint("CommitPrefEdits")
     @Inject
-    public SharedPrefsRequestImpl(Context context, Gson gson) {
-        this.context = context;
+    public SharedPrefsRepo(SharedPreferences sharedPreferences, Gson gson) {
         this.gson = gson;
+        this.sharedPreferences = sharedPreferences;
+        this.editor = sharedPreferences.edit();
     }
 
-    @Override
+
     public void saveCardToSharedPreference(List<SavedCard> cardsToSave, String phoneNumber, String publicKey) {
 
         savePhoneNumber(phoneNumber);
@@ -61,7 +64,7 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         editor.putString(SAVED_CARDS_PREFIX + phoneNumber + publicKey, savedCardsJson).apply();
     }
 
-    @Override
+
     public List<SavedCard> getSavedCards(String phoneNumber, String publicKey) {
         init();
         String savedCardsJson = sharedPreferences.getString(
@@ -88,25 +91,25 @@ public class SharedPrefsRequestImpl implements DataRequest.SharedPrefsRequest {
         }
     }
 
-    @Override
+    
     public void saveFlwRef(String flwRef) {
         init();
         editor.putString(FLW_REF_KEY, flwRef).apply();
     }
 
-    @Override
+
     public String fetchFlwRef() {
         init();
         return sharedPreferences.getString(FLW_REF_KEY, "");
     }
 
-    @Override
+
     public void savePhoneNumber(String phoneNumber) {
         init();
         editor.putString(PHONE_NUMBER, phoneNumber).apply();
     }
 
-    @Override
+
     public String fetchPhoneNumber() {
         init();
         return sharedPreferences.getString(PHONE_NUMBER, "");

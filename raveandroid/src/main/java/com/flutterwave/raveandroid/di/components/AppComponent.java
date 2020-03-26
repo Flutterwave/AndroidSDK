@@ -8,7 +8,6 @@ import com.flutterwave.raveandroid.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.WebFragment;
-import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
@@ -25,6 +24,8 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
+import com.flutterwave.raveandroid.rave_cache.di.CacheModule;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -52,7 +53,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class})
+@Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class, CacheModule.class})
 public interface AppComponent {
 
     RemoteRepository networkImpl();
@@ -77,7 +78,8 @@ public interface AppComponent {
     TransactionStatusChecker transactionStatusChecker();
     PayloadEncryptor payloadEncryptor();
     PayloadToJson payloadToJson();
-    SharedPrefsRequestImpl sharedManager();
+
+    SharedPrefsRepo sharedManager();
     NetworkValidator networkValidator();
     Gson gson();
 

@@ -28,6 +28,7 @@ dependencies {
 
     implementation project(':rave_remote')
     implementation project(':rave_logger')
+    implementation project(':rave_cache')
 
     //dagger
     implementation 'com.google.dagger:dagger:2.27'

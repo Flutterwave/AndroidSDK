@@ -10,11 +10,11 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
@@ -51,7 +51,7 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
     @Inject
     TransactionStatusChecker transactionStatusChecker;
     @Inject
-    SharedPrefsRequestImpl sharedMgr;
+    SharedPrefsRepo sharedMgr;
 
     private Context context;
     private SaBankAccountContract.View mView;

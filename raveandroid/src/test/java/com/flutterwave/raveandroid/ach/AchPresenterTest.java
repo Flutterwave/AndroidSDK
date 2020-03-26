@@ -9,11 +9,11 @@ import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
-import com.flutterwave.raveandroid.data.SharedPrefsRequestImpl;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
 import com.flutterwave.raveandroid.di.TestremoteModule;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -68,7 +68,7 @@ public class AchPresenterTest {
     @Inject
     RemoteRepository networkRequest;
     @Inject
-    SharedPrefsRequestImpl sharedPrefsRequest;
+    SharedPrefsRepo sharedPrefsRequest;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
     @Mock
