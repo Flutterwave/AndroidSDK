@@ -8,9 +8,9 @@ import android.util.Log;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
-import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 
 import org.parceler.Parcels;
 
@@ -356,17 +356,17 @@ public class RavePayManager {
         if (activity != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(activity))
-                    .networkModule(new NetworkModule(baseUrl))
+                    .networkModule(new RemoteModule(baseUrl))
                     .build();
         } else if (supportFragment != null && supportFragment.getContext() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(supportFragment.getContext()))
-                    .networkModule(new NetworkModule(baseUrl))
+                    .networkModule(new RemoteModule(baseUrl))
                     .build();
         } else if (fragment != null && fragment.getActivity() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(fragment.getActivity()))
-                    .networkModule(new NetworkModule(baseUrl))
+                    .networkModule(new RemoteModule(baseUrl))
                     .build();
         } else {
             throw new IllegalArgumentException("Context is required");

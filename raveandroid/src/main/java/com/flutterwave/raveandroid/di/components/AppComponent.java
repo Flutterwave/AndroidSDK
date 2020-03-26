@@ -20,7 +20,6 @@ import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
-import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.di.modules.RwandaModule;
 import com.flutterwave.raveandroid.di.modules.SaBankModule;
 import com.flutterwave.raveandroid.di.modules.UgandaModule;
@@ -29,6 +28,7 @@ import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
+import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -52,7 +52,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AndroidModule.class, NetworkModule.class, EventLoggerModule.class})
+@Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class})
 public interface AppComponent {
 
     RemoteRepository networkImpl();

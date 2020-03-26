@@ -36,11 +36,11 @@ import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
-import com.flutterwave.raveandroid.di.modules.NetworkModule;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountFragment;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyFragment;
@@ -624,7 +624,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
-                .networkModule(new NetworkModule(BASE_URL))
+                .networkModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 
