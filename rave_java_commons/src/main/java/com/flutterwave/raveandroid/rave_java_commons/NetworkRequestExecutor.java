@@ -20,6 +20,14 @@ public class NetworkRequestExecutor {
         this.gson = gson;
     }
 
+    /**
+     * Runs a network call, parses the response if successful and passes back to the provided {@link ExecutorCallback}
+     *
+     * @param call         Network call to be run
+     * @param responseType {@link Type} of response Class. (Generic type not used because of type erasure.)
+     * @param callback     Callback to receive results (or errors)
+     * @param <T>          Expected response type
+     */
     public <T> void execute(Call<String> call,
                             final Type responseType,
                             final ExecutorCallback<T> callback) {
@@ -34,51 +42,6 @@ public class NetworkRequestExecutor {
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
                         callback.onParseError(RaveConstants.responseParsingError, response.body());
-                    }
-                } else {
-                    callback.onError(response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                callback.onCallFailure(t.getMessage());
-            }
-        });
-    }
-
-    public <T> void executeSpecificCall(Call<T> call,
-                                        final ExecutorCallback<T> callback) {
-
-        call.enqueue(new retrofit2.Callback<T>() {
-            @Override
-            public void onResponse(Call<T> call, Response<T> response) {
-                if (response.isSuccessful()) {
-                    callback.onSuccess(response.body(), response.body().toString());
-                } else {
-                    callback.onError(response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<T> call, Throwable t) {
-                callback.onCallFailure(t.getMessage());
-            }
-        });
-    }
-
-
-    public void execute(Call<String> call,
-                        final GenericExecutorCallback callback) {
-        call.enqueue(new retrofit2.Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        callback.onSuccess(response.body());
-                    } catch (JsonSyntaxException e) {
-                        e.printStackTrace();
-                        callback.onParseError(RaveConstants.responseParsingError);
                     }
                 } else {
                     callback.onError(response.errorBody());

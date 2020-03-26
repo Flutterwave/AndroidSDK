@@ -1,7 +1,7 @@
 package com.flutterwave.raveandroid.di;
 
 import com.flutterwave.raveandroid.rave_remote.ApiService;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.google.gson.Gson;
 
 import org.mockito.Mockito;
@@ -34,8 +34,8 @@ public class TestNetworkModule {
 
     @Singleton
     @Provides
-    public NetworkRequestImpl providesNetworkRequestImpl() {
-        return Mockito.mock(NetworkRequestImpl.class);
+    public RemoteRepository providesNetworkRequestImpl() {
+        return Mockito.mock(RemoteRepository.class);
     }
 
 }

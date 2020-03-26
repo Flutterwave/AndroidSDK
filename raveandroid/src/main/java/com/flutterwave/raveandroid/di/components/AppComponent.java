@@ -28,7 +28,7 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -55,7 +55,7 @@ import dagger.Component;
 @Component(modules = {AndroidModule.class, NetworkModule.class, EventLoggerModule.class})
 public interface AppComponent {
 
-    NetworkRequestImpl networkImpl();
+    RemoteRepository networkImpl();
 
     EventLogger eventLogger();
 

@@ -3,7 +3,7 @@ package com.flutterwave.raveandroid.data;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.data.events.Event;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.EventBody;
 
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 public class EventLogger {
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
 
     @Inject
     public EventLogger() {

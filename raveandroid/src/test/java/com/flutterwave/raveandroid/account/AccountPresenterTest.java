@@ -18,7 +18,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
@@ -107,7 +107,7 @@ public class AccountPresenterTest {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
     @Inject
     TransactionStatusChecker transactionStatusChecker;
     @Mock

@@ -22,7 +22,7 @@ import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
@@ -98,7 +98,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     @Inject
     TransactionStatusChecker transactionStatusChecker;
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
     @Inject
     EventLogger eventLogger;
     @Inject

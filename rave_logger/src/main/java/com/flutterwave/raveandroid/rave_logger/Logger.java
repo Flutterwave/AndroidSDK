@@ -4,6 +4,9 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -23,7 +26,10 @@ public class Logger {
     }
 
     public void logEvent(final RaveEvent event) {
-        executor.execute(service.logEvent(event), new ExecutorCallback<String>() {
+        executor.execute(service.logEvent(event),
+                new TypeToken<String>() {
+                }.getType(),
+                new ExecutorCallback<String>() {
             @Override
             public void onSuccess(String responseAsJSONString, String responseAsJsonString) {
                 Log.d(RAVE_LOGGER_TAG, event.getTitle());
@@ -31,8 +37,18 @@ public class Logger {
 
             @Override
             public void onError(ResponseBody responseBody) {
-                Log.d(RAVE_LOGGER_TAG, responseBody);
+                try {
+                    Log.d(RAVE_LOGGER_TAG, responseBody.string()
+                    );
+                } catch (IOException e) {
+                    Log.d(RAVE_LOGGER_TAG, "Event log action unsuccessful");
+                }
             }
+
+                    @Override
+                    public void onParseError(String message, String responseAsJsonString) {
+                        Log.d(RAVE_LOGGER_TAG, message);
+                    }
 
             @Override
             public void onCallFailure(String exceptionMessage) {

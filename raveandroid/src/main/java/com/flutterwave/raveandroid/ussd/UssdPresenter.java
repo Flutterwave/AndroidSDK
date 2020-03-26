@@ -20,7 +20,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
@@ -52,7 +52,7 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
     @Inject
     DeviceIdGetter deviceIdGetter;
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
     private String txRef = null, flwRef = null, publicKey = null, ussdCode = null, referenceCode = null;
     private long requeryCountdownTime = 0;
 

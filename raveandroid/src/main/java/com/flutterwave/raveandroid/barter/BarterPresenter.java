@@ -15,7 +15,7 @@ import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
@@ -38,7 +38,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validA
 public class BarterPresenter implements BarterContract.UserActionsListener {
 
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
     @Inject
     AmountValidator amountValidator;
     @Inject

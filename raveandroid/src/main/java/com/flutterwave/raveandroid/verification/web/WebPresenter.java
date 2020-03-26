@@ -3,7 +3,7 @@ package com.flutterwave.raveandroid.verification.web;
 
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.NetworkRequestImpl;
+import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class WebPresenter implements WebContract.UserActionsListener {
 
     @Inject
-    NetworkRequestImpl networkRequest;
+    RemoteRepository networkRequest;
     private WebContract.View mView;
 
     @Inject
