@@ -356,17 +356,17 @@ public class RavePayManager {
         if (activity != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(activity))
-                    .networkModule(new RemoteModule(baseUrl))
+                    .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else if (supportFragment != null && supportFragment.getContext() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(supportFragment.getContext()))
-                    .networkModule(new RemoteModule(baseUrl))
+                    .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else if (fragment != null && fragment.getActivity() != null) {
             return DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(fragment.getActivity()))
-                    .networkModule(new RemoteModule(baseUrl))
+                    .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else {
             throw new IllegalArgumentException("Context is required");

@@ -624,7 +624,7 @@ public class RavePayActivity extends AppCompatActivity {
 
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
-                .networkModule(new RemoteModule(BASE_URL))
+                .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 

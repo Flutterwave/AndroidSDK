@@ -11,7 +11,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
-import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
@@ -98,7 +98,7 @@ public class VerificationActivity extends AppCompatActivity {
 
         appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
-                .networkModule(new RemoteModule(BASE_URL))
+                .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
     }
