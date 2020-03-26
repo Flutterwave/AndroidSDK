@@ -1,6 +1,8 @@
 package com.flutterwave.raveandroid.data.events;
 
-import static com.flutterwave.raveandroid.data.events.Event.EVENT_TITLE_INSTRUCTION;
+import com.flutterwave.raveandroid.rave_logger.Event;
+
+import static com.flutterwave.raveandroid.rave_logger.Event.EVENT_TITLE_INSTRUCTION;
 
 public class InstructionsDisplayedEvent {
     Event event;

@@ -28,18 +28,19 @@ import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
-import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
-import com.flutterwave.raveandroid.di.modules.EventLoggerModule;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_logger.Event;
+import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountFragment;
@@ -115,8 +116,9 @@ public class RavePayActivity extends AppCompatActivity {
         }
         buildGraph();
 
-        eventLogger.logEvent(new ScreenLaunchEvent("Payment Activity").getEvent(),
-                ravePayInitializer.publicKey);
+        Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
+        event.setPublicKey(ravePayInitializer.publicKey);
+        eventLogger.logEvent(event);
 
         theme = ravePayInitializer.getTheme();
 
@@ -232,8 +234,9 @@ public class RavePayActivity extends AppCompatActivity {
         PaymentTile paymentTile = tileMap.get(clickedView.getId());
 
         if (paymentTile.isTop) {
-            eventLogger.logEvent(new ScreenMinimizeEvent("payment methods").getEvent(),
-                    ravePayInitializer.publicKey);
+            Event event = new ScreenMinimizeEvent("payment methods").getEvent();
+            event.setPublicKey(ravePayInitializer.publicKey);
+            eventLogger.logEvent(event);
             showAllPaymentTypes();
         } else {
             showSelectedPaymentType(clickedView);
@@ -324,7 +327,9 @@ public class RavePayActivity extends AppCompatActivity {
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            eventLogger.logEvent(new ScreenMinimizeEvent("Payment Methods").getEvent(), ravePayInitializer.getPublicKey());
+                            Event event = new ScreenMinimizeEvent("Payment Methods").getEvent();
+                            event.setPublicKey(ravePayInitializer.publicKey);
+                            eventLogger.logEvent(event);
                             showAllPaymentTypes();
                         }
                     });
@@ -632,9 +637,6 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
 
-
-
-
     @Override
     public void onBackPressed() {
         setRavePayResult(RavePayActivity.RESULT_CANCELLED, new Intent());
@@ -643,14 +645,17 @@ public class RavePayActivity extends AppCompatActivity {
 
     public void setRavePayResult(int result, Intent intent) {
         if (result == RESULT_CANCELLED) {
-            eventLogger.logEvent(new SessionFinishedEvent("Payment cancelled").getEvent(),
-                    ravePayInitializer.publicKey);
+            Event event = new SessionFinishedEvent("Payment cancelled").getEvent();
+            event.setPublicKey(ravePayInitializer.publicKey);
+            eventLogger.logEvent(event);
         } else if (result == RESULT_ERROR) {
-            eventLogger.logEvent(new SessionFinishedEvent("Payment error").getEvent(),
-                    ravePayInitializer.publicKey);
+            Event event = new SessionFinishedEvent("Payment error").getEvent();
+            event.setPublicKey(ravePayInitializer.publicKey);
+            eventLogger.logEvent(event);
         } else if (result == RESULT_SUCCESS) {
-            eventLogger.logEvent(new SessionFinishedEvent("Payment successful").getEvent(),
-                    ravePayInitializer.publicKey);
+            Event event = new SessionFinishedEvent("Payment successful").getEvent();
+            event.setPublicKey(ravePayInitializer.publicKey);
+            eventLogger.logEvent(event);
         }
 
         setResult(result, intent);

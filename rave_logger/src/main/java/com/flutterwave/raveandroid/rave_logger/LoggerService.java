@@ -6,5 +6,5 @@ import retrofit2.http.POST;
 
 public interface LoggerService {
     @POST("/staging/sendevent")
-    Call<String> logEvent(@Body RaveEvent body);
+    Call<String> logEvent(@Body Event body);
 }

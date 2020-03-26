@@ -7,7 +7,6 @@ import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.EventBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
@@ -48,24 +47,18 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenN
 public class RemoteRepository {
 
     private Retrofit mainRetrofit;
-    private Retrofit eventLoggingRetrofit;
     private ApiService service;
-    private EventLoggerService eventLoggerService;
     private Gson gson;
     private NetworkRequestExecutor executor;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
     public RemoteRepository(@Named("mainRetrofit") Retrofit mainRetrofit,
-                            @Named("eventLoggingRetrofit") Retrofit eventLoggingRetrofit,
                             ApiService service,
-                            EventLoggerService eventLoggerService,
                             Gson gson,
                             NetworkRequestExecutor executor) {
         this.mainRetrofit = mainRetrofit;
-        this.eventLoggingRetrofit = eventLoggingRetrofit;
         this.service = service;
-        this.eventLoggerService = eventLoggerService;
         this.gson = gson;
         this.executor = executor;
     }
@@ -258,46 +251,6 @@ public class RemoteRepository {
                 }.getType(),
                 new GenericNetworkCallback<FeeCheckResponse>(callback)
         );
-    }
-
-
-    public void logEvent(EventBody body, final ResultCallback callback) {
-
-
-        Call<String> call = eventLoggerService.logEvent(body);
-
-        executor.execute(
-                call,
-                new TypeToken<String>() {
-                }.getType(),
-                new ExecutorCallback<String>() {
-                    @Override
-                    public void onSuccess(String response, String responseAsJsonString) {
-                        callback.onSuccess(response);
-                    }
-
-                    @Override
-                    public void onError(ResponseBody responseBody) {
-                        try {
-                            String errorBody = responseBody.string();
-                            ErrorBody error = parseErrorJson(errorBody);
-                            callback.onError(error.getMessage());
-                        } catch (IOException | NullPointerException e) {
-                            e.printStackTrace();
-                            onParseError(errorParsingError, errorParsingError);
-                        }
-                    }
-
-                    @Override
-                    public void onParseError(String message, String responseAsJsonString) {
-                        callback.onError(message);
-                    }
-
-                    @Override
-                    public void onCallFailure(String exceptionMessage) {
-                        callback.onError(exceptionMessage);
-                    }
-                });
     }
 
 

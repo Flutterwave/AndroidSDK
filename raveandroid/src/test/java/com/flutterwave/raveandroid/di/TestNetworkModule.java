@@ -13,7 +13,7 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 @Module
-public class TestNetworkModule {
+public class TestremoteModule {
 
     @Singleton
     @Provides

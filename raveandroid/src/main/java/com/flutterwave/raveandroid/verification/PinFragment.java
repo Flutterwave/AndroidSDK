@@ -13,11 +13,11 @@ import android.widget.Button;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.data.events.SubmitEvent;
+import com.flutterwave.raveandroid.rave_logger.Event;
+import com.flutterwave.raveandroid.rave_logger.EventLogger;
 
 import javax.inject.Inject;
 
@@ -91,8 +91,8 @@ public class PinFragment extends Fragment {
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(event,
-                    publicKey);
+            event.setPublicKey(publicKey);
+            logger.logEvent(event);
         }
     }
 

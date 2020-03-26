@@ -27,6 +27,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':rave_remote')
+    implementation project(':rave_logger')
 
     //dagger
     implementation 'com.google.dagger:dagger:2.27'

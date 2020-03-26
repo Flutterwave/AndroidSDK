@@ -16,12 +16,12 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.flutterwave.raveandroid.data.EventLogger;
-import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RedirectEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_logger.Event;
+import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import javax.inject.Inject;
@@ -76,8 +76,8 @@ public class WebFragment extends Fragment {
                 & getArguments().getString(PUBLIC_KEY_EXTRA) != null
                 & logger != null) {
             String publicKey = getArguments().getString(PUBLIC_KEY_EXTRA);
-            logger.logEvent(event,
-                    publicKey);
+            event.setPublicKey(publicKey);
+            logger.logEvent(event);
         }
     }
 

@@ -12,20 +12,20 @@ import javax.inject.Inject;
 
 import okhttp3.ResponseBody;
 
-public class Logger {
+public class EventLogger {
 
     String RAVE_LOGGER_TAG = "rave logger tag";
     private LoggerService service;
     private NetworkRequestExecutor executor;
 
     @Inject
-    public Logger(LoggerService service,
-                  NetworkRequestExecutor executor) {
+    public EventLogger(LoggerService service,
+                       NetworkRequestExecutor executor) {
         this.service = service;
         this.executor = executor;
     }
 
-    public void logEvent(final RaveEvent event) {
+    public void logEvent(final Event event) {
         executor.execute(service.logEvent(event),
                 new TypeToken<String>() {
                 }.getType(),

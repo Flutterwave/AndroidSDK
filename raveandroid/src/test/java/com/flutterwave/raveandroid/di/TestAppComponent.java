@@ -34,7 +34,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {TestAndroidModule.class, TestNetworkModule.class})
+@Component(modules = {TestAndroidModule.class, TestremoteModule.class})
 public interface TestAppComponent extends AppComponent {
 
     void inject(CardPresenterTest cardPresenterTest);

@@ -1,11 +1,9 @@
-package com.flutterwave.raveandroid.di.modules;
+package com.flutterwave.raveandroid.rave_logger.di;
 
-import com.flutterwave.raveandroid.rave_remote.EventLoggerService;
+import com.flutterwave.raveandroid.rave_logger.LoggerService;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,26 +14,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EVENT_LOGGING_URL;
-
-
 @Module
 public class EventLoggerModule {
 
-    String baseUrl = EVENT_LOGGING_URL;
+    // move to commons module
+    private String EVENT_LOGGING_URL = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/";
 
-    private Retrofit retrofit;
-    private EventLoggerService eventLoggerService;
-
-    @Inject
-    public EventLoggerModule() {
-    }
-
-    @Singleton
-    @Provides
-    @Named("eventLoggingRetrofit")
-    public Retrofit providesRetrofit() {
-
+    private Retrofit providesRetrofit() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -44,20 +29,17 @@ public class EventLoggerModule {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS).build();
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
+        return new Retrofit.Builder()
+                .baseUrl(EVENT_LOGGING_URL)
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit;
     }
 
     @Singleton
     @Provides
-    public EventLoggerService providesEventLoggerService() {
-        eventLoggerService = retrofit.create(EventLoggerService.class);
-        return eventLoggerService;
+    public LoggerService providesLoggerService() {
+        return providesRetrofit().create(LoggerService.class);
     }
-
 }

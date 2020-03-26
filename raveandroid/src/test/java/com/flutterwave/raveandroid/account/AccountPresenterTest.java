@@ -11,7 +11,7 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestAppComponent;
-import com.flutterwave.raveandroid.di.TestNetworkModule;
+import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
@@ -120,7 +120,7 @@ public class AccountPresenterTest {
 
         TestAppComponent component = DaggerTestAppComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
-                .testNetworkModule(new TestNetworkModule())
+                .testremoteModule(new TestremoteModule())
                 .build();
 
         component.inject(this);

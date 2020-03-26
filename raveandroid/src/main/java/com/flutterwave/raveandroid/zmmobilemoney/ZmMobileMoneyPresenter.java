@@ -9,14 +9,14 @@ import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.EventLogger;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.data.events.Event;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.di.components.AppComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_logger.Event;
+import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -301,7 +301,8 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
 
     @Override
     public void logEvent(Event event, String publicKey) {
-        eventLogger.logEvent(event, publicKey);
+        event.setPublicKey(publicKey);
+        eventLogger.logEvent(event);
     }
 
 }
