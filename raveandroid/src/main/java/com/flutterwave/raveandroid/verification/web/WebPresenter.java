@@ -1,7 +1,7 @@
 package com.flutterwave.raveandroid.verification.web;
 
 
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
@@ -20,9 +20,9 @@ public class WebPresenter implements WebContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public WebPresenter(WebContract.View mView, AppComponent appComponent){
+    public WebPresenter(WebContract.View mView, RaveUiComponent raveUiComponent) {
         this.mView = mView;
-        this.networkRequest = appComponent.networkImpl();
+        this.networkRequest = raveUiComponent.networkImpl();
     }
 
     @Override

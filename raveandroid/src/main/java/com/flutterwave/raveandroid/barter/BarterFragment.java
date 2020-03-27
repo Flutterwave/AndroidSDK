@@ -83,7 +83,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new BarterModule(this))
                     .inject(this);
         }

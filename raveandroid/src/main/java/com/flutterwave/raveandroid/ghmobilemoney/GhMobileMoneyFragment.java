@@ -90,7 +90,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new GhanaModule(this))
                     .inject(this);
         }

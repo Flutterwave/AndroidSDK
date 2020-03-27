@@ -8,10 +8,12 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
+import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
@@ -27,7 +29,7 @@ public class VerificationActivity extends AppCompatActivity {
     public static final String INTENT_SENDER = "sender";
     public static String BASE_URL;
     private Fragment fragment;
-    AppComponent appComponent;
+    RaveUiComponent raveUiComponent;
 
     RavePayInitializer ravePayInitializer;
 
@@ -76,8 +78,8 @@ public class VerificationActivity extends AppCompatActivity {
         }
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    public RaveUiComponent getRaveUiComponent() {
+        return raveUiComponent;
     }
 
     @Override
@@ -95,11 +97,12 @@ public class VerificationActivity extends AppCompatActivity {
             BASE_URL = LIVE_URL;
         }
 
-
-        appComponent = DaggerAppComponent.builder()
-                .androidModule(new AndroidModule(this))
+        AppComponent appComponent = DaggerAppComponent.builder().androidModule(new AndroidModule(this))
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
+
+        raveUiComponent = DaggerRaveUiComponent.builder().appComponent(appComponent).build();
+
     }
 }

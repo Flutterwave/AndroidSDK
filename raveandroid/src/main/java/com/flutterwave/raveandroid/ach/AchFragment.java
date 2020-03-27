@@ -73,7 +73,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new AchModule(this))
                     .inject(this);
         }

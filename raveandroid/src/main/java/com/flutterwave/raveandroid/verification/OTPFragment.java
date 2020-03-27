@@ -97,7 +97,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getAppComponent()
+            ((VerificationActivity) getActivity()).getRaveUiComponent()
                     .inject(this);
         }
     }

@@ -7,12 +7,12 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -54,13 +54,13 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public BarterPresenter(Context context, BarterContract.View mView, AppComponent appComponent){
+    public BarterPresenter(Context context, BarterContract.View mView, RaveUiComponent raveUiComponent) {
         this.mView = mView;
         this.context = context;
-        this.amountValidator = appComponent.amountValidator();
-        this.networkRequest = appComponent.networkImpl();
-        this.deviceIdGetter = appComponent.deviceIdGetter();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.amountValidator = raveUiComponent.amountValidator();
+        this.networkRequest = raveUiComponent.networkImpl();
+        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
     }
 
     @Override

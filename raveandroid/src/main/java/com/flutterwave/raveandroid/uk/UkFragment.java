@@ -82,7 +82,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new UkModule(this))
                     .inject(this);
         }

@@ -57,7 +57,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new SaBankModule(this))
                     .inject(this);
         }

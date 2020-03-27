@@ -1,16 +1,12 @@
 package com.flutterwave.raveandroid.di.components;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.PayloadEncryptor;
-import com.flutterwave.raveandroid.PayloadToJson;
-import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
 import com.flutterwave.raveandroid.di.modules.CardModule;
@@ -24,12 +20,14 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
+import com.flutterwave.raveandroid.di.scopes.UiScope;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
-import com.flutterwave.raveandroid.rave_cache.di.CacheModule;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -48,39 +46,56 @@ import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.PinFragment;
 import com.google.gson.Gson;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
 
-@Singleton
-@Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class, CacheModule.class})
-public interface AppComponent {
+@UiScope
+@Component(dependencies = {AppComponent.class})
+public interface RaveUiComponent {
 
     RemoteRepository networkImpl();
 
     EventLogger eventLogger();
 
     AmountValidator amountValidator();
+
     CvvValidator cvvValidator();
+
     EmailValidator emailValidator();
+
     DateOfBirthValidator dateOfBirthValidator();
+
     BvnValidator bvnValidator();
+
     PhoneValidator phoneValidator();
+
     CardExpiryValidator cardExpiryValidator();
+
     CardNoValidator cardNoValidator();
+
     DeviceIdGetter deviceIdGetter();
+
     BankCodeValidator bankCodeValidator();
+
     AccountNoValidator accountNoValidator();
+
     UrlValidator urlValidator();
+
     BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator();
+
     PhoneNumberObfuscator phoneNumberObfuscator();
+
     PayloadToJsonConverter payloadToJsonConverter();
+
     TransactionStatusChecker transactionStatusChecker();
+
     PayloadEncryptor payloadEncryptor();
+
     PayloadToJson payloadToJson();
 
     SharedPrefsRepo sharedManager();
+
     NetworkValidator networkValidator();
+
     Gson gson();
 
     void inject(RavePayActivity ravePayActivity);

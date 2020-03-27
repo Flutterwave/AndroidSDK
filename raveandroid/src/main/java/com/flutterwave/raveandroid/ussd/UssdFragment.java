@@ -140,7 +140,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new UssdModule(this))
                     .inject(this);
         }

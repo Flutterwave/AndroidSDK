@@ -110,7 +110,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new AccountModule(this))
                     .inject(this);
         }

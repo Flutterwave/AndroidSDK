@@ -83,7 +83,7 @@ public class WebFragment extends Fragment {
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getAppComponent()
+            ((VerificationActivity) getActivity()).getRaveUiComponent()
                     .inject(this);
         }
     }

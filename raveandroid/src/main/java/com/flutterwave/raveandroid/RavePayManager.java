@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
+import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 
 import org.parceler.Parcels;
@@ -304,7 +306,7 @@ public class RavePayManager {
     public Raver initializeNoUi() {
 
         RavePayInitializer ravePayInitializer = createRavePayInitializer();
-        AppComponent component = setUpGraph();
+        RaveUiComponent component = setUpGraph();
 
         return new Raver(ravePayInitializer, component);
 
@@ -344,7 +346,7 @@ public class RavePayManager {
                 orderedPaymentTypesList);
     }
 
-    private AppComponent setUpGraph() {
+    private RaveUiComponent setUpGraph() {
         String baseUrl;
 
         if (staging) {
@@ -352,24 +354,25 @@ public class RavePayManager {
         } else {
             baseUrl = LIVE_URL;
         }
-
+        AppComponent appComponent;
         if (activity != null) {
-            return DaggerAppComponent.builder()
+            appComponent = DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(activity))
                     .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else if (supportFragment != null && supportFragment.getContext() != null) {
-            return DaggerAppComponent.builder()
+            appComponent = DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(supportFragment.getContext()))
                     .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else if (fragment != null && fragment.getActivity() != null) {
-            return DaggerAppComponent.builder()
+            appComponent = DaggerAppComponent.builder()
                     .androidModule(new AndroidModule(fragment.getActivity()))
                     .remoteModule(new RemoteModule(baseUrl))
                     .build();
         } else {
             throw new IllegalArgumentException("Context is required");
         }
+        return DaggerRaveUiComponent.builder().appComponent(appComponent).build();
     }
 }

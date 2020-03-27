@@ -81,7 +81,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new FrancModule(this))
                     .inject(this);
         }

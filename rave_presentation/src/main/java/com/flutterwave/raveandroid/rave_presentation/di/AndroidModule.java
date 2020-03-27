@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.di.modules;
+package com.flutterwave.raveandroid.rave_presentation.di;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;

@@ -87,7 +87,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new ZambiaModule(this))
                     .inject(this);
         }

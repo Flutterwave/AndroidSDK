@@ -94,7 +94,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new BankTransferModule(this))
                     .inject(this);
         }

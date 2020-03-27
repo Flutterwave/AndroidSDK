@@ -31,9 +31,8 @@ import com.flutterwave.raveandroid.card.CardFragment;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
-import com.flutterwave.raveandroid.di.components.AppComponent;
-import com.flutterwave.raveandroid.di.components.DaggerAppComponent;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
+import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
@@ -41,6 +40,9 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
+import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyFragment;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountFragment;
@@ -97,7 +99,7 @@ public class RavePayActivity extends AppCompatActivity {
     private float paymentTilesTextSize;
     private long transitionDuration = 350;
 
-    AppComponent appComponent;
+    RaveUiComponent raveUiComponent;
 
     @Inject
     EventLogger eventLogger;
@@ -627,13 +629,15 @@ public class RavePayActivity extends AppCompatActivity {
             BASE_URL = LIVE_URL;
         }
 
-        appComponent = DaggerAppComponent.builder()
+        AppComponent appComponent = DaggerAppComponent.builder()
                 .androidModule(new AndroidModule(this))
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 
-        appComponent.inject(this);
+        raveUiComponent = DaggerRaveUiComponent.builder().appComponent(appComponent).build();
+        raveUiComponent.inject(this);
+
     }
 
 
@@ -661,8 +665,8 @@ public class RavePayActivity extends AppCompatActivity {
         setResult(result, intent);
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    public RaveUiComponent getRaveUiComponent() {
+        return raveUiComponent;
     }
 
     public RavePayInitializer getRavePayInitializer() {

@@ -1,15 +1,15 @@
 package com.flutterwave.raveandroid;
 
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 
 public class Raver {
 
     RavePayInitializer ravePayInitializer;
-    AppComponent appComponent;
+    RaveUiComponent raveUiComponent;
 
-    public Raver(RavePayInitializer ravePayInitializer, AppComponent appComponent) {
+    public Raver(RavePayInitializer ravePayInitializer, RaveUiComponent raveUiComponent) {
         this.ravePayInitializer = ravePayInitializer;
-        this.appComponent = appComponent;
+        this.raveUiComponent = raveUiComponent;
     }
 
     public RavePayInitializer getRavePayInitializer() {
@@ -20,12 +20,12 @@ public class Raver {
         this.ravePayInitializer = ravePayInitializer;
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    public RaveUiComponent getRaveUiComponent() {
+        return raveUiComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent) {
-        this.appComponent = appComponent;
+    public void setRaveUiComponent(RaveUiComponent raveUiComponent) {
+        this.raveUiComponent = raveUiComponent;
     }
 
 

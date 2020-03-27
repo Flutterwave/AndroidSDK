@@ -10,7 +10,7 @@ import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
-import com.flutterwave.raveandroid.di.TestAppComponent;
+import com.flutterwave.raveandroid.di.TestRaveUiComponent;
 import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
@@ -118,7 +118,7 @@ public class AccountPresenterTest {
         MockitoAnnotations.initMocks(this);
         accountPresenter = new AccountPresenter(context, view);
 
-        TestAppComponent component = DaggerTestAppComponent.builder()
+        TestRaveUiComponent component = DaggerTestAppComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
                 .testremoteModule(new TestremoteModule())
                 .build();

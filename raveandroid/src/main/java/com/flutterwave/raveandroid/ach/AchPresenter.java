@@ -5,19 +5,19 @@ import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadEncryptor;
-import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
@@ -59,17 +59,17 @@ public class AchPresenter implements AchContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public AchPresenter(Context context, AchContract.View mView, AppComponent appComponent){
+    public AchPresenter(Context context, AchContract.View mView, RaveUiComponent raveUiComponent) {
         this.context = context;
         this.mView = mView;
-        this.eventLogger = appComponent.eventLogger();
-        this.networkRequest = appComponent.networkImpl();
-        this.amountValidator = appComponent.amountValidator();
-        this.deviceIdGetter = appComponent.deviceIdGetter();
-        this.transactionStatusChecker = appComponent.transactionStatusChecker();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
-        this.payloadToJsonConverter = appComponent.payloadToJsonConverter();
-        this.sharedMgr = appComponent.sharedManager();
+        this.eventLogger = raveUiComponent.eventLogger();
+        this.networkRequest = raveUiComponent.networkImpl();
+        this.amountValidator = raveUiComponent.amountValidator();
+        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
+        this.transactionStatusChecker = raveUiComponent.transactionStatusChecker();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
+        this.payloadToJsonConverter = raveUiComponent.payloadToJsonConverter();
+        this.sharedMgr = raveUiComponent.sharedManager();
     }
 
     @Override

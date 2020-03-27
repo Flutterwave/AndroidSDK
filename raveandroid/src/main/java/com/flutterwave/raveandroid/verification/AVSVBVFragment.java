@@ -127,7 +127,7 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getAppComponent()
+            ((VerificationActivity) getActivity()).getRaveUiComponent()
                     .inject(this);
         }
     }

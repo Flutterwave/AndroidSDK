@@ -78,7 +78,7 @@ public class WebFragment extends Fragment implements WebContract.View {
 
     private void injectComponents() {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getAppComponent()
+            ((VerificationActivity) getActivity()).getRaveUiComponent()
                     .plus(new WebModule(this))
                     .inject(this);
         }

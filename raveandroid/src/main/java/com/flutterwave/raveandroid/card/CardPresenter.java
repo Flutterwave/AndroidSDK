@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadEncryptor;
 import com.flutterwave.raveandroid.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
@@ -16,13 +15,14 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -132,22 +132,22 @@ public class CardPresenter implements CardContract.UserActionsListener {
         this.context = context;
     }
 
-    public CardPresenter(Context context, CardContract.View mView, AppComponent appComponent) {
+    public CardPresenter(Context context, CardContract.View mView, RaveUiComponent raveUiComponent) {
         this.context = context;
         this.mView = mView;
-        this.eventLogger = appComponent.eventLogger();
-        this.networkRequest = appComponent.networkImpl();
-        this.amountValidator = appComponent.amountValidator();
-        this.cvvValidator = appComponent.cvvValidator();
-        this.emailValidator = appComponent.emailValidator();
-        this.cardExpiryValidator = appComponent.cardExpiryValidator();
-        this.cardNoValidator = appComponent.cardNoValidator();
-        this.deviceIdGetter = appComponent.deviceIdGetter();
-        this.phoneNumberObfuscator = appComponent.phoneNumberObfuscator();
-        this.transactionStatusChecker = appComponent.transactionStatusChecker();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
-        this.sharedManager = appComponent.sharedManager();
-        this.gson = appComponent.gson();
+        this.eventLogger = raveUiComponent.eventLogger();
+        this.networkRequest = raveUiComponent.networkImpl();
+        this.amountValidator = raveUiComponent.amountValidator();
+        this.cvvValidator = raveUiComponent.cvvValidator();
+        this.emailValidator = raveUiComponent.emailValidator();
+        this.cardExpiryValidator = raveUiComponent.cardExpiryValidator();
+        this.cardNoValidator = raveUiComponent.cardNoValidator();
+        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
+        this.phoneNumberObfuscator = raveUiComponent.phoneNumberObfuscator();
+        this.transactionStatusChecker = raveUiComponent.transactionStatusChecker();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
+        this.sharedManager = raveUiComponent.sharedManager();
+        this.gson = raveUiComponent.gson();
     }
 
     /**

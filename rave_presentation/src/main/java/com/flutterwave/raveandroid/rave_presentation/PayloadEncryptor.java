@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.rave_presentation;
 
 import android.annotation.SuppressLint;
 import android.util.Base64;

@@ -6,18 +6,18 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadEncryptor;
-import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -62,15 +62,15 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public UssdPresenter(Context context, UssdContract.View mView, AppComponent appComponent){
+    public UssdPresenter(Context context, UssdContract.View mView, RaveUiComponent raveUiComponent) {
         this.context = context;
         this.mView = mView;
-        this.eventLogger = appComponent.eventLogger();
-        this.amountValidator = appComponent.amountValidator();
-        this.networkRequest = appComponent.networkImpl();
-        this.deviceIdGetter = appComponent.deviceIdGetter();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
-        this.payloadToJson = appComponent.payloadToJson();
+        this.eventLogger = raveUiComponent.eventLogger();
+        this.amountValidator = raveUiComponent.amountValidator();
+        this.networkRequest = raveUiComponent.networkImpl();
+        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
+        this.payloadToJson = raveUiComponent.payloadToJson();
     }
 
     @Override

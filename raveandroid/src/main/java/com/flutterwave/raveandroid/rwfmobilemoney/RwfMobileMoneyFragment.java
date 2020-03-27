@@ -76,7 +76,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new RwandaModule(this))
                     .inject(this);
         }

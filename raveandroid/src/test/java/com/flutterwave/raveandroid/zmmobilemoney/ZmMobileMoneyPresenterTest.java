@@ -5,17 +5,17 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Spinner;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.PayloadEncryptor;
-import com.flutterwave.raveandroid.PayloadToJson;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
-import com.flutterwave.raveandroid.di.TestAppComponent;
+import com.flutterwave.raveandroid.di.TestRaveUiComponent;
 import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -89,7 +89,7 @@ public class ZmMobileMoneyPresenterTest {
         MockitoAnnotations.initMocks(this);
         presenter = new ZmMobileMoneyPresenter(context, view);
 
-        TestAppComponent component = DaggerTestAppComponent.builder()
+        TestRaveUiComponent component = DaggerTestAppComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
                 .testremoteModule(new TestremoteModule())
                 .build();

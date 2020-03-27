@@ -81,7 +81,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new UgandaModule(this))
                     .inject(this);
         }

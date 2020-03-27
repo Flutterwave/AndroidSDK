@@ -6,8 +6,6 @@ import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.PayloadEncryptor;
-import com.flutterwave.raveandroid.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
@@ -15,11 +13,13 @@ import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
-import com.flutterwave.raveandroid.di.components.AppComponent;
+import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -112,25 +112,25 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public AccountPresenter(Context context, AccountContract.View mView, AppComponent appComponent){
+    public AccountPresenter(Context context, AccountContract.View mView, RaveUiComponent raveUiComponent) {
         this.context = context;
         this.mView = mView;
-        this.eventLogger = appComponent.eventLogger();
-        this.networkRequest = appComponent.networkImpl();
-        this.amountValidator = appComponent.amountValidator();
-        this.phoneValidator = appComponent.phoneValidator();
-        this.emailValidator = appComponent.emailValidator();
-        this.dateOfBirthValidator = appComponent.dateOfBirthValidator();
-        this.bvnValidator = appComponent.bvnValidator();
-        this.deviceIdGetter = appComponent.deviceIdGetter();
-        this.accountNoValidator = appComponent.accountNoValidator();
-        this.transactionStatusChecker = appComponent.transactionStatusChecker();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
-        this.bankCodeValidator = appComponent.bankCodeValidator();
-        this.urlValidator = appComponent.urlValidator();
-        this.minimum100AccountPaymentValidator = appComponent.minimum100AccountPaymentValidator();
-        this.payloadToJsonConverter = appComponent.payloadToJsonConverter();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.eventLogger = raveUiComponent.eventLogger();
+        this.networkRequest = raveUiComponent.networkImpl();
+        this.amountValidator = raveUiComponent.amountValidator();
+        this.phoneValidator = raveUiComponent.phoneValidator();
+        this.emailValidator = raveUiComponent.emailValidator();
+        this.dateOfBirthValidator = raveUiComponent.dateOfBirthValidator();
+        this.bvnValidator = raveUiComponent.bvnValidator();
+        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
+        this.accountNoValidator = raveUiComponent.accountNoValidator();
+        this.transactionStatusChecker = raveUiComponent.transactionStatusChecker();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
+        this.bankCodeValidator = raveUiComponent.bankCodeValidator();
+        this.urlValidator = raveUiComponent.urlValidator();
+        this.minimum100AccountPaymentValidator = raveUiComponent.minimum100AccountPaymentValidator();
+        this.payloadToJsonConverter = raveUiComponent.payloadToJsonConverter();
+        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
     }
 
     @Override

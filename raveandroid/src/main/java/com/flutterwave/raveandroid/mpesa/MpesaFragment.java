@@ -82,7 +82,7 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new MpesaModule(this))
                     .inject(this);
         }

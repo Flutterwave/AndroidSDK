@@ -156,7 +156,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getAppComponent()
+            ((RavePayActivity) getActivity()).getRaveUiComponent()
                     .plus(new CardModule(this))
                     .inject(this);
         }
