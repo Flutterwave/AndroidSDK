@@ -28,6 +28,7 @@ import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
+import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;

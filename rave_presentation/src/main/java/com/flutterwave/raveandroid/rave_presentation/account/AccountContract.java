@@ -6,6 +6,7 @@ import android.webkit.WebView;
 
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 
 import java.util.List;
 
@@ -109,7 +110,7 @@ public interface AccountContract {
          * Check for the fee applicable for this transaction.
          *
          * @param payload Object containing the charge details.
-         *                Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
+         *                Can be generated with the {@link PayloadBuilder PayloadBuilder}
          */
         void fetchFee(Payload payload);
 
@@ -118,7 +119,7 @@ public interface AccountContract {
          * This is the starting point for the payment.
          *
          * @param payload       Object containing the charge details.
-         *                      Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
+         *                      Can be generated with the {@link PayloadBuilder PayloadBuilder}
          * @param encryptionKey Your Flutterwave encryption key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
          */
         void chargeAccount(Payload payload, String encryptionKey);

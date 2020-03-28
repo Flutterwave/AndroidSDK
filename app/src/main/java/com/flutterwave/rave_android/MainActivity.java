@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
-import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;

@@ -5,14 +5,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_presentation.PayloadBuilder;
-import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;

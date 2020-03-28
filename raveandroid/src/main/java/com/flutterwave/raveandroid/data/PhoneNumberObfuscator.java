@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid;
+package com.flutterwave.raveandroid.data;
 
 import javax.inject.Inject;
 

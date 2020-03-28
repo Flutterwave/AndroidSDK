@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation;
+package com.flutterwave.raveandroid.rave_presentation.data;
 
 import android.annotation.SuppressLint;
 import android.util.Base64;
@@ -32,7 +32,7 @@ public class PayloadEncryptor {
         return "";
     }
 
-    private String encrypt(String data, String key) throws Exception {
+    private String encrypt(String data, String key) {
 
         try {
             @SuppressLint({"NewApi", "LocalSuppress"}) byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);

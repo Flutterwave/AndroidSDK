@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 
-import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;

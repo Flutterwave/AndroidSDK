@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid.di.components;
 
-import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.WebFragment;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
@@ -22,9 +22,9 @@ import com.flutterwave.raveandroid.di.modules.ZambiaModule;
 import com.flutterwave.raveandroid.di.scopes.UiScope;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
-import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;

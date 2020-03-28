@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.rave_presentation.data;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
@@ -17,7 +16,6 @@ import com.scottyab.aescrypt.AESCrypt;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
@@ -26,7 +24,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by hamzafetuga on 05/07/2017.
@@ -135,18 +132,6 @@ public class Utils {
         return null;
     }
 
-    public static String getEncryptedData(String unEncryptedString, String encryptionKey) {
-
-        if (unEncryptedString != null && encryptionKey != null) {
-            try {
-                return encrypt(unEncryptedString, encryptionKey);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
-    }
-
     public static String encryptRef(String key, String ref) {
         try {
             return AESCrypt.encrypt(key, ref);
@@ -161,23 +146,6 @@ public class Utils {
         } catch (GeneralSecurityException e) {
             return null;
         }
-    }
-
-    private static String encrypt(String data, String key) throws Exception {
-
-        try {
-            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-            SecretKeySpec skey = new SecretKeySpec(keyBytes, ALGORITHM);
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-
-            cipher.init(Cipher.ENCRYPT_MODE, skey);
-            @SuppressLint({"NewApi", "LocalSuppress"}) byte[] plainTextBytes = data.getBytes(StandardCharsets.UTF_8);
-            byte[] buf = cipher.doFinal(plainTextBytes);
-            return Base64.encodeToString(buf, Base64.DEFAULT);
-        } catch (Exception e) {
-            return "";
-        }
-
     }
 
     private static String getMd5(String md5) throws Exception {
@@ -230,8 +198,8 @@ public class Utils {
     }
 
     /**
-     * Checks that a number is valid according to the Luhn algorithm
-     * https://en.wikipedia.org/wiki/Luhn_algorithm
+     * Checks that a number is valid according to the
+     * <a href="https://en.wikipedia.org/wiki/Luhn_algorithm">Luhn algorithm</a>
      *
      * @param number to be checked
      * @return true if valid

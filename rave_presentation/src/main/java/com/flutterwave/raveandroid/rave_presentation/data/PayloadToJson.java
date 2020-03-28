@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation;
+package com.flutterwave.raveandroid.rave_presentation.data;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.google.gson.Gson;
@@ -10,12 +10,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class PayloadToJsonConverter {
+public class PayloadToJson {
 
     public Gson gson;
 
     @Inject
-    public PayloadToJsonConverter(Gson gson) {
+    public PayloadToJson(Gson gson) {
         this.gson = gson;
     }
 

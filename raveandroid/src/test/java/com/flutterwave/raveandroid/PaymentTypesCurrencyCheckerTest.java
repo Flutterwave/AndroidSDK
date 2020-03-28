@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
+
 import org.junit.Test;
 
 import java.util.ArrayList;

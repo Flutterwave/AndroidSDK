@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.test.mock.MockContext;
 
-import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
-import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;

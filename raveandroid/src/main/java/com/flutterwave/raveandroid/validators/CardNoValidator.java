@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.validators;
 
-import com.flutterwave.raveandroid.Utils;
+import com.flutterwave.raveandroid.data.Utils;
 
 import javax.inject.Inject;
 
