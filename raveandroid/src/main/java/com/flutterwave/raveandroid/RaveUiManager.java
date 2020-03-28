@@ -5,22 +5,15 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
-import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
-import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;
-import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
+import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
@@ -38,9 +31,8 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
-public class RavePayManager {
+public class RaveUiManager extends RavePayManager {
     private String email;
     private double amount = -1;
     private String publicKey;
@@ -59,7 +51,6 @@ public class RavePayManager {
     private Fragment supportFragment;
     private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
-    boolean staging = true;
     boolean isPreAuth = false;
     private String phoneNumber = "";
     boolean showStagingLabel = true;
@@ -73,114 +64,117 @@ public class RavePayManager {
         return orderedPaymentTypesList;
     }
 
-    public RavePayManager allowSaveCardFeature(boolean allowSaveCard) {
+    public RaveUiManager(Activity activity) {
+        super(activity);
+        this.activity = activity;
+    }
+
+    public RaveUiManager(Fragment fragment) {
+        super(fragment.getContext());
+        this.supportFragment = fragment;
+    }
+
+    public RaveUiManager(android.app.Fragment fragment) {
+        super(fragment.getActivity());
+        this.fragment = fragment;
+    }
+
+    public RaveUiManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
         return this;
     }
 
-    public RavePayManager onStagingEnv(boolean staging) {
+    public RaveUiManager onStagingEnv(boolean staging) {
         this.staging = staging;
         return this;
     }
 
-    public RavePayManager withTheme(int theme) {
+    public RaveUiManager withTheme(int theme) {
         this.theme = theme;
         return this;
     }
 
-    public RavePayManager(Activity activity) {
-        this.activity = activity;
-    }
-
-    public RavePayManager(Fragment fragment) {
-        this.supportFragment = fragment;
-    }
-
-    public RavePayManager(android.app.Fragment fragment) {
-        this.fragment = fragment;
-    }
-
-    public RavePayManager acceptAchPayments(boolean withAch) {
+    public RaveUiManager acceptAchPayments(boolean withAch) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACH) && withAch)
             orderedPaymentTypesList.add(PAYMENT_TYPE_ACH);
         return this;
     }
 
-    public RavePayManager acceptCardPayments(boolean withCard) {
+    public RaveUiManager acceptCardPayments(boolean withCard) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_CARD) && withCard)
             orderedPaymentTypesList.add(PAYMENT_TYPE_CARD);
         return this;
     }
 
-    public RavePayManager acceptMpesaPayments(boolean withMpesa) {
+    public RaveUiManager acceptMpesaPayments(boolean withMpesa) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_MPESA) && withMpesa)
             orderedPaymentTypesList.add(PAYMENT_TYPE_MPESA);
         return this;
     }
 
-    public RavePayManager acceptAccountPayments(boolean withAccount) {
+    public RaveUiManager acceptAccountPayments(boolean withAccount) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ACCOUNT) && withAccount)
             orderedPaymentTypesList.add(PAYMENT_TYPE_ACCOUNT);
         return this;
     }
 
-    public RavePayManager acceptGHMobileMoneyPayments(boolean withGHMobileMoney) {
+    public RaveUiManager acceptGHMobileMoneyPayments(boolean withGHMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_GH_MOBILE_MONEY) && withGHMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_GH_MOBILE_MONEY);
         return this;
     }
 
-    public RavePayManager acceptUgMobileMoneyPayments(boolean withUgMobileMoney) {
+    public RaveUiManager acceptUgMobileMoneyPayments(boolean withUgMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UG_MOBILE_MONEY) && withUgMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_UG_MOBILE_MONEY);
         return this;
     }
 
-    public RavePayManager acceptRwfMobileMoneyPayments(boolean withRwfMobileMoney) {
+    public RaveUiManager acceptRwfMobileMoneyPayments(boolean withRwfMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_RW_MOBILE_MONEY) && withRwfMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_RW_MOBILE_MONEY);
         return this;
     }
 
-    public RavePayManager acceptZmMobileMoneyPayments(boolean withZmMobileMoney) {
+    public RaveUiManager acceptZmMobileMoneyPayments(boolean withZmMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_ZM_MOBILE_MONEY) && withZmMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_ZM_MOBILE_MONEY);
         return this;
     }
 
-    public RavePayManager acceptUkPayments(boolean withUk) {
+    public RaveUiManager acceptUkPayments(boolean withUk) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_UK) && withUk)
             orderedPaymentTypesList.add(PAYMENT_TYPE_UK);
         return this;
     }
 
-    public RavePayManager acceptSaBankPayments(boolean withSaBankAccount) {
+    public RaveUiManager acceptSaBankPayments(boolean withSaBankAccount) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_SA_BANK_ACCOUNT) && withSaBankAccount)
             orderedPaymentTypesList.add(PAYMENT_TYPE_SA_BANK_ACCOUNT);
         return this;
     }
 
-    public RavePayManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
+    public RaveUiManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY) && withFrancMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
         return this;
     }
 
-    public RavePayManager acceptBankTransferPayments(boolean withBankTransfer) {
+    public RaveUiManager acceptBankTransferPayments(boolean withBankTransfer) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
             orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         return this;
     }
 
 
-    public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, boolean isPermanent) {
+    public RaveUiManager acceptBankTransferPayments(boolean withBankTransfer, boolean isPermanent) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
             orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         this.isPermanent = isPermanent;
         return this;
     }
 
-    public RavePayManager acceptBankTransferPayments(boolean withBankTransfer, int duration, int frequency) {
+    public RaveUiManager acceptBankTransferPayments(boolean withBankTransfer, int duration, int frequency) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BANK_TRANSFER) && withBankTransfer)
             orderedPaymentTypesList.add(PAYMENT_TYPE_BANK_TRANSFER);
         this.duration = duration;
@@ -188,97 +182,97 @@ public class RavePayManager {
         return this;
     }
 
-    public RavePayManager acceptUssdPayments(boolean withUssd) {
+    public RaveUiManager acceptUssdPayments(boolean withUssd) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_USSD) && withUssd)
             orderedPaymentTypesList.add(PAYMENT_TYPE_USSD);
         return this;
     }
 
-    public RavePayManager acceptBarterPayments(boolean withBarter) {
+    public RaveUiManager acceptBarterPayments(boolean withBarter) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_BARTER) && withBarter)
             orderedPaymentTypesList.add(PAYMENT_TYPE_BARTER);
         return this;
     }
 
-    public RavePayManager isPreAuth(boolean isPreAuth) {
+    public RaveUiManager isPreAuth(boolean isPreAuth) {
         this.isPreAuth = isPreAuth;
         return this;
     }
 
-    public RavePayManager setMeta(List<Meta> meta) {
+    public RaveUiManager setMeta(List<Meta> meta) {
         this.meta = Utils.stringifyMeta(meta);
         return this;
     }
 
-    public RavePayManager setSubAccounts(List<SubAccount> subAccounts) {
+    public RaveUiManager setSubAccounts(List<SubAccount> subAccounts) {
         this.subAccounts = Utils.stringifySubaccounts(subAccounts);
         return this;
     }
 
-    public RavePayManager showStagingLabel(boolean showStagingLabel) {
+    public RaveUiManager showStagingLabel(boolean showStagingLabel) {
         this.showStagingLabel = showStagingLabel;
         return this;
     }
 
 
-    public RavePayManager setEmail(String email) {
+    public RaveUiManager setEmail(String email) {
         this.email = email;
         return this;
     }
 
-    public RavePayManager setAmount(double amount) {
+    public RaveUiManager setAmount(double amount) {
         if (amount != 0) {
             this.amount = amount;
         }
         return this;
     }
 
-    public RavePayManager setPublicKey(String publicKey) {
+    public RaveUiManager setPublicKey(String publicKey) {
         this.publicKey = publicKey;
         return this;
     }
 
-    public RavePayManager setEncryptionKey(String encryptionKey) {
+    public RaveUiManager setEncryptionKey(String encryptionKey) {
         this.encryptionKey = encryptionKey;
         return this;
     }
 
-    public RavePayManager setTxRef(String txRef) {
+    public RaveUiManager setTxRef(String txRef) {
         this.txRef = txRef;
         return this;
     }
 
-    public RavePayManager setNarration(String narration) {
+    public RaveUiManager setNarration(String narration) {
         this.narration = narration;
         return this;
     }
 
-    public RavePayManager setCurrency(String currency) {
+    public RaveUiManager setCurrency(String currency) {
         this.currency = currency;
         return this;
     }
 
-    public RavePayManager setCountry(String country) {
+    public RaveUiManager setCountry(String country) {
         this.country = country;
         return this;
     }
 
-    public RavePayManager setfName(String fName) {
+    public RaveUiManager setfName(String fName) {
         this.fName = fName;
         return this;
     }
 
-    public RavePayManager setlName(String lName) {
+    public RaveUiManager setlName(String lName) {
         this.lName = lName;
         return this;
     }
 
-    public RavePayManager setPhoneNumber(String phoneNumber) {
+    public RaveUiManager setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public RavePayManager setPaymentPlan(String payment_plan) {
+    public RaveUiManager setPaymentPlan(String payment_plan) {
         this.payment_plan = payment_plan;
         return this;
     }
@@ -304,16 +298,7 @@ public class RavePayManager {
 
     }
 
-    public Raver initializeNoUi() {
-
-        RavePayInitializer ravePayInitializer = createRavePayInitializer();
-        RaveUiComponent component = setUpGraph();
-
-        return new Raver(ravePayInitializer, component);
-
-    }
-
-    public RavePayManager shouldDisplayFee(boolean displayFee) {
+    public RaveUiManager shouldDisplayFee(boolean displayFee) {
         this.displayFee = displayFee;
         return this;
     }
@@ -345,35 +330,5 @@ public class RavePayManager {
                 showStagingLabel,
                 displayFee,
                 orderedPaymentTypesList);
-    }
-
-    private RaveUiComponent setUpGraph() {
-        String baseUrl;
-
-        if (staging) {
-            baseUrl = STAGING_URL;
-        } else {
-            baseUrl = LIVE_URL;
-        }
-        AppComponent appComponent;
-        if (activity != null) {
-            appComponent = DaggerAppComponent.builder()
-                    .androidModule(new AndroidModule(activity))
-                    .remoteModule(new RemoteModule(baseUrl))
-                    .build();
-        } else if (supportFragment != null && supportFragment.getContext() != null) {
-            appComponent = DaggerAppComponent.builder()
-                    .androidModule(new AndroidModule(supportFragment.getContext()))
-                    .remoteModule(new RemoteModule(baseUrl))
-                    .build();
-        } else if (fragment != null && fragment.getActivity() != null) {
-            appComponent = DaggerAppComponent.builder()
-                    .androidModule(new AndroidModule(fragment.getActivity()))
-                    .remoteModule(new RemoteModule(baseUrl))
-                    .build();
-        } else {
-            throw new IllegalArgumentException("Context is required");
-        }
-        return DaggerRaveUiComponent.builder().appComponent(appComponent).build();
     }
 }

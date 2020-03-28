@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
@@ -14,7 +15,6 @@ import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
-import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;

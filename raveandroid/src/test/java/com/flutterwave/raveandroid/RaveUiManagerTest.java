@@ -20,12 +20,12 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static org.junit.Assert.assertNotEquals;
 
-public class RavePayManagerTest {
+public class RaveUiManagerTest {
 
     @Test
     public void ravePayManagerSetup_PaymentTypesNotAddedMoreThanOnce() {
         // Attempt to add same payment types multiple times
-        RavePayManager manager = new RavePayManager((Activity) null);
+        RaveUiManager manager = new RaveUiManager((Activity) null);
         manager
                 .acceptCardPayments(true)
                 .acceptAccountPayments(true)
@@ -81,7 +81,7 @@ public class RavePayManagerTest {
 
     @Test
     public void ravePayManagerSetup_AllPaymentTypesAddedAreInPaymentTypesList() {
-        RavePayManager manager = new RavePayManager((Activity) null);
+        RaveUiManager manager = new RaveUiManager((Activity) null);
         manager.acceptCardPayments(true)
                 .acceptAccountPayments(true)
                 .acceptAchPayments(true)

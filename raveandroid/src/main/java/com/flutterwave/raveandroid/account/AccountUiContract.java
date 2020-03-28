@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid.account;
 
 
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
-import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_presentation.account.AccountContract;
 
 import java.util.HashMap;

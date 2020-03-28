@@ -26,7 +26,7 @@ import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
-import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
@@ -48,7 +48,7 @@ import com.google.gson.Gson;
 import dagger.Component;
 
 @UiScope
-@Component(dependencies = {AppComponent.class})
+@Component(dependencies = {RaveComponent.class})
 public interface RaveUiComponent {
 
     RemoteRepository networkImpl();

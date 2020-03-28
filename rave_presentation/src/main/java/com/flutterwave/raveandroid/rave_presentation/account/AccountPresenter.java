@@ -13,7 +13,7 @@ import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
-import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -59,15 +59,15 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         this.mView = mView;
     }
 
-    public AccountPresenter(AccountContract.View mView, AppComponent appComponent) {
+    public AccountPresenter(AccountContract.View mView, RaveComponent raveComponent) {
         this.mView = mView;
-        this.eventLogger = appComponent.eventLogger();
-        this.networkRequest = appComponent.networkImpl();
-        this.transactionStatusChecker = appComponent.transactionStatusChecker();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
-        this.urlValidator = appComponent.urlValidator();
-        this.payloadToJsonConverter = appComponent.payloadToJsonConverter();
-        this.payloadEncryptor = appComponent.payloadEncryptor();
+        this.eventLogger = raveComponent.eventLogger();
+        this.networkRequest = raveComponent.networkImpl();
+        this.transactionStatusChecker = raveComponent.transactionStatusChecker();
+        this.payloadEncryptor = raveComponent.payloadEncryptor();
+        this.urlValidator = raveComponent.urlValidator();
+        this.payloadToJsonConverter = raveComponent.payloadToJsonConverter();
+        this.payloadEncryptor = raveComponent.payloadEncryptor();
     }
 
     @Override

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.RavePayManager;
+import com.flutterwave.raveandroid.RaveUiManager;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (valid) {
-            RavePayManager ravePayManager = new RavePayManager(this).setAmount(Double.parseDouble(amount))
+            RaveUiManager raveUiManager = new RaveUiManager(this).setAmount(Double.parseDouble(amount))
                     .setCountry(country)
                     .setCurrency(currency)
                     .setEmail(email)
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Customize pay with bank transfer options (optional)
             if (isPermanentAccountSwitch.isChecked())
-                ravePayManager.acceptBankTransferPayments(true, true);
+                raveUiManager.acceptBankTransferPayments(true, true);
             else {
                 if (setExpirySwitch.isChecked()) {
                     int duration = 0, frequency = 0;
@@ -316,12 +316,12 @@ public class MainActivity extends AppCompatActivity {
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
-                    ravePayManager.acceptBankTransferPayments(true, duration, frequency);
+                    raveUiManager.acceptBankTransferPayments(true, duration, frequency);
                 }
             }
 
 
-            ravePayManager.initialize();
+            raveUiManager.initialize();
 
 
         }

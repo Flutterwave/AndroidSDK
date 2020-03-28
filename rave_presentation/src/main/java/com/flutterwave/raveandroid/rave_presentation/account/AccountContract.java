@@ -17,15 +17,6 @@ public interface AccountContract {
 
     interface View {
         /**
-         * To be called when the list of banks available for direct account debit has been retrieved
-         * from the server.
-         * Typically, this list should be shown to the user to select their bank.
-         *
-         * @param banks List of {@link Bank} objects to chose from
-         */
-        void onBanksListRetrieved(List<Bank> banks);
-
-        /**
          * Called to indicate that a network call has just begun or has just ended.
          * E.g., by showing or hiding a progress bar
          *
@@ -35,11 +26,29 @@ public interface AccountContract {
         void showProgressIndicator(boolean active);
 
         /**
+         * To be called when the list of banks available for direct account debit has been retrieved
+         * from the server.
+         * Typically, this list should be shown to the user to select their bank.
+         *
+         * @param banks List of {@link Bank} objects to chose from
+         */
+        void onBanksListRetrieved(List<Bank> banks);
+
+        /**
          * Called when the call to {@link UserActionsListener#getBanksList()} fails.
          *
          * @param message The error message returned
          */
         void onGetBanksRequestFailed(String message);
+
+
+        /**
+         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the list of banks} has been completed successfully.
+         *
+         * @param charge_amount The total charge amount (fee inclusive)
+         * @param payload       The payload used to initiate the fee request
+         */
+        void onTransactionFeeRetrieved(String charge_amount, Payload payload);
 
         /**
          * Called to collect an OTP from the user.
@@ -88,14 +97,6 @@ public interface AccountContract {
          * @param errorMessage The error message that can be displayed to the user
          */
         void onPaymentError(String errorMessage);
-
-        /**
-         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the list of banks} has been completed successfully.
-         *
-         * @param charge_amount The total charge amount (fee inclusive)
-         * @param payload       The payload used to initiate the fee request
-         */
-        void onTransactionFeeRetrieved(String charge_amount, Payload payload);
     }
 
     interface UserActionsListener {
@@ -105,9 +106,19 @@ public interface AccountContract {
         void getBanksList();
 
         /**
-         * Initiate the account charge
+         * Check for the fee applicable for this transaction.
          *
-         * @param payload       Charge details. Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
+         * @param payload Object containing the charge details.
+         *                Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
+         */
+        void fetchFee(Payload payload);
+
+        /**
+         * Initiate the account charge.
+         * This is the starting point for the payment.
+         *
+         * @param payload       Object containing the charge details.
+         *                      Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
          * @param encryptionKey Your Flutterwave encryption key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
          */
         void chargeAccount(Payload payload, String encryptionKey);
@@ -122,11 +133,13 @@ public interface AccountContract {
         void authenticateAccountCharge(String flwRef, String otp, String publicKey);
 
         /**
-         * Check for the fee applicable for this transaction.
+         * Check for a transactions status. Result is sent to either {@link View#onPaymentSuccessful(String)}
+         * when it's successful, or {@link View#onPaymentFailed(String)} if it's failed.
          *
-         * @param payload Charge details. Can be generated with the {@link com.flutterwave.raveandroid.rave_presentation.PayloadBuilder PayloadBuilder}
+         * @param flwRef    The Flutterwave reference for the transaction
+         * @param publicKey The public Key used to initiate the transaction
          */
-        void fetchFee(Payload payload);
+        void requeryTx(String flwRef, String publicKey);
 
         /**
          * Reattaches the view to the presenter.
@@ -141,15 +154,6 @@ public interface AccountContract {
          * Call this in activity or fragment onStop() function.
          */
         void onDetachView();
-
-        /**
-         * Check for a transactions status. Result is sent to either {@link View#onPaymentSuccessful(String)}
-         * when it's successful, or {@link View#onPaymentFailed(String)} if it's failed.
-         *
-         * @param flwRef    The Flutterwave reference for the transaction
-         * @param publicKey The public Key used to initiate the transaction
-         */
-        void requeryTx(String flwRef, String publicKey);
     }
 
 }

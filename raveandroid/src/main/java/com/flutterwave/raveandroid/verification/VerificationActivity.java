@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.R;
+import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
-import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
-import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.DaggerRaveComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
 
@@ -97,12 +97,12 @@ public class VerificationActivity extends AppCompatActivity {
             BASE_URL = LIVE_URL;
         }
 
-        AppComponent appComponent = DaggerAppComponent.builder().androidModule(new AndroidModule(this))
+        RaveComponent raveComponent = DaggerRaveComponent.builder().androidModule(new AndroidModule(this))
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 
-        raveUiComponent = DaggerRaveUiComponent.builder().appComponent(appComponent).build();
+        raveUiComponent = DaggerRaveUiComponent.builder().raveComponent(raveComponent).build();
 
     }
 }

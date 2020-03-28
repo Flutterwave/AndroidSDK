@@ -22,7 +22,7 @@ import dagger.Component;
 
 @Singleton
 @Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class, CacheModule.class})
-public interface AppComponent {
+public interface RaveComponent {
 
     RemoteRepository networkImpl();
 

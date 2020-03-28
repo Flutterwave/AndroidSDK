@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation;
+package com.flutterwave.raveandroid;
 
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 
