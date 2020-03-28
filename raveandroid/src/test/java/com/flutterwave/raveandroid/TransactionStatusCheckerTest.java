@@ -26,7 +26,7 @@ public class TransactionStatusCheckerTest {
         JsonObject jsonObject = generateJSONObjectResponse("100", "NGN", true);
         JsonObject jsonObjectData = jsonObject.get("data").getAsJsonObject();
 
-        boolean status = transactionStatusChecker.getTransactionStatus("100", "NGN", jsonObject.toString());
+        boolean status = transactionStatusChecker.getTransactionStatus(jsonObject.toString());
 
         Assert.assertEquals("success", jsonObjectData.get("status").getAsString());
         Assert.assertEquals("100", jsonObjectData.get("amount").getAsString());
@@ -42,7 +42,7 @@ public class TransactionStatusCheckerTest {
         JsonObject jsonObject = generateJSONObjectResponse("99", "NGN", true);
         JsonObject jsonObjectData = jsonObject.get("data").getAsJsonObject();
 
-        boolean status = transactionStatusChecker.getTransactionStatus("90", "NGN", jsonObject.toString());
+        boolean status = transactionStatusChecker.getTransactionStatus(jsonObject.toString());
 
         Assert.assertEquals("success", jsonObjectData.get("status").getAsString());
         Assert.assertNotEquals("90", jsonObjectData.get("amount").getAsString());
@@ -58,7 +58,7 @@ public class TransactionStatusCheckerTest {
         JsonObject jsonObject = generateJSONObjectResponse("100", "EUR", true);
         JsonObject jsonObjectData = jsonObject.get("data").getAsJsonObject();
 
-        boolean status = transactionStatusChecker.getTransactionStatus("100", "USD", jsonObject.toString());
+        boolean status = transactionStatusChecker.getTransactionStatus(jsonObject.toString());
 
         Assert.assertEquals("success", jsonObjectData.get("status").getAsString());
         Assert.assertEquals("100", jsonObjectData.get("amount").getAsString());
@@ -74,7 +74,7 @@ public class TransactionStatusCheckerTest {
 
         JsonObject jsonObject = generateJSONObjectResponse("100", "NGN", false);
 
-        boolean status = transactionStatusChecker.getTransactionStatus("100", "NGN", jsonObject.toString());
+        boolean status = transactionStatusChecker.getTransactionStatus(jsonObject.toString());
 
         assertThat(status, is(false));
     }

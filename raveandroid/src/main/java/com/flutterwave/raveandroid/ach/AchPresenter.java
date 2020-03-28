@@ -230,8 +230,6 @@ public class AchPresenter implements AchContract.UserActionsListener {
 
         boolean wasTxSuccessful = transactionStatusChecker
                 .getTransactionStatus(
-                        String.valueOf(ravePayInitializer.getAmount()),
-                        ravePayInitializer.getCurrency(),
                         responseAsJSONString
                 );
 

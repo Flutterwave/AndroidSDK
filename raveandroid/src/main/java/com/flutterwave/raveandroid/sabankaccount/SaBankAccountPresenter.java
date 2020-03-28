@@ -185,8 +185,6 @@ public class SaBankAccountPresenter implements SaBankAccountContract.UserActions
 
         boolean wasTxSuccessful = transactionStatusChecker
                 .getTransactionStatus(
-                        String.valueOf(ravePayInitializer.getAmount()),
-                        ravePayInitializer.getCurrency(),
                         responseAsJSONString
                 );
 
