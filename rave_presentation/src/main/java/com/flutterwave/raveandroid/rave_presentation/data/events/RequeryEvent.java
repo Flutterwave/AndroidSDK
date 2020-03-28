@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.data.events;
+package com.flutterwave.raveandroid.rave_presentation.data.events;
 
 import com.flutterwave.raveandroid.rave_logger.Event;
 

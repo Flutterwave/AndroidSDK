@@ -19,15 +19,15 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.WebFragment;
-import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.di.modules.SaBankModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 

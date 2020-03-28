@@ -5,8 +5,6 @@ import android.support.design.widget.TextInputLayout;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
@@ -16,6 +14,9 @@ import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -33,7 +34,6 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
-import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +68,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validE
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -77,11 +76,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AccountPresenterTest {
+public class AccountUiPresenterTest {
 
-    AccountPresenter accountPresenter;
+    AccountUiPresenter accountUiPresenter;
     @Mock
-    AccountContract.View view;
+    AccountUiContract.View view;
     @Inject
     Context context;
     @Inject
@@ -111,12 +110,12 @@ public class AccountPresenterTest {
     @Inject
     TransactionStatusChecker transactionStatusChecker;
     @Mock
-    AccountPresenter accountPresenterMock;
+    AccountUiPresenter accountUiPresenterMock;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        accountPresenter = new AccountPresenter(context, view);
+        accountUiPresenter = new AccountUiPresenter(context, view);
 
         TestRaveUiComponent component = DaggerTestAppComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
@@ -124,7 +123,7 @@ public class AccountPresenterTest {
                 .build();
 
         component.inject(this);
-        component.inject(accountPresenter);
+        component.inject(accountUiPresenter);
     }
 
     @Test
@@ -136,7 +135,7 @@ public class AccountPresenterTest {
         ChargeResponse chargeResponse = generateValidChargeResponse();
 
         //act
-        accountPresenter.chargeAccount(generatePayload(), generateRandomString(), generateRandomBoolean());
+        accountUiPresenter.chargeAccount(generatePayload(), generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -145,7 +144,7 @@ public class AccountPresenterTest {
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
 
         //assert
-        verify(view).onDisplayInternetBankingPage(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef());
+        verify(view).displayInternetBankingPage(chargeResponse.getData().getAuthurl(), chargeResponse.getData().getFlwRef());
 
     }
 
@@ -162,7 +161,7 @@ public class AccountPresenterTest {
         when(urlValidator.isUrlValid(anyString())).thenReturn(true);
 
         //act
-        accountPresenter.chargeAccount(payload, generateRandomString(), generateRandomBoolean());
+        accountUiPresenter.chargeAccount(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -171,7 +170,7 @@ public class AccountPresenterTest {
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).validateAccountCharge(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), null);
+        verify(view).collectOtp(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), null);
 
     }
 
@@ -187,7 +186,7 @@ public class AccountPresenterTest {
         String responseAsJsonString = generateRandomString();
 
         //act
-        accountPresenter.chargeAccount(payload, encryptionKey, isInternetBanking);
+        accountUiPresenter.chargeAccount(payload, encryptionKey);
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -196,7 +195,7 @@ public class AccountPresenterTest {
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).validateAccountCharge(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstruction());
+        verify(view).collectOtp(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstruction());
 
     }
 
@@ -210,7 +209,7 @@ public class AccountPresenterTest {
         ravePayInitializer.setPublicKey(generateRandomString());
 
         //act
-        accountPresenter.validateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
+        accountUiPresenter.authenticateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
 
         ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
         verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
@@ -218,7 +217,7 @@ public class AccountPresenterTest {
         onValidateChargeCardRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).onValidationSuccessful(chargeResponse.getData().getFlwRef(), responseAsJsonString);
+        verify(view).onDataValidationSuccessful(chargeResponse.getData().getFlwRef(), responseAsJsonString);
     }
 
     @Test
@@ -231,7 +230,7 @@ public class AccountPresenterTest {
         String otp = generateRandomString();
 
         //act
-        accountPresenter.validateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
+        accountUiPresenter.authenticateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
 
         ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
         verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
@@ -253,7 +252,7 @@ public class AccountPresenterTest {
         ravePayInitializer.setPublicKey(generateRandomString());
 
         //act
-        accountPresenter.validateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
+        accountUiPresenter.authenticateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
 
         ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
         verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
@@ -275,14 +274,14 @@ public class AccountPresenterTest {
         ravePayInitializer.setPublicKey(generateRandomString());
 
         //act
-        accountPresenter.validateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
+        accountUiPresenter.authenticateAccountCharge(chargeResponse.getData().getFlwRef(), otp, ravePayInitializer.getPublicKey());
 
         ArgumentCaptor<Callbacks.OnValidateChargeCardRequestComplete> onValidateChargeCardRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnValidateChargeCardRequestComplete.class);
         verify(networkRequest).validateAccountCard(any(ValidateChargeBody.class), onValidateChargeCardRequestCompleteArgumentCaptor.capture());
 
         onValidateChargeCardRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
-        verify(view).onValidateError(chargeResponse.getStatus(), responseAsJsonString);
+        verify(view).onAuthenticationError(chargeResponse.getStatus(), responseAsJsonString);
     }
 
     @Test
@@ -294,7 +293,7 @@ public class AccountPresenterTest {
         String message = generateRandomString();
 
         //act
-        accountPresenter.fetchFee(payload, internetBanking);
+        accountUiPresenter.fetchFee(payload);
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
@@ -315,23 +314,23 @@ public class AccountPresenterTest {
         boolean internetBanking = generateRandomBoolean();
 
         //act
-        accountPresenter.fetchFee(payload, internetBanking);
+        accountUiPresenter.fetchFee(payload);
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(feeCheckResponse);
 
         //assert
-        verify(view).displayFee(feeCheckResponse.getData().getCharge_amount(), payload, internetBanking);
+        verify(view).onTransactionFeeRetrieved(feeCheckResponse.getData().getCharge_amount(), payload);
 
     }
 
     @Test
     public void fetchFee_onSuccess_exceptionThrown_showFetchFeeFailedCalledWithCorrectParams() {
 
-        accountPresenter.fetchFee(generatePayload(), false);
+        accountUiPresenter.fetchFee(generatePayload());
 
-        doThrow(new NullPointerException()).when(view).displayFee(any(String.class), any(Payload.class), any(Boolean.class));
+        doThrow(new NullPointerException()).when(view).onTransactionFeeRetrieved(any(String.class), any(Payload.class));
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
@@ -348,13 +347,13 @@ public class AccountPresenterTest {
         List<Bank> bankList = generateBankList();
 
         //act
-        accountPresenter.getBanks();
+        accountUiPresenter.getBanksList();
         ArgumentCaptor<Callbacks.OnGetBanksRequestComplete> onGetBanksRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGetBanksRequestComplete.class);
         verify(networkRequest).getBanks(onGetBanksRequestCompleteArgumentCaptor.capture());
         onGetBanksRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(bankList);
 
         //assert
-        verify(view).showBanks(bankList);
+        verify(view).onBanksListRetrieved(bankList);
     }
 
     @Test
@@ -364,7 +363,7 @@ public class AccountPresenterTest {
         String message = generateRandomString();
 
         //act
-        accountPresenter.getBanks();
+        accountUiPresenter.getBanksList();
         ArgumentCaptor<Callbacks.OnGetBanksRequestComplete> onGetBanksRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnGetBanksRequestComplete.class);
         verify(networkRequest).getBanks(onGetBanksRequestCompleteArgumentCaptor.capture());
         onGetBanksRequestCompleteArgumentCaptor.getAllValues().get(0).onError(message);
@@ -381,9 +380,9 @@ public class AccountPresenterTest {
         String responseAsJsonString = generateRandomString();
         RequeryResponse requeryResponse = generateRequerySuccessful();
 
-        when(transactionStatusChecker.getTransactionStatus(amount, currency, responseAsJsonString)).thenReturn(false);
-        accountPresenter.verifyRequeryResponseStatus(requeryResponse, responseAsJsonString, ravePayInitializer);
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), responseAsJsonString);
+        when(transactionStatusChecker.getTransactionStatus(responseAsJsonString)).thenReturn(false);
+        accountUiPresenter.verifyRequeryResponseStatus(responseAsJsonString);
+        verify(view).onPaymentFailed(responseAsJsonString);
     }
 
     @Test
@@ -394,9 +393,9 @@ public class AccountPresenterTest {
         int failedValidations = 0;
         generateViewValidation(failedValidations);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
-        verify(view).onValidationSuccessful(map);
+        verify(view).onDataValidationSuccessful(map);
 
     }
 
@@ -410,7 +409,7 @@ public class AccountPresenterTest {
 
         when(phoneValidator.isPhoneValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, validPhonePrompt, TextInputLayout.class);
 
@@ -426,7 +425,7 @@ public class AccountPresenterTest {
 
         when(emailValidator.isEmailValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, validEmailPrompt, TextInputLayout.class);
 
@@ -442,7 +441,7 @@ public class AccountPresenterTest {
 
         when(bankCodeValidator.isBankCodeValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, invalidBankCodeMessage, TextInputLayout.class);
 
@@ -459,7 +458,7 @@ public class AccountPresenterTest {
 
         when(dateOfBirthValidator.isDateValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, invalidDateOfBirthMessage, TextInputLayout.class);
 
@@ -476,7 +475,7 @@ public class AccountPresenterTest {
 
         when(bvnValidator.isBvnValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, invalidBvnMessage, TextInputLayout.class);
 
@@ -496,7 +495,7 @@ public class AccountPresenterTest {
         when(minimum100AccountPaymentValidator.isPaymentValid(anyString(), anyDouble())).thenReturn(false);
 
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
 
         //assert
         verify(view).showGTBankAmountIssue();
@@ -513,7 +512,7 @@ public class AccountPresenterTest {
 
         when(accountNoValidator.isAccountNumberValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, invalidAccountNoMessage, TextInputLayout.class);
 
@@ -529,7 +528,7 @@ public class AccountPresenterTest {
 
         when(amountValidator.isAmountValid(anyString())).thenReturn(false);
         //act
-        accountPresenter.onDataCollected(map);
+        accountUiPresenter.onDataCollected(map);
         //assert
         verify(view).showFieldError(viewID, validAmountPrompt, TextInputLayout.class);
 
@@ -560,7 +559,7 @@ public class AccountPresenterTest {
         boolean isPreAuth = true;
         String fingerPrint = deviceId;
 
-        accountPresenterMock.deviceIdGetter = deviceIdGetter;
+        accountUiPresenterMock.deviceIdGetter = deviceIdGetter;
         when(deviceIdGetter.getDeviceId()).thenReturn(deviceId);
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(isDisplayFee);
         when(ravePayInitializer.getEncryptionKey()).thenReturn(encryptionKey);
@@ -571,16 +570,16 @@ public class AccountPresenterTest {
         when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
 
         //act
-        doCallRealMethod().when(accountPresenterMock).processTransaction(any(HashMap.class), any(RavePayInitializer.class));
-        accountPresenterMock.processTransaction(map, ravePayInitializer);
+        doCallRealMethod().when(accountUiPresenterMock).processTransaction(any(HashMap.class), any(RavePayInitializer.class));
+        accountUiPresenterMock.processTransaction(map, ravePayInitializer);
 
         ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
         ArgumentCaptor<Payload> payloadCaptor = ArgumentCaptor.forClass(Payload.class);
 
-        verify(accountPresenterMock).chargeAccount(payloadCaptor.capture(),
-                captorEncryptionKey.capture(),
-                captorIsDisplayFee.capture());
+        verify(accountUiPresenterMock).chargeAccount(payloadCaptor.capture(),
+                captorEncryptionKey.capture()
+        );
 
         //assert
         assertEquals(encryptionKey, captorEncryptionKey.getValue());
@@ -625,7 +624,7 @@ public class AccountPresenterTest {
         boolean isPreAuth = true;
         String fingerPrint = deviceId;
 
-        accountPresenterMock.deviceIdGetter = deviceIdGetter;
+        accountUiPresenterMock.deviceIdGetter = deviceIdGetter;
         when(deviceIdGetter.getDeviceId()).thenReturn(deviceId);
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(isDisplayFee);
         when(ravePayInitializer.getEncryptionKey()).thenReturn(encryptionKey);
@@ -636,13 +635,13 @@ public class AccountPresenterTest {
         when(ravePayInitializer.getPublicKey()).thenReturn(pubKey);
 
         //act
-        doCallRealMethod().when(accountPresenterMock).processTransaction(any(HashMap.class), any(RavePayInitializer.class));
-        accountPresenterMock.processTransaction(map, ravePayInitializer);
+        doCallRealMethod().when(accountUiPresenterMock).processTransaction(any(HashMap.class), any(RavePayInitializer.class));
+        accountUiPresenterMock.processTransaction(map, ravePayInitializer);
         ArgumentCaptor<Boolean> captorIsInternetBanking = ArgumentCaptor.forClass(Boolean.class);
         ArgumentCaptor<Payload> payloadCaptor = ArgumentCaptor.forClass(Payload.class);
 
-        verify(accountPresenterMock).fetchFee(payloadCaptor.capture(),
-                captorIsInternetBanking.capture());
+        verify(accountUiPresenterMock).fetchFee(payloadCaptor.capture()
+        );
 
         //assert
         assertEquals(isInternetBanking, captorIsInternetBanking.getValue());
@@ -669,7 +668,7 @@ public class AccountPresenterTest {
         when(ravePayInitializer.getIsDisplayFee()).thenReturn(true);
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
         //act
-        accountPresenter.processTransaction(data, ravePayInitializer);
+        accountUiPresenter.processTransaction(data, ravePayInitializer);
         //assert
         verify(view).showProgressIndicator(true);
 
@@ -687,7 +686,7 @@ public class AccountPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        accountPresenter.processTransaction(data, ravePayInitializer);
+        accountUiPresenter.processTransaction(data, ravePayInitializer);
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
@@ -710,14 +709,14 @@ public class AccountPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        accountPresenter.fetchFee(payload, false);
+        accountUiPresenter.fetchFee(payload);
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(feeCheckResponse);
 
-        doThrow(new Exception()).when(view).displayFee(feeCheckResponse.getData().getCharge_amount(), payload, false);
+        doThrow(new Exception()).when(view).onTransactionFeeRetrieved(feeCheckResponse.getData().getCharge_amount(), payload);
 
         //assert
         verify(view).showFetchFeeFailed(transactionError);
@@ -736,14 +735,14 @@ public class AccountPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        accountPresenter.processTransaction(data, ravePayInitializer);
+        accountUiPresenter.processTransaction(data, ravePayInitializer);
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(feeCheckResponse);
 
         //assert
-        verify(view).displayFee(anyString(), any(Payload.class), anyBoolean());
+        verify(view).onTransactionFeeRetrieved(anyString(), any(Payload.class));
 
     }
 
@@ -760,7 +759,7 @@ public class AccountPresenterTest {
         when(deviceIdGetter.getDeviceId()).thenReturn(generateRandomString());
 
         //act
-        accountPresenter.chargeAccount(payload, generateRandomString(), true);
+        accountUiPresenter.chargeAccount(payload, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
@@ -783,7 +782,7 @@ public class AccountPresenterTest {
         String responseAsJsonString = generateRandomString();
 
         //act
-        accountPresenter.chargeAccount(payload, generateRandomString(), generateRandomBoolean());
+        accountUiPresenter.chargeAccount(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -791,7 +790,7 @@ public class AccountPresenterTest {
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).validateAccountCharge(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstructions().getInstruction());
+        verify(view).collectOtp(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstructions().getInstruction());
 
     }
 
@@ -807,7 +806,7 @@ public class AccountPresenterTest {
         String responseAsJsonString = generateRandomString();
 
         //act
-        accountPresenter.chargeAccount(payload, generateRandomString(), generateRandomBoolean());
+        accountUiPresenter.chargeAccount(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
@@ -815,7 +814,7 @@ public class AccountPresenterTest {
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).validateAccountCharge(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), null);
+        verify(view).collectOtp(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), null);
 
     }
 
@@ -832,14 +831,14 @@ public class AccountPresenterTest {
         when(urlValidator.isUrlValid(anyString())).thenReturn(false);
 
         //act
-        accountPresenter.chargeAccount(payload, generateRandomString(), generateRandomBoolean());
+        accountUiPresenter.chargeAccount(payload, generateRandomString());
         ArgumentCaptor<Callbacks.OnChargeRequestComplete> onChargeRequestCompleteArgumentCaptor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
 
         verify(networkRequest).chargeAccount(any(ChargeRequestBody.class), onChargeRequestCompleteArgumentCaptor.capture());
         onChargeRequestCompleteArgumentCaptor.getAllValues().get(0).onSuccess(chargeResponse, responseAsJsonString);
 
         //assert
-        verify(view).validateAccountCharge(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstruction());
+        verify(view).collectOtp(payload.getPBFPubKey(), chargeResponse.getData().getFlwRef(), chargeResponse.getData().getValidateInstruction());
 
     }
 
@@ -851,7 +850,7 @@ public class AccountPresenterTest {
         String responseAsJsonString = generateRandomString();
 
         //act
-        accountPresenter.requeryTx(generateRandomString(), generateRandomString());
+        accountUiPresenter.requeryTx(generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
@@ -871,14 +870,14 @@ public class AccountPresenterTest {
         String responseJsonAsString = generateRandomString();
 
         //act
-        accountPresenter.requeryTx(generateRandomString(), generateRandomString());
+        accountUiPresenter.requeryTx(generateRandomString(), generateRandomString());
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, responseJsonAsString);
 
         //assert
-        verify(view).onPaymentFailed(message, responseJsonAsString);
+        verify(view).onPaymentFailed(responseJsonAsString);
 
     }
 
@@ -890,7 +889,7 @@ public class AccountPresenterTest {
         Bank internetBankingBank = generateBank(true, generateRandomString());
 
         //act
-        accountPresenter.onBankSelected(internetBankingBank);
+        accountUiPresenter.onBankSelected(internetBankingBank);
 
         //assert
         verify(view).showAccountNumberField(View.GONE);
@@ -903,7 +902,7 @@ public class AccountPresenterTest {
         Bank nonInternetBankingBank = generateBank(false, generateRandomString());
 
         //act
-        accountPresenter.onBankSelected(nonInternetBankingBank);
+        accountUiPresenter.onBankSelected(nonInternetBankingBank);
 
         //assert
         verify(view).showAccountNumberField(View.VISIBLE);
@@ -918,7 +917,7 @@ public class AccountPresenterTest {
         Bank bank057 = generateBank(generateRandomBoolean(), "057");
 
         //act
-        accountPresenter.onBankSelected(bank057);
+        accountUiPresenter.onBankSelected(bank057);
 
         //assert
         verify(view).showDateOfBirth(View.VISIBLE);
@@ -931,7 +930,7 @@ public class AccountPresenterTest {
         Bank bank033 = generateBank(generateRandomBoolean(), "033");
 
         //act
-        accountPresenter.onBankSelected(bank033);
+        accountUiPresenter.onBankSelected(bank033);
 
         //assert
         verify(view).showDateOfBirth(View.VISIBLE);
@@ -944,7 +943,7 @@ public class AccountPresenterTest {
         Bank bank = generateBank(generateRandomBoolean(), "234");
 
         //act
-        accountPresenter.onBankSelected(bank);
+        accountUiPresenter.onBankSelected(bank);
 
         //assert
         verify(view).showDateOfBirth(View.GONE);
@@ -958,7 +957,7 @@ public class AccountPresenterTest {
         Bank bank033 = generateBank(generateRandomBoolean(), "033");
 
         //act
-        accountPresenter.onBankSelected(bank033);
+        accountUiPresenter.onBankSelected(bank033);
 
         //assert
         verify(view).showBVN(View.VISIBLE);
@@ -971,7 +970,7 @@ public class AccountPresenterTest {
         Bank bankNot033 = generateBank(generateRandomBoolean(), "999");
 
         //act
-        accountPresenter.onBankSelected(bankNot033);
+        accountUiPresenter.onBankSelected(bankNot033);
 
         //assert
         verify(view).showBVN(View.GONE);
@@ -987,7 +986,7 @@ public class AccountPresenterTest {
         when(emailValidator.isEmailValid(anyString())).thenReturn(true);
 
         //act
-        accountPresenter.init(ravePayInitializer);
+        accountUiPresenter.init(ravePayInitializer);
 
         //assert
         verify(view).onEmailValidated(email, View.GONE);
@@ -1002,7 +1001,7 @@ public class AccountPresenterTest {
         when(emailValidator.isEmailValid(email)).thenReturn(false);
 
         //act
-        accountPresenter.init(ravePayInitializer);
+        accountUiPresenter.init(ravePayInitializer);
 
         //assert
         verify(view).onEmailValidated("", View.VISIBLE);
@@ -1017,7 +1016,7 @@ public class AccountPresenterTest {
         when(ravePayInitializer.getAmount()).thenReturn(amount);
 
         //act
-        accountPresenter.init(ravePayInitializer);
+        accountUiPresenter.init(ravePayInitializer);
 
         //assert
         verify(view).onAmountValidated(amount.toString(), View.GONE);
@@ -1032,7 +1031,7 @@ public class AccountPresenterTest {
         when(amountValidator.isAmountValid(amount)).thenReturn(false);
 
         //act
-        accountPresenter.init(ravePayInitializer);
+        accountUiPresenter.init(ravePayInitializer);
 
         //assert
         verify(view).onAmountValidated("", View.VISIBLE);
@@ -1045,14 +1044,14 @@ public class AccountPresenterTest {
         RequeryResponse requeryResponse = generateRequerySuccessful();
         String responseAsJsonString = generateRandomString();
 
-        when(transactionStatusChecker.getTransactionStatus(any(String.class), any(String.class), any(String.class)))
+        when(transactionStatusChecker.getTransactionStatus(any(String.class)))
                 .thenReturn(true);
 
         when(ravePayInitializer.getAmount()).thenReturn(generateRandomDouble());
         when(ravePayInitializer.getCurrency()).thenReturn(generateRandomString());
 
-        accountPresenter.verifyRequeryResponseStatus(requeryResponse, responseAsJsonString, ravePayInitializer);
-        verify(view).onPaymentSuccessful(requeryResponse.getStatus(), responseAsJsonString);
+        accountUiPresenter.verifyRequeryResponseStatus(responseAsJsonString);
+        verify(view).onPaymentSuccessful(responseAsJsonString);
     }
 
 

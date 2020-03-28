@@ -1,9 +1,9 @@
 package com.flutterwave.raveandroid.mpesa;
 
-import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 
 import java.util.HashMap;
 

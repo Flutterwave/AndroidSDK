@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid;
 
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 
 public class Raver {
 

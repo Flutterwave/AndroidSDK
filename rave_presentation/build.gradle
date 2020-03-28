@@ -35,6 +35,12 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.27'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
 
+    //Parcelizing
+    implementation 'org.parceler:parceler-api:1.1.9'
+    annotationProcessor 'org.parceler:parceler:1.1.9'
+
+    implementation 'com.scottyab:aescrypt:0.0.1'
+
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'

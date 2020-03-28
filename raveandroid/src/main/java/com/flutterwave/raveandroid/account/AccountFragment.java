@@ -26,18 +26,17 @@ import android.widget.Toast;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 import com.flutterwave.raveandroid.verification.web.WebFragment;
@@ -61,10 +60,10 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements AccountContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
+public class AccountFragment extends Fragment implements AccountUiContract.View, DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
-    AccountPresenter presenter;
+    AccountUiPresenter presenter;
 
     public static final int FOR_0TP = 222;
     public static final int FOR_INTERNET_BANKING = 111;
@@ -162,7 +161,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
             clearErrors();
             collectData();
         } else if (i == R.id.rave_bankEditText) {
-            presenter.getBanks();
+            presenter.getBanksList();
         } else if (i == R.id.rave_dobEditText) {
             if (getActivity() != null) {
                 new DatePickerDialog(getActivity(), AccountFragment.this, calendar.get(Calendar.YEAR),
@@ -239,14 +238,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+    public void onDataValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
         presenter.processTransaction(dataHashMap, ravePayInitializer);
-    }
-
-    @Override
-    public void onValidateError(String message) {
-        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(message);
     }
 
     @Override
@@ -261,12 +254,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onValidationSuccessful(String flwRef) {
-        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
-    }
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload, final boolean internetbanking) {
+    public void onTransactionFeeRetrieved(String charge_amount, final Payload payload) {
 
         if (getActivity() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -276,7 +264,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), payload.getPBFPubKey());
                     dialog.dismiss();
-                    presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey(), internetbanking);
+                    presenter.chargeAccount(payload, ravePayInitializer.getEncryptionKey());
                 }
             }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
@@ -290,19 +278,12 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
     }
 
-    @Override
-    public void showFetchFeeFailed(String s) {
-        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(s);
-    }
-
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String responseAsJSONString) {
+    public void onPaymentSuccessful(String responseAsJSONString) {
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
 
@@ -313,7 +294,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onPaymentFailed(String status, String responseAsJSONString) {
+    public void onPaymentFailed(String responseAsJSONString) {
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJSONString);
         if (getActivity() != null) {
@@ -323,9 +304,9 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onPaymentError(String message) {
-        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(message);
+    public void onPaymentError(String errorMessage) {
+        presenter.logEvent(new ErrorEvent(errorMessage).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(errorMessage);
     }
 
     @Override
@@ -344,7 +325,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void showBanks(List<Bank> banks) {
+    public void onBanksListRetrieved(List<Bank> banks) {
 
         if (getActivity() != null) {
             bottomSheetDialog = new BottomSheetDialog(getActivity());
@@ -407,8 +388,8 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void validateAccountCharge(String pbfPubKey, String flwRef, String validateInstruction) {
-        this.flwRef = flwRef;
+    public void collectOtp(String publicKey, String flutterwaveReference, String validateInstruction) {
+        this.flwRef = flutterwaveReference;
 
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
@@ -428,7 +409,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
 
             if (requestCode == FOR_0TP) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
-                presenter.validateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+                presenter.authenticateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
             } else if (requestCode == FOR_INTERNET_BANKING) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
@@ -438,7 +419,7 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onDisplayInternetBankingPage(String authurl, String flwRef) {
+    public void displayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
@@ -450,22 +431,10 @@ public class AccountFragment extends Fragment implements AccountContract.View, D
     }
 
     @Override
-    public void onChargeAccountFailed(String message) {
-        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(message);
-    }
-
-
-    @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString) {
-        presenter.verifyRequeryResponseStatus(response, responseAsJSONString, ravePayInitializer);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (presenter == null) {
-            presenter = new AccountPresenter(getActivity(), this);
+            presenter = new AccountUiPresenter(this);
         }
         presenter.onAttachView(this);
     }

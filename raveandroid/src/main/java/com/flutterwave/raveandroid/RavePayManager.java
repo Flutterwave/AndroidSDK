@@ -9,6 +9,7 @@ import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
 import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;

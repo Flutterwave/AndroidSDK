@@ -10,6 +10,8 @@ import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -39,12 +41,12 @@ public interface AppComponent {
 //    DeviceIdGetter deviceIdGetter();
 //    BankCodeValidator bankCodeValidator();
 //    AccountNoValidator accountNoValidator();
-//    UrlValidator urlValidator();
+    UrlValidator urlValidator();
 //    BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator();
 //    PhoneNumberObfuscator phoneNumberObfuscator();
     PayloadToJsonConverter payloadToJsonConverter();
 
-    //    TransactionStatusChecker transactionStatusChecker();
+    TransactionStatusChecker transactionStatusChecker();
     PayloadEncryptor payloadEncryptor();
     PayloadToJson payloadToJson();
 

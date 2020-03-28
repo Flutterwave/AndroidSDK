@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.R;
-import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
 import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.DaggerAppComponent;

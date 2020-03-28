@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.validators;
+package com.flutterwave.raveandroid.rave_presentation.data.validators;
 
 import java.util.regex.Pattern;
 

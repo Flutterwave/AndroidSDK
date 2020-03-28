@@ -5,16 +5,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.PayloadBuilder;
 import com.flutterwave.raveandroid.PhoneNumberObfuscator;
-import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.Utils;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
@@ -22,7 +16,13 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
+import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.rave_presentation.data.events.ValidationAttemptEvent;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -567,8 +567,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
 
         boolean wasTxSuccessful = transactionStatusChecker
                 .getTransactionStatus(
-                        String.valueOf(ravePayInitializer.getAmount()),
-                        ravePayInitializer.getCurrency(),
                         responseAsJSONString
                 );
 

@@ -3,7 +3,6 @@ package com.flutterwave.raveandroid.di.components;
 import com.flutterwave.raveandroid.DeviceIdGetter;
 import com.flutterwave.raveandroid.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
@@ -26,6 +25,7 @@ import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.di.AppComponent;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
@@ -40,7 +40,6 @@ import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
-import com.flutterwave.raveandroid.validators.UrlValidator;
 import com.flutterwave.raveandroid.verification.AVSVBVFragment;
 import com.flutterwave.raveandroid.verification.OTPFragment;
 import com.flutterwave.raveandroid.verification.PinFragment;
@@ -77,8 +76,6 @@ public interface RaveUiComponent {
     BankCodeValidator bankCodeValidator();
 
     AccountNoValidator accountNoValidator();
-
-    UrlValidator urlValidator();
 
     BanksMinimum100AccountPaymentValidator minimum100AccountPaymentValidator();
 

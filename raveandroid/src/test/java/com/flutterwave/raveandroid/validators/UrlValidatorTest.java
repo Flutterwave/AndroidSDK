@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.validators;
 
+import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
+
 import org.junit.Before;
 import org.junit.Test;
 

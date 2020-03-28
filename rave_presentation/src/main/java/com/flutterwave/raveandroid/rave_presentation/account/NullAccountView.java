@@ -1,19 +1,15 @@
-package com.flutterwave.raveandroid.account;
+package com.flutterwave.raveandroid.rave_presentation.account;
 
-import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by hfetuga on 06/02/2018.
  */
 
-public class NullAccountView implements AccountUiContract.View {
-
-
+public class NullAccountView implements AccountContract.View {
     @Override
     public void onBanksListRetrieved(List<Bank> banks) {
 
@@ -39,6 +35,7 @@ public class NullAccountView implements AccountUiContract.View {
 
     }
 
+
     @Override
     public void onPaymentSuccessful(String responseAsJSONString) {
 
@@ -56,46 +53,6 @@ public class NullAccountView implements AccountUiContract.View {
 
     @Override
     public void onTransactionFeeRetrieved(String charge_amount, Payload payload) {
-
-    }
-
-    @Override
-    public void onDataValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-    }
-
-    @Override
-    public void showFieldError(int viewID, String message, Class<?> viewtype) {
-
-    }
-
-    @Override
-    public void showGTBankAmountIssue() {
-
-    }
-
-    @Override
-    public void onEmailValidated(String emailToSet, int visibility) {
-
-    }
-
-    @Override
-    public void onAmountValidated(String amountToSet, int visibility) {
-
-    }
-
-    @Override
-    public void showDateOfBirth(int isVisible) {
-
-    }
-
-    @Override
-    public void showBVN(int isVisible) {
-
-    }
-
-    @Override
-    public void showAccountNumberField(int isVisible) {
 
     }
 }

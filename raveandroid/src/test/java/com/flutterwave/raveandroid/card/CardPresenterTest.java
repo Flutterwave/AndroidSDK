@@ -5,8 +5,6 @@ import android.support.design.widget.TextInputLayout;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
@@ -16,6 +14,8 @@ import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -779,7 +779,7 @@ public class CardPresenterTest {
         String responseAsJsonString = generateRandomString();
         String flwRef = generateRandomString();
 
-        when(transactionStatusChecker.getTransactionStatus(any(String.class), any(String.class), any(String.class)))
+        when(transactionStatusChecker.getTransactionStatus(any(String.class)))
                 .thenReturn(true);
 
         when(ravePayInitializer.getAmount()).thenReturn(generateRandomDouble());
@@ -799,7 +799,7 @@ public class CardPresenterTest {
         String responseAsJsonString = generateRandomString();
         String flwRef = generateRandomString();
 
-        when(transactionStatusChecker.getTransactionStatus(any(String.class), any(String.class), any(String.class)))
+        when(transactionStatusChecker.getTransactionStatus(any(String.class)))
                 .thenReturn(false);
 
         when(ravePayInitializer.getAmount()).thenReturn(generateRandomDouble());

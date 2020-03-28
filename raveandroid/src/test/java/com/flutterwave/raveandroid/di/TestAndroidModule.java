@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -22,7 +23,6 @@ import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
-import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import org.mockito.Mockito;
 

@@ -1,35 +1,21 @@
 package com.flutterwave.raveandroid.account;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
-import com.flutterwave.raveandroid.PayloadBuilder;
-import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.TransactionStatusChecker;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.data.events.ValidationAttemptEvent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
+import com.flutterwave.raveandroid.rave_presentation.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.PayloadToJsonConverter;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_presentation.RavePayInitializer;
+import com.flutterwave.raveandroid.rave_presentation.account.AccountPresenter;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.BankCodeValidator;
@@ -38,16 +24,13 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
-import com.flutterwave.raveandroid.validators.UrlValidator;
 
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NG;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NGN;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldBVN;
@@ -58,10 +41,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldP
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidAccountNoMessage;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidBankCodeMessage;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidBvnMessage;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidCharge;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidDateOfBirthMessage;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validEmailPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
@@ -70,10 +50,9 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
  * Created by hamzafetuga on 20/07/2017.
  */
 
-public class AccountPresenter implements AccountContract.UserActionsListener {
+public class AccountUiPresenter extends AccountPresenter implements AccountUiContract.UserActionsListener {
 
-    private Context context;
-    private AccountContract.View mView;
+    private AccountUiContract.View mView;
 
     @Inject
     EmailValidator emailValidator;
@@ -107,217 +86,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public AccountPresenter(Context context, AccountContract.View mView) {
-        this.context = context;
+    public AccountUiPresenter(AccountUiContract.View mView) {
+        super(mView);
         this.mView = mView;
-    }
-
-    public AccountPresenter(Context context, AccountContract.View mView, RaveUiComponent raveUiComponent) {
-        this.context = context;
-        this.mView = mView;
-        this.eventLogger = raveUiComponent.eventLogger();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.phoneValidator = raveUiComponent.phoneValidator();
-        this.emailValidator = raveUiComponent.emailValidator();
-        this.dateOfBirthValidator = raveUiComponent.dateOfBirthValidator();
-        this.bvnValidator = raveUiComponent.bvnValidator();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.accountNoValidator = raveUiComponent.accountNoValidator();
-        this.transactionStatusChecker = raveUiComponent.transactionStatusChecker();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-        this.bankCodeValidator = raveUiComponent.bankCodeValidator();
-        this.urlValidator = raveUiComponent.urlValidator();
-        this.minimum100AccountPaymentValidator = raveUiComponent.minimum100AccountPaymentValidator();
-        this.payloadToJsonConverter = raveUiComponent.payloadToJsonConverter();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-    }
-
-    @Override
-    public void getBanks() {
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getBanks(new ResultCallback<List<Bank>>() {
-            @Override
-            public void onSuccess(List<Bank> banks) {
-                mView.showProgressIndicator(false);
-                mView.showBanks(banks);
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onGetBanksRequestFailed("An error occurred while retrieving banks");
-            }
-        });
-
-    }
-
-    @Override
-    public void chargeAccount(final Payload payload, String encryptionKey, final boolean internetBanking) {
-
-        String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
-
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
-            @Override
-            public void onSuccess(ChargeResponse response) {
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-                    String authUrlCrude = response.getData().getAuthurl();
-                    String flwRef = response.getData().getFlwRef();
-                    boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
-                    if (authUrlCrude != null && isValidUrl) {
-                        mView.onDisplayInternetBankingPage(authUrlCrude, flwRef);
-                    } else {
-                        if (response.getData().getValidateInstruction() != null) {
-                            mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
-                        } else if (response.getData().getValidateInstructions() != null &&
-                                response.getData().getValidateInstructions().getInstruction() != null) {
-                            mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
-                        } else {
-                            mView.validateAccountCharge(payload.getPBFPubKey(), flwRef, null);
-                        }
-                    }
-                }
-
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onChargeAccountFailed(message);
-            }
-        });
-    }
-
-    @Override
-    public void validateAccountCharge(final String flwRef, String otp, String PBFPubKey) {
-
-        ValidateChargeBody body = new ValidateChargeBody();
-        body.setPBFPubKey(PBFPubKey);
-        body.setOtp(otp);
-        body.setTransactionreference(flwRef);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
-
-        networkRequest.validateAccountCharge(body, new ResultCallback<ChargeResponse>() {
-            @Override
-            public void onSuccess(ChargeResponse response) {
-                mView.showProgressIndicator(false);
-
-                if (response.getStatus() != null) {
-                    String status = response.getStatus();
-                    String message = response.getMessage();
-
-                    if (status.equalsIgnoreCase(success)) {
-                        mView.onValidationSuccessful(flwRef);
-                    } else {
-                        mView.onValidateError(status);
-                    }
-                } else {
-                    mView.onPaymentError(invalidCharge);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-
-        });
-
-    }
-
-    @Override
-    public void fetchFee(final Payload payload, final boolean internetbanking) {
-
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPtype("2");
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload, internetbanking);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(message);
-            }
-        });
-    }
-
-    public void requeryTx(String flwRef, String publicKey) {
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setPBFPubKey(publicKey);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new RequeryEvent().getEvent(), publicKey);
-
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onRequerySuccessful(response, responseAsJSONString);
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentFailed(message, responseAsJSONString);
-            }
-        });
-    }
-
-    @Override
-    public void verifyRequeryResponseStatus(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
-        mView.showProgressIndicator(true);
-
-        boolean wasTxSuccessful = transactionStatusChecker
-                .getTransactionStatus(
-                        String.valueOf(ravePayInitializer.getAmount()),
-                        ravePayInitializer.getCurrency(),
-                        responseAsJSONString
-                );
-
-        mView.showProgressIndicator(false);
-
-        if (wasTxSuccessful) {
-            mView.onPaymentSuccessful(response.getStatus(), responseAsJSONString);
-        } else {
-            mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-        }
     }
 
     @Override
@@ -411,7 +182,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         }
 
         if (valid) {
-            mView.onValidationSuccessful(dataHashMap);
+            mView.onDataValidationSuccessful(dataHashMap);
         }
 
     }
@@ -452,9 +223,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
             boolean isInternetBanking = dataHashMap.get(fieldAccount) == null;
             if (ravePayInitializer.getIsDisplayFee()) {
-                fetchFee(body, isInternetBanking);
+                fetchFee(body);
             } else {
-                chargeAccount(body, ravePayInitializer.getEncryptionKey(), isInternetBanking);
+                chargeAccount(body, ravePayInitializer.getEncryptionKey());
             }
 
         }
@@ -462,7 +233,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
 
     @Override
-    public void onAttachView(AccountContract.View view) {
+    public void onAttachView(AccountUiContract.View view) {
         this.mView = view;
     }
 
@@ -513,11 +284,5 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             mView.showBVN(View.GONE);
         }
 
-    }
-
-    @Override
-    public void logEvent(Event event, String publicKey) {
-        event.setPublicKey(publicKey);
-        eventLogger.logEvent(event);
     }
 }

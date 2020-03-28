@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid;
 
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
