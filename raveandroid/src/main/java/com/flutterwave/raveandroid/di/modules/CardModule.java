@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.card.CardContract;
+import com.flutterwave.raveandroid.card.CardUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class CardModule {
 
-    private CardContract.View view;
+    private CardUiContract.View view;
 
     @Inject
-    public CardModule(CardContract.View view) {
+    public CardModule(CardUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public CardContract.View providesContract() {
+    public CardUiContract.View providesContract() {
         return view;
     }
 }

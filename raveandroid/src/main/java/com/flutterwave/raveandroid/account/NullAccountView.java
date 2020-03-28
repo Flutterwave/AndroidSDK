@@ -55,7 +55,12 @@ public class NullAccountView implements AccountUiContract.View {
     }
 
     @Override
-    public void onTransactionFeeRetrieved(String charge_amount, Payload payload) {
+    public void onFeeFetchError(String errorMessage) {
+
+    }
+
+    @Override
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload) {
 
     }
 

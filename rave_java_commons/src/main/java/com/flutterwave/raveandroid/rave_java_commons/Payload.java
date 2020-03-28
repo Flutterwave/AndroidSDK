@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.rave_java_commons;
 
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -770,6 +771,13 @@ public class Payload
 
     public void setIs_barter(String is_barter) {
         this.is_barter = is_barter;
+    }
+
+    public void setSavedCardDetails(SavedCard savedCard) {
+        is_saved_card_charge = true;
+        this.setCardBIN(savedCard.getMasked_pan().substring(0, 6));
+        this.setCard_hash(savedCard.getCardHash());
+        this.setDevice_key(phonenumber);
     }
 }
 

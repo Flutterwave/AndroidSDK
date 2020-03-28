@@ -44,12 +44,12 @@ public interface AccountContract {
 
 
         /**
-         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the list of banks} has been completed successfully.
+         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
          *
-         * @param charge_amount The total charge amount (fee inclusive)
+         * @param chargeAmount The total charge amount (fee inclusive)
          * @param payload       The payload used to initiate the fee request
          */
-        void onTransactionFeeRetrieved(String charge_amount, Payload payload);
+        void onTransactionFeeRetrieved(String chargeAmount, Payload payload);
 
         /**
          * Called to collect an OTP from the user.
@@ -98,6 +98,13 @@ public interface AccountContract {
          * @param errorMessage The error message that can be displayed to the user
          */
         void onPaymentError(String errorMessage);
+
+        /**
+         * Called when there is an error when fetching the transaction fee.
+         *
+         * @param errorMessage The error message that can be displayed to the user
+         */
+        void onFeeFetchError(String errorMessage);
     }
 
     interface UserActionsListener {

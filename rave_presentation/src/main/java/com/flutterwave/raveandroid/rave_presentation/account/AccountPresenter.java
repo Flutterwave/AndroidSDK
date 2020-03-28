@@ -200,7 +200,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     mView.onTransactionFeeRetrieved(response.getData().getCharge_amount(), payload);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    mView.onPaymentError(transactionError);
+                    mView.onFeeFetchError(transactionError);
                 }
             }
 
@@ -208,7 +208,7 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             public void onError(String message) {
                 mView.showProgressIndicator(false);
                 Log.e(RAVEPAY, message);
-                mView.onPaymentError(message);
+                mView.onFeeFetchError(message);
             }
         });
     }

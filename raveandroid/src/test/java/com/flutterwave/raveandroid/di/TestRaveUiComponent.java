@@ -7,8 +7,8 @@ import com.flutterwave.raveandroid.ach.AchPresenter;
 import com.flutterwave.raveandroid.ach.AchPresenterTest;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenter;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenterTest;
-import com.flutterwave.raveandroid.card.CardPresenter;
-import com.flutterwave.raveandroid.card.CardPresenterTest;
+import com.flutterwave.raveandroid.card.CardUiPresenter;
+import com.flutterwave.raveandroid.card.CardUiPresenterTest;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyPresenter;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyPresenterTest;
@@ -37,7 +37,7 @@ import dagger.Component;
 @Component(modules = {TestAndroidModule.class, TestremoteModule.class})
 public interface TestRaveUiComponent extends RaveUiComponent {
 
-    void inject(CardPresenterTest cardPresenterTest);
+    void inject(CardUiPresenterTest cardPresenterTest);
 
     void inject(AccountUiPresenterTest accountPresenterTest);
 
@@ -65,7 +65,7 @@ public interface TestRaveUiComponent extends RaveUiComponent {
 
     void inject(FrancMobileMoneyPresenterTest francMobileMoneyPresenterTest);
 
-    void inject(CardPresenter cardPresenter);
+    void inject(CardUiPresenter cardUiPresenter);
 
     void inject(AccountUiPresenter accountUiPresenter);
 

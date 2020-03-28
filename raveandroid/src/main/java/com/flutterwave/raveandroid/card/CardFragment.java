@@ -32,17 +32,14 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
-import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardModule;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
+import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.flutterwave.raveandroid.verification.AVSVBVFragment;
 import com.flutterwave.raveandroid.verification.OTPFragment;
@@ -63,11 +60,10 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.TOKEN_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCvv;
@@ -80,14 +76,18 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CardFragment extends Fragment implements View.OnClickListener, CardContract.View, View.OnFocusChangeListener {
+public class CardFragment extends Fragment implements View.OnClickListener, CardUiContract.View, View.OnFocusChangeListener {
 
+    public static final int FOR_NOAUTH_INTERNATIONAL = 888;
     @Inject
-    CardPresenter presenter;
+    CardUiPresenter presenter;
+    int chargeType = MANUAL_CARD_CHARGE;
 
     public static final int FOR_PIN = 444;
     public static final int FOR_OTP = 666;
     public static final int FOR_AVBVV = 333;
+    @Inject
+    PhoneNumberObfuscator phoneNumberObfuscator;
     public static final int FOR_INTERNET_BANKING = 555;
     private static final int FOR_SAVED_CARDS = 777;
     private static final String STATE_PRESENTER_SAVEDCARDS = "presenter_saved_cards";
@@ -123,6 +123,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private EditText saveCardPhoneNoEt;
     private TextInputLayout saveCardEmailTil;
     private TextInputLayout saveCardPhoneNoTil;
+    private String responseAsJsonString;
+    private SavedCard selectedSavedCard;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -196,6 +198,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     private void onSavedCardSelected(SavedCard savedCard) {
+        selectedSavedCard = savedCard;
+        chargeType = SAVED_CARD_CHARGE;
         presenter.processSavedCardTransaction(savedCard, ravePayInitializer);
     }
 
@@ -284,12 +288,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onNoAuthUsed(String flwRef, String publicKey) {
-        presenter.requeryTx(flwRef, publicKey);
-    }
-
-    @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        chargeType = MANUAL_CARD_CHARGE;
         presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
@@ -321,22 +321,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onNoAuthInternationalSuggested(final Payload payload) {
-        this.payLoad = payload;
-
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_AVBVV);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (presenter == null) {
-            presenter = new CardPresenter(getActivity(), this);
+            presenter = new CardUiPresenter(this);
         }
         presenter.onAttachView(this);
     }
@@ -347,15 +335,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         if (presenter != null) {
             presenter.onDetachView();
         }
-    }
-
-    @Override
-    public void onValidateCardChargeFailed(String flwRef) {
-
-        dismissDialog();
-
-        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
-
     }
 
 
@@ -390,13 +369,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     /**
      * Called when there's a non fatal error in payment. Shows a toast with the error message
      *
-     * @param message = response message to display
+     * @param errorMessage = response message to display
      */
     @Override
-    public void onPaymentError(String message) {
+    public void onPaymentError(String errorMessage) {
         dismissDialog();
-        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        presenter.logEvent(new ErrorEvent(errorMessage).getEvent(), ravePayInitializer.getPublicKey());
+        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -406,7 +385,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param payload = Contains card payment details
      */
     @Override
-    public void onPinAuthModelSuggested(final Payload payload) {
+    public void collectCardPin(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
@@ -420,33 +399,47 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
             //just to be sure this v sent the receiving intent
-            if (requestCode == FOR_PIN) {
-                String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
-                presenter.chargeCardWithSuggestedAuthModel(payLoad, pin, PIN, ravePayInitializer.getEncryptionKey());
-            } else if (requestCode == FOR_AVBVV) {
-                String address = data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
-                String state = data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
-                String city = data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
-                String zipCode = data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
-                String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
-                presenter.chargeCardWithAVSModel(payLoad, address, city, zipCode, country, state,
-                        NOAUTH_INTERNATIONAL, ravePayInitializer.getEncryptionKey());
-            } else if (requestCode == FOR_INTERNET_BANKING) {
-                presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
-            } else if (requestCode == FOR_OTP) {
-                String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
-                if (data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
-                    payLoad.setOtp(otp);
-                    presenter.chargeSavedCard(payLoad, ravePayInitializer.getEncryptionKey());
-                } else presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-            } else if (requestCode == FOR_SAVED_CARDS) {
-                if (data.hasExtra(SavedCardsFragment.EXTRA_SAVED_CARDS)) {
-                    SavedCard savedCardToCharge = new Gson().fromJson(
-                            data.getStringExtra(SavedCardsFragment.EXTRA_SAVED_CARDS),
-                            SavedCard.class);
-                    onSavedCardSelected(savedCardToCharge);
-                }
-                presenter.checkForSavedCardsInMemory(ravePayInitializer);
+            switch (requestCode) {
+                case FOR_PIN:
+                    String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
+                    presenter.chargeCardWithPinAuthModel(payLoad, pin, ravePayInitializer.getEncryptionKey());
+                    break;
+                case FOR_AVBVV:
+                case FOR_NOAUTH_INTERNATIONAL:
+                    String streetAddress = data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
+                    String state = data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
+                    String city = data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
+                    String zipCode = data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
+                    String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
+                    AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
+
+                    String authModel = null;
+                    if (requestCode == FOR_AVBVV) authModel = AVS_VBVSECURECODE;
+                    else if (requestCode == FOR_NOAUTH_INTERNATIONAL)
+                        authModel = NOAUTH_INTERNATIONAL;
+
+                    presenter.chargeCardWithAddressDetails(payLoad, address, ravePayInitializer.getEncryptionKey(), authModel);
+                    break;
+                case FOR_INTERNET_BANKING:
+                    presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+                    break;
+                case FOR_OTP:
+                    String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
+                    if (data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
+                        payLoad.setOtp(otp);
+                        presenter.chargeSavedCard(payLoad, selectedSavedCard, ravePayInitializer.getEncryptionKey());
+                    } else
+                        presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+                    break;
+                case FOR_SAVED_CARDS:
+                    if (data.hasExtra(SavedCardsFragment.EXTRA_SAVED_CARDS)) {
+                        SavedCard savedCardToCharge = new Gson().fromJson(
+                                data.getStringExtra(SavedCardsFragment.EXTRA_SAVED_CARDS),
+                                SavedCard.class);
+                        onSavedCardSelected(savedCardToCharge);
+                    }
+                    presenter.checkForSavedCardsInMemory(ravePayInitializer);
+                    break;
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -467,7 +460,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      *
      * @param message = text to display
      */
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -477,7 +469,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      */
     private void dismissDialog() {
 
-        if (dialog != null) {
+        if (dialog != null && !dialog.isShowing()) {
             dialog.dismiss();
         }
     }
@@ -486,22 +478,21 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * If an OTP is required, this method shows the dialog that receives it
      *
      * @param flwRef
-     * @param chargeResponseMessage
+     * @param message
      */
     @Override
-    public void showOTPLayout(String flwRef, String chargeResponseMessage) {
+    public void collectOtp(String flwRef, String message) {
         this.flwRef = flwRef;
         dismissDialog();
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, chargeResponseMessage);
+        intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, message);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_OTP);
     }
 
-    @Override
     public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
         this.payLoad = payload;
         dismissDialog();
@@ -511,11 +502,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_OTP);
-    }
-
-    @Override
-    public void onSendRaveOtpFailed(String message) {
-        showToast(message);
     }
 
     @Override
@@ -537,49 +523,23 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     /**
-     * Called when a validation error is received. Shows a toast
-     *
-     * @param message
-     */
-    @Override
-    public void onValidateError(String message) {
-        presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(message);
-    }
-
-    /**
      * Called when the auth model suggested is VBV. It opens a WebView
      * that loads the authURL
      *
-     * @param authUrlCrude URL to display in webview
-     * @param flwRef Reference of the payment transaction
+     * @param authenticationUrl URL to display in webview
+     * @param flwRef  Reference of the payment transaction
      */
     @Override
-    public void onVBVAuthModelUsed(String authUrlCrude, String flwRef) {
+    public void showWebPage(String authenticationUrl, String flwRef) {
 
         this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authenticationUrl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
         startActivityForResult(intent, FOR_INTERNET_BANKING);
-
-    }
-
-    @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
-        presenter.verifyRequeryResponse(response, responseAsJSONString, ravePayInitializer, flwRef);
-    }
-
-    /**
-     * Called when a payment that requires validation has been completed
-     * @param status               = status of the payment (success)
-     */
-    @Override
-    public void onValidateSuccessful(String status) {
-        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
 
     }
 
@@ -595,20 +555,28 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onCardSaveSuccessful(SaveCardResponse response, String verifyResponseAsJSONString, String phoneNumber) {
+    public void collectOtpForSaveCardCharge(Payload payload) {
+        String authInstruction = "Enter the one time password (OTP) sent to " +
+                phoneNumberObfuscator.obfuscatePhoneNumber(payload
+                        .getPhonenumber());
+        showOTPLayoutForSavedCard(payload, authInstruction);
+    }
+
+    @Override
+    public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
         // Perform lookup of saved savedCards and save to phone storage
-        presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), phoneNumber, verifyResponseAsJSONString);
+        presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), phoneNumber);
 
     }
 
     @Override
-    public void onCardSaveFailed(String message, String verifyResponseAsJSONString) {
+    public void onCardSaveFailed(String message) {
 
         showToast("Unable to save card");
         presenter.setCardSaveInProgress(false);
 
         Intent intent = new Intent();
-        intent.putExtra("response", verifyResponseAsJSONString);
+        intent.putExtra("response", responseAsJsonString);
 
         if (getActivity() != null) {
             getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -618,19 +586,20 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onLookupSavedCardsSuccessful(LookupSavedCardsResponse response, String verifyResponseAsJSONString) {
+    public void onSavedCardsLookupSuccessful(List<SavedCard> cards, String phoneNumber) {
+        if (cards != null && cards.size() != 0) hasSavedCards = true;
         //Save details to phone
-        presenter.saveCardToSharedPreferences(response, ravePayInitializer.getPublicKey());
+        presenter.saveCardToSharedPreferences(cards, phoneNumber, ravePayInitializer.getPublicKey());
         // Save details in app memory
         presenter.retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(),
                 ravePayInitializer.getPublicKey());
 
         presenter.setCardSaveInProgress(false);
 
-        if (!verifyResponseAsJSONString.equalsIgnoreCase("")) {
+        if (responseAsJsonString != null) {
             // If this is a lookup after successful charge
             Intent intent = new Intent();
-            intent.putExtra("response", verifyResponseAsJSONString);
+            intent.putExtra("response", responseAsJsonString);
 
             if (getActivity() != null) {
                 getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
@@ -640,11 +609,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onLookupSavedCardsFailed(String message, String verifyResponseAsJSONString) {
+    public void onSavedCardsLookupFailed(String message) {
         Intent intent = new Intent();
-        intent.putExtra("response", verifyResponseAsJSONString);
+        intent.putExtra("response", responseAsJsonString);
 
-        if (!verifyResponseAsJSONString.equalsIgnoreCase("")) {
+        if (responseAsJsonString != null) {// If this is after successful charge
             if (getActivity() != null) {
                 getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
                 getActivity().finish();
@@ -657,76 +626,18 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * and bottomsheets if any and send back the result of payment to the calling activity
      *
      * @param status               = status of the transaction
-     * @param responseAsJSONString = full json response from the payment transaction
+     * @param responseAsJsonString = full json response from the payment transaction
      */
     @Override
-    public void onPaymentFailed(String status, String responseAsJSONString) {
+    public void onPaymentFailed(String status, String responseAsJsonString) {
         dismissDialog();
 
         Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
+        intent.putExtra("response", responseAsJsonString);
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
-    }
-
-
-    /**
-     * Displays a list of user saved cards and displays them in a bottom sheet
-     * It also attaches a listener to the list of displayed cards to detect clicks
-     * and sends the card details to the presenter for further processing of payment
-     *
-     * @param cards = List of saved cards
-     */
-    @Override
-    public void showSavedCards(List<SavedCard> cards) {
-
-    }
-
-    /**
-     * Called when a payment token is received. It creates the payment details object and
-     * performs a token charge
-     *
-     * @param flwRef  = reference of the payment transaction
-     * @param cardBIN = First 6 numbers of the card
-     * @param token   = Auth token for cards
-     */
-    @Override
-    public void onTokenRetrieved(String flwRef, String cardBIN, String token) {
-
-        String txRef = ravePayInitializer.getTxRef();
-        Log.d("txRef", txRef);
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
-                .setCountry(ravePayInitializer.getCountry())
-                .setCurrency(ravePayInitializer.getCurrency())
-                .setEmail(ravePayInitializer.getEmail())
-                .setFirstname(ravePayInitializer.getfName())
-                .setLastname(ravePayInitializer.getlName())
-                .setIP(Utils.getDeviceId(getActivity()))
-                .setTxRef(ravePayInitializer.getTxRef())
-                .setDevice_fingerprint(Utils.getDeviceId(getActivity()))
-                .setMeta(ravePayInitializer.getMeta());
-
-        Payload body = builder.createPayload();
-        body.setToken(token);
-//        body.setSECKEY(RavePayActivity.getSecretKey());
-        body.setCardBIN(cardBIN);
-        body.setPBFPubKey(ravePayInitializer.getPublicKey());
-        presenter.fetchFee(body, TOKEN_CHARGE);
-    }
-
-    /**
-     * Called when an error occurs while token was being received. Closes any open bottom sheets
-     * then shows a toast
-     *
-     * @param s = error message
-     */
-    @Override
-    public void onTokenRetrievalError(String s) {
-        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(s);
     }
 
     /**
@@ -736,10 +647,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param status               = status of the transaction
      * @param flwRef               = reference of the payment transaction
      * @param responseAsJSONString = full json response from the payment transaction
-     * @param ravePayInitializer The ravePayInitializer used to initiate payment
      */
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString, RavePayInitializer ravePayInitializer) {
+    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
+        this.responseAsJsonString = responseAsJSONString;
         dismissDialog();
 
         if (shouldISaveThisCard && flwRef != null) {
@@ -748,8 +659,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     ravePayInitializer.getPhoneNumber(),
                     ravePayInitializer.getEmail(),
                     flwRef,
-                    ravePayInitializer.getPublicKey(),
-                    responseAsJSONString);
+                    ravePayInitializer.getPublicKey()
+            );
         }
 
         if (!presenter.isCardSaveInProgress()) {
@@ -767,36 +678,33 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     /**
      * Displays the error message from a failed fetch fee request
      *
-     * @param s = error message
+     * @param errorMessage = error message
      */
     @Override
-    public void showFetchFeeFailed(String s) {
-        presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
-        showToast(s);
+    public void onFetchFeeError(String errorMessage) {
+        presenter.logEvent(new ErrorEvent(errorMessage).getEvent(), ravePayInitializer.getPublicKey());
+        showToast(errorMessage);
     }
 
     /**
-     * @param charge_amount = Total amount to be charged (transaction fees incuded)
-     * @param payload       = Object that contains the payment info (Contains card payment details)
-     * @param why
+     * @param chargeAmount = Total amount to be charged (transaction fees incuded)
+     * @param payload      = Object that contains the payment info (Contains card payment details)
      */
     @Override
-    public void displayFee(String charge_amount, final Payload payload, final int why) {
+    public void onTransactionFeeFetched(String chargeAmount, final Payload payload) {
         if (getActivity() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setMessage(getResources().getString(R.string.charge) + " " + chargeAmount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     presenter.logEvent(new FeeDisplayResponseEvent(true).getEvent(), ravePayInitializer.getPublicKey());
 
-                    if (why == MANUAL_CARD_CHARGE) {
+                    if (chargeType == MANUAL_CARD_CHARGE) {
                         presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
-                    } else if (why == TOKEN_CHARGE) {
-                        presenter.chargeToken(payload);
-                    } else if (why == SAVED_CARD_CHARGE) {
-                        presenter.chargeSavedCard(payload, ravePayInitializer.getEncryptionKey());
+                    } else if (chargeType == SAVED_CARD_CHARGE) {
+                        presenter.chargeSavedCard(payload, selectedSavedCard, ravePayInitializer.getEncryptionKey());
                     }
 
                 }
@@ -813,20 +721,18 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void onChargeTokenComplete(ChargeResponse response) {
-
-        presenter.requeryTx(response.getData().getFlwRef(), ravePayInitializer.getPublicKey());
-    }
-
-    @Override
-    public void onAVS_VBVSECURECODEModelSuggested(final Payload payload) {
+    public void collectCardAddressDetails(final Payload payload, String authModel) {
         this.payLoad = payload;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
         intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_AVBVV);
+
+        int requestCode = 0;
+        if (authModel.equals(AVS_VBVSECURECODE)) requestCode = FOR_AVBVV;
+        else requestCode = FOR_NOAUTH_INTERNATIONAL;
+        startActivityForResult(intent, requestCode);
     }
 
     private class ExpiryWatcher implements TextWatcher {
@@ -921,14 +827,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         if (hasFocus) {
             presenter.logEvent(new StartTypingEvent(fieldName).getEvent(), ravePayInitializer.getPublicKey());
         }
-    }
-
-    @Override
-    public void onChargeCardSuccessful(ChargeResponse response) {
-        presenter
-                .requeryTx(response.getData().getFlwRef(),
-                        ravePayInitializer.getPublicKey()
-                );
     }
 
 
