@@ -58,16 +58,12 @@ public class CardPayManager implements CardContract.View {
 
     @Override
     public void onSavedCardsLookupSuccessful(List<SavedCard> cards, String phoneNumber) {
-        /*
-            This is not needed for non-UI
-         */
+
     }
 
     @Override
     public void onSavedCardsLookupFailed(String message) {
-        /*
-            This is not needed for non-UI
-         */
+
     }
 
     @Override
