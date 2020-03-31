@@ -279,17 +279,49 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
         }
 
         if (valid) {
-            RavePayManager raveUiManager;
+            RavePayManager raveManager;
 
             boolean useRaveUI = useRaveUISwitch.isChecked();
 
             if(useRaveUI){
-                raveUiManager = new RaveUiManager(this);
+                raveManager = new RaveUiManager(this)
+                        .acceptMpesaPayments(isMpesaSwitch.isChecked())
+                        .acceptAccountPayments(accountSwitch.isChecked())
+                        .acceptCardPayments(cardSwitch.isChecked())
+                        .allowSaveCardFeature(allowSavedCardsSwitch.isChecked())
+                        .acceptAchPayments(accountAchSwitch.isChecked())
+                        .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
+                        .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
+                        .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
+                        .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
+                        .acceptUkPayments(ukbankSwitch.isChecked())
+                        .acceptSaBankPayments(saBankSwitch.isChecked())
+                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
+                        .acceptBankTransferPayments(bankTransferSwitch.isChecked())
+                        .acceptUssdPayments(ussdSwitch.isChecked())
+                        .acceptBarterPayments(barterSwitch.isChecked());
+                //                    .withTheme(R.style.TestNewTheme)
+
+                // Customize pay with bank transfer options (optional)
+                if (isPermanentAccountSwitch.isChecked())
+                    ((RaveUiManager) raveManager).acceptBankTransferPayments(true, true);
+                else {
+                    if (setExpirySwitch.isChecked()) {
+                        int duration = 0, frequency = 0;
+                        try {
+                            duration = Integer.parseInt(durationEt.getText().toString());
+                            frequency = Integer.parseInt(frequencyEt.getText().toString());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        ((RaveUiManager) raveManager).acceptBankTransferPayments(true, duration, frequency);
+                    }
+                }
             } else{
-                raveUiManager = new RaveNonUIManager(this);
+                raveManager = new RaveNonUIManager(this);
             }
 
-            raveUiManager.setAmount(Double.parseDouble(amount))
+            raveManager.setAmount(Double.parseDouble(amount))
                     .setCountry(country)
                     .setCurrency(currency)
                     .setEmail(email)
@@ -300,52 +332,20 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
                     .setPublicKey(publicKey)
                     .setEncryptionKey(encryptionKey)
                     .setTxRef(txRef)
-                    .acceptMpesaPayments(isMpesaSwitch.isChecked())
-                    .acceptAccountPayments(accountSwitch.isChecked())
-                    .acceptCardPayments(cardSwitch.isChecked())
-                    .allowSaveCardFeature(allowSavedCardsSwitch.isChecked())
-                    .acceptAchPayments(accountAchSwitch.isChecked())
-                    .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
-                    .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
-                    .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
-                    .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
-                    .acceptUkPayments(ukbankSwitch.isChecked())
-                    .acceptSaBankPayments(saBankSwitch.isChecked())
-                    .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
-                    .acceptBankTransferPayments(bankTransferSwitch.isChecked())
-                    .acceptUssdPayments(ussdSwitch.isChecked())
-                    .acceptBarterPayments(barterSwitch.isChecked())
                     .onStagingEnv(!isLiveSwitch.isChecked())
                     .setSubAccounts(subAccounts)
                     .isPreAuth(isPreAuthSwitch.isChecked())
                     .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
 //                    .setMeta(meta)
-//                    .withTheme(R.style.TestNewTheme)
                     .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
 
 
-            // Customize pay with bank transfer options (optional)
-            if (isPermanentAccountSwitch.isChecked())
-                raveUiManager.acceptBankTransferPayments(true, true);
-            else {
-                if (setExpirySwitch.isChecked()) {
-                    int duration = 0, frequency = 0;
-                    try {
-                        duration = Integer.parseInt(durationEt.getText().toString());
-                        frequency = Integer.parseInt(frequencyEt.getText().toString());
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                    raveUiManager.acceptBankTransferPayments(true, duration, frequency);
-                }
-            }
-
             if(useRaveUI){
-                raveUiManager.initializeUI();
+                raveManager.initializeUI();
             } else{
-                raveUiManager = raveUiManager.initializeNonUI();
+                raveManager = raveManager.initializeNonUI();
 
-                ((RaveNonUIManager) raveUiManager).chargeCard(new RaveChargeCardPayload("4242424242424242", "321", "02/22"));
+                ((RaveNonUIManager) raveManager).chargeCard(new RaveChargeCardPayload("4242424242424242", "321", "02/22"));
             }
         }
     }
