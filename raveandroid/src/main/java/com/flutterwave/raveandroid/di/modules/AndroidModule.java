@@ -1,10 +1,11 @@
-package com.flutterwave.raveandroid.rave_presentation.di;
+package com.flutterwave.raveandroid.di.modules;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
+import com.flutterwave.raveandroid.rave_core.di.UiScope;
+
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,14 +20,14 @@ public class AndroidModule {
         this.context = context;
     }
 
-    @Singleton
+    @UiScope
     @Provides
     public Context providesContext() {
         return context.getApplicationContext();
     }
 
 
-    @Singleton
+    @UiScope
     @Provides
     public TelephonyManager providesTelephonyManager(Context context) {
         return (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

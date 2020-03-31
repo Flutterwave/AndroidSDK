@@ -8,7 +8,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
-import com.flutterwave.raveandroid.rave_presentation.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
@@ -77,8 +77,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
     @Inject
     PayloadEncryptor payloadEncryptor;
     @Inject
-    SharedPrefsRepo sharedManager;
-    @Inject
     Gson gson;
     List<SavedCard> savedCards;
     private boolean cardSaveInProgress = false;
@@ -105,7 +103,6 @@ public class CardPresenter implements CardContract.UserActionsListener {
         this.deviceIdGetter = raveComponent.deviceIdGetter();
         this.transactionStatusChecker = raveComponent.transactionStatusChecker();
         this.payloadEncryptor = raveComponent.payloadEncryptor();
-        this.sharedManager = raveComponent.sharedManager();
         this.gson = raveComponent.gson();
         this.payloadToJsonConverter = raveComponent.payloadToJsonConverter();
     }

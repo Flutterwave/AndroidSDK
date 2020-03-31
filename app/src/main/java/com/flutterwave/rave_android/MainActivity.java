@@ -1,5 +1,6 @@
 package com.flutterwave.rave_android;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -18,15 +19,20 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
 import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.rave_core.models.RavePaymentMethods;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.RaveNonUICallback;
+import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
+import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
+import com.flutterwave.raveandroid.rave_presentation.card.RaveChargeCardPayload;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RaveNonUICallback {
 
     EditText emailEt;
     EditText amountEt;
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
     SwitchCompat addSubAccountsSwitch;
+    SwitchCompat useRaveUISwitch;
     SwitchCompat isPreAuthSwitch;
     SwitchCompat allowSavedCardsSwitch;
     SwitchCompat shouldDisplayFeeSwitch;
@@ -71,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout addSubaccountsLayout;
     LinearLayout expiryDetailsLayout;
     TextView vendorListTXT;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         barterSwitch = findViewById(R.id.barter_switch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
+        useRaveUISwitch = findViewById(R.id.useRaveUISwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
         addVendorBtn = findViewById(R.id.addVendorBtn);
         clearVendorBtn = findViewById(R.id.clearVendorsBtn);
@@ -269,7 +279,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (valid) {
-            RaveUiManager raveUiManager = new RaveUiManager(this).setAmount(Double.parseDouble(amount))
+            RavePayManager raveUiManager;
+
+            boolean useRaveUI = useRaveUISwitch.isChecked();
+
+            if(useRaveUI){
+                raveUiManager = new RaveUiManager(this);
+            } else{
+                raveUiManager = new RaveNonUIManager(this);
+            }
+
+            raveUiManager.setAmount(Double.parseDouble(amount))
                     .setCountry(country)
                     .setCurrency(currency)
                     .setEmail(email)
@@ -320,10 +340,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            if(useRaveUI){
+                raveUiManager.initializeUI();
+            } else{
+                raveUiManager = raveUiManager.initializeNonUI();
 
-            raveUiManager.initialize();
-
-
+                ((RaveNonUIManager) raveUiManager).chargeCard(new RaveChargeCardPayload("4242424242424242", "321", "02/22"));
+            }
         }
     }
 
@@ -412,4 +435,47 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    @Override
+    public void collectCardPin(RavePaymentMethods ravePaymentMethods) {
+        Toast.makeText(this, "Asking for collecting pin", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showProgressIndicator(boolean active) {
+        try {
+            if (isFinishing()) {
+                return;
+            }
+
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Please wait...");
+            }
+
+            if (active && !progressDialog.isShowing()) {
+                progressDialog.show();
+            } else {
+                progressDialog.dismiss();
+            }
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void collectOtp(RavePaymentMethods ravePaymentMethods, String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError(RavePaymentMethods ravePaymentMethods, String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSuccessful(String flwRef) {
+        Toast.makeText(this, "Successful" + flwRef, Toast.LENGTH_LONG).show();
+    }
 }

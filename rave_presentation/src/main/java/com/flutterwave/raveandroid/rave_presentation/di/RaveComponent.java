@@ -5,9 +5,10 @@ import android.content.Context;
 
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_cache.di.CacheModule;
+import com.flutterwave.raveandroid.rave_core.di.DeviceIdGetterModule;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
-import com.flutterwave.raveandroid.rave_presentation.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
@@ -23,14 +24,16 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AndroidModule.class, RemoteModule.class, EventLoggerModule.class, CacheModule.class})
+@Component(modules = {RemoteModule.class, EventLoggerModule.class, DeviceIdGetterModule.class})
 public interface RaveComponent {
 
     RemoteRepository networkImpl();
 
     EventLogger eventLogger();
-
-    Context getContext();
+//
+//    SharedPrefsRepo sharedManager();
+//
+//    Context context();
 
     DeviceIdGetter deviceIdGetter();
 
@@ -46,9 +49,8 @@ public interface RaveComponent {
 
     PayloadToJson payloadToJson();
 
-    SharedPrefsRepo sharedManager();
-
     Gson gson();
 
+    CardComponent plus(CardModule cardModule);
 }
 

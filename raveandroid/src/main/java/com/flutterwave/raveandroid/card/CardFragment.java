@@ -35,7 +35,7 @@ import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
-import com.flutterwave.raveandroid.di.modules.CardModule;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
@@ -159,7 +159,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         if (getActivity() != null) {
             ((RavePayActivity) getActivity()).getRaveUiComponent()
-                    .plus(new CardModule(this))
+                    .plus(new CardUiModule(this))
                     .inject(this);
         }
     }

@@ -8,12 +8,12 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class CardModule {
+public class CardUiModule {
 
     private CardUiContract.View view;
 
     @Inject
-    public CardModule(CardUiContract.View view) {
+    public CardUiModule(CardUiContract.View view) {
         this.view = view;
     }
 

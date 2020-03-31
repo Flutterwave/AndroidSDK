@@ -6,7 +6,7 @@ import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
-import com.flutterwave.raveandroid.rave_presentation.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.CardNoValidator;

@@ -37,11 +37,12 @@ import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
+import com.flutterwave.raveandroid.rave_core.di.DeviceIdGetterModule;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
-import com.flutterwave.raveandroid.rave_presentation.di.AndroidModule;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.rave_presentation.di.DaggerRaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
@@ -631,12 +632,14 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         RaveComponent raveComponent = DaggerRaveComponent.builder()
-                .androidModule(new AndroidModule(this))
+                .deviceIdGetterModule(new DeviceIdGetterModule("")) /* This module won't be used but still need to be passed */
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 
-        raveUiComponent = DaggerRaveUiComponent.builder().raveComponent(raveComponent).build();
+        raveUiComponent = DaggerRaveUiComponent.builder()
+                .androidModule(new AndroidModule(this))
+                .raveComponent(raveComponent).build();
         raveUiComponent.inject(this);
 
     }

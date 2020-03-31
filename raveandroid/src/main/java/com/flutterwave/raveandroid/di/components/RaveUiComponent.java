@@ -7,7 +7,7 @@ import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
-import com.flutterwave.raveandroid.di.modules.CardModule;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
 import com.flutterwave.raveandroid.di.modules.GhanaModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
@@ -18,14 +18,16 @@ import com.flutterwave.raveandroid.di.modules.UkModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.di.modules.WebModule;
 import com.flutterwave.raveandroid.di.modules.ZambiaModule;
-import com.flutterwave.raveandroid.di.scopes.UiScope;
+import com.flutterwave.raveandroid.rave_core.di.UiScope;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
+import com.flutterwave.raveandroid.rave_cache.di.CacheModule;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_presentation.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.validators.AccountNoValidator;
@@ -47,7 +49,7 @@ import com.google.gson.Gson;
 import dagger.Component;
 
 @UiScope
-@Component(dependencies = {RaveComponent.class})
+@Component(dependencies = {RaveComponent.class}, modules = {AndroidModule.class, CacheModule.class})
 public interface RaveUiComponent {
 
     RemoteRepository networkImpl();
@@ -112,7 +114,7 @@ public interface RaveUiComponent {
 
     ZambiaComponent plus(ZambiaModule zambiaModule);
 
-    CardComponent plus(CardModule cardModule);
+    CardUiComponent plus(CardUiModule cardUiModule);
 
     BankTransferComponent plus(BankTransferModule bankTransferModule);
 
