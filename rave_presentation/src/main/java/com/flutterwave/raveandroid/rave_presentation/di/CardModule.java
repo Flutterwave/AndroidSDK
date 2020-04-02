@@ -11,15 +11,15 @@ import dagger.Provides;
 @Module
 public class CardModule {
 
-    private CardContract.View view;
+    private CardContract.CardInteractor cardInteractor;
 
     @Inject
-    public CardModule(CardContract.View view) {
-        this.view = view;
+    public CardModule(CardContract.CardInteractor cardInteractor) {
+        this.cardInteractor = cardInteractor;
     }
 
     @Provides
-    public CardContract.View providesContract() {
-        return view;
+    public CardContract.CardInteractor providesContract() {
+        return cardInteractor;
     }
 }

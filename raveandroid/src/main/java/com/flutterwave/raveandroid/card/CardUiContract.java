@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface CardUiContract {
 
-    interface View extends CardContract.View {
+    interface View extends CardContract.CardInteractor {
         void onEmailValidated(String emailToSet, int visibility);
 
         void onAmountValidated(String amountToSet, int visibility);
@@ -35,7 +35,7 @@ public interface CardUiContract {
         void setHasSavedCards(boolean b);
     }
 
-    interface UserActionsListener extends CardContract.UserActionsListener {
+    interface UserActionsListener extends CardContract.CardPaymentHandler {
 
         void onDetachView();
 

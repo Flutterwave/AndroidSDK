@@ -7,20 +7,15 @@ import android.webkit.WebView;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
-import com.flutterwave.raveandroid.rave_presentation.account.AccountContract;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.List;
 
-/**
- * Created by hamzafetuga on 05/07/2017.
- */
-
 public interface CardContract {
 
-    interface View {
+    interface CardInteractor {
         /**
          * Called to indicate that a network call has just begun or has just ended.
          * E.g., by showing or hiding a progress bar
@@ -32,7 +27,7 @@ public interface CardContract {
 
         /**
          * Called when the list of saved cards has been retrieved.
-         * Typically, you can show a user this list of their saved cards, and then call {@link UserActionsListener#chargeSavedCard(Payload, SavedCard, String)} with any of the cards the user chooses.
+         * Typically, you can show a user this list of their saved cards, and then call {@link CardPaymentHandler#chargeSavedCard(Payload, SavedCard, String)} with any of the cards the user chooses.
          *
          * @param cards       List of user's saved cards
          * @param phoneNumber Phone number against which they were saved
@@ -47,7 +42,7 @@ public interface CardContract {
         void onSavedCardsLookupFailed(String message);
 
         /**
-         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
+         * Called when the call to {@link CardPaymentHandler#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
          *
          * @param chargeAmount The total charge amount (fee inclusive)
          * @param payload      The payload used to initiate the fee request
@@ -63,7 +58,7 @@ public interface CardContract {
 
         /**
          * Called when the card used requires PIN authentication.
-         * Collect the PIN from the user and then continue the charge by calling {@link UserActionsListener#chargeCardWithPinAuthModel(Payload, String, String)} with that PIN and your encryption key.
+         * Collect the PIN from the user and then continue the charge by calling {@link CardPaymentHandler#chargeCardWithPinAuthModel(Payload, String, String)} with that PIN and your encryption key.
          *
          * @param payload Payload with the charge details
          */
@@ -71,7 +66,7 @@ public interface CardContract {
 
         /**
          * Called to collect an OTP from the user.
-         * After user inputs OTP, call {@link UserActionsListener#validateCardCharge(String, String, String)}
+         * After user inputs OTP, call {@link CardPaymentHandler#validateCardCharge(String, String, String)}
          * with the OTP collected, to continue the transaction.
          *
          * @param flwRef  The Flutterwave transaction reference
@@ -82,7 +77,7 @@ public interface CardContract {
         /**
          * Called to collect an OTP from the user for saved card charge.
          * After user inputs OTP, add it to the payload using {@link Payload#setOtp(String)}
-         * and call {@link UserActionsListener#chargeSavedCard(Payload, SavedCard, String)} to continue the transaction.
+         * and call {@link CardPaymentHandler#chargeSavedCard(Payload, SavedCard, String)} to continue the transaction.
          *
          * @param payload Payload containing charge details
          */
@@ -90,10 +85,10 @@ public interface CardContract {
 
         /**
          * Called when the card used requires Address Verification.
-         * Collect the {@link AddressDetails} from the user and then continue the charge by calling {@link UserActionsListener#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} with that address.
+         * Collect the {@link AddressDetails} from the user and then continue the charge by calling {@link CardPaymentHandler#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} with that address.
          *
          * @param payload   Payload with the charge details
-         * @param authModel Authentication Model to be passed to the {@link UserActionsListener#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} function.
+         * @param authModel Authentication Model to be passed to the {@link CardPaymentHandler#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} function.
          */
         void collectCardAddressDetails(Payload payload, String authModel);
 
@@ -106,7 +101,7 @@ public interface CardContract {
          * function to check if the {@link WebResourceRequest#getUrl() url being loaded} contains the
          * {@link com.flutterwave.raveandroid.rave_java_commons.RaveConstants#RAVE_3DS_CALLBACK predefined redirect url}.
          * <p>
-         * If it does, it means the transaction has been completed and you can now call {@link UserActionsListener#requeryTx(String, String)} with the {@code flwRef} to check the transaction status.
+         * If it does, it means the transaction has been completed and you can now call {@link CardPaymentHandler#requeryTx(String, String)} with the {@code flwRef} to check the transaction status.
          *
          * @param authenticationUrl The url to the authentication page
          * @param flwRef            The Flutterwave transaction reference
@@ -147,7 +142,7 @@ public interface CardContract {
         void onCardSaveFailed(String message);
     }
 
-    interface UserActionsListener {
+    interface CardPaymentHandler {
 
         /**
          * Detaches the view from the presenter.
@@ -179,9 +174,9 @@ public interface CardContract {
          * Reattaches the view to the presenter.
          * Call this in activity or fragment onStart() function.
          *
-         * @param view View to be attached
+         * @param cardInteractor View to be attached
          */
-        void onAttachView(CardContract.View view);
+        void onAttachView(CardInteractor cardInteractor);
 
         /**
          * Initiate the card charge.
@@ -203,8 +198,8 @@ public interface CardContract {
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
         /**
-         * Check for a transactions status. Result is sent to either {@link AccountContract.View#onPaymentSuccessful(String)}
-         * when it's successful, or {@link View#onPaymentFailed(String, String)} (String)} if it's failed.
+         * Check for a transactions status. Result is sent to either {@link CardContract.CardInteractor#onPaymentSuccessful(String, String, String)}
+         * when it's successful, or {@link CardInteractor#onPaymentFailed(String, String)} (String)} if it's failed.
          *
          * @param flwRef    The Flutterwave reference for the transaction
          * @param publicKey The public Key used to initiate the transaction
@@ -247,7 +242,7 @@ public interface CardContract {
          * @param address       Card address details
          * @param encryptionKey Your Flutterwave encryption key.
          *                      Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         * @param authModel     Auth Model passed to the {@link View#collectCardAddressDetails(Payload, String)} method.
+         * @param authModel     Auth Model passed to the {@link CardInteractor#collectCardAddressDetails(Payload, String)} method.
          */
         void chargeCardWithAddressDetails(Payload payLoad, AddressDetails address, String encryptionKey, String authModel);
     }

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by hfetuga on 06/02/2018.
  */
 
-public class NullCardView implements View.OnClickListener, CardContract.View {
+public class NullCardInteractor implements View.OnClickListener, CardContract.CardInteractor {
 
     @Override
     public void onClick(View v) {

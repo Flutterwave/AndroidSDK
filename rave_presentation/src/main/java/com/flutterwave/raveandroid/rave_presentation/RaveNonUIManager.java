@@ -53,7 +53,7 @@ public class RaveNonUIManager extends RavePayManager {
         cardPayManager.chargeCard(builder.createPayload(), encryptionKey);
     }
 
-    public RaveNonUIManager initializeNonUI() {
+    public RaveNonUIManager initialize() {
         cardPayManager = new CardPayManager(setUpGraph(), new CardPaymentCallback() {
             @Override
             public void collectCardPin(Payload payload) {
@@ -88,10 +88,6 @@ public class RaveNonUIManager extends RavePayManager {
 
 
         return this;
-    }
-
-    public void initializeUI() {
-        throw new IllegalArgumentException("Cannot initialize Rave UI with RaveNonUIManager use RaveUIManager instead");
     }
 
     private RaveComponent setUpGraph() {

@@ -3,8 +3,8 @@ package com.flutterwave.raveandroid.rave_presentation;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.card.CardContract;
-import com.flutterwave.raveandroid.rave_presentation.card.CardPresenter;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentHandler;
 import com.flutterwave.raveandroid.rave_presentation.di.CardModule;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -13,10 +13,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class CardPayManager implements CardContract.View {
+public class CardPayManager implements CardContract.CardInteractor {
 
     @Inject
-    public CardPresenter cardPresenter;
+    public CardPaymentHandler cardPaymentHandler;
     private CardPaymentCallback cardPaymentCallback;
 
 
@@ -27,7 +27,7 @@ public class CardPayManager implements CardContract.View {
     }
 
     public void chargeCard(Payload payload, String encryptionKey){
-        cardPresenter.chargeCard(payload, encryptionKey);
+        cardPaymentHandler.chargeCard(payload, encryptionKey);
     }
 
 

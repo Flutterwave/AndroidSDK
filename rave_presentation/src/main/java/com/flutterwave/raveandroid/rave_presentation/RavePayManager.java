@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.rave_presentation;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.data.Utils;
+
 import java.util.List;
 
 abstract public class RavePayManager  {
@@ -123,8 +124,5 @@ abstract public class RavePayManager  {
         return this;
     }
 
-
-    public abstract void initializeUI();
-
-    public abstract RaveNonUIManager initializeNonUI();
+    public abstract RavePayManager initialize();
 }
