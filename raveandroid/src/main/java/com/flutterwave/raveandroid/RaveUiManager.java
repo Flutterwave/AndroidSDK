@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
+import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;
@@ -36,6 +39,8 @@ public class RaveUiManager extends RavePayManager {
     private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
     private boolean allowSaveCard = true;
+    protected boolean showStagingLabel = true;
+
     private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
 
     public RaveUiManager(Activity activity) {
@@ -51,6 +56,99 @@ public class RaveUiManager extends RavePayManager {
     public RaveUiManager(android.app.Fragment fragment) {
         super();
         this.fragment = fragment;
+    }
+
+
+    public RaveUiManager setMeta(List<Meta> meta) {
+        this.meta = Utils.stringifyMeta(meta);
+        return this;
+    }
+
+    public RaveUiManager setSubAccounts(List<SubAccount> subAccounts) {
+        this.subAccounts = Utils.stringifySubaccounts(subAccounts);
+        return this;
+    }
+
+    public RaveUiManager setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public RaveUiManager setAmount(double amount) {
+        if (amount != 0) {
+            this.amount = amount;
+        }
+        return this;
+    }
+
+    public RaveUiManager setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+        return this;
+    }
+
+    public RaveUiManager setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
+        return this;
+    }
+
+    public RaveUiManager setTxRef(String txRef) {
+        this.txRef = txRef;
+        return this;
+    }
+
+    public RaveUiManager setNarration(String narration) {
+        this.narration = narration;
+        return this;
+    }
+
+    public RaveUiManager setCurrency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    public RaveUiManager setCountry(String country) {
+        this.country = country;
+        return this;
+    }
+
+    public RaveUiManager setfName(String fName) {
+        this.fName = fName;
+        return this;
+    }
+
+    public RaveUiManager setlName(String lName) {
+        this.lName = lName;
+        return this;
+    }
+
+    public RaveUiManager setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public RaveUiManager setPaymentPlan(String payment_plan) {
+        this.payment_plan = payment_plan;
+        return this;
+    }
+
+    public RaveUiManager onStagingEnv(boolean isStaging) {
+        this.staging = isStaging;
+        return this;
+    }
+
+    public RaveUiManager isPreAuth(boolean isPreAuth) {
+        this.isPreAuth = isPreAuth;
+        return this;
+    }
+
+    public RaveUiManager shouldDisplayFee(boolean displayFee) {
+        this.displayFee = displayFee;
+        return this;
+    }
+
+    public RaveUiManager showStagingLabel(boolean showStagingLabel) {
+        this.showStagingLabel = showStagingLabel;
+        return this;
     }
 
     public RaveUiManager withTheme(int theme) {
@@ -163,11 +261,7 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    public RaveNonUIManager initializeNonUI() {
-        throw new IllegalArgumentException("Cannot initialize non Rave UI with RaveUIManager use RaveNonUIManager instead");
-    }
-
-    public void initializeUI() {
+    public RaveUiManager initialize() {
         if (activity != null) {
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
@@ -183,38 +277,34 @@ public class RaveUiManager extends RavePayManager {
         } else {
             Log.d(RAVEPAY, "Context is required!");
         }
-    }
-
-    public RaveUiManager shouldDisplayFee(boolean displayFee) {
-        this.displayFee = displayFee;
         return this;
     }
 
     private RavePayInitializer createRavePayInitializer() {
         return new RavePayInitializer(
-                email,
-                amount,
-                publicKey,
-                encryptionKey,
-                txRef,
-                narration,
-                currency,
-                country,
-                fName,
-                lName,
+                getEmail(),
+                getAmount(),
+                getPublicKey(),
+                getEncryptionKey(),
+                getTxRef(),
+                getNarration(),
+                getCurrency(),
+                getCountry(),
+                getfName(),
+                getlName(),
                 theme,
-                phoneNumber,
+                getPhoneNumber(),
                 allowSaveCard,
-                isPermanent,
-                duration,
-                frequency,
-                staging,
-                meta,
-                subAccounts,
-                payment_plan,
-                isPreAuth,
+                isPermanent(),
+                getDuration(),
+                getFrequency(),
+                isStaging(),
+                getMeta(),
+                getSubAccounts(),
+                getPayment_plan(),
+                isPreAuth(),
                 showStagingLabel,
-                displayFee,
+                isDisplayFee(),
                 orderedPaymentTypesList);
     }
 }
