@@ -380,7 +380,6 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         });
     }
 
-
     @Override
     public void fetchFee(final Payload payload) {
 
@@ -421,18 +420,6 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         });
 
     }
-
-    @Override
-    public void onDetachView() {
-        if (!this.cardSaveInProgress)
-            this.mCardInteractor = new NullCardInteractor();
-    }
-
-    @Override
-    public void onAttachView(CardContract.CardInteractor cardInteractor) {
-        this.mCardInteractor = cardInteractor;
-    }
-
 
     @Override
     public void logEvent(Event event, String publicKey) {

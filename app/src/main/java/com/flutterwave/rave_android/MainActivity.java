@@ -3,6 +3,7 @@ package com.flutterwave.rave_android;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -19,20 +20,21 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
 import com.flutterwave.raveandroid.data.Utils;
-import com.flutterwave.raveandroid.rave_core.models.RavePaymentMethods;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.rave_presentation.RaveNonUICallback;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
-import com.flutterwave.raveandroid.rave_presentation.card.RaveChargeCardPayload;
+import com.flutterwave.raveandroid.rave_presentation.card.Card;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPayManager;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
+import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements RaveNonUICallback {
+public class MainActivity extends AppCompatActivity implements CardPaymentCallback {
 
     EditText emailEt;
     EditText amountEt;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
     TextView vendorListTXT;
 
     ProgressDialog progressDialog;
+    private CardPayManager cardPayManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,9 +284,9 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
         if (valid) {
             RavePayManager raveManager;
 
-            boolean useRaveUI = useRaveUISwitch.isChecked();
+            boolean shouldUseRaveUi = useRaveUISwitch.isChecked();
 
-            if(useRaveUI){
+            if (shouldUseRaveUi) {
                 raveManager = new RaveUiManager(this)
                         .acceptMpesaPayments(isMpesaSwitch.isChecked())
                         .acceptAccountPayments(accountSwitch.isChecked())
@@ -299,8 +302,25 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
                         .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
                         .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                         .acceptUssdPayments(ussdSwitch.isChecked())
-                        .acceptBarterPayments(barterSwitch.isChecked());
-                //                    .withTheme(R.style.TestNewTheme)
+                        .acceptBarterPayments(barterSwitch.isChecked())
+                        //                    .withTheme(R.style.TestNewTheme)
+                        .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
+                        .setAmount(Double.parseDouble(amount))
+                        .setCountry(country)
+                        .setCurrency(currency)
+                        .setEmail(email)
+                        .setfName(fName)
+                        .setlName(lName)
+                        .setPhoneNumber(phoneNumber)
+                        .setNarration(narration)
+                        .setPublicKey(publicKey)
+                        .setEncryptionKey(encryptionKey)
+                        .setTxRef(txRef)
+                        .onStagingEnv(!isLiveSwitch.isChecked())
+                        .setSubAccounts(subAccounts)
+                        .isPreAuth(isPreAuthSwitch.isChecked())
+//                    .setMeta(meta)
+                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
 
                 // Customize pay with bank transfer options (optional)
                 if (isPermanentAccountSwitch.isChecked())
@@ -317,35 +337,38 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
                         ((RaveUiManager) raveManager).acceptBankTransferPayments(true, duration, frequency);
                     }
                 }
-            } else{
-                raveManager = new RaveNonUIManager(this);
-            }
 
-            raveManager.setAmount(Double.parseDouble(amount))
-                    .setCountry(country)
-                    .setCurrency(currency)
-                    .setEmail(email)
-                    .setfName(fName)
-                    .setlName(lName)
-                    .setPhoneNumber(phoneNumber)
-                    .setNarration(narration)
-                    .setPublicKey(publicKey)
-                    .setEncryptionKey(encryptionKey)
-                    .setTxRef(txRef)
-                    .onStagingEnv(!isLiveSwitch.isChecked())
-                    .setSubAccounts(subAccounts)
-                    .isPreAuth(isPreAuthSwitch.isChecked())
-                    .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
+                raveManager.initialize();
+
+            } else {
+                raveManager = new RaveNonUIManager().setAmount(Double.parseDouble(amount))
+                        .setCountry(country)
+                        .setCurrency(currency)
+                        .setEmail(email)
+                        .setfName(fName)
+                        .setlName(lName)
+                        .setPhoneNumber(phoneNumber)
+                        .setNarration(narration)
+                        .setPublicKey(publicKey)
+                        .setEncryptionKey(encryptionKey)
+                        .setTxRef(txRef)
+                        .onStagingEnv(!isLiveSwitch.isChecked())
+                        .setSubAccounts(subAccounts)
 //                    .setMeta(meta)
-                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+                        .isPreAuth(isPreAuthSwitch.isChecked())
+                        .initialize();
 
+                cardPayManager = new CardPayManager(((RaveNonUIManager) raveManager), this);
 
-            if(useRaveUI){
-                raveManager.initializeUI();
-            } else{
-                raveManager = raveManager.initializeNonUI();
+                cardPayManager.chargeCard(new Card(
+                        "5531886652142950", // Test MasterCard PIN authentication
+//                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
+//                        "4556052704172643", // Test VisaCard (Address Verification)
+                        "12",
+                        "30",
+                        "123"
+                ));
 
-                ((RaveNonUIManager) raveManager).chargeCard(new RaveChargeCardPayload("4242424242424242", "321", "02/22"));
             }
         }
     }
@@ -436,11 +459,6 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
     }
 
     @Override
-    public void collectCardPin(RavePaymentMethods ravePaymentMethods) {
-        Toast.makeText(this, "Asking for collecting pin", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void showProgressIndicator(boolean active) {
         try {
             if (isFinishing()) {
@@ -458,24 +476,51 @@ public class MainActivity extends AppCompatActivity implements RaveNonUICallback
             } else {
                 progressDialog.dismiss();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void collectOtp(RavePaymentMethods ravePaymentMethods, String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    public void collectCardPin() {
+        Toast.makeText(this, "Submitting PIN", Toast.LENGTH_SHORT).show();
+        cardPayManager.submitPin("3310");
     }
 
     @Override
-    public void onError(RavePaymentMethods ravePaymentMethods, String errorMessage) {
+    public void collectOtp(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Submitting OTP", Toast.LENGTH_SHORT).show();
+        cardPayManager.submitOtp("12345");
+    }
+
+    @Override
+    public void collectAddress() {
+        Toast.makeText(this, "Submitting address details", Toast.LENGTH_SHORT).show();
+        cardPayManager.submitAddress(new AddressDetails(
+                "8, Providence Street",
+                "Lekki Phase 1",
+                "Lagos",
+                "102102",
+                "NG")
+        );
+    }
+
+    @Override
+    public void showAuthenticationWebPage(String authenticationUrl) {
+        Toast.makeText(this, "Called to load web page", Toast.LENGTH_SHORT).show();
+
+        // Load webpage
+//        cardPayManager.onWebpageAuthenticationComplete();
+    }
+
+    @Override
+    public void onError(String errorMessage, @Nullable String flwRef) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onSuccessful(String flwRef) {
-        Toast.makeText(this, "Successful" + flwRef, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Transaction Successful", Toast.LENGTH_LONG).show();
     }
 }

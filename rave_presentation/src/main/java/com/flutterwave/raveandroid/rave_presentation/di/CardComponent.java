@@ -1,7 +1,7 @@
 package com.flutterwave.raveandroid.rave_presentation.di;
 
 
-import com.flutterwave.raveandroid.rave_presentation.CardPayManager;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPayManager;
 
 import dagger.Subcomponent;
 

@@ -8,7 +8,6 @@ import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
-import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.List;
@@ -143,107 +142,24 @@ public interface CardContract {
     }
 
     interface CardPaymentHandler {
-
-        /**
-         * Detaches the view from the presenter.
-         * Call this in activity or fragment onStop() function.
-         */
-        void onDetachView();
-
-        /**
-         * Save a card for future transactions to eliminate having to type in card number repeatedly.
-         * Note that this is different from <a href="https://developer.flutterwave.com/v2.0/reference#save-a-card">Card Tokenization</a>.
-         * For this type of saved card, your user still needs to authenticate with an OTP that will be sent to their phone number.
-         *
-         * @param phoneNumber User's phone number
-         * @param email       User's email address
-         * @param FlwRef      Flutterwave reference for a successful transaction done with the card to be saved
-         * @param publicKey   Your public key
-         */
         void saveCardToRave(String phoneNumber, String email, String FlwRef, String publicKey);
 
-        /**
-         * Check for the fee applicable for this transaction.
-         *
-         * @param payload Object containing the charge details.
-         *                Can be generated with the {@link PayloadBuilder PayloadBuilder}
-         */
         void fetchFee(Payload payload);
 
-        /**
-         * Reattaches the view to the presenter.
-         * Call this in activity or fragment onStart() function.
-         *
-         * @param cardInteractor View to be attached
-         */
-        void onAttachView(CardInteractor cardInteractor);
-
-        /**
-         * Initiate the card charge.
-         * This is the starting point for the payment.
-         *
-         * @param payload       Object containing the charge details.
-         *                      Can be generated with the {@link PayloadBuilder PayloadBuilder}
-         * @param encryptionKey Your Flutterwave encryption key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         */
         void chargeCard(Payload payload, String encryptionKey);
 
-        /**
-         * Authenticate a payment with OTP gotten from the customer.
-         *
-         * @param flwRef    The Flutterwave reference for the transaction
-         * @param otp       OTP gotten from the user
-         * @param publicKey Your Flutterwave public key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         */
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
-        /**
-         * Check for a transactions status. Result is sent to either {@link CardContract.CardInteractor#onPaymentSuccessful(String, String, String)}
-         * when it's successful, or {@link CardInteractor#onPaymentFailed(String, String)} (String)} if it's failed.
-         *
-         * @param flwRef    The Flutterwave reference for the transaction
-         * @param publicKey The public Key used to initiate the transaction
-         */
         void requeryTx(String flwRef, String publicKey);
 
-        /**
-         * Continue a charge after the OTP has been gotten from the user
-         *
-         * @param payload       Payload object containing charge details
-         * @param pin           Card PIN gotten from the user
-         * @param encryptionKey Your Flutterwave encryption key.
-         *                      Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         */
         void chargeCardWithPinAuthModel(Payload payload, String pin, String encryptionKey);
 
-        /**
-         * Check for any saved cards associated with the user with this {@param phoneNumber}.
-         *
-         * @param publicKey   Your Flutterwave public key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         * @param phoneNumber
-         */
         void lookupSavedCards(String publicKey, String phoneNumber);
 
-        /**
-         * Charge a {@link SavedCard}
-         *
-         * @param payload       Payload object containing charge details
-         * @param savedCard     Saved card to charge
-         * @param encryptionKey Your Flutterwave encryption key. Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         */
         void chargeSavedCard(Payload payload, SavedCard savedCard, String encryptionKey);
 
         void logEvent(Event event, String publicKey);
 
-        /**
-         * Continue a charge after the details of the card address have been gotten from the user
-         *
-         * @param payLoad       Payload object containing charge details
-         * @param address       Card address details
-         * @param encryptionKey Your Flutterwave encryption key.
-         *                      Can be gotten from <a href="https://dashboard.flutterwave.com/dashboard/settings/apis">your dashboard</a>
-         * @param authModel     Auth Model passed to the {@link CardInteractor#collectCardAddressDetails(Payload, String)} method.
-         */
         void chargeCardWithAddressDetails(Payload payLoad, AddressDetails address, String encryptionKey, String authModel);
     }
 

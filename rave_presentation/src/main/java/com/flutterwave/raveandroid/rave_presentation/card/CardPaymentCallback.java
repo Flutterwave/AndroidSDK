@@ -1,17 +1,19 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
-import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import android.support.annotation.Nullable;
 
 public interface CardPaymentCallback {
-    void collectCardPin(Payload payload);
-
     void showProgressIndicator(boolean active);
 
-    void collectOtp(String flwRef, String message);
+    void collectCardPin();
 
-    void onError(String flwRef, String errorMessage);
+    void collectOtp(String message);
 
-    void onError(String errorMessage);
+    void onError(String errorMessage, @Nullable String flwRef);
 
     void onSuccessful(String flwRef);
+
+    void collectAddress();
+
+    void showAuthenticationWebPage(String authenticationUrl);
 }
