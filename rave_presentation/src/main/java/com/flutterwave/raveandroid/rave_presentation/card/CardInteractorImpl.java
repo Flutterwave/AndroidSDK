@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.NullFeeCheckListener;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -17,15 +18,19 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     private String authModel;
     private Payload payload;
     private SavedCardsListener savedCardsListener;
+    private FeeCheckListener feeCheckListener;
 
 
     CardInteractorImpl(CardPaymentCallback callback) {
         this.callback = (callback != null) ? callback : new NullCardPaymentCallback();
+        this.savedCardsListener = new NullSavedCardsListener();
+        this.feeCheckListener = new NullFeeCheckListener();
     }
 
     CardInteractorImpl(CardPaymentCallback callback, SavedCardsListener savedCardsListener) {
         this.callback = (callback != null) ? callback : new NullCardPaymentCallback();
         this.savedCardsListener = (savedCardsListener != null) ? savedCardsListener : new NullSavedCardsListener();
+        this.feeCheckListener = new NullFeeCheckListener();
     }
 
     @Override
@@ -60,6 +65,7 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
+        this.flwRef = flwRef;
         callback.onSuccessful(flwRef);
     }
 
@@ -93,13 +99,13 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     }
 
     @Override
-    public void onTransactionFeeFetched(String chargeAmount, Payload payload) {
-
+    public void onTransactionFeeFetched(String chargeAmount, Payload payload, String fee) {
+        feeCheckListener.onTransactionFeeFetched(chargeAmount, fee);
     }
 
     @Override
     public void onFetchFeeError(String errorMessage) {
-
+        feeCheckListener.onFetchFeeError(errorMessage);
     }
 
     @Override
@@ -132,5 +138,9 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     public void setSavedCardsListener(SavedCardsListener savedCardsListener) {
         this.savedCardsListener = (savedCardsListener != null) ? savedCardsListener : new NullSavedCardsListener();
+    }
+
+    public void setFeeCheckListener(FeeCheckListener feeCheckListener) {
+        this.feeCheckListener = (feeCheckListener != null) ? feeCheckListener : new NullFeeCheckListener();
     }
 }

@@ -403,7 +403,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                 mCardInteractor.showProgressIndicator(false);
 
                 try {
-                    mCardInteractor.onTransactionFeeFetched(response.getData().getCharge_amount(), payload);
+                    mCardInteractor.onTransactionFeeFetched(response.getData().getCharge_amount(), payload, response.getData().getFee());
                 } catch (Exception e) {
                     e.printStackTrace();
                     mCardInteractor.onFetchFeeError(transactionError);

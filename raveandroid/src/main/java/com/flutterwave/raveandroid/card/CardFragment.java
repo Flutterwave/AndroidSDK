@@ -691,7 +691,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param payload      = Object that contains the payment info (Contains card payment details)
      */
     @Override
-    public void onTransactionFeeFetched(String chargeAmount, final Payload payload) {
+    public void onTransactionFeeFetched(String chargeAmount, final Payload payload, String fee) {
         if (getActivity() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(getResources().getString(R.string.charge) + " " + chargeAmount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));

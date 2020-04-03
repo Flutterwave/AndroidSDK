@@ -37,6 +37,13 @@ public class CardPayManager {
 
     public void chargeCard(Card card) {
         chargeType = MANUAL_CARD_CHARGE;
+
+        Payload payload = createPayload(card);
+
+        paymentHandler.chargeCard(payload, manager.getEncryptionKey());
+    }
+
+    private Payload createPayload(Card card) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(String.valueOf(manager.getAmount()))
                 .setCardno(card.getCardNumber())
@@ -59,10 +66,7 @@ public class CardPayManager {
         if (manager.getPayment_plan() != null) {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
-
-        Payload payload = builder.createPayload();
-
-        paymentHandler.chargeCard(payload, manager.getEncryptionKey());
+        return builder.createPayload();
     }
 
     public void submitPin(String pin) {
@@ -100,8 +104,24 @@ public class CardPayManager {
         paymentHandler.lookupSavedCards(manager.getPublicKey(), manager.getPhoneNumber());
     }
 
+    public void fetchTransactionFee(Card card, FeeCheckListener feeCheckListener) {
+        interactor.setFeeCheckListener(feeCheckListener);
+        paymentHandler.fetchFee(createPayload(card));
+    }
+
+    public void fetchTransactionFee(SavedCard card, FeeCheckListener feeCheckListener) {
+        interactor.setFeeCheckListener(feeCheckListener);
+        paymentHandler.fetchFee(createPayload(card));
+    }
+
     public void chargeSavedCard(SavedCard card) {
         chargeType = SAVED_CARD_CHARGE;
+
+        Payload body = createPayload(card);
+        paymentHandler.chargeSavedCard(body, manager.getEncryptionKey());
+    }
+
+    private Payload createPayload(SavedCard card) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(String.valueOf(manager.getAmount()))
                 .setCountry(manager.getCountry())
@@ -123,9 +143,11 @@ public class CardPayManager {
         if (manager.getPayment_plan() != null) {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
+        return builder.createSavedCardChargePayload();
+    }
 
-        Payload body = builder.createSavedCardChargePayload();
-        paymentHandler.chargeSavedCard(body, manager.getEncryptionKey());
+    public void saveCard() {
+        paymentHandler.saveCardToRave(manager.getPhoneNumber(), manager.getEmail(), interactor.getFlwRef(), manager.getPublicKey());
     }
 
     private void injectFields(RaveComponent component, CardPaymentCallback callback, SavedCardsListener listener) {

@@ -46,7 +46,7 @@ public interface CardContract {
          * @param chargeAmount The total charge amount (fee inclusive)
          * @param payload      The payload used to initiate the fee request
          */
-        void onTransactionFeeFetched(String chargeAmount, Payload payload);
+        void onTransactionFeeFetched(String chargeAmount, Payload payload, String fee);
 
         /**
          * Called when there is an error while fetching the transaction Fee.

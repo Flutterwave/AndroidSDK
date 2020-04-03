@@ -107,7 +107,7 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
     }
 
     @Override
-    public void onTransactionFeeFetched(String chargeAmount, Payload payload) {
+    public void onTransactionFeeFetched(String chargeAmount, Payload payload, String fee) {
 
     }
 

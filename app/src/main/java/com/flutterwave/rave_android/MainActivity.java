@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
 import com.flutterwave.raveandroid.rave_presentation.card.Card;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPayManager;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
+import com.flutterwave.raveandroid.rave_presentation.card.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -37,7 +38,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements CardPaymentCallback, SavedCardsListener {
+public class MainActivity
+        extends AppCompatActivity
+        // Interfaces to implement for custom UI or no-UI usage
+        implements
+        FeeCheckListener, // Implement if you want to be able to check fees beforehand
+        SavedCardsListener, // Implement if you want to be able to save cards and charge saved cards
+        CardPaymentCallback {// Must be implemented to charge cards with custom UI or no-UI
 
     EditText emailEt;
     EditText amountEt;
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
 
     ProgressDialog progressDialog;
     private CardPayManager cardPayManager;
+    private Card card;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
                         .onStagingEnv(!isLiveSwitch.isChecked())
                         .setSubAccounts(subAccounts)
                         .isPreAuth(isPreAuthSwitch.isChecked())
-//                    .setMeta(meta)
+                        .setMeta(meta)
                         .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
 
                 // Customize pay with bank transfer options (optional)
@@ -357,21 +365,23 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
                         .setTxRef(txRef)
                         .onStagingEnv(!isLiveSwitch.isChecked())
                         .setSubAccounts(subAccounts)
-//                    .setMeta(meta)
+                        .setMeta(meta)
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .initialize();
 
                 cardPayManager = new CardPayManager(((RaveNonUIManager) raveManager), this, this);
-//                cardPayManager.fetchSavedCards();
-
-                cardPayManager.chargeCard(new Card(
+                card = new Card(
                         "5531886652142950", // Test MasterCard PIN authentication
 //                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
 //                        "4556052704172643", // Test VisaCard (Address Verification)
                         "12",
                         "30",
                         "123"
-                ));
+                );
+
+//                cardPayManager.fetchSavedCards();
+//                cardPayManager.fetchTransactionFee(card,this);
+                cardPayManager.chargeCard(card);
             }
         }
     }
@@ -525,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
     @Override
     public void onSuccessful(String flwRef) {
         Toast.makeText(this, "Transaction Successful", Toast.LENGTH_LONG).show();
+//        cardPayManager.saveCard(); // Save card if needed
     }
 
     @Override
@@ -552,6 +563,18 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
 
     @Override
     public void onCardSaveFailed(String message) {
+
+    }
+
+    @Override
+    public void onTransactionFeeFetched(String chargeAmount, String fee) {
+        // Display the fee to the customer
+        Toast.makeText(this, "The transaction fee is " + fee, Toast.LENGTH_SHORT).show();
+//        cardPayManager.chargeCard(card);
+    }
+
+    @Override
+    public void onFetchFeeError(String errorMessage) {
 
     }
 }
