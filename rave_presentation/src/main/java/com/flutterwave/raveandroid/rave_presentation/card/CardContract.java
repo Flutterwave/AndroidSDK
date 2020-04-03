@@ -26,7 +26,7 @@ public interface CardContract {
 
         /**
          * Called when the list of saved cards has been retrieved.
-         * Typically, you can show a user this list of their saved cards, and then call {@link CardPaymentHandler#chargeSavedCard(Payload, SavedCard, String)} with any of the cards the user chooses.
+         * Typically, you can show a user this list of their saved cards, and then call {@link CardPaymentHandler#chargeSavedCard(Payload, String)} with any of the cards the user chooses.
          *
          * @param cards       List of user's saved cards
          * @param phoneNumber Phone number against which they were saved
@@ -76,7 +76,7 @@ public interface CardContract {
         /**
          * Called to collect an OTP from the user for saved card charge.
          * After user inputs OTP, add it to the payload using {@link Payload#setOtp(String)}
-         * and call {@link CardPaymentHandler#chargeSavedCard(Payload, SavedCard, String)} to continue the transaction.
+         * and call {@link CardPaymentHandler#chargeSavedCard(Payload, String)} to continue the transaction.
          *
          * @param payload Payload containing charge details
          */
@@ -156,7 +156,7 @@ public interface CardContract {
 
         void lookupSavedCards(String publicKey, String phoneNumber);
 
-        void chargeSavedCard(Payload payload, SavedCard savedCard, String encryptionKey);
+        void chargeSavedCard(Payload payload, String encryptionKey);
 
         void logEvent(Event event, String publicKey);
 

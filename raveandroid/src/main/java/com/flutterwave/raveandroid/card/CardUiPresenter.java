@@ -276,7 +276,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             if (ravePayInitializer.getIsDisplayFee()) {
                 fetchFee(body);
             } else {
-                chargeSavedCard(body, savedCard, ravePayInitializer.getEncryptionKey());
+                chargeSavedCard(body, ravePayInitializer.getEncryptionKey());
             }
         }
     }

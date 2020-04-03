@@ -427,7 +427,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                     if (data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
                         payLoad.setOtp(otp);
-                        presenter.chargeSavedCard(payLoad, selectedSavedCard, ravePayInitializer.getEncryptionKey());
+                        presenter.chargeSavedCard(payLoad, ravePayInitializer.getEncryptionKey());
                     } else
                         presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
                     break;
@@ -704,7 +704,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     if (chargeType == MANUAL_CARD_CHARGE) {
                         presenter.chargeCard(payload, ravePayInitializer.getEncryptionKey());
                     } else if (chargeType == SAVED_CARD_CHARGE) {
-                        presenter.chargeSavedCard(payload, selectedSavedCard, ravePayInitializer.getEncryptionKey());
+                        payload.setSavedCardDetails(selectedSavedCard);
+                        presenter.chargeSavedCard(payload, ravePayInitializer.getEncryptionKey());
                     }
 
                 }

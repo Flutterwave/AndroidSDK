@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
 import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -28,13 +29,15 @@ import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
 import com.flutterwave.raveandroid.rave_presentation.card.Card;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPayManager;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
+import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
+import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements CardPaymentCallback {
+public class MainActivity extends AppCompatActivity implements CardPaymentCallback, SavedCardsListener {
 
     EditText emailEt;
     EditText amountEt;
@@ -358,7 +361,8 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .initialize();
 
-                cardPayManager = new CardPayManager(((RaveNonUIManager) raveManager), this);
+                cardPayManager = new CardPayManager(((RaveNonUIManager) raveManager), this, this);
+//                cardPayManager.fetchSavedCards();
 
                 cardPayManager.chargeCard(new Card(
                         "5531886652142950", // Test MasterCard PIN authentication
@@ -368,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
                         "30",
                         "123"
                 ));
-
             }
         }
     }
@@ -522,5 +525,33 @@ public class MainActivity extends AppCompatActivity implements CardPaymentCallba
     @Override
     public void onSuccessful(String flwRef) {
         Toast.makeText(this, "Transaction Successful", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSavedCardsLookupSuccessful(List<SavedCard> cards, String phoneNumber) {
+        // Check that the list is not empty, show the user to select which they'd like to charge, then proceed to chargeSavedCard()
+        if (cards.size() != 0) cardPayManager.chargeSavedCard(cards.get(0));
+        else
+            Toast.makeText(this, "No saved cards found for " + phoneNumber, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSavedCardsLookupFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void collectOtpForSaveCardCharge() {
+        collectOtp("Otp for saved card");
+    }
+
+    @Override
+    public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
+
+    }
+
+    @Override
+    public void onCardSaveFailed(String message) {
+
     }
 }

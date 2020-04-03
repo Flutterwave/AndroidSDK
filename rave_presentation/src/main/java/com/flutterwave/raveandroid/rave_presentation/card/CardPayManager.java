@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
@@ -9,22 +10,33 @@ import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
+
 public class CardPayManager {
 
     private final RaveNonUIManager manager;
     @Inject
     public CardPaymentHandler paymentHandler;
     CardInteractorImpl interactor;
+    private int chargeType;
 
     public CardPayManager(RaveNonUIManager manager, CardPaymentCallback callback) {
         this.manager = manager;
 
-        injectFields(manager.getRaveComponent(), callback);
+        injectFields(manager.getRaveComponent(), callback, null);
+
+    }
+
+    public CardPayManager(RaveNonUIManager manager, CardPaymentCallback callback, SavedCardsListener savedCardsListener) {
+        this.manager = manager;
+
+        injectFields(manager.getRaveComponent(), callback, savedCardsListener);
 
     }
 
     public void chargeCard(Card card) {
-
+        chargeType = MANUAL_CARD_CHARGE;
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(String.valueOf(manager.getAmount()))
                 .setCardno(card.getCardNumber())
@@ -44,6 +56,10 @@ public class CardPayManager {
                 .setPBFPubKey(manager.getPublicKey())
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
+        if (manager.getPayment_plan() != null) {
+            builder.setPaymentPlan(manager.getPayment_plan());
+        }
+
         Payload payload = builder.createPayload();
 
         paymentHandler.chargeCard(payload, manager.getEncryptionKey());
@@ -55,7 +71,12 @@ public class CardPayManager {
     }
 
     public void submitOtp(String otp) {
-        paymentHandler.validateCardCharge(interactor.getFlwRef(), otp, manager.getPublicKey());
+        if (chargeType == MANUAL_CARD_CHARGE)
+            paymentHandler.validateCardCharge(interactor.getFlwRef(), otp, manager.getPublicKey());
+        else if (chargeType == SAVED_CARD_CHARGE) {
+            interactor.getPayload().setOtp(otp);
+            paymentHandler.chargeSavedCard(interactor.getPayload(), manager.getEncryptionKey());
+        }
     }
 
     public void submitAddress(AddressDetails addressDetails) {
@@ -71,8 +92,44 @@ public class CardPayManager {
         paymentHandler.requeryTx(interactor.getFlwRef(), manager.getPublicKey());
     }
 
-    private void injectFields(RaveComponent component, CardPaymentCallback callback) {
-        interactor = new CardInteractorImpl(callback);
+    public void setSavedCardsListener(SavedCardsListener listener) {
+        interactor.setSavedCardsListener(listener);
+    }
+
+    public void fetchSavedCards() {
+        paymentHandler.lookupSavedCards(manager.getPublicKey(), manager.getPhoneNumber());
+    }
+
+    public void chargeSavedCard(SavedCard card) {
+        chargeType = SAVED_CARD_CHARGE;
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(String.valueOf(manager.getAmount()))
+                .setCountry(manager.getCountry())
+                .setCurrency(manager.getCurrency())
+                .setEmail(manager.getEmail())
+                .setFirstname(manager.getfName())
+                .setLastname(manager.getlName())
+                .setIP(manager.getUniqueDeviceID())
+                .setTxRef(manager.getTxRef())
+                .setMeta(manager.getMeta())
+                .setSubAccount(manager.getSubAccounts())
+                .setIsPreAuth(manager.isPreAuth())
+                .setPBFPubKey(manager.getPublicKey())
+                .setDevice_fingerprint(manager.getUniqueDeviceID())
+                .setIs_saved_card_charge(true)
+                .setSavedCard(card)
+                .setPhonenumber(manager.getPhoneNumber());
+
+        if (manager.getPayment_plan() != null) {
+            builder.setPaymentPlan(manager.getPayment_plan());
+        }
+
+        Payload body = builder.createSavedCardChargePayload();
+        paymentHandler.chargeSavedCard(body, manager.getEncryptionKey());
+    }
+
+    private void injectFields(RaveComponent component, CardPaymentCallback callback, SavedCardsListener listener) {
+        interactor = new CardInteractorImpl(callback, listener);
 
         component.plus(new CardModule(interactor))
                 .inject(this);

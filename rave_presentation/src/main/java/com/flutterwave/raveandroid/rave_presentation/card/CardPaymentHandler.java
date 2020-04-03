@@ -185,8 +185,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void chargeSavedCard(Payload payload, SavedCard savedCard, String encryptionKey) {
-        payload.setSavedCardDetails(savedCard);
+    public void chargeSavedCard(Payload payload, String encryptionKey) {
         if (payload.getOtp() == null || payload.getOtp() == "") {
             sendRaveOTP(payload);
         } else chargeCard(payload, encryptionKey);

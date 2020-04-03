@@ -16,10 +16,16 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     private String flwRef;
     private String authModel;
     private Payload payload;
+    private SavedCardsListener savedCardsListener;
 
 
     CardInteractorImpl(CardPaymentCallback callback) {
-        this.callback = callback;
+        this.callback = (callback != null) ? callback : new NullCardPaymentCallback();
+    }
+
+    CardInteractorImpl(CardPaymentCallback callback, SavedCardsListener savedCardsListener) {
+        this.callback = (callback != null) ? callback : new NullCardPaymentCallback();
+        this.savedCardsListener = (savedCardsListener != null) ? savedCardsListener : new NullSavedCardsListener();
     }
 
     @Override
@@ -78,12 +84,12 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     @Override
     public void onSavedCardsLookupSuccessful(List<SavedCard> cards, String phoneNumber) {
-
+        savedCardsListener.onSavedCardsLookupSuccessful(cards, phoneNumber);
     }
 
     @Override
     public void onSavedCardsLookupFailed(String message) {
-
+        savedCardsListener.onSavedCardsLookupFailed(message);
     }
 
     @Override
@@ -98,17 +104,18 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     @Override
     public void collectOtpForSaveCardCharge(Payload payload) {
-
+        this.payload = payload;
+        savedCardsListener.collectOtpForSaveCardCharge();
     }
 
     @Override
     public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
-
+        savedCardsListener.onCardSaveSuccessful(response, phoneNumber);
     }
 
     @Override
     public void onCardSaveFailed(String message) {
-
+        savedCardsListener.onCardSaveFailed(message);
     }
 
     public String getFlwRef() {
@@ -119,7 +126,11 @@ class CardInteractorImpl implements CardContract.CardInteractor {
         return payload;
     }
 
-    public String getAuthModel() {
+    String getAuthModel() {
         return authModel;
+    }
+
+    public void setSavedCardsListener(SavedCardsListener savedCardsListener) {
+        this.savedCardsListener = (savedCardsListener != null) ? savedCardsListener : new NullSavedCardsListener();
     }
 }
