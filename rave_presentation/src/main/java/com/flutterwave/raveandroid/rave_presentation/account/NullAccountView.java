@@ -9,7 +9,7 @@ import java.util.List;
  * Created by hfetuga on 06/02/2018.
  */
 
-public class NullAccountView implements AccountContract.View {
+public class NullAccountView implements AccountContract.AccountInteractor {
     @Override
     public void onBanksListRetrieved(List<Bank> banks) {
 
@@ -57,7 +57,7 @@ public class NullAccountView implements AccountContract.View {
     }
 
     @Override
-    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 }

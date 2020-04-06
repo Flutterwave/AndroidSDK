@@ -29,4 +29,16 @@ public class Bank {
     public void setBankcode(String bankcode) {
         this.bankcode = bankcode;
     }
+
+    public boolean requiresDateOfBirth() {
+        if (bankcode != null) {
+            return bankcode.equals("057") || bankcode.equals("033");
+        } else return false;
+    }
+
+    public boolean requiresBvn() {
+        if (bankcode != null) {
+            return bankcode.equals("033");
+        } else return false;
+    }
 }

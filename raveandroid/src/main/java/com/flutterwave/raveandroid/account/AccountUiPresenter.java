@@ -4,12 +4,12 @@ import android.view.View;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_presentation.account.AccountPresenter;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.rave_presentation.account.AccountHandler;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
@@ -50,7 +50,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
  * Created by hamzafetuga on 20/07/2017.
  */
 
-public class AccountUiPresenter extends AccountPresenter implements AccountUiContract.UserActionsListener {
+public class AccountUiPresenter extends AccountHandler implements AccountUiContract.UserActionsListener {
 
     private AccountUiContract.View mView;
 

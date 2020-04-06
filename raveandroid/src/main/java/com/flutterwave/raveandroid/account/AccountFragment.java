@@ -254,7 +254,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     }
 
     @Override
-    public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload, String fee) {
 
         if (getActivity() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

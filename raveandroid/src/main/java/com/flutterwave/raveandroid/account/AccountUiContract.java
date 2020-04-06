@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public interface AccountUiContract {
 
-    interface View extends AccountContract.View {
+    interface View extends AccountContract.AccountInteractor {
 
         void onDataValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
@@ -33,7 +33,7 @@ public interface AccountUiContract {
         void showAccountNumberField(int isVisible);
     }
 
-    interface UserActionsListener extends AccountContract.UserActionsListener {
+    interface UserActionsListener extends AccountContract.AccountHandler {
         void onAttachView(AccountUiContract.View view);
 
         void onDetachView();

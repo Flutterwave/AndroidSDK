@@ -2,11 +2,12 @@ package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
-import com.flutterwave.raveandroid.rave_presentation.di.CardModule;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 
 import javax.inject.Inject;
 

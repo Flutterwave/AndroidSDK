@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation.di;
+package com.flutterwave.raveandroid.rave_presentation.di.card;
 
 
 import com.flutterwave.raveandroid.rave_presentation.card.CardPayManager;

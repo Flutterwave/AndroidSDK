@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface AccountContract {
 
-    interface View {
+    interface AccountInteractor {
         /**
          * Called to indicate that a network call has just begun or has just ended.
          * E.g., by showing or hiding a progress bar
@@ -36,7 +36,7 @@ public interface AccountContract {
         void onBanksListRetrieved(List<Bank> banks);
 
         /**
-         * Called when the call to {@link UserActionsListener#getBanksList()} fails.
+         * Called when the call to {@link AccountHandler#getBanksList()} fails.
          *
          * @param message The error message returned
          */
@@ -44,16 +44,16 @@ public interface AccountContract {
 
 
         /**
-         * Called when the call to {@link UserActionsListener#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
-         *
-         * @param chargeAmount The total charge amount (fee inclusive)
+         * Called when the call to {@link AccountHandler#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
+         *  @param chargeAmount The total charge amount (fee inclusive)
          * @param payload       The payload used to initiate the fee request
+         * @param fee
          */
-        void onTransactionFeeRetrieved(String chargeAmount, Payload payload);
+        void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee);
 
         /**
          * Called to collect an OTP from the user.
-         * After user inputs OTP, call {@link UserActionsListener#authenticateAccountCharge(String, String, String)}
+         * After user inputs OTP, call {@link AccountHandler#authenticateAccountCharge(String, String, String)}
          * with the OTP collected, to continue the transaction.
          *
          * @param publicKey            Public key the transaction was initiated with
@@ -71,7 +71,7 @@ public interface AccountContract {
          * function to check if the {@link WebResourceRequest#getUrl() url being loaded} contains the
          * {@link com.flutterwave.raveandroid.rave_java_commons.RaveConstants#RAVE_3DS_CALLBACK predefined redirect url}.
          * <p>
-         * If it does, it means the transaction has been completed and you can now call {@link UserActionsListener#requeryTx(String, String)} with the {@code flwRef} to check the transaction status.
+         * If it does, it means the transaction has been completed and you can now call {@link AccountHandler#requeryTx(String, String)} with the {@code flwRef} to check the transaction status.
          *
          * @param authurl The url to the authentication page
          * @param flwRef  The Flutterwave transaction reference
@@ -107,9 +107,9 @@ public interface AccountContract {
         void onFeeFetchError(String errorMessage);
     }
 
-    interface UserActionsListener {
+    interface AccountHandler {
         /**
-         * Fetch the list of available banks for direct debit. The result is returned in {@link View#onBanksListRetrieved(List)}
+         * Fetch the list of available banks for direct debit. The result is returned in {@link AccountInteractor#onBanksListRetrieved(List)}
          */
         void getBanksList();
 
@@ -141,8 +141,8 @@ public interface AccountContract {
         void authenticateAccountCharge(String flwRef, String otp, String publicKey);
 
         /**
-         * Check for a transactions status. Result is sent to either {@link View#onPaymentSuccessful(String)}
-         * when it's successful, or {@link View#onPaymentFailed(String)} if it's failed.
+         * Check for a transactions status. Result is sent to either {@link AccountInteractor#onPaymentSuccessful(String)}
+         * when it's successful, or {@link AccountInteractor#onPaymentFailed(String)} if it's failed.
          *
          * @param flwRef    The Flutterwave reference for the transaction
          * @param publicKey The public Key used to initiate the transaction
@@ -153,9 +153,9 @@ public interface AccountContract {
          * Reattaches the view to the presenter.
          * Call this in activity or fragment onStart() function.
          *
-         * @param view View to be attached
+         * @param accountInteractor View to be attached
          */
-        void onAttachView(AccountContract.View view);
+        void onAttachView(AccountInteractor accountInteractor);
 
         /**
          * Detaches the view from the presenter.

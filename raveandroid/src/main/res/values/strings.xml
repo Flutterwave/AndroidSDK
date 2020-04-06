@@ -91,7 +91,7 @@
     <string name="fieldVoucher">voucher</string>
     <string name="fieldNetwork">network</string>
     <string name="fieldBVN">bvn</string>
-    <string name="fieldDOB">dob</string>
+    <string name="fieldDOB">dateOfBirth</string>
     <string name="fieldBankCode">bankcode</string>
     <string name="fieldCvv">cvv</string>
     <string name="fieldCardExpiry">cardExpiry</string>

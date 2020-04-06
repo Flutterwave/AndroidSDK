@@ -1,20 +1,20 @@
 package com.flutterwave.raveandroid.rave_presentation.di;
 
 
-import android.content.Context;
-
-import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
-import com.flutterwave.raveandroid.rave_cache.di.CacheModule;
 import com.flutterwave.raveandroid.rave_core.di.DeviceIdGetterModule;
+import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
-import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.CardNoValidator;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
+import com.flutterwave.raveandroid.rave_presentation.di.account.AccountComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.account.AccountModule;
+import com.flutterwave.raveandroid.rave_presentation.di.card.CardComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -30,10 +30,6 @@ public interface RaveComponent {
     RemoteRepository networkImpl();
 
     EventLogger eventLogger();
-//
-//    SharedPrefsRepo sharedManager();
-//
-//    Context context();
 
     DeviceIdGetter deviceIdGetter();
 
@@ -52,5 +48,7 @@ public interface RaveComponent {
     Gson gson();
 
     CardComponent plus(CardModule cardModule);
+
+    AccountComponent plus(AccountModule module);
 }
 

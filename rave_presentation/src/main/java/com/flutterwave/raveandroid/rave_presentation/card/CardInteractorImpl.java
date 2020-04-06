@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.NullFeeCheckListener;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.google.gson.Gson;

@@ -60,7 +60,7 @@ public class NullAccountView implements AccountUiContract.View {
     }
 
     @Override
-    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 

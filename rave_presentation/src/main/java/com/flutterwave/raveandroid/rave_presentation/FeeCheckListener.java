@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation.card;
+package com.flutterwave.raveandroid.rave_presentation;
 
 public interface FeeCheckListener {
 

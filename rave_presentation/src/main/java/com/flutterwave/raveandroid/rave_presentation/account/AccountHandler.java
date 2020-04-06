@@ -13,7 +13,6 @@ import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ValidationAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
-import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -38,7 +37,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transa
  * Created by hamzafetuga on 20/07/2017.
  */
 
-public class AccountPresenter implements AccountContract.UserActionsListener {
+public class AccountHandler implements AccountContract.AccountHandler {
 
     @Inject
     UrlValidator urlValidator;
@@ -52,40 +51,29 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
     PayloadToJsonConverter payloadToJsonConverter;
     @Inject
     PayloadEncryptor payloadEncryptor;
-    private AccountContract.View mView;
+    private AccountContract.AccountInteractor mAccountInteractor;
 
     @Inject
-    public AccountPresenter(AccountContract.View mView) {
-        this.mView = mView;
-    }
-
-    public AccountPresenter(AccountContract.View mView, RaveComponent raveComponent) {
-        this.mView = mView;
-        this.eventLogger = raveComponent.eventLogger();
-        this.networkRequest = raveComponent.networkImpl();
-        this.transactionStatusChecker = raveComponent.transactionStatusChecker();
-        this.payloadEncryptor = raveComponent.payloadEncryptor();
-        this.urlValidator = raveComponent.urlValidator();
-        this.payloadToJsonConverter = raveComponent.payloadToJsonConverter();
-        this.payloadEncryptor = raveComponent.payloadEncryptor();
+    public AccountHandler(AccountContract.AccountInteractor mAccountInteractor) {
+        this.mAccountInteractor = mAccountInteractor;
     }
 
     @Override
     public void getBanksList() {
 
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         networkRequest.getBanks(new ResultCallback<List<Bank>>() {
             @Override
             public void onSuccess(List<Bank> banks) {
-                mView.showProgressIndicator(false);
-                mView.onBanksListRetrieved(banks);
+                mAccountInteractor.showProgressIndicator(false);
+                mAccountInteractor.onBanksListRetrieved(banks);
             }
 
             @Override
             public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onGetBanksRequestFailed("An error occurred while retrieving banks");
+                mAccountInteractor.showProgressIndicator(false);
+                mAccountInteractor.onGetBanksRequestFailed("An error occurred while retrieving banks");
             }
         });
 
@@ -102,29 +90,29 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setPBFPubKey(payload.getPBFPubKey());
         body.setClient(encryptedCardRequestBody);
 
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
 
         networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
-                mView.showProgressIndicator(false);
+                mAccountInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
                     String authUrlCrude = response.getData().getAuthurl();
                     String flwRef = response.getData().getFlwRef();
                     boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
                     if (authUrlCrude != null && isValidUrl) {
-                        mView.displayInternetBankingPage(authUrlCrude, flwRef);
+                        mAccountInteractor.displayInternetBankingPage(authUrlCrude, flwRef);
                     } else {
                         if (response.getData().getValidateInstruction() != null) {
-                            mView.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
+                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
                         } else if (response.getData().getValidateInstructions() != null &&
                                 response.getData().getValidateInstructions().getInstruction() != null) {
-                            mView.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
+                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
                         } else {
-                            mView.collectOtp(payload.getPBFPubKey(), flwRef, null);
+                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, null);
                         }
                     }
                 }
@@ -133,8 +121,8 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
 
             @Override
             public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
+                mAccountInteractor.showProgressIndicator(false);
+                mAccountInteractor.onPaymentError(message);
             }
         });
     }
@@ -147,14 +135,14 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setOtp(otp);
         body.setTransactionreference(flwRef);
 
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
 
         networkRequest.validateAccountCharge(body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
-                mView.showProgressIndicator(false);
+                mAccountInteractor.showProgressIndicator(false);
 
                 if (response.getStatus() != null) {
                     String status = response.getStatus();
@@ -163,17 +151,17 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
                     if (status.equalsIgnoreCase(success)) {
                         requeryTx(flwRef, PBFPubKey);
                     } else {
-                        mView.onPaymentError(status);
+                        mAccountInteractor.onPaymentError(status);
                     }
                 } else {
-                    mView.onPaymentError(invalidCharge);
+                    mAccountInteractor.onPaymentError(invalidCharge);
                 }
             }
 
             @Override
             public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
+                mAccountInteractor.showProgressIndicator(false);
+                mAccountInteractor.onPaymentError(message);
             }
 
         });
@@ -189,26 +177,26 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setPtype("2");
         body.setPBFPubKey(payload.getPBFPubKey());
 
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
             @Override
             public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
+                mAccountInteractor.showProgressIndicator(false);
 
                 try {
-                    mView.onTransactionFeeRetrieved(response.getData().getCharge_amount(), payload);
+                    mAccountInteractor.onTransactionFeeRetrieved(response.getData().getCharge_amount(), payload, response.getData().getFee());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    mView.onFeeFetchError(transactionError);
+                    mAccountInteractor.onFeeFetchError(transactionError);
                 }
             }
 
             @Override
             public void onError(String message) {
-                mView.showProgressIndicator(false);
+                mAccountInteractor.showProgressIndicator(false);
                 Log.e(RAVEPAY, message);
-                mView.onFeeFetchError(message);
+                mAccountInteractor.onFeeFetchError(message);
             }
         });
     }
@@ -219,51 +207,51 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
 
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
+                mAccountInteractor.showProgressIndicator(false);
                 verifyRequeryResponseStatus(responseAsJSONString);
             }
 
             @Override
             public void onError(String message, String responseAsJSONString) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentFailed(responseAsJSONString);
+                mAccountInteractor.showProgressIndicator(false);
+                mAccountInteractor.onPaymentFailed(responseAsJSONString);
             }
         });
     }
 
     public void verifyRequeryResponseStatus(String responseAsJSONString) {
-        mView.showProgressIndicator(true);
+        mAccountInteractor.showProgressIndicator(true);
 
         boolean wasTxSuccessful = transactionStatusChecker
                 .getTransactionStatus(
                         responseAsJSONString
                 );
 
-        mView.showProgressIndicator(false);
+        mAccountInteractor.showProgressIndicator(false);
 
         if (wasTxSuccessful) {
-            mView.onPaymentSuccessful(responseAsJSONString);
+            mAccountInteractor.onPaymentSuccessful(responseAsJSONString);
         } else {
-            mView.onPaymentFailed(responseAsJSONString);
+            mAccountInteractor.onPaymentFailed(responseAsJSONString);
         }
     }
 
 
     @Override
-    public void onAttachView(AccountContract.View view) {
-        this.mView = view;
+    public void onAttachView(AccountContract.AccountInteractor accountInteractor) {
+        this.mAccountInteractor = accountInteractor;
     }
 
     @Override
     public void onDetachView() {
-        this.mView = new NullAccountView();
+        this.mAccountInteractor = new NullAccountView();
     }
 
     public void logEvent(Event event, String publicKey) {
