@@ -15,6 +15,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.account.AccountComponent
 import com.flutterwave.raveandroid.rave_presentation.di.account.AccountModule;
 import com.flutterwave.raveandroid.rave_presentation.di.ach.AchComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.ach.AchModule;
+import com.flutterwave.raveandroid.rave_presentation.di.banktransfer.BankTransferComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.banktransfer.BankTransferModule;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -54,5 +56,7 @@ public interface RaveComponent {
     AccountComponent plus(AccountModule module);
 
     AchComponent plus(AchModule module);
+
+    BankTransferComponent plus(BankTransferModule module);
 }
 

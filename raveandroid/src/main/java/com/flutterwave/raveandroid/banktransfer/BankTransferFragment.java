@@ -42,7 +42,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BankTransferFragment extends Fragment implements BankTransferContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class BankTransferFragment extends Fragment implements BankTransferUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     BankTransferPresenter presenter;
@@ -171,7 +171,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
 
 
     private void verifyPayment() {
-        presenter.startPaymentVerification();
+        presenter.startPaymentVerification(300);
     }
 
 
@@ -320,7 +320,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -345,7 +345,7 @@ public class BankTransferFragment extends Fragment implements BankTransferContra
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
+    public void onFetchFeeError(String s) {
         presenter.logEvent(new ErrorEvent(s).getEvent(), ravePayInitializer.getPublicKey());
         showToast(s);
     }

@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.banktransfer.BankTransferContract;
+import com.flutterwave.raveandroid.banktransfer.BankTransferUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class BankTransferModule {
 
-    private BankTransferContract.View view;
+    private BankTransferUiContract.View view;
 
     @Inject
-    public BankTransferModule(BankTransferContract.View view) {
+    public BankTransferModule(BankTransferUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public BankTransferContract.View providesContract() {
+    public BankTransferUiContract.View providesContract() {
         return view;
     }
 }

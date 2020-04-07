@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
@@ -14,7 +15,6 @@ import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
 public class BankTransferPresenterTest {
 
     @Mock
-    BankTransferContract.View view;
+    BankTransferUiContract.View view;
     @Inject
     Context context;
     @Inject
@@ -109,7 +109,7 @@ public class BankTransferPresenterTest {
 
         captor.getAllValues().get(0).onError(generateRandomString());
         verify(view).showProgressIndicator(false);
-        verify(view).showFetchFeeFailed("An error occurred while retrieving transaction fee");
+        verify(view).onFetchFeeError("An error occurred while retrieving transaction fee");
 
     }
 
@@ -122,20 +122,20 @@ public class BankTransferPresenterTest {
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
 
-        verify(view).displayFee(anyString(), any(Payload.class));
+        verify(view).onTransactionFeeFetched(anyString(), any(Payload.class), );
 
     }
 
     @Test
     public void fetchFee_onSuccess_Exception_showFetchFeeFailedCalled() throws NullPointerException {
 
-        doThrow(NullPointerException.class).when(view).displayFee(any(String.class), any(Payload.class));
+        doThrow(NullPointerException.class).when(view).onTransactionFeeFetched(any(String.class), any(Payload.class), );
         bankTransferPresenter.fetchFee(generatePayload());
 
         ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
         verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(new FeeCheckResponse());
-        verify(view).showFetchFeeFailed("An error occurred while retrieving transaction fee");
+        verify(view).onFetchFeeError("An error occurred while retrieving transaction fee");
 
     }
 
@@ -197,7 +197,7 @@ public class BankTransferPresenterTest {
 
     @Test
     public void startPaymentVerification_requeryTxCalled() {
-        bankTransferPresenter.startPaymentVerification();
+        bankTransferPresenter.startPaymentVerification(pollingTimeoutInSeconds);
         long time = System.currentTimeMillis();
 
         String randomflwRef = generateRandomString();
@@ -205,8 +205,8 @@ public class BankTransferPresenterTest {
         String randomPubKey = generateRandomString();
         verify(view).showPollingIndicator(true);
 
-        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time);
-        verify(bankTransferPresenterMock).requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time);
+        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
+        verify(bankTransferPresenterMock).requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
     }
 
     @Test
@@ -224,7 +224,7 @@ public class BankTransferPresenterTest {
         String randomPubKey = generateRandomString();
         long time = System.currentTimeMillis();
 
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time);
+        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
         requeryRequestBody.setFlw_ref(generateRandomString());
         requeryRequestBody.setPBFPubKey(generateRandomString());
         String responseJson = generateRandomString();
@@ -245,7 +245,7 @@ public class BankTransferPresenterTest {
         String randomTxRef = generateRandomString();
         String randomPubKey = generateRandomString();
         long time = 400000;
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time);
+        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time, time);
 
         String responseJson = generateRandomString();
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
@@ -272,12 +272,12 @@ public class BankTransferPresenterTest {
                 any(String.class),
                 any(String.class),
                 anyBoolean(),
-                anyLong());
+                anyLong(), time);
 
         bankTransferPresenterMock.networkRequest = networkRequest;
         bankTransferPresenterMock.pollingCancelled = false;
         bankTransferPresenterMock.mView = view;
-        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time);
+        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time, time);
 
         String responseJson = generateRandomString();
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
@@ -287,7 +287,7 @@ public class BankTransferPresenterTest {
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
 
         verify(bankTransferPresenterMock, times(2))
-                .requeryTx(anyString(), anyString(), anyString(), anyBoolean(), anyLong());
+                .requeryTx(anyString(), anyString(), anyString(), anyBoolean(), anyLong(), time);
 
     }
 
@@ -300,7 +300,7 @@ public class BankTransferPresenterTest {
         String randomPubKey = generateRandomString();
 
         long time = System.currentTimeMillis();
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time);
+        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
 
         String responseJson = generateRandomString();
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
@@ -321,7 +321,7 @@ public class BankTransferPresenterTest {
         long time = System.currentTimeMillis();
         RequeryResponse requeryResponse = new RequeryResponse();
         String jsonResponse = generateRandomString();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time);
+        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
         verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
@@ -337,7 +337,7 @@ public class BankTransferPresenterTest {
         long time = System.currentTimeMillis();
         RequeryResponse requeryResponse = new RequeryResponse();
         String jsonResponse = generateRandomString();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time);
+        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
         verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
@@ -353,7 +353,7 @@ public class BankTransferPresenterTest {
     public void requeryTx_onError_onPaymentFailedCalled() {
 
         long time = System.currentTimeMillis();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time);
+        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
         verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());

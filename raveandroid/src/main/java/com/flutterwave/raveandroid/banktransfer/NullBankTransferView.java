@@ -5,7 +5,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 
-public class NullBankTransferView implements BankTransferContract.View {
+public class NullBankTransferView implements BankTransferUiContract.View {
 
     @Override
     public void showProgressIndicator(boolean active) {
@@ -33,12 +33,12 @@ public class NullBankTransferView implements BankTransferContract.View {
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void showFetchFeeFailed(String s) {
+    public void onFetchFeeError(String s) {
 
     }
 
