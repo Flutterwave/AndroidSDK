@@ -1,17 +1,16 @@
 package com.flutterwave.raveandroid.ach;
 
-import android.content.Context;
 import android.view.View;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.rave_presentation.ach.AchHandler;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
@@ -30,10 +29,9 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 import javax.inject.Inject;
 
 
-public class AchPresenter implements AchContract.UserActionsListener {
+public class AchPresenter extends AchHandler implements AchUiContract.UserActionsListener {
 
-    Context context;
-    private AchContract.View mView;
+    private AchUiContract.View mView;
 
     @Inject
     SharedPrefsRepo sharedMgr;
@@ -54,22 +52,9 @@ public class AchPresenter implements AchContract.UserActionsListener {
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public AchPresenter(Context context, AchContract.View mView) {
-        this.context = context;
+    public AchPresenter(AchUiContract.View mView) {
+        super(mView);
         this.mView = mView;
-    }
-
-    public AchPresenter(Context context, AchContract.View mView, RaveUiComponent raveUiComponent) {
-        this.context = context;
-        this.mView = mView;
-        this.eventLogger = raveUiComponent.eventLogger();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.transactionStatusChecker = raveUiComponent.transactionStatusChecker();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-        this.payloadToJsonConverter = raveUiComponent.payloadToJsonConverter();
-        this.sharedMgr = raveUiComponent.sharedManager();
     }
 
     @Override
@@ -215,18 +200,17 @@ public class AchPresenter implements AchContract.UserActionsListener {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);
-                mView.onRequerySuccessful(response, responseAsJSONString, flwRef);
+                verifyRequeryResponseStatus(responseAsJSONString);
             }
 
             @Override
             public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(message, responseAsJSONString);
+                mView.onPaymentFailed(responseAsJSONString);
             }
         });
     }
 
-    @Override
-    public void verifyRequeryResponse(RequeryResponse response, String responseAsJSONString, RavePayInitializer ravePayInitializer, String flwRef) {
+    public void verifyRequeryResponse(String responseAsJSONString) {
 
         boolean wasTxSuccessful = transactionStatusChecker
                 .getTransactionStatus(
@@ -234,15 +218,15 @@ public class AchPresenter implements AchContract.UserActionsListener {
                 );
 
         if (wasTxSuccessful) {
-            mView.onPaymentSuccessful(response.getStatus(), flwRef, responseAsJSONString);
+            mView.onPaymentSuccessful(responseAsJSONString);
         }
         else {
-            mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
+            mView.onPaymentFailed(responseAsJSONString);
         }
     }
 
     @Override
-    public void onAttachView(AchContract.View view) {
+    public void onAttachView(AchUiContract.View view) {
         this.mView = view;
     }
 

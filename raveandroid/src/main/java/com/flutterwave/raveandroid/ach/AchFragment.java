@@ -24,8 +24,8 @@ import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AchModule;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AchFragment extends Fragment implements AchContract.View, View.OnClickListener
+public class AchFragment extends Fragment implements AchUiContract.View, View.OnClickListener
         , View.OnFocusChangeListener {
 
     @Inject
@@ -223,7 +223,7 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
+    public void onPaymentSuccessful(String responseAsJSONString) {
         dismissDialog();
 
         Intent intent = new Intent();
@@ -235,7 +235,12 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     }
 
     @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
+    public void onFeeFetchError(String errorMessage) {
+
+    }
+
+    @Override
+    public void onPaymentFailed(String responseAsJSONString) {
         dismissDialog();
 
         Intent intent = new Intent();
@@ -247,17 +252,17 @@ public class AchFragment extends Fragment implements AchContract.View, View.OnCl
     }
 
     @Override
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
+        // Unused. Fee passed with charge response
+    }
+
+    @Override
     public void showAmountError(String msg) {
 
         if (msg == null) {
             amountTil.setErrorEnabled(false);
         }
         amountTil.setError(msg);
-    }
-
-    @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
-        presenter.verifyRequeryResponse(response, responseAsJSONString, ravePayInitializer, flwRef);
     }
 
     @Override

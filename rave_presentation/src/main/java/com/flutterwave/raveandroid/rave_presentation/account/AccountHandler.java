@@ -243,17 +243,6 @@ public class AccountHandler implements AccountContract.AccountHandler {
         }
     }
 
-
-    @Override
-    public void onAttachView(AccountContract.AccountInteractor accountInteractor) {
-        this.mAccountInteractor = accountInteractor;
-    }
-
-    @Override
-    public void onDetachView() {
-        this.mAccountInteractor = new NullAccountView();
-    }
-
     public void logEvent(Event event, String publicKey) {
         event.setPublicKey(publicKey);
         eventLogger.logEvent(event);

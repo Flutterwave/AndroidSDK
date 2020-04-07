@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.ach.AchContract;
+import com.flutterwave.raveandroid.ach.AchUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class AchModule {
 
-    private AchContract.View view;
+    private AchUiContract.View view;
 
     @Inject
-    public AchModule(AchContract.View view) {
+    public AchModule(AchUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public AchContract.View providesContract() {
+    public AchUiContract.View providesContract() {
         return view;
     }
 }

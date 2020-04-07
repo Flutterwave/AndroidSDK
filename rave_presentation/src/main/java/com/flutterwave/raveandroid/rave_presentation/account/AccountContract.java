@@ -17,13 +17,7 @@ import java.util.List;
 public interface AccountContract {
 
     interface AccountInteractor {
-        /**
-         * Called to indicate that a network call has just begun or has just ended.
-         * E.g., by showing or hiding a progress bar
-         *
-         * @param active This is true if the progress bar should be shown,
-         *               and false if it should be hidden
-         */
+
         void showProgressIndicator(boolean active);
 
         /**
@@ -148,20 +142,6 @@ public interface AccountContract {
          * @param publicKey The public Key used to initiate the transaction
          */
         void requeryTx(String flwRef, String publicKey);
-
-        /**
-         * Reattaches the view to the presenter.
-         * Call this in activity or fragment onStart() function.
-         *
-         * @param accountInteractor View to be attached
-         */
-        void onAttachView(AccountInteractor accountInteractor);
-
-        /**
-         * Detaches the view from the presenter.
-         * Call this in activity or fragment onStop() function.
-         */
-        void onDetachView();
     }
 
 }

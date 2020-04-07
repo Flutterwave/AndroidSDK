@@ -13,6 +13,8 @@ import com.flutterwave.raveandroid.rave_presentation.data.validators.Transaction
 import com.flutterwave.raveandroid.rave_presentation.data.validators.UrlValidator;
 import com.flutterwave.raveandroid.rave_presentation.di.account.AccountComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.account.AccountModule;
+import com.flutterwave.raveandroid.rave_presentation.di.ach.AchComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.ach.AchModule;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
@@ -50,5 +52,7 @@ public interface RaveComponent {
     CardComponent plus(CardModule cardModule);
 
     AccountComponent plus(AccountModule module);
+
+    AchComponent plus(AchModule module);
 }
 

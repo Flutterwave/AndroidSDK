@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.ach;
 
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
-public class NullAchView implements AchContract.View {
+public class NullAchView implements AchUiContract.View {
     @Override
     public void showProgressIndicator(boolean active) {
 
@@ -29,17 +29,22 @@ public class NullAchView implements AchContract.View {
     }
 
     @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
+    public void onPaymentFailed(String responseAsJSONString) {
 
     }
 
     @Override
-    public void onPaymentFailed(String message, String responseAsJSONString) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
+    public void onPaymentSuccessful(String responseAsJSONString) {
+
+    }
+
+    @Override
+    public void onFeeFetchError(String errorMessage) {
 
     }
 
