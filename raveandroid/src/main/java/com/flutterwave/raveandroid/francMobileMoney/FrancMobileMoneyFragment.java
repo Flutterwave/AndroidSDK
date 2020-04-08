@@ -41,7 +41,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.respon
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMoneyUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -187,7 +187,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String charge_amount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -218,7 +218,6 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         showToast(message);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -278,14 +277,6 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         }
     }
 
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-
-    }
 
     @Override
     public void onResume() {
