@@ -19,8 +19,4 @@ public class NullFrancPaymentCallback implements FrancophonePaymentCallback {
 
     }
 
-    @Override
-    public void showAuthenticationWebPage(String authenticationUrl) {
-
-    }
 }
