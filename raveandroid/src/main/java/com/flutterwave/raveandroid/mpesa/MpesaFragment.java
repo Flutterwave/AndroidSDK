@@ -42,7 +42,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.respon
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MpesaFragment extends Fragment implements MpesaContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class MpesaFragment extends Fragment implements MpesaUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -183,16 +183,11 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
     }
 
     @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-    }
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setMessage(getResources().getString(R.string.charge) + " " + chargeAmount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -211,6 +206,12 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
 
             builder.show();
         }
+
+    }
+
+    @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
     }
 
     @Override
@@ -219,7 +220,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         showToast(message);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -277,15 +277,6 @@ public class MpesaFragment extends Fragment implements MpesaContract.View, View.
         } else {
             pollingProgressDialog.dismiss();
         }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-
     }
 
     @Override

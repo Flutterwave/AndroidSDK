@@ -23,6 +23,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.Francop
 import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.FrancophoneModule;
 import com.flutterwave.raveandroid.rave_presentation.di.ghmobilemoney.GhMobileMoneyComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.ghmobilemoney.GhMobileMoneyModule;
+import com.flutterwave.raveandroid.rave_presentation.di.mpesa.MpesaComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.mpesa.MpesaModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -66,5 +68,7 @@ public interface RaveComponent {
     FrancophoneComponent plus(FrancophoneModule module);
 
     GhMobileMoneyComponent plus(GhMobileMoneyModule module);
+
+    MpesaComponent plus(MpesaModule module);
 }
 

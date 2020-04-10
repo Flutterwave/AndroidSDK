@@ -5,12 +5,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 
-public class NullMpesaView implements MpesaContract.View {
-
-    @Override
-    public void showToast(String message) {
-
-    }
+public class NullMpesaView implements MpesaUiContract.View {
 
     @Override
     public void showFetchFeeFailed(String s) {
@@ -33,12 +28,12 @@ public class NullMpesaView implements MpesaContract.View {
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onAmountValidationSuccessful(String amountToPay) {
 
     }
 
@@ -54,11 +49,6 @@ public class NullMpesaView implements MpesaContract.View {
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String encryptionKey) {
 
     }
 
