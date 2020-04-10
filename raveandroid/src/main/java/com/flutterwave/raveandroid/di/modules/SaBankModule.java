@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyContract;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountContract;
 
 import javax.inject.Inject;

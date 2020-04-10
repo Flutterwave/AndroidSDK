@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
@@ -12,7 +13,6 @@ import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
@@ -59,7 +59,7 @@ public class RwfMobileMoneyPresenterTest {
 
     RwfMobileMoneyPresenter presenter;
     @Mock
-    RwfMobileMoneyContract.View view;
+    RwfMobileMoneyUiContract.View view;
     @Inject
     Context context;
     @Inject

@@ -39,7 +39,7 @@ import static android.view.View.GONE;
 /**
  * Created by Jeremiah on 10/12/2018.
  */
-public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     RwfMobileMoneyPresenter presenter;
@@ -169,14 +169,9 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
     }
 
     @Override
-    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-        presenter.processTransaction(dataHashMap, ravePayInitializer);
-    }
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload, String fee) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + chargeAmount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -198,13 +193,17 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
     }
 
     @Override
+    public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
+        presenter.processTransaction(dataHashMap, ravePayInitializer);
+    }
+
+    @Override
     public void showFetchFeeFailed(String message) {
         presenter.logEvent(new ErrorEvent(message).getEvent(), ravePayInitializer.getPublicKey());
         showToast(message);
     }
 
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -259,6 +258,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
@@ -267,13 +267,6 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyCo
             //pass
         } else {
             pollingProgressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
         }
     }
 
