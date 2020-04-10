@@ -5,7 +5,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 
-public class NullGhMobileMoneyView implements GhMobileMoneyContract.View {
+public class NullGhMobileMoneyView implements GhMobileMoneyUiContract.View {
 
     @Override
     public void showToast(String message) {
@@ -33,12 +33,12 @@ public class NullGhMobileMoneyView implements GhMobileMoneyContract.View {
     }
 
     @Override
-    public void onAmountValidationSuccessful(String valueOf) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onAmountValidationSuccessful(String valueOf) {
 
     }
 
@@ -54,11 +54,6 @@ public class NullGhMobileMoneyView implements GhMobileMoneyContract.View {
 
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
-
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
 
     }
 

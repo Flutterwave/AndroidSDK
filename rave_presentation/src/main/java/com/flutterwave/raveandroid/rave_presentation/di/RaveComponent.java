@@ -21,6 +21,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.card.CardComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.FrancophoneComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.FrancophoneModule;
+import com.flutterwave.raveandroid.rave_presentation.di.ghmobilemoney.GhMobileMoneyComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.ghmobilemoney.GhMobileMoneyModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -62,5 +64,7 @@ public interface RaveComponent {
     BankTransferComponent plus(BankTransferModule module);
 
     FrancophoneComponent plus(FrancophoneModule module);
+
+    GhMobileMoneyComponent plus(GhMobileMoneyModule module);
 }
 

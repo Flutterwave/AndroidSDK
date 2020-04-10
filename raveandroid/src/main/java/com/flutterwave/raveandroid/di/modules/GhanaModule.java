@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyContract;
+import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class GhanaModule {
 
-    private GhMobileMoneyContract.View view;
+    private GhMobileMoneyUiContract.View view;
 
     @Inject
-    public GhanaModule(GhMobileMoneyContract.View view) {
+    public GhanaModule(GhMobileMoneyUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public GhMobileMoneyContract.View providesContract() {
+    public GhMobileMoneyUiContract.View providesContract() {
         return view;
     }
 }
