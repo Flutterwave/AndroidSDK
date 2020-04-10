@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.sabankaccount;
 import android.content.Context;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
@@ -12,7 +13,6 @@ import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 public class SaBankAccountPresenterTest {
 
     @Mock
-    SaBankAccountContract.View view;
+    SaBankAccountUiContract.View view;
     @Inject
     Context context;
     @Inject
@@ -314,7 +314,7 @@ public class SaBankAccountPresenterTest {
         String jsonResponse = generateRandomString();
 
         when(sharedPrefsRequest.fetchFlwRef()).thenReturn(flwRef);
-        presenter.requeryTx(generateRandomString());
+        presenter.requeryTx(generateRandomString(), flwRef);
 
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
@@ -333,7 +333,7 @@ public class SaBankAccountPresenterTest {
         String message = generateRandomString();
         String jsonResponse = generateRandomString();
 
-        presenter.requeryTx(generateRandomString());
+        presenter.requeryTx(generateRandomString(), flwRef);
         verify(view).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
         verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());

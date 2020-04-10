@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.sabankaccount.SaBankAccountContract;
+import com.flutterwave.raveandroid.sabankaccount.SaBankAccountUiContract;
 
 import javax.inject.Inject;
 
@@ -9,15 +9,15 @@ import dagger.Provides;
 
 @Module
 public class SaBankModule {
-    private SaBankAccountContract.View view;
+    private SaBankAccountUiContract.View view;
 
     @Inject
-    public SaBankModule(SaBankAccountContract.View view) {
+    public SaBankModule(SaBankAccountUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public SaBankAccountContract.View providesContract() {
+    public SaBankAccountUiContract.View providesContract() {
         return view;
     }
 }

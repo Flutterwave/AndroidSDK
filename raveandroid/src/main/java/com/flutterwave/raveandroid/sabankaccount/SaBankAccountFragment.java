@@ -28,7 +28,6 @@ import com.flutterwave.raveandroid.di.modules.SaBankModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.verification.VerificationActivity;
 
 import java.util.HashMap;
@@ -40,7 +39,7 @@ import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTR
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SaBankAccountFragment extends Fragment implements SaBankAccountContract.View, View.OnClickListener {
+public class SaBankAccountFragment extends Fragment implements SaBankAccountUiContract.View, View.OnClickListener {
 
     public static final int FOR_SA_BANK_ACCOUNT = 895;
 
@@ -54,6 +53,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
     private RavePayInitializer ravePayInitializer;
 
     private ProgressDialog progressDialog;
+    private String flwRef;
 
     private void injectComponents() {
         if (getActivity() != null) {
@@ -115,7 +115,6 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -139,6 +138,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
 
     @Override
     public void showWebView(String authUrl, String flwRef){
+        this.flwRef = flwRef;
         Intent intent = new Intent(getContext(), VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
@@ -170,18 +170,11 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay, String currency) {
-        //amountTil.setVisibility(GONE);
-        amountEt.setText(amountToPay);
-        payButton.setText("Pay " + currency + " " + amountToPay);
-    }
-
-    @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+            builder.setMessage(getResources().getString(R.string.charge) + chargeAmount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -200,6 +193,13 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
 
             builder.show();
         }
+    }
+
+    @Override
+    public void onAmountValidationSuccessful(String amountToPay, String currency) {
+        //amountTil.setVisibility(GONE);
+        amountEt.setText(amountToPay);
+        payButton.setText("Pay " + currency + " " + amountToPay);
     }
 
     @Override
@@ -223,11 +223,6 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-    }
-
-    @Override
     public void onPaymentSuccessful(String status, String responseAsString) {
         Intent intent = new Intent();
         intent.putExtra(RaveConstants.response, responseAsString);
@@ -238,17 +233,13 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountCont
         }
     }
 
-    @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
-        presenter.verifyRequeryResponseStatus(response, responseAsJSONString, ravePayInitializer);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
             //just to be sure this fragment sent the receiving intent
             if (requestCode == FOR_SA_BANK_ACCOUNT) {
-                presenter.requeryTx(ravePayInitializer.getPublicKey());
+                presenter.requeryTx(ravePayInitializer.getPublicKey(), flwRef);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

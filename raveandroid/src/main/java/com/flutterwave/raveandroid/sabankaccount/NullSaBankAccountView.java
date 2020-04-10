@@ -2,16 +2,10 @@ package com.flutterwave.raveandroid.sabankaccount;
 
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import java.util.HashMap;
 
-public class NullSaBankAccountView implements SaBankAccountContract.View{
-
-    @Override
-    public void showToast(String message) {
-
-    }
+public class NullSaBankAccountView implements SaBankAccountUiContract.View {
 
     @Override
     public void showFetchFeeFailed(String s) {
@@ -34,12 +28,12 @@ public class NullSaBankAccountView implements SaBankAccountContract.View{
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay, String currency) {
+    public void onTransactionFeeRetrieved(String chargeAmount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onAmountValidationSuccessful(String amountToPay, String currency) {
 
     }
 
@@ -59,17 +53,7 @@ public class NullSaBankAccountView implements SaBankAccountContract.View{
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-    }
-
-    @Override
     public void onPaymentSuccessful(String status, String responseAsString) {
-
-    }
-
-    @Override
-    public void onRequerySuccessful(RequeryResponse response, String responseAsJSONString, String flwRef) {
 
     }
 
