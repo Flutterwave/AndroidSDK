@@ -20,8 +20,8 @@ import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenter;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenter;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenterTest;
+import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyHandlerTest;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenter;
-import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.uk.UkPresenter;
 import com.flutterwave.raveandroid.uk.UkPresenterTest;
 import com.flutterwave.raveandroid.ussd.UssdPresenter;
@@ -49,7 +49,7 @@ public interface TestRaveUiComponent extends RaveUiComponent {
 
     void inject(MpesaPresenterTest mpesaPresenterTest);
 
-    void inject(UgMobileMoneyPresenterTest ugMobileMoneyPresenterTest);
+    void inject(UgMobileMoneyHandlerTest ugMobileMoneyPresenterTest);
 
     void inject(GhMobileMoneyPresenterTest ghMobileMoneyPresenterTest);
 

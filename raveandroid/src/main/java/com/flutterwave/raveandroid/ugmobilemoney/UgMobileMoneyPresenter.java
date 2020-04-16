@@ -1,31 +1,19 @@
 package com.flutterwave.raveandroid.ugmobilemoney;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
-import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_presentation.ugmobilemoney.UgMobileMoneyHandler;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
 
@@ -34,12 +22,9 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NG;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.UGX;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
 
@@ -48,10 +33,10 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
  */
 
 
-public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActionsListener {
+public class UgMobileMoneyPresenter extends UgMobileMoneyHandler implements UgMobileMoneyUiContract.UserActionsListener {
 
     private Context context;
-    private UgMobileMoneyContract.View mView;
+    private UgMobileMoneyUiContract.View mView;
 
     @Inject
     EventLogger eventLogger;
@@ -67,131 +52,10 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView) {
+    public UgMobileMoneyPresenter(Context context, UgMobileMoneyUiContract.View mView) {
+        super(mView);
         this.context = context;
         this.mView = mView;
-    }
-
-    public UgMobileMoneyPresenter(Context context, UgMobileMoneyContract.View mView, RaveUiComponent raveUiComponent) {
-        this.context = context;
-        this.mView = mView;
-        this.eventLogger = raveUiComponent.eventLogger();
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-        this.phoneValidator = raveUiComponent.phoneValidator();
-    }
-
-    @Override
-    public void fetchFee(final Payload payload) {
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPtype("3");
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(message);
-            }
-        });
-    }
-
-    @Override
-    public void chargeUgMobileMoney(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ChargeAttemptEvent("UG Mobile Money").getEvent(), payload.getPBFPubKey());
-
-
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
-            @Override
-            public void onSuccess(MobileMoneyChargeResponse response) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-                    String flwRef = response.getData().getFlwRef();
-                    String txRef = response.getData().getTx_ref();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                }
-                else {
-                    mView.onPaymentError(noResponse);
-                }
-
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
-    }
-
-    @Override
-    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setPBFPubKey(publicKey);
-
-        mView.showPollingIndicator(true);
-
-        logEvent(new RequeryEvent().getEvent(), publicKey);
-
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                }
-                else if (response.getData().getChargeResponseCode().equals("02")){
-//                    Log.d("Requery response",responseAsJSONString);
-                    mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                }
-                else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mView.showPollingIndicator(false);
-                    mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
-                }
-                else {
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
-                }
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(message, responseAsJSONString);
-            }
-        });
     }
 
     @Override
@@ -287,19 +151,13 @@ public class UgMobileMoneyPresenter implements UgMobileMoneyContract.UserActions
     }
 
     @Override
-    public void onAttachView(UgMobileMoneyContract.View view) {
+    public void onAttachView(UgMobileMoneyUiContract.View view) {
         this.mView = view;
     }
 
     @Override
     public void onDetachView() {
         this.mView = new NullUgMobileMoneyView();
-    }
-
-    @Override
-    public void logEvent(Event event, String publicKey) {
-        event.setPublicKey(publicKey);
-        eventLogger.logEvent(event);
     }
 }
 

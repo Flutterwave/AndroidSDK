@@ -40,7 +40,7 @@ import static android.view.View.GONE;
 /**
  * Created by Jeremiah on 10/12/2018.
  */
-public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     private View v;
     private Button payButton;
@@ -189,7 +189,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeRetrieved(String charge_amount, final Payload payload, String fee) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -219,7 +219,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
     }
 
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -272,6 +271,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
@@ -280,13 +280,6 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyCont
             //pass
         } else {
             pollingProgressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
         }
     }
 
