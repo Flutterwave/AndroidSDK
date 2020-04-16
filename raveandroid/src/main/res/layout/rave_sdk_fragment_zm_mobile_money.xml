@@ -28,15 +28,6 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp" />
 
-
-            <TextView
-                android:id="@+id/instructionsTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="left"
-                tools:text="@string/vodafone_msg" />
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"

@@ -130,21 +130,18 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
                     network = getResources().getStringArray(R.array.zm_mobile_money_networks)[position];
 
                     if (position == 0) {
-                        showInstructionsAndVoucher(false);
                         validateInstructions = getResources().getString(R.string.checkStatus);
                     }
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
                         presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
                         validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
-                        showInstructionsAndVoucher(false);
                     }
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                showInstructionsAndVoucher(false);
             }
         });
     }
@@ -193,15 +190,6 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     public void onAmountValidationSuccessful(String amountToPay) {
         amountTil.setVisibility(GONE);
         amountEt.setText(amountToPay);
-    }
-
-    private void showInstructionsAndVoucher(boolean show) {
-
-        if (show) {
-            instructionsTv.setVisibility(View.VISIBLE);
-        } else {
-            instructionsTv.setVisibility(View.GONE);
-        }
     }
 
     @Override

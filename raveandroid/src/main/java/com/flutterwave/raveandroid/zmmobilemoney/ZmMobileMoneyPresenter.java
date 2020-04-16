@@ -215,10 +215,6 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
-            if (dataHashMap.get(fieldVoucher) != null) {
-                builder.setVoucher(dataHashMap.get(fieldVoucher).getData());
-            }
-
             if (ravePayInitializer.getPayment_plan() != null) {
                 builder.setPaymentPlan(ravePayInitializer.getPayment_plan());
             }
