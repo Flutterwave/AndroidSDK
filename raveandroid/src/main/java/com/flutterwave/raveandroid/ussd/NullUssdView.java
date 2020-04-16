@@ -5,7 +5,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 
 import java.util.HashMap;
 
-class NullUssdView implements UssdContract.View {
+class NullUssdView implements UssdUiContract.View {
     @Override
     public void showProgressIndicator(boolean active) {
 
@@ -21,10 +21,6 @@ class NullUssdView implements UssdContract.View {
 
     }
 
-    @Override
-    public void showToast(String message) {
-
-    }
 
     @Override
     public void onPaymentSuccessful(String status, String responseAsString) {
@@ -32,9 +28,10 @@ class NullUssdView implements UssdContract.View {
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, Payload payload, String fee) {
 
     }
+
 
     @Override
     public void showFetchFeeFailed(String s) {

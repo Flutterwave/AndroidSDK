@@ -2,44 +2,28 @@ package com.flutterwave.raveandroid.ussd;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
+import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
-import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
-import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_presentation.ussd.UssdHandler;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
-
-public class UssdPresenter implements UssdContract.UserActionsListener {
-    private Context context;
-    public UssdContract.View mView;
-
-    public boolean pollingCancelled = false;
+public class UssdPresenter extends UssdHandler implements UssdUiContract.UserActionsListener {
+    public UssdUiContract.View mView;
 
     @Inject
     EventLogger eventLogger;
@@ -53,24 +37,11 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
     DeviceIdGetter deviceIdGetter;
     @Inject
     RemoteRepository networkRequest;
-    private String txRef = null, flwRef = null, publicKey = null, ussdCode = null, referenceCode = null;
-    private long requeryCountdownTime = 0;
 
     @Inject
-    UssdPresenter(Context context, UssdContract.View mView) {
-        this.context = context;
+    UssdPresenter(Context context, UssdUiContract.View mView) {
+        super(mView);
         this.mView = mView;
-    }
-
-    public UssdPresenter(Context context, UssdContract.View mView, RaveUiComponent raveUiComponent) {
-        this.context = context;
-        this.mView = mView;
-        this.eventLogger = raveUiComponent.eventLogger();
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-        this.payloadToJson = raveUiComponent.payloadToJson();
     }
 
     @Override
@@ -79,10 +50,17 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
 
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
+            String bankCode = null;
+            for (Bank bank : RaveConstants.ussdBanksList) {
+                if (bank.getBankname() == dataHashMap.get(RaveConstants.fieldUssdBank).getData()) {
+                    bankCode = bank.getBankcode();
+                    break;
+                }
+            }
+
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(ravePayInitializer.getAmount() + "")
-                    .setAccountbank(RaveConstants.ussdBanksList
-                            .get(dataHashMap.get(RaveConstants.fieldUssdBank).getData()))
+                    .setAccountbank(bankCode)
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
@@ -106,87 +84,6 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
         }
     }
 
-
-    public void fetchFee(final Payload payload) {
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPtype("3");
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload);
-                } catch (Exception e) {
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RaveConstants.RAVEPAY, message);
-                mView.showFetchFeeFailed(message);
-            }
-        });
-    }
-
-    @Override
-    public void payWithUssd(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ChargeAttemptEvent("USSD").getEvent(), payload.getPBFPubKey());
-
-
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
-            @Override
-            public void onSuccess(ChargeResponse response) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-                    flwRef = response.getData().getUssdData().getFlw_reference();
-                    publicKey = payload.getPBFPubKey();
-                    String note = null;
-                    if (response.getData().getNote() != null) note = response.getData().getNote();
-                    else if (response.getData().getUssdData().getNote() != null)
-                        note = response.getData().getUssdData().getNote();
-                    else mView.onPaymentError("No response data was returned");
-                    if (note != null) {
-                        if (note.contains("|")) {
-                            ussdCode = note.substring(0, note.indexOf("|"));
-                        } else ussdCode = note;
-                        referenceCode = response.getData().getUssdData().getReference_code();
-                        mView.onUssdDetailsReceived(ussdCode, referenceCode);
-                    }
-                } else {
-                    mView.onPaymentError("No response data was returned");
-                }
-
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
-    }
 
     @Override
     public void init(RavePayInitializer ravePayInitializer) {
@@ -221,7 +118,14 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
             mView.showFieldError(amountID, RaveConstants.validAmountPrompt, amountViewType);
         }
 
-        if (bankName == null || !RaveConstants.ussdBanksList.containsKey(bankName)) {
+        boolean isValidBank = false;
+        for (Bank bank : RaveConstants.ussdBanksList) {
+            if (bank.getBankname() == bankName) {
+                isValidBank = true;
+                break;
+            }
+        }
+        if (bankName == null || !isValidBank) {
             valid = false;
             mView.showFieldError(bankID, "Please select a bank", bankViewType);
         }
@@ -232,74 +136,12 @@ public class UssdPresenter implements UssdContract.UserActionsListener {
     }
 
     @Override
-    public void startPaymentVerification() {
-        requeryCountdownTime = System.currentTimeMillis();
-        mView.showPollingIndicator(true);
-        requeryTx(flwRef, publicKey, requeryCountdownTime);
-    }
-
-    public void requeryTx(final String flwRef, final String publicKey, final long requeryCountdownTime) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setPBFPubKey(publicKey);
-
-        logEvent(new RequeryEvent().getEvent(), publicKey);
-
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-
-                if (response.getData() == null) {
-                    mView.showPollingIndicator(false);
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    if (pollingCancelled) {
-                        mView.showPollingIndicator(false);
-                        mView.onPollingCanceled(flwRef, responseAsJSONString);
-                    } else {
-                        if ((System.currentTimeMillis() - requeryCountdownTime) < 300000) {
-                            requeryTx(flwRef, publicKey, requeryCountdownTime);
-                        } else {
-                            mView.showPollingIndicator(false);
-                            mView.onPollingTimeout(flwRef, responseAsJSONString);
-                        }
-                    }
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mView.showPollingIndicator(false);
-                    mView.onPaymentSuccessful(flwRef, responseAsJSONString);
-                } else {
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
-                }
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(message, responseAsJSONString);
-            }
-        });
-    }
-
-    @Override
-    public void cancelPolling() {
-        pollingCancelled = true;
-    }
-
-    @Override
-    public void onAttachView(UssdContract.View view) {
+    public void onAttachView(UssdUiContract.View view) {
         this.mView = view;
     }
 
     @Override
     public void onDetachView() {
         this.mView = new NullUssdView();
-    }
-
-    @Override
-    public void logEvent(Event event, String publicKey) {
-        event.setPublicKey(publicKey);
-        eventLogger.logEvent(event);
     }
 }

@@ -1,5 +1,9 @@
 package com.flutterwave.raveandroid.rave_java_commons;
 
+import com.flutterwave.raveandroid.rave_core.models.Bank;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -106,16 +110,15 @@ public class RaveConstants {
     public static String bankNameGtb = "Guaranty Trust Bank";
     public static final String BARTER_CHECKOUT = "barter";
 
-
-    public static HashMap<String, String> ussdBanksList = new HashMap<String, String>() {{
-        put(bankNameGtb, "058");
-        put("Fidelity Bank", "070");
-        put("Keystone Bank", "082");
-        put("Unity Bank PLC", "215");
-        put("Zenith bank PLC", "057");
-        put("Sterling Bank PLC", "232");
-        put("United Bank for Africa", "033");
-    }};
+    public static ArrayList<Bank> ussdBanksList = new ArrayList<>(Arrays.asList(
+            new Bank(bankNameGtb, "058"),
+            new Bank("Fidelity Bank", "070"),
+            new Bank("Keystone Bank", "082"),
+            new Bank("Unity Bank PLC", "215"),
+            new Bank("Zenith bank PLC", "057"),
+            new Bank("Sterling Bank PLC", "232"),
+            new Bank("United Bank for Africa", "033")
+    ));
 
     public static final int PAYMENT_TYPE_CARD = 101;
     public static final int PAYMENT_TYPE_ACCOUNT = 102;

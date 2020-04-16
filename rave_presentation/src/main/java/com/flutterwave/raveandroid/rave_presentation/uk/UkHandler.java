@@ -134,9 +134,10 @@ public class UkHandler implements UkContract.Handler {
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    if (pollingCancelled)
+                    if (pollingCancelled) {
+                        mInteractor.showPollingIndicator(false);
                         mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                    else requeryTx(flwRef, txRef, publicKey);
+                    } else requeryTx(flwRef, txRef, publicKey);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);

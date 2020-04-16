@@ -49,7 +49,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UssdFragment extends Fragment implements UssdContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class UssdFragment extends Fragment implements UssdUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     @Inject
     UssdPresenter presenter;
@@ -155,7 +155,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
             collectData();
         }
         if (viewId == verifyUssdPaymentButton.getId()) {
-            presenter.startPaymentVerification();
+            presenter.startPaymentVerification(300);
         }
         if (viewId == chooseAnotherBankView.getId()) {
             showValidationLayout(false);
@@ -254,7 +254,6 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
         amountEt.setText(amountToPay);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -300,7 +299,7 @@ public class UssdFragment extends Fragment implements UssdContract.View, View.On
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {

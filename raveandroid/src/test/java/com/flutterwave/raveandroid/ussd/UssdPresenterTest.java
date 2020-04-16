@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatSpinner;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
@@ -15,7 +16,6 @@ import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
 public class UssdPresenterTest {
 
     @Mock
-    UssdContract.View view;
+    UssdUiContract.View view;
     @Inject
     Context context;
     @Inject
@@ -197,7 +197,7 @@ public class UssdPresenterTest {
 
     @Test
     public void startPaymentVerification_requeryTxCalled() {
-        ussdPresenter.startPaymentVerification();
+        ussdPresenter.startPaymentVerification(pollingTimeoutInSeconds);
         long time = System.currentTimeMillis();
 
         String randomflwRef = generateRandomString();

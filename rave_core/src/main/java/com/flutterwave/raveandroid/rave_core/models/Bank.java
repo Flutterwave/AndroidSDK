@@ -10,6 +10,11 @@ public class Bank {
     String bankcode;
     boolean internetbanking;
 
+    public Bank(String bankname, String bankcode) {
+        this.bankname = bankname;
+        this.bankcode = bankcode;
+    }
+
     public String getBankname() {
         return bankname;
     }
