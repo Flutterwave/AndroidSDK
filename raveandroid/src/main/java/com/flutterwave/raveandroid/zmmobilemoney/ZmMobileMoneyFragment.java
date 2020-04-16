@@ -43,7 +43,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -221,7 +221,8 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -305,6 +306,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
@@ -317,17 +319,10 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyCont
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (presenter == null) {
-            presenter = new ZmMobileMoneyPresenter(getActivity(), this);
+            presenter = new ZmMobileMoneyPresenter(this);
         }
         presenter.onAttachView(this);
     }

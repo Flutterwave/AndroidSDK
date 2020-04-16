@@ -1,31 +1,17 @@
 package com.flutterwave.raveandroid.zmmobilemoney;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
-import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
+import com.flutterwave.raveandroid.rave_presentation.zmmobilemoney.ZmMobileMoneyHandler;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.NetworkValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
@@ -34,13 +20,9 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldNetwork;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldVoucher;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validNetworkPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
@@ -49,7 +31,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
  * Created by hfetuga on 28/06/2018.
  */
 
-public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActionsListener {
+public class ZmMobileMoneyPresenter extends ZmMobileMoneyHandler implements ZmMobileMoneyUiContract.UserActionsListener {
     @Inject
     RemoteRepository networkRequest;
     @Inject
@@ -64,130 +46,12 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
     PayloadEncryptor payloadEncryptor;
     @Inject
     EventLogger eventLogger;
-    private Context context;
-    private ZmMobileMoneyContract.View mView;
+    private ZmMobileMoneyUiContract.View mView;
 
     @Inject
-    public ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView) {
-        this.context = context;
+    public ZmMobileMoneyPresenter(ZmMobileMoneyUiContract.View mView) {
+        super(mView);
         this.mView = mView;
-    }
-
-    public ZmMobileMoneyPresenter(Context context, ZmMobileMoneyContract.View mView, RaveUiComponent raveUiComponent) {
-        this.context = context;
-        this.mView = mView;
-        this.eventLogger = raveUiComponent.eventLogger();
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.phoneValidator = raveUiComponent.phoneValidator();
-        this.networkValidator = raveUiComponent.networkValidator();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
-    }
-
-    @Override
-    public void fetchFee(final Payload payload) {
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPtype("3");
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(message);
-            }
-        });
-    }
-
-    @Override
-    public void chargeZmMobileMoney(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        logEvent(new ChargeAttemptEvent("Zambia Mobile Money").getEvent(), payload.getPBFPubKey());
-
-
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
-            @Override
-            public void onSuccess(MobileMoneyChargeResponse response) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-                    String flwRef = response.getData().getFlwRef();
-                    String txRef = response.getData().getTx_ref();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                } else {
-                    mView.onPaymentError(noResponse);
-                }
-
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
-    }
-
-    @Override
-    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setFlw_ref(flwRef);
-        body.setPBFPubKey(publicKey);
-
-        mView.showPollingIndicator(true);
-
-        logEvent(new RequeryEvent().getEvent(), publicKey);
-
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
-                    mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    mView.onPollingRoundComplete(flwRef, txRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mView.showPollingIndicator(false);
-                    mView.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
-                } else {
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
-                }
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(message, responseAsJSONString);
-            }
-        });
     }
 
 
@@ -286,7 +150,7 @@ public class ZmMobileMoneyPresenter implements ZmMobileMoneyContract.UserActions
 
 
     @Override
-    public void onAttachView(ZmMobileMoneyContract.View view) {
+    public void onAttachView(ZmMobileMoneyUiContract.View view) {
         this.mView = view;
     }
 

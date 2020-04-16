@@ -74,9 +74,9 @@ public class RaveConstants {
     public static String inValidRedirectUrl = "Invalid redirect url returned";
 
     public static String response = "response";
-    public static String mtn = "mtn";
-    public static String tigo = "tigo";
-    public static String vodafone = "vodafone";
+    public static String mtn = "MTN";
+    public static String tigo = "TIGO";
+    public static String vodafone = "VODAFONE";
 
     public static String tokenNotFound = "token not found";
     public static String expired = "expired";

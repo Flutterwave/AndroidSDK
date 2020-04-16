@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyContract;
+import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class ZambiaModule {
 
-    private ZmMobileMoneyContract.View view;
+    private ZmMobileMoneyUiContract.View view;
 
     @Inject
-    public ZambiaModule(ZmMobileMoneyContract.View view) {
+    public ZambiaModule(ZmMobileMoneyUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public ZmMobileMoneyContract.View providesContract() {
+    public ZmMobileMoneyUiContract.View providesContract() {
         return view;
     }
 }

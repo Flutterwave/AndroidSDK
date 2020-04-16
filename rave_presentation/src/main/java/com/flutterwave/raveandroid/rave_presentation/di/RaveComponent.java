@@ -35,6 +35,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.uk.UkComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.uk.UkModule;
 import com.flutterwave.raveandroid.rave_presentation.di.ussd.UssdComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.ussd.UssdModule;
+import com.flutterwave.raveandroid.rave_presentation.di.zm.ZmComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.zm.ZmModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -90,5 +92,7 @@ public interface RaveComponent {
     UkComponent plus(UkModule module);
 
     UssdComponent plus(UssdModule module);
+
+    ZmComponent plus(ZmModule module);
 }
 
