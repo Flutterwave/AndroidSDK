@@ -44,7 +44,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldA
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UkFragment extends Fragment implements UkContract.View, View.OnClickListener, View.OnFocusChangeListener {
+public class UkFragment extends Fragment implements UkUiContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
 
     @Inject
@@ -182,7 +182,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -213,7 +213,6 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         showToast(message);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -287,6 +286,7 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
@@ -297,15 +297,6 @@ public class UkFragment extends Fragment implements UkContract.View, View.OnClic
         } else {
             pollingProgressDialog.dismiss();
         }
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String publicKey) {
-
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, txRef, publicKey);
-        }
-
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.di.modules;
 
-import com.flutterwave.raveandroid.uk.UkContract;
+import com.flutterwave.raveandroid.uk.UkUiContract;
 
 import javax.inject.Inject;
 
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class UkModule {
 
-    private UkContract.View view;
+    private UkUiContract.View view;
 
     @Inject
-    public UkModule(UkContract.View view) {
+    public UkModule(UkUiContract.View view) {
         this.view = view;
     }
 
     @Provides
-    public UkContract.View providesContract() {
+    public UkUiContract.View providesContract() {
         return view;
     }
 }

@@ -6,12 +6,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 
 import java.util.HashMap;
 
-public class NullUkView implements UkContract.View {
-
-    @Override
-    public void showToast(String message) {
-
-    }
+public class NullUkView implements UkUiContract.View {
 
     @Override
     public void showFetchFeeFailed(String s) {
@@ -34,14 +29,15 @@ public class NullUkView implements UkContract.View {
     }
 
     @Override
-    public void onAmountValidationSuccessful(String amountToPay) {
+    public void onTransactionFeeFetched(String charge_amount, Payload payload, String fee) {
 
     }
 
     @Override
-    public void displayFee(String charge_amount, Payload payload) {
+    public void onAmountValidationSuccessful(String amountToPay) {
 
     }
+
 
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
@@ -55,11 +51,6 @@ public class NullUkView implements UkContract.View {
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-    }
-
-    @Override
-    public void onPollingRoundComplete(String flwRef, String txRef, String encryptionKey) {
 
     }
 

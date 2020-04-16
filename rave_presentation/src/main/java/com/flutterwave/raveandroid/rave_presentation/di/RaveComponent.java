@@ -31,6 +31,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.sabank.SaBankComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.sabank.SaBankModule;
 import com.flutterwave.raveandroid.rave_presentation.di.ugmomo.UgComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.ugmomo.UgModule;
+import com.flutterwave.raveandroid.rave_presentation.di.uk.UkComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.uk.UkModule;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
 import com.google.gson.Gson;
@@ -82,5 +84,7 @@ public interface RaveComponent {
     SaBankComponent plus(SaBankModule module);
 
     UgComponent plus(UgModule module);
+
+    UkComponent plus(UkModule module);
 }
 
