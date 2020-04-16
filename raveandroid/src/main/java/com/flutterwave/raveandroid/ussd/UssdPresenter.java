@@ -52,7 +52,7 @@ public class UssdPresenter extends UssdHandler implements UssdUiContract.UserAct
 
             String bankCode = null;
             for (Bank bank : RaveConstants.ussdBanksList) {
-                if (bank.getBankname() == dataHashMap.get(RaveConstants.fieldUssdBank).getData()) {
+                if (bank.getBankname().equals(dataHashMap.get(RaveConstants.fieldUssdBank).getData())) {
                     bankCode = bank.getBankcode();
                     break;
                 }
@@ -120,7 +120,7 @@ public class UssdPresenter extends UssdHandler implements UssdUiContract.UserAct
 
         boolean isValidBank = false;
         for (Bank bank : RaveConstants.ussdBanksList) {
-            if (bank.getBankname() == bankName) {
+            if (bank.getBankname().equals(bankName)) {
                 isValidBank = true;
                 break;
             }
