@@ -17,6 +17,8 @@ import com.flutterwave.raveandroid.rave_presentation.di.ach.AchComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.ach.AchModule;
 import com.flutterwave.raveandroid.rave_presentation.di.banktransfer.BankTransferComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.banktransfer.BankTransferModule;
+import com.flutterwave.raveandroid.rave_presentation.di.barter.BarterComponent;
+import com.flutterwave.raveandroid.rave_presentation.di.barter.BarterModule;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
 import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.FrancophoneComponent;
@@ -76,6 +78,8 @@ public interface RaveComponent {
     AchComponent plus(AchModule module);
 
     BankTransferComponent plus(BankTransferModule module);
+
+    BarterComponent plus(BarterModule module);
 
     FrancophoneComponent plus(FrancophoneModule module);
 

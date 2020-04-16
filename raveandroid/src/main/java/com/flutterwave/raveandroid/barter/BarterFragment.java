@@ -37,7 +37,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.respon
 import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
-public class BarterFragment extends Fragment implements BarterContract.View {
+public class BarterFragment extends Fragment implements BarterUiContract.View {
 
 
     @Inject
@@ -193,13 +193,12 @@ public class BarterFragment extends Fragment implements BarterContract.View {
         showToast(message);
     }
 
-    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void displayFee(String charge_amount, final Payload payload) {
+    public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -228,9 +227,9 @@ public class BarterFragment extends Fragment implements BarterContract.View {
         if (requestCode == FOR_BARTER_CHECKOUT) {
             if (data != null && data.hasExtra(response)) {
                 if (resultCode == RavePayActivity.RESULT_SUCCESS)
-                    onPaymentSuccessful(data.getStringExtra(response));
+                    onPaymentSuccessful(flwRef, data.getStringExtra(response));
                 else if (resultCode == RavePayActivity.RESULT_ERROR)
-                    onPaymentFailed(data.getStringExtra(response));
+                    onPaymentFailed(flwRef, data.getStringExtra(response));
             } else presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -254,6 +253,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
@@ -267,7 +267,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPaymentSuccessful(String responseAsString) {
+    public void onPaymentSuccessful(String flwRef, String responseAsString) {
         Intent intent = new Intent();
         intent.putExtra(response, responseAsString);
 
@@ -278,7 +278,7 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPaymentFailed(String responseAsJSONString) {
+    public void onPaymentFailed(String flwRef, String responseAsJSONString) {
         Intent intent = new Intent();
         intent.putExtra(response, responseAsJSONString);
         if (getActivity() != null) {
@@ -288,10 +288,8 @@ public class BarterFragment extends Fragment implements BarterContract.View {
     }
 
     @Override
-    public void onPollingRoundComplete(String flwRef, String publicKey) {
-        if (pollingProgressDialog != null && pollingProgressDialog.isShowing()) {
-            presenter.requeryTx(flwRef, publicKey);
-        }
+    public void onPollingCanceled(String flwRef, String responseAsJSONString) {
+        //
     }
 
     @Override

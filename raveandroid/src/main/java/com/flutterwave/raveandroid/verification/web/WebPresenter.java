@@ -28,7 +28,6 @@ public class WebPresenter implements WebContract.UserActionsListener {
     @Override
     public void init(String flwRef, String publicKey) {
         requeryTx(flwRef, publicKey);
-
     }
 
     @Override

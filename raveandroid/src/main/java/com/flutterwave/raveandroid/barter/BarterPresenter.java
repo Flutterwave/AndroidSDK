@@ -2,40 +2,26 @@ package com.flutterwave.raveandroid.barter;
 
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.data.Utils;
-import com.flutterwave.raveandroid.di.components.RaveUiComponent;
-import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_presentation.barter.BarterHandler;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import java.util.HashMap;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
 
-public class BarterPresenter implements BarterContract.UserActionsListener {
+public class BarterPresenter extends BarterHandler implements BarterUiContract.UserActionsListener {
 
     @Inject
     RemoteRepository networkRequest;
@@ -46,21 +32,13 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
     @Inject
     PayloadEncryptor payloadEncryptor;
     private Context context;
-    private BarterContract.View mView;
+    private BarterUiContract.View mView;
 
     @Inject
-    public BarterPresenter(Context context, BarterContract.View mView) {
+    public BarterPresenter(Context context, BarterUiContract.View mView) {
+        super(mView);
         this.context = context;
         this.mView = mView;
-    }
-
-    public BarterPresenter(Context context, BarterContract.View mView, RaveUiComponent raveUiComponent) {
-        this.mView = mView;
-        this.context = context;
-        this.amountValidator = raveUiComponent.amountValidator();
-        this.networkRequest = raveUiComponent.networkImpl();
-        this.deviceIdGetter = raveUiComponent.deviceIdGetter();
-        this.payloadEncryptor = raveUiComponent.payloadEncryptor();
     }
 
     @Override
@@ -145,127 +123,8 @@ public class BarterPresenter implements BarterContract.UserActionsListener {
         }
     }
 
-
     @Override
-    public void chargeBarter(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-        encryptedCardRequestBody = encryptedCardRequestBody.trim();
-        encryptedCardRequestBody = encryptedCardRequestBody.replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
-            @Override
-            public void onSuccess(ChargeResponse response) {
-
-                mView.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-                    try {
-                        Uri requeryUri = Uri.parse(response.getData().getRequery_url());
-                        Set<String> args = requeryUri.getQueryParameterNames();
-                        Uri redirectUri = Uri.parse(response.getData().getRedirect_url());
-                        Uri.Builder authUrlBuilder = new Uri.Builder()
-                                .scheme(redirectUri.getScheme())
-                                .authority(redirectUri.getAuthority());
-                        for (String arg : args) {
-                            authUrlBuilder.appendQueryParameter(arg, requeryUri.getQueryParameter(arg));
-                        }
-                        String authUrlCrude = authUrlBuilder.build().toString();
-
-                        String flwRef = response.getData().getFlw_reference();
-                        if (flwRef == null) flwRef = response.getData().getFlwRef();
-
-                        mView.loadBarterCheckout(authUrlCrude, flwRef);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        mView.onPaymentError("An error occurred with your payment. Please try again or contact support.");
-                    }
-                } else {
-                    mView.onPaymentError(noResponse);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                mView.onPaymentError(message);
-            }
-        });
-    }
-
-    @Override
-    public void requeryTx(final String flwRef, final String publicKey) {
-
-        RequeryRequestBody body = new RequeryRequestBody();
-        body.setOrder_ref(flwRef); // Uses Order ref instead of flwref
-        body.setPBFPubKey(publicKey);
-
-        mView.showPollingIndicator(true);
-
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
-            @Override
-            public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
-                    mView.onPaymentFailed(responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    mView.onPollingRoundComplete(flwRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mView.showPollingIndicator(false);
-                    mView.onPaymentSuccessful(responseAsJSONString);
-                } else {
-                    mView.showProgressIndicator(false);
-                    mView.onPaymentFailed(responseAsJSONString);
-                }
-            }
-
-            @Override
-            public void onError(String message, String responseAsJSONString) {
-                mView.onPaymentFailed(responseAsJSONString);
-            }
-        });
-    }
-
-
-    @Override
-    public void fetchFee(final Payload payload) {
-        FeeCheckRequestBody body = new FeeCheckRequestBody();
-        body.setAmount(payload.getAmount());
-        body.setCurrency(payload.getCurrency());
-        body.setPBFPubKey(payload.getPBFPubKey());
-
-        mView.showProgressIndicator(true);
-
-        networkRequest.getFee(body, new ResultCallback<FeeCheckResponse>() {
-            @Override
-            public void onSuccess(FeeCheckResponse response) {
-                mView.showProgressIndicator(false);
-
-                try {
-                    mView.displayFee(response.getData().getCharge_amount(), payload);
-                } catch (Exception e) {
-                    mView.showFetchFeeFailed(transactionError);
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                mView.showProgressIndicator(false);
-                Log.e(RAVEPAY, message);
-                mView.showFetchFeeFailed(message);
-            }
-        });
-    }
-
-
-    @Override
-    public void onAttachView(BarterContract.View view) {
+    public void onAttachView(BarterUiContract.View view) {
         this.mView = view;
     }
 
