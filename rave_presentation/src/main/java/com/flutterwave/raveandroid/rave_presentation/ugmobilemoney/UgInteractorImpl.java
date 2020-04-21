@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class UgInteractorImpl implements UgMobileMoneyContract.Interactor {
 
-    private UgandaMobileMoneyCallback callback;
+    private UgandaMobileMoneyPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    UgInteractorImpl(UgandaMobileMoneyCallback callback) {
-        this.callback = (callback != null) ? callback : new NullUgMobileMoneyCallback();
+    UgInteractorImpl(UgandaMobileMoneyPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullUgMobileMoneyPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

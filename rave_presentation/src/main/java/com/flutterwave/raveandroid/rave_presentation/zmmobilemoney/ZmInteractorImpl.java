@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class ZmInteractorImpl implements ZmMobileMoneyContract.Interactor {
 
-    private ZambiaMobileMoneyCallback callback;
+    private ZambiaMobileMoneyPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    ZmInteractorImpl(ZambiaMobileMoneyCallback callback) {
-        this.callback = (callback != null) ? callback : new NullZmMobileMoneyCallback();
+    ZmInteractorImpl(ZambiaMobileMoneyPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullZmMobileMoneyPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

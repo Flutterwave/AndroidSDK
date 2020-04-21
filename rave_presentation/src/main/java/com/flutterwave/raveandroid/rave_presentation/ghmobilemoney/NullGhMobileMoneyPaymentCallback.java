@@ -1,13 +1,13 @@
-package com.flutterwave.raveandroid.rave_presentation.barter;
+package com.flutterwave.raveandroid.rave_presentation.ghmobilemoney;
 
 import android.support.annotation.Nullable;
 
-public class NullBarterCallback implements BarterPaymentCallback {
+public class NullGhMobileMoneyPaymentCallback implements GhanaMobileMoneyPaymentCallback {
+
     @Override
     public void showProgressIndicator(boolean active) {
 
     }
-
 
     @Override
     public void onError(String errorMessage, @Nullable String flwRef) {
@@ -19,8 +19,4 @@ public class NullBarterCallback implements BarterPaymentCallback {
 
     }
 
-    @Override
-    public void loadBarterCheckout(String authUrlCrude, String flwRef) {
-
-    }
 }

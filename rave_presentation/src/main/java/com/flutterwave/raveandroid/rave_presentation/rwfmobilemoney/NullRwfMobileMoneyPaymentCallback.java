@@ -1,8 +1,8 @@
-package com.flutterwave.raveandroid.rave_presentation.zmmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.rwfmobilemoney;
 
 import android.support.annotation.Nullable;
 
-public class NullZmMobileMoneyCallback implements ZambiaMobileMoneyCallback {
+public class NullRwfMobileMoneyPaymentCallback implements RwfMobileMoneyPaymentCallback {
 
     @Override
     public void showProgressIndicator(boolean active) {

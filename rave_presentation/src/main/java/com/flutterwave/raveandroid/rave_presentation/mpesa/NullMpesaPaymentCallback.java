@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.rave_presentation.mpesa;
 
 import android.support.annotation.Nullable;
 
-public class NullMpesaCallback implements MpesaCallback {
+public class NullMpesaPaymentCallback implements MpesaPaymentCallback {
 
     @Override
     public void showProgressIndicator(boolean active) {

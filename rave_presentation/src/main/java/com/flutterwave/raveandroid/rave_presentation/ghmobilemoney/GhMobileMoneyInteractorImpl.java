@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class GhMobileMoneyInteractorImpl implements GhMobileMoneyContract.Interactor {
 
-    private GhanaMobileMoneyCallback callback;
+    private GhanaMobileMoneyPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    GhMobileMoneyInteractorImpl(GhanaMobileMoneyCallback callback) {
-        this.callback = (callback != null) ? callback : new NullGhMobileMoneyCallback();
+    GhMobileMoneyInteractorImpl(GhanaMobileMoneyPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullGhMobileMoneyPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

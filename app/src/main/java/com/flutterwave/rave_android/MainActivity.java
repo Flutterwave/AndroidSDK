@@ -92,7 +92,7 @@ public class MainActivity
     TextView vendorListTXT;
 
     ProgressDialog progressDialog;
-    private CardPayManager cardPayManager;
+    private CardPaymentManager cardPayManager;
     private Card card;
 
     @Override
@@ -369,7 +369,7 @@ public class MainActivity
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .initialize();
 
-                cardPayManager = new CardPayManager(((RaveNonUIManager) raveManager), this, this);
+                cardPayManager = new CardPaymentManager(((RaveNonUIManager) raveManager), this, this);
                 card = new Card(
                         "5531886652142950", // Test MasterCard PIN authentication
 //                        "4242424242424242", // Test VisaCard 3D-Secure Authentication

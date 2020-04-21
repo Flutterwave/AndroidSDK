@@ -1,8 +1,8 @@
-package com.flutterwave.raveandroid.rave_presentation.ugmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
 
 import android.support.annotation.Nullable;
 
-public class NullUgMobileMoneyCallback implements UgandaMobileMoneyCallback {
+public class NullFrancMobileMoneyPaymentCallback implements FrancophoneMobileMoneyPaymentCallback {
 
     @Override
     public void showProgressIndicator(boolean active) {

@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class BankTransferInteractorImpl implements BankTransferContract.BankTransferInteractor {
 
-    private BankTransferCallback callback;
+    private BankTransferPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    BankTransferInteractorImpl(BankTransferCallback callback) {
-        this.callback = (callback != null) ? callback : new NullBankTransferCallback();
+    BankTransferInteractorImpl(BankTransferPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullBankTransferPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

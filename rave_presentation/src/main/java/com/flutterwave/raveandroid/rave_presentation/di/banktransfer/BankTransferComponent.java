@@ -1,12 +1,12 @@
 package com.flutterwave.raveandroid.rave_presentation.di.banktransfer;
 
 
-import com.flutterwave.raveandroid.rave_presentation.banktransfer.BankTransferManager;
+import com.flutterwave.raveandroid.rave_presentation.banktransfer.BankTransferPaymentManager;
 
 import dagger.Subcomponent;
 
 @BankTransferScope
 @Subcomponent(modules = {BankTransferModule.class})
 public interface BankTransferComponent {
-    void inject(BankTransferManager manager);
+    void inject(BankTransferPaymentManager manager);
 }

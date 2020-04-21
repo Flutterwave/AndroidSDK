@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class RwfInteractorImpl implements RwfMobileMoneyContract.Interactor {
 
-    private RwfMobileMoneyCallback callback;
+    private RwfMobileMoneyPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    RwfInteractorImpl(RwfMobileMoneyCallback callback) {
-        this.callback = (callback != null) ? callback : new NullRwfMobileMoneyCallback();
+    RwfInteractorImpl(RwfMobileMoneyPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullRwfMobileMoneyPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

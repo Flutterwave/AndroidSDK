@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class MpesaInteractorImpl implements MpesaContract.Interactor {
 
-    private MpesaCallback callback;
+    private MpesaPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    MpesaInteractorImpl(MpesaCallback callback) {
-        this.callback = (callback != null) ? callback : new NullMpesaCallback();
+    MpesaInteractorImpl(MpesaPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullMpesaPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

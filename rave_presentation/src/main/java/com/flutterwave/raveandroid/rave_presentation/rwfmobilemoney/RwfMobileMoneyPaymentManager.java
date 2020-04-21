@@ -1,22 +1,25 @@
-package com.flutterwave.raveandroid.rave_presentation.mpesa;
+package com.flutterwave.raveandroid.rave_presentation.rwfmobilemoney;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.mpesa.MpesaModule;
+import com.flutterwave.raveandroid.rave_presentation.di.rwfmobilemoney.RwfModule;
 
 import javax.inject.Inject;
 
-public class MpesaManager {
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NG;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RWF;
+
+public class RwfMobileMoneyPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
-    public MpesaHandler paymentHandler;
-    MpesaInteractorImpl interactor;
+    public RwfMobileMoneyHandler paymentHandler;
+    RwfInteractorImpl interactor;
 
-    public MpesaManager(RaveNonUIManager manager, MpesaCallback callback) {
+    public RwfMobileMoneyPaymentManager(RaveNonUIManager manager, RwfMobileMoneyPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
@@ -26,13 +29,14 @@ public class MpesaManager {
     public void charge() {
         Payload payload = createPayload();
 
-        paymentHandler.chargeMpesa(payload, manager.getEncryptionKey());
+        paymentHandler.chargeRwfMobileMoney(payload, manager.getEncryptionKey());
     }
 
     private Payload createPayload() {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(String.valueOf(manager.getAmount()))
-                .setCountry(manager.getCountry())
+        builder.setAmount(manager.getAmount() + "")
+//                    .setCountry(manager.getCountry())
+                .setCountry(NG) //Country has to be set to NG for RWF payments (as at 10/12/2018)
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
                 .setFirstname(manager.getfName())
@@ -41,16 +45,18 @@ public class MpesaManager {
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())
                 .setSubAccount(manager.getSubAccounts())
+                .setNetwork(RWF)
                 .setPhonenumber(manager.getPhoneNumber())
                 .setPBFPubKey(manager.getPublicKey())
                 .setIsPreAuth(manager.isPreAuth())
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
+
         if (manager.getPayment_plan() != null) {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
 
-        return builder.createMpesaPayload();
+        return builder.createRwfMobileMoneyPayload();
     }
 
     public void cancelPolling() {
@@ -67,10 +73,10 @@ public class MpesaManager {
         paymentHandler.fetchFee(feePayload);
     }
 
-    private void injectFields(RaveComponent component, MpesaCallback callback) {
-        interactor = new MpesaInteractorImpl(callback);
+    private void injectFields(RaveComponent component, RwfMobileMoneyPaymentCallback callback) {
+        interactor = new RwfInteractorImpl(callback);
 
-        component.plus(new MpesaModule(interactor))
+        component.plus(new RwfModule(interactor))
                 .inject(this);
 
     }

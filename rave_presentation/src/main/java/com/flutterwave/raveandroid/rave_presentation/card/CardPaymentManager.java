@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
 
-public class CardPayManager {
+public class CardPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
@@ -22,14 +22,14 @@ public class CardPayManager {
     CardInteractorImpl interactor;
     private int chargeType;
 
-    public CardPayManager(RaveNonUIManager manager, CardPaymentCallback callback) {
+    public CardPaymentManager(RaveNonUIManager manager, CardPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback, null);
 
     }
 
-    public CardPayManager(RaveNonUIManager manager, CardPaymentCallback callback, SavedCardsListener savedCardsListener) {
+    public CardPaymentManager(RaveNonUIManager manager, CardPaymentCallback callback, SavedCardsListener savedCardsListener) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback, savedCardsListener);

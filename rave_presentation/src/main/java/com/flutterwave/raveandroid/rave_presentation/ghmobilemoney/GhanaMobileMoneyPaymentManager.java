@@ -1,42 +1,54 @@
-package com.flutterwave.raveandroid.rave_presentation.ugmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.ghmobilemoney;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.ugmomo.UgModule;
+import com.flutterwave.raveandroid.rave_presentation.di.ghmobilemoney.GhMobileMoneyModule;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NG;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.UGX;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.mtn;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tigo;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.vodafone;
 
-public class UgandaMobileMoneyManager {
+public class GhanaMobileMoneyPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
-    public UgMobileMoneyHandler paymentHandler;
-    UgInteractorImpl interactor;
+    public GhMobileMoneyHandler paymentHandler;
+    GhMobileMoneyInteractorImpl interactor;
 
-    public UgandaMobileMoneyManager(RaveNonUIManager manager, UgandaMobileMoneyCallback callback) {
+    public GhanaMobileMoneyPaymentManager(RaveNonUIManager manager, GhanaMobileMoneyPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
 
     }
 
-    public void charge() {
-        Payload payload = createPayload();
-
-        paymentHandler.chargeUgMobileMoney(payload, manager.getEncryptionKey());
+    public void chargeMtn() {
+        charge(mtn, null);
     }
 
-    private Payload createPayload() {
+    public void chargeTigo() {
+        charge(tigo, null);
+    }
+
+    public void chargeVodafone(String voucher) {
+        charge(vodafone, voucher);
+    }
+
+    private void charge(String network, String voucher) {
+        Payload payload = createPayload(network, voucher);
+
+        paymentHandler.chargeGhMobileMoney(payload, manager.getEncryptionKey());
+    }
+
+    private Payload createPayload(String network, String voucher) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.setAmount(manager.getAmount() + "")
-//                    .setCountry(manager.getCountry())
-                .setCountry(NG) //Country has to be set to NG for UGX payments (as at 10/12/2018)
+        builder.setAmount(String.valueOf(manager.getAmount()))
+                .setCountry(manager.getCountry())
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
                 .setFirstname(manager.getfName())
@@ -45,17 +57,21 @@ public class UgandaMobileMoneyManager {
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())
                 .setSubAccount(manager.getSubAccounts())
-                .setNetwork(UGX)
+                .setNetwork(network)
                 .setPhonenumber(manager.getPhoneNumber())
                 .setPBFPubKey(manager.getPublicKey())
                 .setIsPreAuth(manager.isPreAuth())
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
+        if (voucher != null) {
+            builder.setVoucher(voucher);
+        }
+
         if (manager.getPayment_plan() != null) {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
 
-        return builder.createUgMobileMoneyPayload();
+        return builder.createGhMobileMoneyPayload();
     }
 
     public void cancelPolling() {
@@ -72,10 +88,10 @@ public class UgandaMobileMoneyManager {
         paymentHandler.fetchFee(feePayload);
     }
 
-    private void injectFields(RaveComponent component, UgandaMobileMoneyCallback callback) {
-        interactor = new UgInteractorImpl(callback);
+    private void injectFields(RaveComponent component, GhanaMobileMoneyPaymentCallback callback) {
+        interactor = new GhMobileMoneyInteractorImpl(callback);
 
-        component.plus(new UgModule(interactor))
+        component.plus(new GhMobileMoneyModule(interactor))
                 .inject(this);
 
     }

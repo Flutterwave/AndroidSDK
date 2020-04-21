@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.rave_presentation.banktransfer;
 
 import android.support.annotation.Nullable;
 
-public class NullBankTransferCallback implements BankTransferCallback {
+public class NullBankTransferPaymentCallback implements BankTransferPaymentCallback {
     @Override
     public void showProgressIndicator(boolean active) {
 

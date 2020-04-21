@@ -12,14 +12,14 @@ import javax.inject.Inject;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NG;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NGN;
 
-public class AccountPayManager {
+public class AccountPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
     public AccountHandler paymentHandler;
     AccountInteractorImpl interactor;
 
-    public AccountPayManager(RaveNonUIManager manager, AccountPaymentCallback callback) {
+    public AccountPaymentManager(RaveNonUIManager manager, AccountPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);

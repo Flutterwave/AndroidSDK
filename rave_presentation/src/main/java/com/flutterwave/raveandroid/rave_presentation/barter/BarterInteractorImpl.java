@@ -17,7 +17,7 @@ class BarterInteractorImpl implements BarterContract.Interactor {
 
 
     BarterInteractorImpl(BarterPaymentCallback callback) {
-        this.callback = (callback != null) ? callback : new NullBarterCallback();
+        this.callback = (callback != null) ? callback : new NullBarterPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

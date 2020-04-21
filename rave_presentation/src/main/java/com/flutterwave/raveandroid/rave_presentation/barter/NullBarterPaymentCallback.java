@@ -1,13 +1,13 @@
-package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.barter;
 
 import android.support.annotation.Nullable;
 
-public class NullFrancPaymentCallback implements FrancophonePaymentCallback {
-
+public class NullBarterPaymentCallback implements BarterPaymentCallback {
     @Override
     public void showProgressIndicator(boolean active) {
 
     }
+
 
     @Override
     public void onError(String errorMessage, @Nullable String flwRef) {
@@ -19,4 +19,8 @@ public class NullFrancPaymentCallback implements FrancophonePaymentCallback {
 
     }
 
+    @Override
+    public void loadBarterCheckout(String authUrlCrude, String flwRef) {
+
+    }
 }

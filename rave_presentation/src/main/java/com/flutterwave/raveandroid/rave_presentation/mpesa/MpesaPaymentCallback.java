@@ -1,8 +1,8 @@
-package com.flutterwave.raveandroid.rave_presentation.ugmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.mpesa;
 
 import android.support.annotation.Nullable;
 
-public interface UgandaMobileMoneyCallback {
+public interface MpesaPaymentCallback {
     void showProgressIndicator(boolean active);
 
     void onError(String errorMessage, @Nullable String flwRef);

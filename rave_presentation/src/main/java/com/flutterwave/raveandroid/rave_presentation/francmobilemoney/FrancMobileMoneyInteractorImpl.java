@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class FrancMobileMoneyInteractorImpl implements FrancMobileMoneyContract.Interactor {
 
-    private FrancophonePaymentCallback callback;
+    private FrancophoneMobileMoneyPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    FrancMobileMoneyInteractorImpl(FrancophonePaymentCallback callback) {
-        this.callback = (callback != null) ? callback : new NullFrancPaymentCallback();
+    FrancMobileMoneyInteractorImpl(FrancophoneMobileMoneyPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullFrancMobileMoneyPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

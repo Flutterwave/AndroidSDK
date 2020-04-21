@@ -9,14 +9,14 @@ import com.flutterwave.raveandroid.rave_presentation.di.banktransfer.BankTransfe
 
 import javax.inject.Inject;
 
-public class BankTransferManager {
+public class BankTransferPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
     public BankTransferHandler paymentHandler;
     BankTransferInteractorImpl interactor;
 
-    public BankTransferManager(RaveNonUIManager manager, BankTransferCallback callback) {
+    public BankTransferPaymentManager(RaveNonUIManager manager, BankTransferPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
@@ -69,7 +69,7 @@ public class BankTransferManager {
         paymentHandler.cancelPolling();
     }
 
-    private void injectFields(RaveComponent component, BankTransferCallback callback) {
+    private void injectFields(RaveComponent component, BankTransferPaymentCallback callback) {
         interactor = new BankTransferInteractorImpl(callback);
 
         component.plus(new BankTransferModule(interactor))

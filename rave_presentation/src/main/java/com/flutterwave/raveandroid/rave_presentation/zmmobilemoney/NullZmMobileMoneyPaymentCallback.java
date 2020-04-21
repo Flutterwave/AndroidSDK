@@ -1,8 +1,8 @@
-package com.flutterwave.raveandroid.rave_presentation.sabankaccount;
+package com.flutterwave.raveandroid.rave_presentation.zmmobilemoney;
 
 import android.support.annotation.Nullable;
 
-public class NullSaBankCallback implements SaBankAccountCallback {
+public class NullZmMobileMoneyPaymentCallback implements ZambiaMobileMoneyPaymentCallback {
 
     @Override
     public void showProgressIndicator(boolean active) {
@@ -16,11 +16,6 @@ public class NullSaBankCallback implements SaBankAccountCallback {
 
     @Override
     public void onSuccessful(String flwRef) {
-
-    }
-
-    @Override
-    public void showAuthenticationWebPage(String authUrl) {
 
     }
 

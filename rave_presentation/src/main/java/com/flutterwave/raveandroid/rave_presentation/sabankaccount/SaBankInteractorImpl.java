@@ -11,13 +11,13 @@ import java.lang.reflect.Type;
 
 class SaBankInteractorImpl implements SaBankAccountContract.Interactor {
 
-    private SaBankAccountCallback callback;
+    private SaBankAccountPaymentCallback callback;
     private String flwRef;
     private FeeCheckListener feeCheckListener;
 
 
-    SaBankInteractorImpl(SaBankAccountCallback callback) {
-        this.callback = (callback != null) ? callback : new NullSaBankCallback();
+    SaBankInteractorImpl(SaBankAccountPaymentCallback callback) {
+        this.callback = (callback != null) ? callback : new NullSaBankPaymentCallback();
         this.feeCheckListener = new NullFeeCheckListener();
     }
 

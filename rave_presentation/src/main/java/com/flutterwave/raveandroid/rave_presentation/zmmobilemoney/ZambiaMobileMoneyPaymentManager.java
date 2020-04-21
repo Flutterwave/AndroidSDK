@@ -10,14 +10,14 @@ import com.flutterwave.raveandroid.rave_presentation.di.zm.ZmModule;
 
 import javax.inject.Inject;
 
-public class ZambiaMobileMoneyManager {
+public class ZambiaMobileMoneyPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
     public ZmMobileMoneyHandler paymentHandler;
     private ZmInteractorImpl interactor;
 
-    public ZambiaMobileMoneyManager(RaveNonUIManager manager, ZambiaMobileMoneyCallback callback) {
+    public ZambiaMobileMoneyPaymentManager(RaveNonUIManager manager, ZambiaMobileMoneyPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
@@ -74,7 +74,7 @@ public class ZambiaMobileMoneyManager {
         paymentHandler.fetchFee(feePayload);
     }
 
-    private void injectFields(RaveComponent component, ZambiaMobileMoneyCallback callback) {
+    private void injectFields(RaveComponent component, ZambiaMobileMoneyPaymentCallback callback) {
         interactor = new ZmInteractorImpl(callback);
 
         component.plus(new ZmModule(interactor))

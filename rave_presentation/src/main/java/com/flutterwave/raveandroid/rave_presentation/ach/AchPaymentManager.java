@@ -1,22 +1,22 @@
-package com.flutterwave.raveandroid.rave_presentation.sabankaccount;
+package com.flutterwave.raveandroid.rave_presentation.ach;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.sabank.SaBankModule;
+import com.flutterwave.raveandroid.rave_presentation.di.ach.AchModule;
 
 import javax.inject.Inject;
 
-public class SaBankAccountManager {
+public class AchPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
-    public SaBankAccountHandler paymentHandler;
-    SaBankInteractorImpl interactor;
+    public AchHandler paymentHandler;
+    AchInteractorImpl interactor;
 
-    public SaBankAccountManager(RaveNonUIManager manager, SaBankAccountCallback callback) {
+    public AchPaymentManager(RaveNonUIManager manager, AchPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
@@ -26,13 +26,13 @@ public class SaBankAccountManager {
     public void charge() {
         Payload payload = createPayload();
 
-        paymentHandler.chargeSaBankAccount(payload, manager.getEncryptionKey());
+        paymentHandler.chargeAccount(payload, manager.getEncryptionKey());
     }
 
     private Payload createPayload() {
-        PayloadBuilder builder = new PayloadBuilder();
 
-        builder.setAmount(String.valueOf(manager.getAmount()))
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.setAmount(manager.getAmount() + "")
                 .setCountry(manager.getCountry())
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
@@ -41,20 +41,21 @@ public class SaBankAccountManager {
                 .setIP(manager.getUniqueDeviceID())
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())
-                .setSubAccount(manager.getSubAccounts())
                 .setPBFPubKey(manager.getPublicKey())
-                .setIsPreAuth(manager.isPreAuth())
+                .setIsUsBankCharge(true)
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
         if (manager.getPayment_plan() != null) {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
 
-        return builder.createSaBankAccountPayload();
+        Payload body = builder.createBankPayload();
+
+        return body;
     }
 
-    public void checkStatus() {
-        paymentHandler.requeryTx(manager.getPublicKey(), interactor.getFlwRef());
+    public void onWebpageAuthenticationComplete() {
+        paymentHandler.requeryTx(interactor.getFlwRef(), manager.getPublicKey());
     }
 
     public void fetchTransactionFee(FeeCheckListener feeCheckListener) {
@@ -67,10 +68,10 @@ public class SaBankAccountManager {
         paymentHandler.fetchFee(feePayload);
     }
 
-    private void injectFields(RaveComponent component, SaBankAccountCallback callback) {
-        interactor = new SaBankInteractorImpl(callback);
+    private void injectFields(RaveComponent component, AchPaymentCallback callback) {
+        interactor = new AchInteractorImpl(callback);
 
-        component.plus(new SaBankModule(interactor))
+        component.plus(new AchModule(interactor))
                 .inject(this);
 
     }

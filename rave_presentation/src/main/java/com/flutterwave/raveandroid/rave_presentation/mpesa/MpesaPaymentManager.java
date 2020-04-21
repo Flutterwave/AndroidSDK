@@ -1,22 +1,22 @@
-package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.mpesa;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
-import com.flutterwave.raveandroid.rave_presentation.di.francmobilemoney.FrancophoneModule;
+import com.flutterwave.raveandroid.rave_presentation.di.mpesa.MpesaModule;
 
 import javax.inject.Inject;
 
-public class FrancophoneMobileMoneyManager {
+public class MpesaPaymentManager {
 
     private final RaveNonUIManager manager;
     @Inject
-    public FrancMobileMoneyHandler paymentHandler;
-    FrancMobileMoneyInteractorImpl interactor;
+    public MpesaHandler paymentHandler;
+    MpesaInteractorImpl interactor;
 
-    public FrancophoneMobileMoneyManager(RaveNonUIManager manager, FrancophonePaymentCallback callback) {
+    public MpesaPaymentManager(RaveNonUIManager manager, MpesaPaymentCallback callback) {
         this.manager = manager;
 
         injectFields(manager.getRaveComponent(), callback);
@@ -26,7 +26,7 @@ public class FrancophoneMobileMoneyManager {
     public void charge() {
         Payload payload = createPayload();
 
-        paymentHandler.chargeFranc(payload, manager.getEncryptionKey());
+        paymentHandler.chargeMpesa(payload, manager.getEncryptionKey());
     }
 
     private Payload createPayload() {
@@ -50,7 +50,11 @@ public class FrancophoneMobileMoneyManager {
             builder.setPaymentPlan(manager.getPayment_plan());
         }
 
-        return builder.createFrancPayload();
+        return builder.createMpesaPayload();
+    }
+
+    public void cancelPolling() {
+        paymentHandler.cancelPolling();
     }
 
     public void fetchTransactionFee(FeeCheckListener feeCheckListener) {
@@ -63,10 +67,10 @@ public class FrancophoneMobileMoneyManager {
         paymentHandler.fetchFee(feePayload);
     }
 
-    private void injectFields(RaveComponent component, FrancophonePaymentCallback callback) {
-        interactor = new FrancMobileMoneyInteractorImpl(callback);
+    private void injectFields(RaveComponent component, MpesaPaymentCallback callback) {
+        interactor = new MpesaInteractorImpl(callback);
 
-        component.plus(new FrancophoneModule(interactor))
+        component.plus(new MpesaModule(interactor))
                 .inject(this);
 
     }

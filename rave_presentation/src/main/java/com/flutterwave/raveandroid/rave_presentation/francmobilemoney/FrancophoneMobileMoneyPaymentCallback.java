@@ -1,8 +1,8 @@
-package com.flutterwave.raveandroid.rave_presentation.ghmobilemoney;
+package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
 
 import android.support.annotation.Nullable;
 
-public interface GhanaMobileMoneyCallback {
+public interface FrancophoneMobileMoneyPaymentCallback {
     void showProgressIndicator(boolean active);
 
     void onError(String errorMessage, @Nullable String flwRef);

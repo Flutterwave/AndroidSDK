@@ -2,7 +2,7 @@ package com.flutterwave.raveandroid.rave_presentation.banktransfer;
 
 import android.support.annotation.Nullable;
 
-public interface BankTransferCallback {
+public interface BankTransferPaymentCallback {
     void showProgressIndicator(boolean active);
 
     void onError(String errorMessage, @Nullable String flwRef);
