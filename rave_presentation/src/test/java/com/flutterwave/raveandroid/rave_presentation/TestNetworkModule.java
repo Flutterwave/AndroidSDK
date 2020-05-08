@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.di;
+package com.flutterwave.raveandroid.rave_presentation;
 
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_logger.LoggerService;

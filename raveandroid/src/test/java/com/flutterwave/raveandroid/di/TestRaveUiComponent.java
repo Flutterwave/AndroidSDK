@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.di;
 
 import com.flutterwave.raveandroid.TransactionStatusCheckerTest;
+import com.flutterwave.raveandroid.account.AccountPresenterTest;
 import com.flutterwave.raveandroid.account.AccountUiPresenter;
-import com.flutterwave.raveandroid.account.AccountUiPresenterTest;
 import com.flutterwave.raveandroid.ach.AchPresenter;
 import com.flutterwave.raveandroid.ach.AchPresenterTest;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenter;
@@ -34,12 +34,12 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {TestAndroidModule.class, TestremoteModule.class})
+@Component(modules = {TestAndroidModule.class, TestNetworkModule.class})
 public interface TestRaveUiComponent extends RaveUiComponent {
 
     void inject(CardUiPresenterTest cardPresenterTest);
 
-    void inject(AccountUiPresenterTest accountPresenterTest);
+    void inject(AccountPresenterTest accountPresenterTest);
 
     void inject(SaBankAccountPresenterTest accountPresenterTest);
 
@@ -82,7 +82,7 @@ public interface TestRaveUiComponent extends RaveUiComponent {
     void inject(GhMobileMoneyPresenter ghMobileMoneyPresenter);
 
     void inject(AchPresenter achPresenter);
-    
+
     void inject(UkPresenter ukPresenter);
 
     void inject(FrancMobileMoneyPresenter francMobileMoneyPresenter);
