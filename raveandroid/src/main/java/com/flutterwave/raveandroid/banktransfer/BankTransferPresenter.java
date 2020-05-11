@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.banktransfer;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -53,7 +52,7 @@ public class BankTransferPresenter extends BankTransferHandler implements BankTr
     BankTransferUiContract.View mView;
 
     @Inject
-    public BankTransferPresenter(Context context, BankTransferUiContract.View mView) {
+    public BankTransferPresenter(BankTransferUiContract.View mView) {
         super(mView);
         this.mView = mView;
     }

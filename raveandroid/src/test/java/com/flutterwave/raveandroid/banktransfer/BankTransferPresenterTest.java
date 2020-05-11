@@ -1,16 +1,15 @@
 package com.flutterwave.raveandroid.banktransfer;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
+import com.flutterwave.raveandroid.di.DaggerTestRaveUiComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
+import com.flutterwave.raveandroid.di.TestNetworkModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
-import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -18,10 +17,7 @@ import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -30,7 +26,6 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -43,16 +38,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
-import static org.junit.Assert.assertNotNull;
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,8 +51,6 @@ public class BankTransferPresenterTest {
 
     @Mock
     BankTransferUiContract.View view;
-    @Inject
-    Context context;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -88,281 +76,16 @@ public class BankTransferPresenterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        bankTransferPresenter = new BankTransferPresenter(context, view);
+        bankTransferPresenter = new BankTransferPresenter(view);
 
-        TestRaveUiComponent component = DaggerTestAppComponent.builder()
+        TestRaveUiComponent component = DaggerTestRaveUiComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
-                .testremoteModule(new TestremoteModule())
+                .testNetworkModule(new TestNetworkModule())
                 .build();
 
         component.inject(this);
         component.inject(bankTransferPresenter);
     }
-
-    @Test
-    public void fetchFee_onError_showFetchFeeFailedCalled_errorOccuredMessage() {
-
-        bankTransferPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-
-        captor.getAllValues().get(0).onError(generateRandomString());
-        verify(view).showProgressIndicator(false);
-        verify(view).onFetchFeeError("An error occurred while retrieving transaction fee");
-
-    }
-
-    @Test
-    public void fetchFee_onSuccess_displayFeeCalled() {
-
-        bankTransferPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
-
-        verify(view).onTransactionFeeFetched(anyString(), any(Payload.class), );
-
-    }
-
-    @Test
-    public void fetchFee_onSuccess_Exception_showFetchFeeFailedCalled() throws NullPointerException {
-
-        doThrow(NullPointerException.class).when(view).onTransactionFeeFetched(any(String.class), any(Payload.class), );
-        bankTransferPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(new FeeCheckResponse());
-        verify(view).onFetchFeeError("An error occurred while retrieving transaction fee");
-
-    }
-
-    @Test
-    public void payWithBankTransfer_chargeCard_onSuccess_onTransferDetailsReceivedCalled() {
-        Payload payload = generatePayload();
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-
-        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        ChargeResponse chargeResponse = generateValidChargeResponse();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(chargeResponse, any(String.class));
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onTransferDetailsReceived(chargeResponse.getData().getAmount(), chargeResponse.getData().getAccountnumber(), chargeResponse.getData().getBankname(), chargeResponse.getData().getNote().substring(
-                chargeResponse.getData().getNote().indexOf("to ") + 3));
-    }
-
-    @Test
-    public void payWithBankTransfer_chargeCard_onSuccess_nullResponse_onTransferDetailsReceivedCalled() {
-        Payload payload = generatePayload();
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        ChargeResponse chargeResponse = new ChargeResponse();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
-
-        verify(view).onPaymentError("No response data was returned");
-    }
-
-    @Test
-    public void payWithBankTransfer_chargeCard_onError_onPaymentErrorCalled() {
-        Payload payload = generatePayload();
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-
-        bankTransferPresenter.payWithBankTransfer(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        String message = generateRandomString();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onError(message, generateRandomString());
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onPaymentError(message);
-    }
-
-    @Test
-    public void startPaymentVerification_requeryTxCalled() {
-        bankTransferPresenter.startPaymentVerification(pollingTimeoutInSeconds);
-        long time = System.currentTimeMillis();
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        verify(view).showPollingIndicator(true);
-
-        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
-        verify(bankTransferPresenterMock).requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
-    }
-
-    @Test
-    public void cancelPolling_pollingCancelledTrue() {
-        bankTransferPresenter.cancelPolling();
-
-        assertTrue(bankTransferPresenter.pollingCancelled);
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_00_Called() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = System.currentTimeMillis();
-
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
-        requeryRequestBody.setFlw_ref(generateRandomString());
-        requeryRequestBody.setPBFPubKey(generateRandomString());
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("00"), responseJson);
-
-        verify(view).showPollingIndicator(false);
-        verify(view).onPaymentSuccessful(randomflwRef, randomTxRef, responseJson);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_01_onPollingTimeoutCalled() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = 400000;
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time, time);
-
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
-
-        verify(view).showPollingIndicator(false);
-        verify(view).onPollingTimeout(randomflwRef, randomTxRef, responseJson);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_01_requeryTxCalled() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = System.currentTimeMillis() - 10000;
-
-        doCallRealMethod().when(bankTransferPresenterMock).requeryTx(
-                any(String.class),
-                any(String.class),
-                any(String.class),
-                anyBoolean(),
-                anyLong(), time);
-
-        bankTransferPresenterMock.networkRequest = networkRequest;
-        bankTransferPresenterMock.pollingCancelled = false;
-        bankTransferPresenterMock.mView = view;
-        bankTransferPresenterMock.requeryTx(randomflwRef, randomTxRef, randomPubKey, false, time, time);
-
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
-
-        verify(bankTransferPresenterMock, times(2))
-                .requeryTx(anyString(), anyString(), anyString(), anyBoolean(), anyLong(), time);
-
-    }
-
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_01_PollingCancelled() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-
-        long time = System.currentTimeMillis();
-        bankTransferPresenter.requeryTx(randomflwRef, randomTxRef, randomPubKey, true, time, time);
-
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
-
-        verify(view).showPollingIndicator(false);
-        verify(view).onPollingCanceled(randomflwRef, randomTxRef, responseJson);
-
-    }
-
-
-    @Test
-    public void requeryTx_onSuccess_nullResponse_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        RequeryResponse requeryResponse = new RequeryResponse();
-        String jsonResponse = generateRandomString();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
-
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_chargeResponseCodeNeither00Nor01_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        RequeryResponse requeryResponse = new RequeryResponse();
-        String jsonResponse = generateRandomString();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("099"), jsonResponse);
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
-
-    }
-
-
-    @Test
-    public void requeryTx_onError_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        bankTransferPresenter.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
-
-        verify(view).onPaymentFailed(anyString(), anyString());
-
-    }
-
 
     @Test
     public void init_validAmount_onAmountValidatedCalledWithValidAmount() {
