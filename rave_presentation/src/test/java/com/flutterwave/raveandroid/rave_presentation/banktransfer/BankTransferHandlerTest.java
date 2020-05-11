@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.rave_presentation.banktransfer;
 
-import android.os.Bundle;
-
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -29,7 +27,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -341,10 +338,6 @@ public class BankTransferHandlerTest {
     }
 
 
-    private int generateRandomInt() {
-        return new Random().nextInt();
-    }
-
     private String generateRandomString() {
         return UUID.randomUUID().toString();
     }
@@ -386,13 +379,4 @@ public class BankTransferHandlerTest {
         return feeCheckResponse;
     }
 
-    private boolean throwException() {
-        throw new NullPointerException();
-    }
-
-    Bundle generateBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putString("amount", "100");
-        return bundle;
-    }
 }
