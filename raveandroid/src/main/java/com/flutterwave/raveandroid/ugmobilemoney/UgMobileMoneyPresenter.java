@@ -1,11 +1,8 @@
 package com.flutterwave.raveandroid.ugmobilemoney;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -35,7 +32,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
 
 public class UgMobileMoneyPresenter extends UgMobileMoneyHandler implements UgMobileMoneyUiContract.UserActionsListener {
 
-    private Context context;
     private UgMobileMoneyUiContract.View mView;
 
     @Inject
@@ -52,9 +48,8 @@ public class UgMobileMoneyPresenter extends UgMobileMoneyHandler implements UgMo
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public UgMobileMoneyPresenter(Context context, UgMobileMoneyUiContract.View mView) {
+    public UgMobileMoneyPresenter(UgMobileMoneyUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 
@@ -98,9 +93,6 @@ public class UgMobileMoneyPresenter extends UgMobileMoneyHandler implements UgMo
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(RaveConstants.fieldAmount).getData()));
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceId(context);
-            }
 
 
             PayloadBuilder builder = new PayloadBuilder();
