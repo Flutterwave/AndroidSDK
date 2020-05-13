@@ -361,7 +361,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyUiCo
     public void onResume() {
         super.onResume();
         if (presenter == null) {
-            presenter = new GhMobileMoneyPresenter(getActivity(), this);
+            presenter = new GhMobileMoneyPresenter(this);
         }
         presenter.onAttachView(this);
     }

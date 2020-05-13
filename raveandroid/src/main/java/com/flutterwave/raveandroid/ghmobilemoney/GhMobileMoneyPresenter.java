@@ -1,11 +1,8 @@
 package com.flutterwave.raveandroid.ghmobilemoney;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -37,7 +34,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validV
  */
 
 public class GhMobileMoneyPresenter extends GhMobileMoneyHandler implements GhMobileMoneyUiContract.UserActionsListener {
-    private Context context;
     private GhMobileMoneyUiContract.View mView;
 
     @Inject
@@ -56,9 +52,8 @@ public class GhMobileMoneyPresenter extends GhMobileMoneyHandler implements GhMo
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public GhMobileMoneyPresenter(Context context, GhMobileMoneyUiContract.View mView) {
+    public GhMobileMoneyPresenter(GhMobileMoneyUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 
@@ -70,9 +65,6 @@ public class GhMobileMoneyPresenter extends GhMobileMoneyHandler implements GhMo
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceId(context);
-            }
 
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
