@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.rwfmobilemoney;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -48,13 +47,11 @@ public class RwfMobileMoneyPresenter extends RwfMobileMoneyHandler implements Rw
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
-    private Context context;
     private RwfMobileMoneyUiContract.View mView;
 
     @Inject
-    public RwfMobileMoneyPresenter(Context context, RwfMobileMoneyUiContract.View mView) {
+    public RwfMobileMoneyPresenter(RwfMobileMoneyUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 

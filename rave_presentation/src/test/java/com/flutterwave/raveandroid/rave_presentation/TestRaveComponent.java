@@ -14,6 +14,8 @@ import com.flutterwave.raveandroid.rave_presentation.ghmobilemoney.GhMobileMoney
 import com.flutterwave.raveandroid.rave_presentation.ghmobilemoney.GhMobileMoneyHandlerTest;
 import com.flutterwave.raveandroid.rave_presentation.mpesa.MpesaHandler;
 import com.flutterwave.raveandroid.rave_presentation.mpesa.MpesaHandlerTest;
+import com.flutterwave.raveandroid.rave_presentation.rwfmobilemoney.RwfMobileMoneyHandler;
+import com.flutterwave.raveandroid.rave_presentation.rwfmobilemoney.RwfMobileMoneyHandlerTest;
 
 import javax.inject.Singleton;
 
@@ -50,5 +52,9 @@ public interface TestRaveComponent {
     void inject(MpesaHandler paymentHandler);
 
     void inject(MpesaHandlerTest test);
+
+    void inject(RwfMobileMoneyHandler paymentHandler);
+
+    void inject(RwfMobileMoneyHandlerTest test);
 
 }
