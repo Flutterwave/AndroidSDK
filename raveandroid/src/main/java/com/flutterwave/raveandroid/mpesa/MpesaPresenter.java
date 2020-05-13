@@ -1,11 +1,8 @@
 package com.flutterwave.raveandroid.mpesa;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
@@ -33,7 +30,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validP
 
 public class MpesaPresenter extends MpesaHandler implements MpesaUiContract.UserActionsListener {
 
-    private Context context;
     private MpesaUiContract.View mView;
 
     @Inject
@@ -50,9 +46,8 @@ public class MpesaPresenter extends MpesaHandler implements MpesaUiContract.User
     PayloadEncryptor payloadEncryptor;
 
     @Inject
-    public MpesaPresenter(Context context, MpesaUiContract.View mView) {
+    public MpesaPresenter(MpesaUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 
@@ -96,9 +91,6 @@ public class MpesaPresenter extends MpesaHandler implements MpesaUiContract.User
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceId(context);
-            }
 
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
