@@ -1,11 +1,8 @@
 package com.flutterwave.raveandroid.sabankaccount;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
@@ -37,13 +34,11 @@ public class SaBankAccountPresenter extends SaBankAccountHandler implements SaBa
     @Inject
     SharedPrefsRepo sharedMgr;
 
-    private Context context;
     private SaBankAccountUiContract.View mView;
 
     @Inject
-    public SaBankAccountPresenter(Context context, SaBankAccountUiContract.View mView) {
+    public SaBankAccountPresenter(SaBankAccountUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 
@@ -66,9 +61,6 @@ public class SaBankAccountPresenter extends SaBankAccountHandler implements SaBa
         if (ravePayInitializer != null) {
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceId(context);
-            }
 
             PayloadBuilder builder = new PayloadBuilder();
 
