@@ -8,6 +8,8 @@ import com.flutterwave.raveandroid.rave_presentation.banktransfer.BankTransferHa
 import com.flutterwave.raveandroid.rave_presentation.banktransfer.BankTransferHandlerTest;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentHandler;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentHandlerTest;
+import com.flutterwave.raveandroid.rave_presentation.francmobilemoney.FrancMobileMoneyHandler;
+import com.flutterwave.raveandroid.rave_presentation.francmobilemoney.FrancMobileMoneyHandlerTest;
 
 import javax.inject.Singleton;
 
@@ -32,5 +34,9 @@ public interface TestRaveComponent {
     void inject(CardPaymentHandler paymentHandler);
 
     void inject(CardPaymentHandlerTest test);
+
+    void inject(FrancMobileMoneyHandler paymentHandler);
+
+    void inject(FrancMobileMoneyHandlerTest test);
 
 }

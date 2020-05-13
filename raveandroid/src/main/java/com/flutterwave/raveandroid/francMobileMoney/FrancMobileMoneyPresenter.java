@@ -1,11 +1,8 @@
 package com.flutterwave.raveandroid.francMobileMoney;
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
@@ -45,13 +42,11 @@ public class FrancMobileMoneyPresenter extends FrancMobileMoneyHandler implement
     DeviceIdGetter deviceIdGetter;
     @Inject
     PayloadEncryptor payloadEncryptor;
-    private Context context;
     private FrancMobileMoneyUiContract.View mView;
 
     @Inject
-    public FrancMobileMoneyPresenter(Context context, FrancMobileMoneyUiContract.View mView) {
+    public FrancMobileMoneyPresenter(FrancMobileMoneyUiContract.View mView) {
         super(mView);
-        this.context = context;
         this.mView = mView;
     }
 
@@ -95,9 +90,6 @@ public class FrancMobileMoneyPresenter extends FrancMobileMoneyHandler implement
             ravePayInitializer.setAmount(Double.parseDouble(dataHashMap.get(fieldAmount).getData()));
 
             String deviceID = deviceIdGetter.getDeviceId();
-            if (deviceID == null) {
-                deviceID = Utils.getDeviceId(context);
-            }
 
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))

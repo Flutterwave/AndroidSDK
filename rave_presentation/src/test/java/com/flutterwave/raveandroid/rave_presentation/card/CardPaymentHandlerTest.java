@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
@@ -58,14 +57,12 @@ public class CardPaymentHandlerTest {
     TransactionStatusChecker transactionStatusChecker;
     @Mock
     RequeryRequestBody requeryRequestBody;
-    CardPaymentHandler paymentHandlerMock;
     private CardPaymentHandler paymentHandler;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         paymentHandler = new CardPaymentHandler(interactor);
-        paymentHandlerMock = Mockito.spy(paymentHandler);
 
 
         TestRaveComponent component = DaggerTestRaveComponent.builder()
