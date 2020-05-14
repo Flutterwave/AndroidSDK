@@ -20,6 +20,8 @@ import com.flutterwave.raveandroid.rave_presentation.sabankaccount.SaBankAccount
 import com.flutterwave.raveandroid.rave_presentation.sabankaccount.SaBankAccountHandlerTest;
 import com.flutterwave.raveandroid.rave_presentation.ugmobilemoney.UgMobileMoneyHandler;
 import com.flutterwave.raveandroid.rave_presentation.ugmobilemoney.UgMobileMoneyHandlerTest;
+import com.flutterwave.raveandroid.rave_presentation.uk.UkHandler;
+import com.flutterwave.raveandroid.rave_presentation.uk.UkHandlerTest;
 
 import javax.inject.Singleton;
 
@@ -68,5 +70,9 @@ public interface TestRaveComponent {
     void inject(UgMobileMoneyHandler paymentHandler);
 
     void inject(UgMobileMoneyHandlerTest test);
+
+    void inject(UkHandler paymentHandler);
+
+    void inject(UkHandlerTest test);
 
 }
