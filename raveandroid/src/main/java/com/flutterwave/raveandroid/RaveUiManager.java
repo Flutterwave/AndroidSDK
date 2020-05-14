@@ -307,4 +307,8 @@ public class RaveUiManager extends RavePayManager {
                 isDisplayFee(),
                 orderedPaymentTypesList);
     }
+
+    public ArrayList<Integer> getOrderedPaymentTypesList() {
+        return orderedPaymentTypesList;
+    }
 }

@@ -7,9 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class PayloadToJson {
 
     public Gson gson;
