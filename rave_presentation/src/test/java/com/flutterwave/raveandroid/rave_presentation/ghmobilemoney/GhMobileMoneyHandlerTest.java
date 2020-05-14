@@ -185,7 +185,7 @@ public class GhMobileMoneyHandlerTest {
     }
 
     @Test
-    public void requeryTx_onSuccessWithValidDataAndChargeResponseCode02_onPollingRoundCompleteCalled() {
+    public void requeryTx_onSuccessWithValidDataAndChargeResponseCode02_requeryTxCalled() {
 
         String flwRef = generateRandomString();
         String txRef = generateRandomString();

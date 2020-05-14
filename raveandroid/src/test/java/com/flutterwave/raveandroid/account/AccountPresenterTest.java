@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
+import com.google.gson.Gson;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -282,7 +283,7 @@ public class AccountPresenterTest {
         String phone = map.get(fieldPhone).getData();
         String deviceId = generateRandomString();
         String txRef = generateRandomString();
-        String meta = generateRandomString();
+        String meta = generateRandomMetaString();
         String pubKey = generateRandomString();
         boolean isPreAuth = true;
         String fingerPrint = deviceId;
@@ -302,7 +303,6 @@ public class AccountPresenterTest {
         accountUiPresenterMock.processTransaction(map, ravePayInitializer);
 
         ArgumentCaptor<String> captorEncryptionKey = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Boolean> captorIsDisplayFee = ArgumentCaptor.forClass(Boolean.class);
         ArgumentCaptor<Payload> payloadCaptor = ArgumentCaptor.forClass(Payload.class);
 
         verify(accountUiPresenterMock).chargeAccount(payloadCaptor.capture(),
@@ -311,7 +311,6 @@ public class AccountPresenterTest {
 
         //assert
         assertEquals(encryptionKey, captorEncryptionKey.getValue());
-        assertEquals(isDisplayFee, captorIsDisplayFee.getValue());
 
         Payload capturedPayload = payloadCaptor.getValue();
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
@@ -324,6 +323,12 @@ public class AccountPresenterTest {
         assertEquals(pubKey, capturedPayload.getPBFPubKey());
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
 
+    }
+
+    private String generateRandomMetaString() {
+        ArrayList<Meta> metas = new ArrayList<Meta>();
+        metas.add(new Meta("x", "y"));
+        return new Gson().toJson(metas);
     }
 
     @Test
@@ -347,7 +352,7 @@ public class AccountPresenterTest {
         String account = map.get(fieldAccount).getData();
         String deviceId = generateRandomString();
         String txRef = generateRandomString();
-        String meta = generateRandomString();
+        String meta = generateRandomMetaString();
         String pubKey = generateRandomString();
         boolean isPreAuth = true;
         String fingerPrint = deviceId;
@@ -372,8 +377,6 @@ public class AccountPresenterTest {
         );
 
         //assert
-        assertEquals(isInternetBanking, captorIsInternetBanking.getValue());
-
         Payload capturedPayload = payloadCaptor.getValue();
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
         assertEquals(amount, capturedPayload.getAmount());
@@ -698,6 +701,7 @@ public class AccountPresenterTest {
 
         feeCheckResponseData.setCharge_amount(generateRandomString());
         feeCheckResponse.setData(feeCheckResponseData);
+        feeCheckResponse.getData().setFee(generateRandomString());
 
         return feeCheckResponse;
     }

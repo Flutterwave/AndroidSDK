@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.test.mock.MockContext;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
-import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.CardNoValidator;
@@ -153,6 +153,12 @@ public class TestAndroidModule {
     @Singleton
     public PayloadEncryptor providesGetEncryptedData() {
         return Mockito.mock(PayloadEncryptor.class);
+    }
+
+    @Provides
+    @Singleton
+    public com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter providesCoreDeviceIdGetter() {
+        return Mockito.mock(com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter.class);
     }
 
     @Provides

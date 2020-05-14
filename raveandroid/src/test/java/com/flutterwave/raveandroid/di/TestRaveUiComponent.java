@@ -7,8 +7,8 @@ import com.flutterwave.raveandroid.ach.AchPresenter;
 import com.flutterwave.raveandroid.ach.AchPresenterTest;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenter;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenterTest;
+import com.flutterwave.raveandroid.card.CardPresenterTest;
 import com.flutterwave.raveandroid.card.CardUiPresenter;
-import com.flutterwave.raveandroid.card.CardUiPresenterTest;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyPresenter;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyPresenterTest;
@@ -20,8 +20,8 @@ import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenter;
 import com.flutterwave.raveandroid.rwfmobilemoney.RwfMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenter;
 import com.flutterwave.raveandroid.sabankaccount.SaBankAccountPresenterTest;
-import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyHandlerTest;
 import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenter;
+import com.flutterwave.raveandroid.ugmobilemoney.UgMobileMoneyPresenterTest;
 import com.flutterwave.raveandroid.uk.UkPresenter;
 import com.flutterwave.raveandroid.uk.UkPresenterTest;
 import com.flutterwave.raveandroid.ussd.UssdPresenter;
@@ -37,7 +37,7 @@ import dagger.Component;
 @Component(modules = {TestAndroidModule.class, TestNetworkModule.class})
 public interface TestRaveUiComponent extends RaveUiComponent {
 
-    void inject(CardUiPresenterTest cardPresenterTest);
+    void inject(CardPresenterTest cardPresenterTest);
 
     void inject(AccountPresenterTest accountPresenterTest);
 
@@ -49,7 +49,7 @@ public interface TestRaveUiComponent extends RaveUiComponent {
 
     void inject(MpesaPresenterTest mpesaPresenterTest);
 
-    void inject(UgMobileMoneyHandlerTest ugMobileMoneyPresenterTest);
+    void inject(UgMobileMoneyPresenterTest ugMobileMoneyPresenterTest);
 
     void inject(GhMobileMoneyPresenterTest ghMobileMoneyPresenterTest);
 
