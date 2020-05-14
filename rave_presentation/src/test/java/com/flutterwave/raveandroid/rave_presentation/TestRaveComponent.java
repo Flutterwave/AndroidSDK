@@ -24,6 +24,8 @@ import com.flutterwave.raveandroid.rave_presentation.uk.UkHandler;
 import com.flutterwave.raveandroid.rave_presentation.uk.UkHandlerTest;
 import com.flutterwave.raveandroid.rave_presentation.ussd.UssdHandler;
 import com.flutterwave.raveandroid.rave_presentation.ussd.UssdHandlerTest;
+import com.flutterwave.raveandroid.rave_presentation.zmmobilemoney.ZmMobileMoneyHandler;
+import com.flutterwave.raveandroid.rave_presentation.zmmobilemoney.ZmMobileMoneyHandlerTest;
 
 import javax.inject.Singleton;
 
@@ -80,5 +82,9 @@ public interface TestRaveComponent {
     void inject(UssdHandler paymentHandler);
 
     void inject(UssdHandlerTest test);
+
+    void inject(ZmMobileMoneyHandler paymentHandler);
+
+    void inject(ZmMobileMoneyHandlerTest test);
 
 }
