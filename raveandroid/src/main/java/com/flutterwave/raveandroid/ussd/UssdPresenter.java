@@ -1,8 +1,6 @@
 package com.flutterwave.raveandroid.ussd;
 
 
-import android.content.Context;
-
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
@@ -39,7 +37,7 @@ public class UssdPresenter extends UssdHandler implements UssdUiContract.UserAct
     RemoteRepository networkRequest;
 
     @Inject
-    UssdPresenter(Context context, UssdUiContract.View mView) {
+    UssdPresenter(UssdUiContract.View mView) {
         super(mView);
         this.mView = mView;
     }

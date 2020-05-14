@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.ussd;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatSpinner;
@@ -8,10 +7,10 @@ import android.support.v7.widget.AppCompatSpinner;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
-import com.flutterwave.raveandroid.di.DaggerTestAppComponent;
+import com.flutterwave.raveandroid.di.DaggerTestRaveUiComponent;
 import com.flutterwave.raveandroid.di.TestAndroidModule;
+import com.flutterwave.raveandroid.di.TestNetworkModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
-import com.flutterwave.raveandroid.di.TestremoteModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -19,19 +18,14 @@ import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJson;
-import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
+import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
-import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -45,13 +39,9 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldUssdBank;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,8 +50,6 @@ public class UssdPresenterTest {
 
     @Mock
     UssdUiContract.View view;
-    @Inject
-    Context context;
     @Inject
     AmountValidator amountValidator;
     @Inject
@@ -80,260 +68,20 @@ public class UssdPresenterTest {
     UssdPresenter ussdPresenterMock;
     @Mock
     PayloadBuilder payloadBuilder;
-    @Mock
-    RequeryRequestBody requeryRequestBody;
     private UssdPresenter ussdPresenter;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ussdPresenter = new UssdPresenter(context, view);
+        ussdPresenter = new UssdPresenter(view);
 
-        TestRaveUiComponent component = DaggerTestAppComponent.builder()
+        TestRaveUiComponent component = DaggerTestRaveUiComponent.builder()
                 .testAndroidModule(new TestAndroidModule())
-                .testremoteModule(new TestremoteModule())
+                .testNetworkModule(new TestNetworkModule())
                 .build();
 
         component.inject(this);
         component.inject(ussdPresenter);
-    }
-
-    @Test
-    public void fetchFee_onError_showFetchFeeFailedCalled_errorOccurredMessage() {
-
-        ussdPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-
-        captor.getAllValues().get(0).onError(generateRandomString());
-        verify(view).showProgressIndicator(false);
-        verify(view).showFetchFeeFailed("An error occurred while retrieving transaction fee");
-
-    }
-
-    @Test
-    public void fetchFee_onSuccess_displayFeeCalled() {
-
-        ussdPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateFeeCheckResponse());
-
-        verify(view).displayFee(anyString(), any(Payload.class));
-
-    }
-
-    @Test
-    public void fetchFee_onSuccess_Exception_showFetchFeeFailedCalled() throws NullPointerException {
-
-        doThrow(NullPointerException.class).when(view).displayFee(any(String.class), any(Payload.class));
-        ussdPresenter.fetchFee(generatePayload());
-
-        ArgumentCaptor<Callbacks.OnGetFeeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnGetFeeRequestComplete.class);
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(new FeeCheckResponse());
-        verify(view).showFetchFeeFailed("An error occurred while retrieving transaction fee");
-
-    }
-
-    @Test
-    public void payWithUssd_chargeCard_onSuccess_onUssdDetailsReceivedCalled() {
-        Payload payload = generatePayload();
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-
-        ussdPresenter.payWithUssd(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        ChargeResponse chargeResponse = generateValidChargeResponse();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(chargeResponse, any(String.class));
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onUssdDetailsReceived(chargeResponse.getData().getUssdData().getNote(), chargeResponse.getData().getUssdData().getReference_code());
-    }
-
-    @Test
-    public void payWithUssd_chargeCard_onSuccess_nullResponse_onUssdDetailsReceivedCalled() {
-        Payload payload = generatePayload();
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-
-        ussdPresenter.payWithUssd(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        ChargeResponse chargeResponse = new ChargeResponse();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(chargeResponse, generateRandomString());
-
-        verify(view).onPaymentError("No response data was returned");
-    }
-
-    @Test
-    public void payWithUssd_chargeCard_onError_onPaymentErrorCalled() {
-        Payload payload = generatePayload();
-
-        when(ravePayInitializer.getEncryptionKey()).thenReturn(generateRandomString());
-        when(payloadToJson.convertChargeRequestPayloadToJson(payload)).thenReturn(generateRandomString());
-        when(payloadEncryptor.getEncryptedData(any(String.class), any(String.class))).thenReturn(generateRandomString());
-
-        ussdPresenter.payWithUssd(payload, generateRandomString());
-        ArgumentCaptor<Callbacks.OnChargeRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnChargeRequestComplete.class);
-
-        String message = generateRandomString();
-
-        verify(networkRequest).charge(any(ChargeRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onError(message, generateRandomString());
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onPaymentError(message);
-    }
-
-    @Test
-    public void startPaymentVerification_requeryTxCalled() {
-        ussdPresenter.startPaymentVerification(pollingTimeoutInSeconds);
-        long time = System.currentTimeMillis();
-
-        String randomflwRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        verify(view).showPollingIndicator(true);
-
-        ussdPresenterMock.requeryTx(randomflwRef, randomPubKey, time);
-        verify(ussdPresenterMock).requeryTx(randomflwRef, randomPubKey, time);
-    }
-
-    @Test
-    public void cancelPolling_pollingCancelledTrue() {
-        ussdPresenter.cancelPolling();
-
-        assertTrue(ussdPresenter.pollingCancelled);
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_00_Called() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = System.currentTimeMillis();
-
-        ussdPresenter.requeryTx(randomflwRef, randomPubKey, time);
-        requeryRequestBody.setFlw_ref(generateRandomString());
-        requeryRequestBody.setPBFPubKey(generateRandomString());
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("00"), responseJson);
-
-        verify(view).showPollingIndicator(false);
-        verify(view).onPaymentSuccessful(randomflwRef, responseJson);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_02_onPollingTimeoutCalled() {
-
-        String randomflwRef = generateRandomString();
-        String randomTxRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = 400000;
-        ussdPresenter.requeryTx(randomflwRef, randomPubKey, time);
-
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("02"), responseJson);
-
-        verify(view).showPollingIndicator(false);
-        verify(view).onPollingTimeout(randomflwRef, responseJson);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_onRequerySuccessful_onPaymentSuccessful_02_requeryTxCalled() {
-
-        String randomflwRef = generateRandomString();
-        String randomPubKey = generateRandomString();
-        long time = System.currentTimeMillis() - 10000;
-
-        doCallRealMethod().when(ussdPresenterMock).requeryTx(
-                any(String.class),
-                any(String.class),
-                anyLong());
-
-        ussdPresenterMock.networkRequest = networkRequest;
-        ussdPresenterMock.pollingCancelled = false;
-        ussdPresenterMock.mView = view;
-        ussdPresenterMock.requeryTx(randomflwRef, randomPubKey, time);
-
-        String responseJson = generateRandomString();
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("02"), responseJson);
-
-        verify(ussdPresenterMock, times(2))
-                .requeryTx(anyString(), anyString(), anyLong());
-
-    }
-
-
-    @Test
-    public void requeryTx_onSuccess_nullResponse_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        RequeryResponse requeryResponse = new RequeryResponse();
-        String jsonResponse = generateRandomString();
-        ussdPresenter.requeryTx(generateRandomString(), generateRandomString(), time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
-
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
-
-    }
-
-    @Test
-    public void requeryTx_onSuccess_chargeResponseCodeNeither00Nor02_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        RequeryResponse requeryResponse = new RequeryResponse();
-        String jsonResponse = generateRandomString();
-        ussdPresenter.requeryTx(generateRandomString(), generateRandomString(), time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("099"), jsonResponse);
-
-        verify(view).showProgressIndicator(false);
-        verify(view).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
-
-    }
-
-
-    @Test
-    public void requeryTx_onError_onPaymentFailedCalled() {
-
-        long time = System.currentTimeMillis();
-        ussdPresenter.requeryTx(generateRandomString(), generateRandomString(), time);
-        ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
-        captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
-
-        verify(view).onPaymentFailed(anyString(), anyString());
-
     }
 
 
@@ -420,7 +168,7 @@ public class UssdPresenterTest {
         //act
         ussdPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), any(Callbacks.OnGetFeeRequestComplete.class));
+        verify(networkRequest).getFee(any(FeeCheckRequestBody.class), any(ResultCallback.class));
 
     }
 
@@ -457,7 +205,7 @@ public class UssdPresenterTest {
         //act
         ussdPresenter.processTransaction(data, ravePayInitializer);
         //assert
-        verify(networkRequest).charge(any(ChargeRequestBody.class), any(Callbacks.OnChargeRequestComplete.class));
+        verify(networkRequest).charge(any(ChargeRequestBody.class), any(ResultCallback.class));
     }
 
 
@@ -511,39 +259,5 @@ public class UssdPresenterTest {
         return new Payload(generateRandomString(), metas, subAccounts, generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString(), generateRandomString());
     }
 
-    private RequeryResponse generateRequerySuccessful(String responseCode) {
-        RequeryResponse requeryResponse = new RequeryResponse();
-        RequeryResponse.Data data = new RequeryResponse.Data();
-        data.setChargeResponseCode(responseCode);
-        requeryResponse.setData(data);
-        return requeryResponse;
-    }
-
-    private ChargeResponse generateValidChargeResponse() {
-        ChargeResponse chargeResponse = new ChargeResponse();
-        chargeResponse.setData(new ChargeResponse.Data());
-        chargeResponse.getData().setUssdData(new ChargeResponse.Data());
-
-        ChargeResponse.Data data = chargeResponse.getData().getUssdData();
-
-        data.setFlw_reference(generateRandomString());
-        data.setNote(generateRandomString());
-        data.setReference_code(generateRandomString());
-
-
-        chargeResponse.getData().setChargeResponseCode("00");
-        chargeResponse.getData().setChargedAmount(generateRandomString());
-        return chargeResponse;
-    }
-
-    private FeeCheckResponse generateFeeCheckResponse() {
-        FeeCheckResponse feeCheckResponse = new FeeCheckResponse();
-        FeeCheckResponse.Data feeCheckResponseData = new FeeCheckResponse.Data();
-
-        feeCheckResponseData.setCharge_amount(generateRandomString());
-        feeCheckResponse.setData(feeCheckResponseData);
-
-        return feeCheckResponse;
-    }
 
 }
