@@ -489,6 +489,9 @@ public class AccountPresenter implements AccountContract.UserActionsListener {
             } else {
                 mView.onAmountValidated("", View.VISIBLE);
             }
+            if (phoneValidator.isPhoneValid(ravePayInitializer.getPhoneNumber())) {
+                mView.onPhoneValidated(String.valueOf(ravePayInitializer.getPhoneNumber()), ravePayInitializer.getIsPhoneEditable());
+            }
         }
     }
 

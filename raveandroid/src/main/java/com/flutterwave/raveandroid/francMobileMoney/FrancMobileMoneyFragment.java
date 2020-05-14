@@ -160,6 +160,12 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     }
 
     @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+        phoneEt.setText(phoneToSet);
+        phoneEt.setEnabled(isEditable);
+    }
+
+    @Override
     public void showProgressIndicator(boolean active) {
 
         if (getActivity().isFinishing()) {

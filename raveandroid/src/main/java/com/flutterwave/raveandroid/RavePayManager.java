@@ -58,6 +58,7 @@ public class RavePayManager {
     boolean staging = true;
     boolean isPreAuth = false;
     private String phoneNumber = "";
+    private Boolean allowEditPhone = true;
     boolean showStagingLabel = true;
     boolean displayFee = true;
     private boolean isPermanent = false;
@@ -274,6 +275,12 @@ public class RavePayManager {
         return this;
     }
 
+    public RavePayManager setPhoneNumber(String phoneNumber, Boolean isEditable) {
+        this.phoneNumber = phoneNumber;
+        this.allowEditPhone = isEditable;
+        return this;
+    }
+
     public RavePayManager setPaymentPlan(String payment_plan) {
         this.payment_plan = payment_plan;
         return this;
@@ -329,6 +336,7 @@ public class RavePayManager {
                 lName,
                 theme,
                 phoneNumber,
+                allowEditPhone,
                 allowSaveCard,
                 isPermanent,
                 duration,

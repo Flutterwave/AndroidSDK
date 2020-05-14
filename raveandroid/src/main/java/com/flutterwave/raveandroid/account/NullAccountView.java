@@ -90,6 +90,11 @@ public class NullAccountView implements AccountContract.View {
     }
 
     @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+
+    }
+
+    @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
     }
