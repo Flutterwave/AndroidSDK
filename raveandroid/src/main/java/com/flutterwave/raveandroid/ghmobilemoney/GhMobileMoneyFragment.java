@@ -217,6 +217,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyCont
         amountEt.setText(amountToPay);
     }
 
+    @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+        phoneEt.setText(phoneToSet);
+        phoneEt.setEnabled(isEditable);
+    }
+
     private void showInstructionsAndVoucher(boolean show) {
 
         if (show) {

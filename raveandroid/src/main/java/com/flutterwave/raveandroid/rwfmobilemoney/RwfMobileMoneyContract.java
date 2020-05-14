@@ -22,6 +22,8 @@ public interface RwfMobileMoneyContract {
 
         void showPollingIndicator(boolean active);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void showProgressIndicator(boolean active);
 
         void onAmountValidationSuccessful(String amountToPay);

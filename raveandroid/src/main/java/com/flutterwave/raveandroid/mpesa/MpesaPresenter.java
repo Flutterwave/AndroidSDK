@@ -281,6 +281,9 @@ public class MpesaPresenter implements MpesaContract.UserActionsListener {
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }
+            if (phoneValidator.isPhoneValid(ravePayInitializer.getPhoneNumber())) {
+                mView.onPhoneValidated(String.valueOf(ravePayInitializer.getPhoneNumber()), ravePayInitializer.getIsPhoneEditable());
+            }
         }
     }
 

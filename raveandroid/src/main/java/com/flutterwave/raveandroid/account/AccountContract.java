@@ -46,6 +46,8 @@ public interface AccountContract {
 
         void onRequerySuccessful(RequeryResponse response, String responseAsJSONString);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
         void showFieldError(int viewID, String message, Class<?> viewtype);

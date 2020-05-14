@@ -18,6 +18,9 @@ public interface MpesaContract {
         void showFetchFeeFailed(String s);
         void onPaymentError(String message);
         void showPollingIndicator(boolean active);
+
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void showProgressIndicator(boolean active);
         void onAmountValidationSuccessful(String amountToPay);
         void displayFee(String charge_amount, Payload payload);
