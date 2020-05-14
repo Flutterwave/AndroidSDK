@@ -28,7 +28,7 @@ The minimum supported SDK version is 15
 **Step 2.** Add the dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave:rave-android:1.0.49.1'
+	     implementation 'com.github.Flutterwave:rave-android:1.0.49.2'
 	}
 
 **Step 3.** Add the  `INTERNET` permission to your android manifest
@@ -51,7 +51,7 @@ Set the public key, encryption key and other required parameters. The `RavePayMa
                         .setPublicKey(publicKey)
                         .setEncryptionKey(encryptionKey)
                         .setTxRef(txRef)
-                        .setPhoneNumber(phoneNumber)
+                        .setPhoneNumber(phoneNumber, boolean)
                         .acceptAccountPayments(boolean)
                         .acceptCardPayments(boolean)
                         .acceptMpesaPayments(boolean)
