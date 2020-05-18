@@ -27,7 +27,7 @@
 			app:layout_constraintTop_toBottomOf="@+id/banks_spinner" />
 		
 		<android.support.design.widget.TextInputLayout
-                android:background="@null"
+                android:background="@android:color/transparent""
 			android:id="@+id/rave_amountTil"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
