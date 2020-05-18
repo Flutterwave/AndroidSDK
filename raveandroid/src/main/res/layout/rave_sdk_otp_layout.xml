@@ -40,6 +40,7 @@
         />
 
     <android.support.design.widget.TextInputLayout
+                android:background="@null"
         android:layout_width="match_parent"
         android:id="@+id/otpTil"
         android:layout_marginBottom="20dp"
@@ -48,6 +49,7 @@
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
+            android:paddingLeft="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_lock_outline_black_24dp"

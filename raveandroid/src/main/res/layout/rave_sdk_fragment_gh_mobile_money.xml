@@ -41,12 +41,14 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
 
 
         <android.support.design.widget.TextInputLayout
+                android:background="@null"
             android:layout_width="match_parent"
             android:id="@+id/rave_amountTil"
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
+                android:paddingLeft="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/amount"
@@ -58,12 +60,14 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+                android:background="@null"
             android:id="@+id/rave_phoneTil"
             android:layout_width="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
+                android:paddingLeft="2dp"
                 android:id="@+id/rave_phoneEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,12 +78,14 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+                android:background="@null"
             android:id="@+id/rave_voucherTil"
             android:layout_width="match_parent"
             android:layout_marginBottom="20dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
+                android:paddingLeft="2dp"
                 android:id="@+id/rave_voucherEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".barter.BarterFragment">
 
     <ScrollView
@@ -19,6 +20,7 @@
             android:paddingTop="10dp">
 
             <android.support.design.widget.TextInputLayout
+                android:background="@null"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
