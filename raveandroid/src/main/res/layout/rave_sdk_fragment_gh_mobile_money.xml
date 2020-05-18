@@ -41,7 +41,7 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
 
 
         <android.support.design.widget.TextInputLayout
-                android:background="@android:color/transparent""
+                android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:id="@+id/rave_amountTil"
             android:layout_marginBottom="10dp"
@@ -60,7 +60,7 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:background="@android:color/transparent""
+                android:background="@android:color/transparent"
             android:id="@+id/rave_phoneTil"
             android:layout_width="match_parent"
             android:layout_marginBottom="10dp"
@@ -78,7 +78,7 @@ tools:context="com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment">
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:background="@android:color/transparent""
+                android:background="@android:color/transparent"
             android:id="@+id/rave_voucherTil"
             android:layout_width="match_parent"
             android:layout_marginBottom="20dp"
