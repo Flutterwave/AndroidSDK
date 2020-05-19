@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.flutterwave.raveandroid.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.Payload;

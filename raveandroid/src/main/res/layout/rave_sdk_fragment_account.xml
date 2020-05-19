@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,7 +20,7 @@
             android:orientation="vertical"
             android:paddingTop="20dp">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:paddingLeft="2dp"
                     android:id="@+id/rave_amountEt"
                     android:layout_width="match_parent"
@@ -37,9 +37,9 @@
                     android:hint="@string/amount"
                     android:inputType="numberDecimal" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
                 android:id="@+id/rave_emailTil"
                 android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:paddingLeft="2dp"
                     android:id="@+id/rave_emailEt"
                     android:layout_width="match_parent"
@@ -56,9 +56,9 @@
                     android:hint="@string/email_address"
                     android:inputType="textEmailAddress" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:paddingLeft="2dp"
                     android:id="@+id/rave_phoneEt"
                     android:layout_width="match_parent"
@@ -75,9 +75,9 @@
                     android:hint="@string/phone_number"
                     android:inputType="numberDecimal" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
                 android:id="@+id/rave_accountNumberTil"
                 android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:paddingLeft="2dp"
                     android:id="@+id/rave_accountNumberEt"
                     android:layout_width="match_parent"
@@ -96,9 +96,9 @@
                     android:inputType="number"
                     android:maxLength="10" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
                 android:id="@+id/rave_bvnTil"
                 android:layout_width="match_parent"
@@ -107,7 +107,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:paddingLeft="2dp"
                     android:id="@+id/rave_bvnEt"
                     android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                     android:inputType="number"
                     android:maxLength="11" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <EditText
                 android:id="@+id/rave_bankEditText"
@@ -214,5 +214,5 @@
 
     </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 

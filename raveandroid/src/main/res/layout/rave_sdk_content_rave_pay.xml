@@ -9,7 +9,7 @@
     tools:context="com.flutterwave.raveandroid.RavePayActivity"
     tools:showIn="@layout/rave_sdk_activity_rave_pay">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         style="?TabLayoutStyle"
         app:tabMode="fixed" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

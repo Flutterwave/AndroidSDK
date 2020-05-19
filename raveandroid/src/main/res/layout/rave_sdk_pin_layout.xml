@@ -25,7 +25,7 @@
         android:layout_marginBottom="20dp"
         android:text="@string/please_enter_your_card_pin_nto_continue_your_transaction"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
                 android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:id="@+id/rave_pinTil"
@@ -34,7 +34,7 @@
         android:layout_marginRight="30dp"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:paddingLeft="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:id="@+id/rave_pinEv"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/rave_pinButton"

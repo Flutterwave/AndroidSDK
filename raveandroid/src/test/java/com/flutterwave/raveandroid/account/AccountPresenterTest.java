@@ -1,7 +1,7 @@
 package com.flutterwave.raveandroid.account;
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.view.View;
 
 import com.flutterwave.raveandroid.DeviceIdGetter;
