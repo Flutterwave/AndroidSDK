@@ -38,7 +38,7 @@
                 tools:text="@string/vodafone_msg" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

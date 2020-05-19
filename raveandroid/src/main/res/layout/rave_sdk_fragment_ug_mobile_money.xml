@@ -24,7 +24,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
                 android:layout_width="match_parent"
                 android:id="@+id/rave_amountTil"
                 android:layout_marginBottom="10dp"
@@ -43,7 +43,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
                 android:layout_marginBottom="10dp"

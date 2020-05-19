@@ -40,7 +40,7 @@
         />
 
     <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
         android:layout_width="match_parent"
         android:id="@+id/otpTil"
         android:layout_marginBottom="20dp"

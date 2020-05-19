@@ -7,14 +7,14 @@
 	android:orientation="vertical"
 	android:padding="32dp"
 	tools:context=".ussd.UssdFragment">
-	
+
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/rave_initiate_payment_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		tools:visibility="gone">
-		
-		
+
+
 		<Button
 			android:id="@+id/pay_button"
 			style="?PayButtonStyle"
@@ -25,9 +25,9 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/banks_spinner" />
-		
+
 		<com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
 			android:id="@+id/rave_amountTil"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent">
-			
+
 			<com.google.android.material.textfield.TextInputEditText
 				android:paddingLeft="2dp"
 				android:id="@+id/rave_amountEt"
@@ -46,9 +46,9 @@
 				android:layout_marginBottom="10dp"
 				android:hint="@string/amount"
 				android:inputType="numberDecimal" />
-		
+
 		</com.google.android.material.textfield.TextInputLayout>
-		
+
 		<androidx.appcompat.widget.AppCompatSpinner
 			android:id="@+id/banks_spinner"
 			android:layout_width="match_parent"
@@ -58,18 +58,18 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/rave_amountTil"
 			tools:layout_height="20dp" />
-	
-	
+
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
-	
+
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/rave_validate_payment_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:visibility="gone"
 		tools:visibility="visible">
-		
-		
+
+
 		<Button
 			android:id="@+id/verify_ussd_payment_button"
 			style="?PayButtonStyle"
@@ -80,7 +80,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/payment_status_Tv" />
-		
+
 		<LinearLayout
 			android:id="@+id/reference_code_layout"
 			android:layout_width="match_parent"
@@ -126,8 +126,8 @@
 					android:contentDescription="Copy reference code"
 					android:src="@drawable/ic_content_copy_black_24dp" />
 			</LinearLayout>
-			
-			
+
+
 			<View
 				android:id="@+id/divider2"
 				android:layout_width="match_parent"
@@ -135,8 +135,8 @@
 				android:background="@color/sisal"
 				app:layout_constraintTop_toBottomOf="@id/reference_code_layout" />
 		</LinearLayout>
-		
-		
+
+
 		<TextView
 			android:id="@+id/textView3"
 			android:layout_width="wrap_content"
@@ -149,7 +149,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
-		
+
 		<TextView
 			android:id="@+id/copy_reference_code_tv"
 			android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/reference_code_layout" />
-		
+
 		<TextView
 			android:id="@+id/payment_status_Tv"
 			android:layout_width="wrap_content"
@@ -169,8 +169,8 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/copy_reference_code_tv" />
-		
-		
+
+
 		<TextView
 			android:id="@+id/ussd_code_tv"
 			android:layout_width="wrap_content"
@@ -179,11 +179,11 @@
 			android:text="@string/ussd_code_placeholder"
 			android:textSize="36sp"
 			android:textStyle="bold"
-			
+
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/textView3" />
-		
+
 		<TextView
 			android:id="@+id/choose_another_bank_tv"
 			android:layout_width="wrap_content"
@@ -197,7 +197,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/verify_ussd_payment_button"
 			app:layout_constraintVertical_bias="1.0" />
-	
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

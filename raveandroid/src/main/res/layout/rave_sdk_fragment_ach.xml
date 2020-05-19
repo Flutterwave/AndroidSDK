@@ -22,7 +22,7 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@null"
                 android:layout_width="match_parent"
                 android:id="@+id/rave_amountTil"
                 android:visibility="gone"
