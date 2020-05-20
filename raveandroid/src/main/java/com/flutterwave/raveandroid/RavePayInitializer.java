@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Parcel
 public class RavePayInitializer {
     private final ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
+    private boolean isPhoneEditable = true;
     String phoneNumber = "";
     private boolean saveCardFeatureAllowed = true;
     String email;
@@ -40,7 +41,7 @@ public class RavePayInitializer {
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
-                              String lName, int theme, String phoneNumber, boolean saveCardFeatureAllowed,
+                              String lName, int theme, String phoneNumber, boolean isPhoneEditable, boolean saveCardFeatureAllowed,
                               boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee, ArrayList<Integer> orderedPaymentTypesList) {
@@ -64,6 +65,7 @@ public class RavePayInitializer {
         this.payment_plan = payment_plan;
         this.isPreAuth = isPreAuth;
         this.phoneNumber = phoneNumber;
+        this.isPhoneEditable = isPhoneEditable;
         this.saveCardFeatureAllowed = saveCardFeatureAllowed;
         this.showStagingLabel = showStagingLabel;
         this.displayFee = displayFee;
@@ -221,6 +223,10 @@ public class RavePayInitializer {
 
     public boolean getIsDisplayFee() {
         return displayFee;
+    }
+
+    public boolean getIsPhoneEditable() {
+        return isPhoneEditable;
     }
 
     public void setIsDisplayFee(boolean displayFee) {

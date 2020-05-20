@@ -24,6 +24,11 @@ public class NullUgMobileMoneyView implements UgMobileMoneyUiContract.View {
     }
 
     @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+
+    }
+
+    @Override
     public void showProgressIndicator(boolean active) {
 
     }

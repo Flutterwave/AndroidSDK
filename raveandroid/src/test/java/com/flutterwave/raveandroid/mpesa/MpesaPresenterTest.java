@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.mpesa;
 
-import android.support.design.widget.TextInputLayout;
+import android.content.Context;
+import com.google.android.material.textfield.TextInputLayout;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;

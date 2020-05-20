@@ -138,6 +138,9 @@ public class UgMobileMoneyPresenter extends UgMobileMoneyHandler implements UgMo
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }
+            if (phoneValidator.isPhoneValid(ravePayInitializer.getPhoneNumber())) {
+                mView.onPhoneValidated(String.valueOf(ravePayInitializer.getPhoneNumber()), ravePayInitializer.getIsPhoneEditable());
+            }
         }
 
     }

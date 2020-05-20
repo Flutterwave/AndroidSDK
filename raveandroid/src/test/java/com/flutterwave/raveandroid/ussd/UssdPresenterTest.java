@@ -1,8 +1,8 @@
 package com.flutterwave.raveandroid.ussd;
 
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.AppCompatSpinner;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;

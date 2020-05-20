@@ -5,10 +5,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,6 +158,12 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
     public void onAmountValidationSuccessful(String amountToPay) {
         amountTil.setVisibility(GONE);
         amountEt.setText(amountToPay);
+    }
+
+    @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+        phoneEt.setText(phoneToSet);
+        phoneEt.setEnabled(isEditable);
     }
 
     @Override

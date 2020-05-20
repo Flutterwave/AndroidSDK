@@ -145,6 +145,9 @@ public class ZmMobileMoneyPresenter extends ZmMobileMoneyHandler implements ZmMo
             if (isAmountValid) {
                 mView.onAmountValidationSuccessful(String.valueOf(ravePayInitializer.getAmount()));
             }
+            if (phoneValidator.isPhoneValid(ravePayInitializer.getPhoneNumber())) {
+                mView.onPhoneValidated(String.valueOf(ravePayInitializer.getPhoneNumber()), ravePayInitializer.getIsPhoneEditable());
+            }
         }
     }
 
