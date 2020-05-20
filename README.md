@@ -10,8 +10,8 @@ Rave's Android Drop-In is a readymade UI that allows you to accept card and bank
 
 ## Requirements
 
-
-The minimum supported SDK version is 15
+- The minimum supported SDK version is 15
+- Rave android sdk 1.0.50 and above only supports projects that have been migrated to [androidx](https://developer.android.com/jetpack/androidx/). For more information, read Google's [migration guide](https://developer.android.com/jetpack/androidx/migrate).
 
 ## Adding it to your project
 
