@@ -1,6 +1,8 @@
 package com.flutterwave.raveandroid.zmmobilemoney;
 
 import android.content.Context;
+
+import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.google.android.material.textfield.TextInputLayout;
 import android.widget.Spinner;
 
@@ -8,7 +10,6 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.di.DaggerTestRaveUiComponent;
-import com.flutterwave.raveandroid.di.TestAndroidModule;
 import com.flutterwave.raveandroid.di.TestNetworkModule;
 import com.flutterwave.raveandroid.di.TestRaveUiComponent;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;

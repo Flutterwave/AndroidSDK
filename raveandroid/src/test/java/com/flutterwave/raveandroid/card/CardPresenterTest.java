@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.card;
 
-import android.support.design.widget.TextInputLayout;
+
 import android.view.View;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 import com.flutterwave.raveandroid.validators.CardExpiryValidator;
 import com.flutterwave.raveandroid.validators.CvvValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.junit.Before;
 import org.junit.Test;

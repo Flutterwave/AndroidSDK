@@ -28,6 +28,8 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    useLibrary 'android.test.mock'
 }
 
 dependencies {
