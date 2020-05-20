@@ -30,13 +30,13 @@ The payment methods currenly supported are Cards, USSD, Mpesa, GH Mobile Money, 
 If you want to use the default Drop In UI, add the `rave_android` module dependency
 
     dependencies {
-	     implementation 'com.github.bolaware.rave-android:rave_android:1.2.0
+	     implementation 'com.github.bolaware.rave-android:rave_android:1.2.0'
 	}
 
 but if you are not interested in our default UI and you want to use yours and only interact only with our core sdk, use the `rave_presentation` module
 
     dependencies {
-	     implementation 'com.github.bolaware.rave-android:rave_presentation:1.2.0
+	     implementation 'com.github.bolaware.rave-android:rave_presentation:1.2.0'
 	}
 
 **Step 3.** Add the  `INTERNET` permission to your android manifest
