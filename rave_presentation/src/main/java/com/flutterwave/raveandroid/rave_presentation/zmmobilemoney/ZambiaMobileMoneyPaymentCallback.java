@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.zmmobilemoney;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface ZambiaMobileMoneyPaymentCallback {
     void showProgressIndicator(boolean active);

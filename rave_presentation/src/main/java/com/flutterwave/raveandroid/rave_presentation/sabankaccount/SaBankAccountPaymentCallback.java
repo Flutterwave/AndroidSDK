@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.sabankaccount;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface SaBankAccountPaymentCallback {
     void showProgressIndicator(boolean active);

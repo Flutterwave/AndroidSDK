@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.account;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 

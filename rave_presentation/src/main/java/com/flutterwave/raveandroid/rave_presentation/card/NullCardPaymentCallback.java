@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class NullCardPaymentCallback implements CardPaymentCallback {
     @Override
