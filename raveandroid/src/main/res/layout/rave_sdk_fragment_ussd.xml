@@ -27,7 +27,7 @@
 			app:layout_constraintTop_toBottomOf="@+id/banks_spinner" />
 
 		<com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
+            app:boxBackgroundColor="@null"
 			android:id="@+id/rave_amountTil"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
