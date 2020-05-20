@@ -33,7 +33,7 @@ If you want to use the default Drop In UI, add the `rave_android` module depende
 	     implementation 'com.github.bolaware.rave-android:rave_android:1.2.0'
 	}
 
-but if you are not interested in our default UI and you want to use yours and only interact only with our core sdk, use the `rave_presentation` module
+but if you are not interested in our default UI and you want to use yours and only want to interact with our core sdk, use the `rave_presentation` module
 
     dependencies {
 	     implementation 'com.github.bolaware.rave-android:rave_presentation:1.2.0'
