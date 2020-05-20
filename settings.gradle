@@ -1,5 +1,5 @@
 include ':app'
-include ':raveandroid'
+include ':rave_android'
 include ':rave_core'
 include ':rave_remote'
 include ':rave_logger'
