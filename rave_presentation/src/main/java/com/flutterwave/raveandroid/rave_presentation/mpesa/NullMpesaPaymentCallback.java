@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.mpesa;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class NullMpesaPaymentCallback implements MpesaPaymentCallback {
 

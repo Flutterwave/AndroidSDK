@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.ugmobilemoney;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface UgandaMobileMoneyPaymentCallback {
     void showProgressIndicator(boolean active);

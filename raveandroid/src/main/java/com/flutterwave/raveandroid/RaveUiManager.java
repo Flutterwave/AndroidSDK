@@ -2,8 +2,9 @@ package com.flutterwave.raveandroid;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.util.Log;
+
+import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -40,6 +41,7 @@ public class RaveUiManager extends RavePayManager {
     private int theme = R.style.DefaultTheme;
     private boolean allowSaveCard = true;
     protected boolean showStagingLabel = true;
+    private Boolean allowEditPhone = true;
 
     private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
 
@@ -123,6 +125,12 @@ public class RaveUiManager extends RavePayManager {
 
     public RaveUiManager setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public RavePayManager setPhoneNumber(String phoneNumber, Boolean isEditable) {
+        this.phoneNumber = phoneNumber;
+        this.allowEditPhone = isEditable;
         return this;
     }
 
@@ -294,6 +302,7 @@ public class RaveUiManager extends RavePayManager {
                 getlName(),
                 theme,
                 getPhoneNumber(),
+                allowEditPhone,
                 allowSaveCard,
                 isPermanent(),
                 getDuration(),

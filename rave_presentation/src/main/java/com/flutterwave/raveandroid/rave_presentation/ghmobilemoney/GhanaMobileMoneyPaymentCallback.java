@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.ghmobilemoney;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface GhanaMobileMoneyPaymentCallback {
     void showProgressIndicator(boolean active);

@@ -15,6 +15,8 @@ public interface UgMobileMoneyUiContract {
     interface View extends UgMobileMoneyContract.Interactor {
         void onAmountValidationSuccessful(String amountToPay);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void showFieldError(int viewID, String message, Class<?> viewType);
 
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);

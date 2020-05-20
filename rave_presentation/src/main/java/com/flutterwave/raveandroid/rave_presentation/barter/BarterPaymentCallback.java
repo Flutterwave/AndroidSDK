@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.barter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface BarterPaymentCallback {
     void showProgressIndicator(boolean active);

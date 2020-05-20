@@ -17,6 +17,8 @@ public interface MpesaUiContract {
 
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void showFieldError(int viewID, String message, Class<?> viewType);
     }
 

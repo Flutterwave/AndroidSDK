@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface FrancophoneMobileMoneyPaymentCallback {
     void showProgressIndicator(boolean active);

@@ -14,6 +14,8 @@ public interface RwfMobileMoneyUiContract {
 
         void showFieldError(int viewID, String message, Class<?> viewType);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
     }

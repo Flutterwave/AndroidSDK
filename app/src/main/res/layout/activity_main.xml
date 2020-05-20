@@ -282,7 +282,7 @@
                 android:checked="true"
                 android:text="Use Default Rave UI" />
 
-            <android.support.v7.widget.SwitchCompat
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/isLiveSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -17,6 +17,8 @@ public interface ZmMobileMoneyUiContract {
 
         void showFieldError(int viewID, String message, Class<?> viewtype);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
         void showToast(String validNetworkPrompt);

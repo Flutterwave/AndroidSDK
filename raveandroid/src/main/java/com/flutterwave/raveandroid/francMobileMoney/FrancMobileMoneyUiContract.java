@@ -17,6 +17,8 @@ public interface FrancMobileMoneyUiContract {
 
         void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void showFieldError(int viewID, String message, Class<?> viewType);
 
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);

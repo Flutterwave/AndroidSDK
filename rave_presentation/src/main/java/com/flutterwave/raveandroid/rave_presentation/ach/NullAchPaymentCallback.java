@@ -1,6 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.ach;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class NullAchPaymentCallback implements AchPaymentCallback {
 

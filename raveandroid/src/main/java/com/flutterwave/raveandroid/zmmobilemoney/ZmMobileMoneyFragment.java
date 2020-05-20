@@ -214,6 +214,11 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
         }
     }
 
+    @Override
+    public void onPhoneValidated(String phoneToSet, boolean isEditable) {
+        phoneEt.setText(phoneToSet);
+        phoneEt.setEnabled(isEditable);
+    }
 
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {

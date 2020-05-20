@@ -61,7 +61,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static android.support.constraint.ConstraintLayout.LayoutParams.HORIZONTAL;
+import static androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.HORIZONTAL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;

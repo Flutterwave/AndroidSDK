@@ -17,6 +17,8 @@ public interface GhMobileMoneyUiContract {
 
         void showFetchFeeFailed(String s);
 
+        void onPhoneValidated(String phoneToSet, boolean isEditable);
+
         void onAmountValidationSuccessful(String valueOf);
 
         void onPaymentFailed(String message, String responseAsJSONString);
