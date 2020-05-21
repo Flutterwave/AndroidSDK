@@ -275,6 +275,14 @@
                 android:text="Pre Auth Charge" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/useRaveUISwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="Use Default Rave UI" />
+
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/isLiveSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
