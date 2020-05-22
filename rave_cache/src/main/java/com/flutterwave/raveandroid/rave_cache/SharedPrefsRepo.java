@@ -25,10 +25,10 @@ public class SharedPrefsRepo {
     private static final String SAVED_CARDS_PREFIX = "EXTRA_SAVED_CARDS";
     private static final String PHONE_NUMBER = "phone_number";
     public Context context;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    String FLW_REF_KEY = "flw_ref_key";
-    Gson gson;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private String FLW_REF_KEY = "flw_ref_key";
+    private Gson gson;
 
     @SuppressLint("CommitPrefEdits")
     @Inject
@@ -56,8 +56,6 @@ public class SharedPrefsRepo {
         savedCards.removeAll(repeatedCards);
         savedCards.addAll(cardsToSave);
 
-        init();
-        Gson gson = new Gson();
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
         String savedCardsJson = gson.toJson(savedCards, type);
 
@@ -66,12 +64,10 @@ public class SharedPrefsRepo {
 
 
     public List<SavedCard> getSavedCards(String phoneNumber, String publicKey) {
-        init();
         String savedCardsJson = sharedPreferences.getString(
                 SAVED_CARDS_PREFIX + phoneNumber + publicKey, "[]");
 
         try {
-            Gson gson = new Gson();
             Type type = new TypeToken<List<SavedCard>>() {
             }.getType();
             return gson.fromJson(savedCardsJson, type);
@@ -81,37 +77,23 @@ public class SharedPrefsRepo {
             return new ArrayList<>();
         }
     }
-
-    private void init() {
-
-        if (sharedPreferences == null) {
-            sharedPreferences = context.getSharedPreferences(
-                    RAVEPAY, Context.MODE_PRIVATE);
-            editor = sharedPreferences.edit();
-        }
-    }
-
     
     public void saveFlwRef(String flwRef) {
-        init();
         editor.putString(FLW_REF_KEY, flwRef).apply();
     }
 
 
     public String fetchFlwRef() {
-        init();
         return sharedPreferences.getString(FLW_REF_KEY, "");
     }
 
 
-    public void savePhoneNumber(String phoneNumber) {
-        init();
+    private void savePhoneNumber(String phoneNumber) {
         editor.putString(PHONE_NUMBER, phoneNumber).apply();
     }
 
 
     public String fetchPhoneNumber() {
-        init();
         return sharedPreferences.getString(PHONE_NUMBER, "");
     }
 }
