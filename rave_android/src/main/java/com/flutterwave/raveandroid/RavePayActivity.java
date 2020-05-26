@@ -7,14 +7,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Guideline;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -23,17 +15,26 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Guideline;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
+
 import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
-import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
 import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
 import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
@@ -42,7 +43,6 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
-import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.rave_presentation.di.DaggerRaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
@@ -548,18 +548,12 @@ public class RavePayActivity extends AppCompatActivity {
         // Reverse payment types order since payment types are added from the bottom
         Collections.reverse(orderedPaymentTypesList);
 
-        ArrayList<Integer> currencyCheckedPaymentTypesList =
-                new PaymentTypesCurrencyChecker().applyCurrencyChecks(
-                        orderedPaymentTypesList,
-                        ravePayInitializer.getCurrency()
-                );
-
-        tileCount = currencyCheckedPaymentTypesList.size();
+        tileCount = orderedPaymentTypesList.size();
         if (tileCount > 8) paymentTilesTextSize = 18f;
         else paymentTilesTextSize = 20f;
 
-        for (int index = 0; index < currencyCheckedPaymentTypesList.size(); index++)
-            addPaymentType(currencyCheckedPaymentTypesList.get(index));
+        for (int index = 0; index < orderedPaymentTypesList.size(); index++)
+            addPaymentType(orderedPaymentTypesList.get(index));
     }
 
     private void addPaymentType(int paymentType) {
