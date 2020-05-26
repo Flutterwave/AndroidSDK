@@ -128,7 +128,7 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    public RavePayManager setPhoneNumber(String phoneNumber, Boolean isEditable) {
+    public RaveUiManager setPhoneNumber(String phoneNumber, Boolean isEditable) {
         this.phoneNumber = phoneNumber;
         this.allowEditPhone = isEditable;
         return this;
