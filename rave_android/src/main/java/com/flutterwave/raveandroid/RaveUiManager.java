@@ -3,9 +3,11 @@ package com.flutterwave.raveandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
@@ -270,6 +272,21 @@ public class RaveUiManager extends RavePayManager {
     }
 
     public RaveUiManager initialize() {
+        filterPaymentTypes();
+
+        if (orderedPaymentTypesList.size() == 0) {
+            if (activity != null) {
+                Toast.makeText(activity, "No valid payment types for the selected currency.", Toast.LENGTH_LONG).show();
+            } else if (supportFragment != null && supportFragment.getContext() != null) {
+                Toast.makeText(supportFragment.getContext(), "No valid payment types for the selected currency.", Toast.LENGTH_LONG).show();
+            } else if (fragment != null && fragment.getActivity() != null) {
+                Toast.makeText(fragment.getActivity(), "No valid payment types for the selected currency.", Toast.LENGTH_LONG).show();
+            } else {
+                Log.d(RAVEPAY, "No valid payment types for the selected currency.");
+            }
+            return this;
+        }
+
         if (activity != null) {
             Intent intent = new Intent(activity, RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
@@ -286,6 +303,14 @@ public class RaveUiManager extends RavePayManager {
             Log.d(RAVEPAY, "Context is required!");
         }
         return this;
+    }
+
+    private void filterPaymentTypes() {
+        orderedPaymentTypesList =
+                new PaymentTypesCurrencyChecker().applyCurrencyChecks(
+                        orderedPaymentTypesList,
+                        currency
+                );
     }
 
     private RavePayInitializer createRavePayInitializer() {
