@@ -13,6 +13,10 @@ import java.util.HashMap;
 public class RaveConstants {
     public static final int SAVED_CARD_CHARGE = 5699;
 
+    public static int RESULT_SUCCESS = 111;
+    public static int RESULT_ERROR = 222;
+    public static int RESULT_CANCELLED = 333;
+
     public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test
     public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";//test
     //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";

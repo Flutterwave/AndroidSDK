@@ -6,11 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -26,6 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -34,18 +33,20 @@ import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
-import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
-import com.flutterwave.raveandroid.verification.AVSVBVFragment;
-import com.flutterwave.raveandroid.verification.OTPFragment;
-import com.flutterwave.raveandroid.verification.PinFragment;
-import com.flutterwave.raveandroid.verification.VerificationActivity;
-import com.flutterwave.raveandroid.verification.web.WebFragment;
+import com.flutterwave.raveutils.verification.AVSVBVFragment;
+import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.PinFragment;
+import com.flutterwave.raveutils.verification.VerificationActivity;
+import com.flutterwave.raveutils.verification.web.WebFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -70,7 +71,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldC
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldcardNoStripped;
-import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
+import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 /**

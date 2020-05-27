@@ -29,8 +29,6 @@ import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
-import com.flutterwave.raveandroid.data.events.ScreenLaunchEvent;
-import com.flutterwave.raveandroid.data.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
 import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
@@ -43,6 +41,8 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.di.EventLoggerModule;
+import com.flutterwave.raveandroid.rave_logger.events.ScreenLaunchEvent;
+import com.flutterwave.raveandroid.rave_logger.events.ScreenMinimizeEvent;
 import com.flutterwave.raveandroid.rave_presentation.di.DaggerRaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_remote.di.RemoteModule;
@@ -93,9 +93,9 @@ public class RavePayActivity extends AppCompatActivity {
     private ConstraintLayout root;
 
 
-    public static int RESULT_SUCCESS = 111;
-    public static int RESULT_ERROR = 222;
-    public static int RESULT_CANCELLED = 333;
+    public static int RESULT_SUCCESS = RaveConstants.RESULT_SUCCESS;
+    public static int RESULT_ERROR = RaveConstants.RESULT_ERROR;
+    public static int RESULT_CANCELLED = RaveConstants.RESULT_CANCELLED;
     private int tileCount = 0;
     int theme;
     private float paymentTilesTextSize;
