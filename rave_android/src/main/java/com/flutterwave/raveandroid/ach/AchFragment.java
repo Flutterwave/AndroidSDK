@@ -24,14 +24,13 @@ import com.flutterwave.raveandroid.di.modules.AchModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveutils.verification.VerificationActivity;
-import com.flutterwave.raveutils.verification.web.WebFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
 
 /**
@@ -50,8 +49,6 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     private TextView payInstructionsTv;
     private ProgressDialog progressDialog;
     private RavePayInitializer ravePayInitializer;
-
-    public static final int FOR_ACH = 892;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -161,13 +158,8 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     @Override
     public void showWebView(String authUrl, String flwRef) {
 
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_ACH);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showWebpageVerificationScreen(authUrl, ravePayInitializer.getTheme());
     }
 
     private void dismissDialog() {
@@ -189,7 +181,7 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
             //just to be sure this fragment sent the receiving intent
-            if (requestCode == FOR_ACH) {
+            if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
                 presenter.requeryTx(ravePayInitializer.getPublicKey());
             }
         } else {

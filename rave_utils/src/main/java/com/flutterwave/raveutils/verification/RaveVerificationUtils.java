@@ -7,8 +7,10 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveutils.R;
+import com.flutterwave.raveutils.verification.web.WebFragment;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 public class RaveVerificationUtils {
@@ -65,5 +67,17 @@ public class RaveVerificationUtils {
         intent.putExtra("theme", theme);
         if (activity != null) activity.startActivityForResult(intent, OTP_REQUEST_CODE);
         else fragment.startActivityForResult(intent, OTP_REQUEST_CODE);
+    }
+
+    public void showWebpageVerificationScreen(String authurl, int theme) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
+        intent.putExtra(EXTRA_IS_STAGING, isStaging);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
+        intent.putExtra("theme", theme);
+        if (activity != null)
+            activity.startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
+        else fragment.startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
     }
 }

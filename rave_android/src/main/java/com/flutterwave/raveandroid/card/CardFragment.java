@@ -45,7 +45,6 @@ import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.PinFragment;
 import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.flutterwave.raveutils.verification.VerificationActivity;
-import com.flutterwave.raveutils.verification.web.WebFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -67,6 +66,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCardExpiry;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCvv;
@@ -90,7 +90,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public static final int FOR_AVBVV = 333;
     @Inject
     PhoneNumberObfuscator phoneNumberObfuscator;
-    public static final int FOR_INTERNET_BANKING = 555;
     private static final int FOR_SAVED_CARDS = 777;
     private static final String STATE_PRESENTER_SAVEDCARDS = "presenter_saved_cards";
     public static final String INTENT_SENDER = "cardFrag";
@@ -422,7 +421,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
                     presenter.chargeCardWithAddressDetails(payLoad, address, ravePayInitializer.getEncryptionKey(), authModel);
                     break;
-                case FOR_INTERNET_BANKING:
+                case WEB_VERIFICATION_REQUEST_CODE:
                     presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
                     break;
                 case OTP_REQUEST_CODE:
@@ -526,14 +525,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showWebPage(String authenticationUrl, String flwRef) {
 
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authenticationUrl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_INTERNET_BANKING);
-
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showWebpageVerificationScreen(authenticationUrl, ravePayInitializer.getTheme());
     }
 
     @Override

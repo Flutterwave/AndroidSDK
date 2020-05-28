@@ -37,8 +37,6 @@ import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.RaveVerificationUtils;
-import com.flutterwave.raveutils.verification.VerificationActivity;
-import com.flutterwave.raveutils.verification.web.WebFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -58,7 +56,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldB
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldDOB;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
-import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 /**
@@ -421,13 +418,8 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Override
     public void displayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showWebpageVerificationScreen(authurl, ravePayInitializer.getTheme());
     }
 
     @Override
