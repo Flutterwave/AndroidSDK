@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import com.flutterwave.raveutils.R;
 import com.flutterwave.raveutils.verification.web.WebFragment;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
@@ -69,6 +71,10 @@ public class RaveVerificationUtils {
         else fragment.startActivityForResult(intent, OTP_REQUEST_CODE);
     }
 
+    public void showWebpageVerificationScreen(String authurl) {
+        showWebpageVerificationScreen(authurl, R.style.DefaultTheme);
+    }
+
     public void showWebpageVerificationScreen(String authurl, int theme) {
         Intent intent = new Intent(context, VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
@@ -80,4 +86,23 @@ public class RaveVerificationUtils {
             activity.startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
         else fragment.startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
     }
+
+    public void showBarterCheckoutScreen(String authurl, String flwRef) {
+        showBarterCheckoutScreen(authurl, flwRef, R.style.DefaultTheme);
+    }
+
+    public void showBarterCheckoutScreen(String authurl, String flwRef, int theme) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, BARTER_CHECKOUT);
+        intent.putExtra(EXTRA_IS_STAGING, isStaging);
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
+        intent.putExtra("theme", theme);
+        if (activity != null)
+            activity.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
+        else fragment.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
+    }
+
+
 }
