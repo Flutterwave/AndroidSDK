@@ -21,6 +21,8 @@ public class RaveConstants {
     public static final int OTP_REQUEST_CODE = 5399;
     public static final int WEB_VERIFICATION_REQUEST_CODE = 5340;
     public static final int BARTER_CHECKOUT_REQUEST_CODE = 5341;
+    public static final int PIN_REQUEST_CODE = 5342;
+    public static final int ADDRESS_DETAILS_REQUEST_CODE = 5343;
     public static final int MANUAL_CARD_CHARGE = 403;
 
     public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test

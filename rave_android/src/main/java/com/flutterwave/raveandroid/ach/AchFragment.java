@@ -158,8 +158,8 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     @Override
     public void showWebView(String authUrl, String flwRef) {
 
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
-                .showWebpageVerificationScreen(authUrl, ravePayInitializer.getTheme());
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showWebpageVerificationScreen(authUrl);
     }
 
     private void dismissDialog() {

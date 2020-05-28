@@ -173,8 +173,8 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     public void loadBarterCheckout(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
-                .showBarterCheckoutScreen(authUrlCrude, flwRef, ravePayInitializer.getTheme());
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showBarterCheckoutScreen(authUrlCrude, flwRef);
 
     }
 

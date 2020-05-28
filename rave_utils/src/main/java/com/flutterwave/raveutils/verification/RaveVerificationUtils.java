@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment;
 import com.flutterwave.raveutils.R;
 import com.flutterwave.raveutils.verification.web.WebFragment;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ADDRESS_DETAILS_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.EXTRA_IS_STAGING;
 
@@ -20,8 +22,25 @@ public class RaveVerificationUtils {
     private final Context context;
     private final boolean isStaging;
     private final String publicKey;
+    private int theme = R.style.DefaultTheme;
     private Activity activity = null;
     private Fragment fragment = null;
+
+    public RaveVerificationUtils(Activity activity, boolean isStaging, String publicKey, int theme) {
+        this.activity = activity;
+        this.context = activity;
+        this.isStaging = isStaging;
+        this.publicKey = publicKey;
+        this.theme = theme;
+    }
+
+    public RaveVerificationUtils(Fragment fragment, boolean isStaging, String publicKey, int theme) {
+        this.fragment = fragment;
+        this.context = fragment.getContext();
+        this.isStaging = isStaging;
+        this.publicKey = publicKey;
+        this.theme = theme;
+    }
 
     public RaveVerificationUtils(Activity activity, boolean isStaging, String publicKey) {
         this.activity = activity;
@@ -41,23 +60,15 @@ public class RaveVerificationUtils {
         showOtpScreen(null);
     }
 
-    public void showOtpScreen(int theme) {
-        showOtpScreen(null, theme);
+    public void showOtpScreen(String authInstruction) {
+        showOtpScreen(authInstruction, false);
     }
 
-    public void showOtpScreen(String validateInstruction) {
-        showOtpScreen(validateInstruction, R.style.DefaultTheme);
+    public void showOtpScreenForSavedCard(String authInstruction) {
+        showOtpScreen(authInstruction, true);
     }
 
-    public void showOtpScreen(String authInstruction, int theme) {
-        showOtpScreen(authInstruction, theme, false);
-    }
-
-    public void showOtpScreenForSavedCard(String authInstruction, int theme) {
-        showOtpScreen(authInstruction, theme, true);
-    }
-
-    private void showOtpScreen(String validateInstruction, int theme, boolean forSavedCards) {
+    private void showOtpScreen(String validateInstruction, boolean forSavedCards) {
         Intent intent = new Intent(context, VerificationActivity.class);
         intent.putExtra(EXTRA_IS_STAGING, isStaging);
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
@@ -72,10 +83,6 @@ public class RaveVerificationUtils {
     }
 
     public void showWebpageVerificationScreen(String authurl) {
-        showWebpageVerificationScreen(authurl, R.style.DefaultTheme);
-    }
-
-    public void showWebpageVerificationScreen(String authurl, int theme) {
         Intent intent = new Intent(context, VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
@@ -88,10 +95,6 @@ public class RaveVerificationUtils {
     }
 
     public void showBarterCheckoutScreen(String authurl, String flwRef) {
-        showBarterCheckoutScreen(authurl, flwRef, R.style.DefaultTheme);
-    }
-
-    public void showBarterCheckoutScreen(String authurl, String flwRef, int theme) {
         Intent intent = new Intent(context, VerificationActivity.class);
         intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
@@ -104,5 +107,25 @@ public class RaveVerificationUtils {
         else fragment.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
     }
 
+    public void showPinScreen() {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        intent.putExtra(EXTRA_IS_STAGING, isStaging);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "pin");
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
+        intent.putExtra("theme", theme);
+        if (activity != null)
+            activity.startActivityForResult(intent, PIN_REQUEST_CODE);
+        else fragment.startActivityForResult(intent, PIN_REQUEST_CODE);
+    }
 
+    public void showAddressScreen() {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        intent.putExtra(EXTRA_IS_STAGING, isStaging);
+        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "avsvbv");
+        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
+        intent.putExtra("theme", theme);
+        if (activity != null)
+            activity.startActivityForResult(intent, ADDRESS_DETAILS_REQUEST_CODE);
+        else fragment.startActivityForResult(intent, ADDRESS_DETAILS_REQUEST_CODE);
+    }
 }
