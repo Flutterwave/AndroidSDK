@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="PayButtonStyle" format="reference" />
+    <attr name="OTPButtonStyle" format="reference" />
+    <attr name="OTPHeaderStyle" format="reference" />
+    <attr name="PinHeaderStyle" format="reference" />
+    <attr name="PinButtonStyle" format="reference" />
+    <attr name="SavedCardButtonStyle" format="reference" />
+    <attr name="PaymentTileStyle" format="reference" />
+    <attr name="PaymentTileTextStyle" format="reference" />
+    <attr name="PaymentTileDividerStyle" format="reference" />
+    <attr name="TabLayoutStyle" format="reference" />
+</resources>

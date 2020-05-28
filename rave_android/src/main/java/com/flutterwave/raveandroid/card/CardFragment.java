@@ -43,6 +43,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.flutterwave.raveutils.verification.AVSVBVFragment;
 import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.PinFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.flutterwave.raveutils.verification.VerificationActivity;
 import com.flutterwave.raveutils.verification.web.WebFragment;
 import com.google.android.material.textfield.TextInputEditText;
@@ -64,6 +65,7 @@ import static android.view.View.VISIBLE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCardExpiry;
@@ -85,7 +87,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     int chargeType = MANUAL_CARD_CHARGE;
 
     public static final int FOR_PIN = 444;
-    public static final int FOR_OTP = 666;
     public static final int FOR_AVBVV = 333;
     @Inject
     PhoneNumberObfuscator phoneNumberObfuscator;
@@ -424,7 +425,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 case FOR_INTERNET_BANKING:
                     presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
                     break;
-                case FOR_OTP:
+                case OTP_REQUEST_CODE:
                     String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                     if (data.getBooleanExtra(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
                         payLoad.setOtp(otp);
@@ -485,24 +486,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectOtp(String flwRef, String message) {
         this.flwRef = flwRef;
         dismissDialog();
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, message);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_OTP);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showOtpScreen(message, ravePayInitializer.getTheme());
     }
 
     public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
         this.payLoad = payload;
         dismissDialog();
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, authInstruction);
-        intent.putExtra(OTPFragment.IS_SAVED_CARD_CHARGE, true);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_OTP);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showOtpScreenForSavedCard(authInstruction, ravePayInitializer.getTheme());
     }
 
     @Override

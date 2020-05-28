@@ -36,6 +36,7 @@ import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.flutterwave.raveutils.verification.VerificationActivity;
 import com.flutterwave.raveutils.verification.web.WebFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -48,6 +49,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldBVN;
@@ -66,8 +69,6 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Inject
     AccountUiPresenter presenter;
 
-    public static final int FOR_0TP = 222;
-    public static final int FOR_INTERNET_BANKING = 111;
     private View v;
     private String flwRef;
     private EditText bankEt;
@@ -397,15 +398,8 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     public void collectOtp(String publicKey, String flutterwaveReference, String validateInstruction) {
         this.flwRef = flutterwaveReference;
 
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
-        if (validateInstruction != null) {
-            intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
-        }
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_0TP);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey())
+                .showOtpScreen(validateInstruction, ravePayInitializer.getTheme());
     }
 
     @Override
@@ -413,10 +407,10 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
 
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
 
-            if (requestCode == FOR_0TP) {
+            if (requestCode == OTP_REQUEST_CODE) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.authenticateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-            } else if (requestCode == FOR_INTERNET_BANKING) {
+            } else if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
         } else {
@@ -433,7 +427,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
         intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_INTERNET_BANKING);
+        startActivityForResult(intent, WEB_VERIFICATION_REQUEST_CODE);
     }
 
     @Override

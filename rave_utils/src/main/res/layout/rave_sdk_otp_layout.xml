@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:imeOptions="actionDone"
         android:id="@+id/otpButton"
-        style="@style/otpBtnStyle"
+        style="?OTPButtonStyle"
         android:layout_gravity="center_horizontal"
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp"
