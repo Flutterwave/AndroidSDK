@@ -35,4 +35,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
     implementation project(':rave_android')
+    implementation project(':rave_utils')
 }

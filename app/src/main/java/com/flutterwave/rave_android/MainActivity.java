@@ -34,6 +34,7 @@ import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentManager;
 import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -372,8 +373,8 @@ public class MainActivity
 
                 cardPayManager = new CardPaymentManager(((RaveNonUIManager) raveManager), this, this);
                 card = new Card(
-                        "5531886652142950", // Test MasterCard PIN authentication
-//                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
+//                        "5531886652142950", // Test MasterCard PIN authentication
+                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
 //                        "4556052704172643", // Test VisaCard (Address Verification)
                         "12",
                         "30",
@@ -405,6 +406,8 @@ public class MainActivity
             } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                 Toast.makeText(this, "CANCELLED " + message, Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == RaveConstants.WEB_VERIFICATION_REQUEST_CODE) {
+            cardPayManager.onWebpageAuthenticationComplete();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -522,10 +525,11 @@ public class MainActivity
 
     @Override
     public void showAuthenticationWebPage(String authenticationUrl) {
-        Toast.makeText(this, "Called to load web page", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Loading auth web page", Toast.LENGTH_SHORT).show();
 
         // Load webpage
-//        cardPayManager.onWebpageAuthenticationComplete();
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showWebpageVerificationScreen(authenticationUrl);
     }
 
     @Override
