@@ -109,8 +109,6 @@ public class RavePayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rave_sdk_activity_rave_pay);
-        root = findViewById(R.id.rave_pay_activity_rootview);
 
         try {
             ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
@@ -119,10 +117,6 @@ public class RavePayActivity extends AppCompatActivity {
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
         buildGraph();
-
-        Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
-        event.setPublicKey(ravePayInitializer.getPublicKey());
-        eventLogger.logEvent(event);
 
         theme = ravePayInitializer.getTheme();
 
@@ -134,6 +128,13 @@ public class RavePayActivity extends AppCompatActivity {
             }
         }
 
+        setContentView(R.layout.rave_sdk_activity_rave_pay);
+
+        root = findViewById(R.id.rave_pay_activity_rootview);
+
+        Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
+        event.setPublicKey(ravePayInitializer.getPublicKey());
+        eventLogger.logEvent(event);
 
         setupMainContent();
 
