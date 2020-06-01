@@ -7,11 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +17,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -29,15 +29,14 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
-import com.flutterwave.raveandroid.data.events.StartTypingEvent;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
-import com.flutterwave.raveandroid.verification.OTPFragment;
-import com.flutterwave.raveandroid.verification.VerificationActivity;
-import com.flutterwave.raveandroid.verification.web.WebFragment;
+import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -48,6 +47,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldBVN;
@@ -55,7 +56,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldB
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldDOB;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
-import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 /**
@@ -66,8 +66,6 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Inject
     AccountUiPresenter presenter;
 
-    public static final int FOR_0TP = 222;
-    public static final int FOR_INTERNET_BANKING = 111;
     private View v;
     private String flwRef;
     private EditText bankEt;
@@ -397,15 +395,8 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     public void collectOtp(String publicKey, String flutterwaveReference, String validateInstruction) {
         this.flwRef = flutterwaveReference;
 
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "otp");
-        if (validateInstruction != null) {
-            intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
-        }
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_0TP);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showOtpScreen(validateInstruction);
     }
 
     @Override
@@ -413,10 +404,10 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
 
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
 
-            if (requestCode == FOR_0TP) {
+            if (requestCode == OTP_REQUEST_CODE) {
                 String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
                 presenter.authenticateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
-            } else if (requestCode == FOR_INTERNET_BANKING) {
+            } else if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
                 presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
             }
         } else {
@@ -427,13 +418,8 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Override
     public void displayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_INTERNET_BANKING);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showWebpageVerificationScreen(authurl);
     }
 
     @Override

@@ -5,16 +5,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
@@ -23,18 +22,18 @@ import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.verification.VerificationActivity;
-import com.flutterwave.raveandroid.verification.web.WebFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
-import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
 
 
 public class BarterFragment extends Fragment implements BarterUiContract.View {
@@ -42,8 +41,6 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
     @Inject
     BarterPresenter presenter;
-
-    public static final int FOR_BARTER_CHECKOUT = 5555;
 
     private View v;
     private Button payButton;
@@ -176,14 +173,8 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     public void loadBarterCheckout(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrlCrude);
-        intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
-        intent.putExtra(WebFragment.EXTRA_PUBLIC_KEY, ravePayInitializer.getPublicKey());
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, BARTER_CHECKOUT);
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_BARTER_CHECKOUT);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showBarterCheckoutScreen(authUrlCrude, flwRef);
 
     }
 
@@ -224,7 +215,7 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //just to be sure this v sent the receiving intent
-        if (requestCode == FOR_BARTER_CHECKOUT) {
+        if (requestCode == BARTER_CHECKOUT_REQUEST_CODE) {
             if (data != null && data.hasExtra(response)) {
                 if (resultCode == RavePayActivity.RESULT_SUCCESS)
                     onPaymentSuccessful(flwRef, data.getStringExtra(response));

@@ -30,7 +30,7 @@ import javax.inject.Inject;
 public class BankTransferHandler implements BankTransferContract.BankTransferHandler {
     public boolean pollingCancelled = false;
     public boolean hasTransferDetails = false;
-    protected String txRef = null, flwRef = null, publicKey = null;
+    protected String txRef = null, orderRef = null, flwRef = null, publicKey = null;
     protected String beneficiaryName;
     protected String accountNumber;
     protected String amount;
@@ -109,6 +109,7 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
 
                     flwRef = response.getData().getFlw_reference();
                     txRef = response.getData().getTx_ref();
+                    orderRef = response.getData().getOrderRef();
                     publicKey = payload.getPBFPubKey();
                     if (response.getData().getNote() != null && response.getData().getNote().contains("to ")) {
                         beneficiaryName = response.getData().getNote().substring(

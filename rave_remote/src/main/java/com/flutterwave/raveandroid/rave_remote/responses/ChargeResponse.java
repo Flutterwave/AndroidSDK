@@ -64,6 +64,7 @@ public class ChargeResponse {
         String bankname;
         private String redirect_url;
         private String requery_url;
+        private String orderRef;
 
 
         public void setFlw_reference(String flw_reference) {
@@ -312,6 +313,14 @@ public class ChargeResponse {
 
         public void setRequery_url(String requery_url) {
             this.requery_url = requery_url;
+        }
+
+        public String getOrderRef() {
+            return orderRef;
+        }
+
+        public void setOrderRef(String orderRef) {
+            this.orderRef = orderRef;
         }
     }
 }

@@ -64,6 +64,7 @@ dependencies {
     api project(path: ':rave_core')
     api project(path: ':rave_cache')
     implementation project(':rave_logger')
+    implementation project(':rave_utils')
     compile project(path: ':rave_presentation')
 
 

@@ -89,7 +89,7 @@
     </style>
 
     <style name="otpBtnStyle2" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/otp_button_curved</item>
+        <item name="android:background">@drawable/otp_button_curved_2</item>
         <item name="android:textColor">#009688</item>
     </style>
 

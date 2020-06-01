@@ -5,43 +5,41 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
-import com.flutterwave.raveandroid.WebFragment;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.di.modules.SaBankModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveandroid.verification.VerificationActivity;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.verification.VerificationActivity.EXTRA_IS_STAGING;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SaBankAccountFragment extends Fragment implements SaBankAccountUiContract.View, View.OnClickListener {
-
-    public static final int FOR_SA_BANK_ACCOUNT = 895;
 
     @Inject
     SaBankAccountPresenter presenter;
@@ -139,13 +137,8 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
     @Override
     public void showWebView(String authUrl, String flwRef){
         this.flwRef = flwRef;
-        Intent intent = new Intent(getContext(), VerificationActivity.class);
-        intent.putExtra(EXTRA_IS_STAGING, ravePayInitializer.isStaging());
-        intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, ravePayInitializer.getPublicKey());
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
-        intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
-        intent.putExtra("theme", ravePayInitializer.getTheme());
-        startActivityForResult(intent, FOR_SA_BANK_ACCOUNT);
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showWebpageVerificationScreen(authUrl);
     }
 
     @Override
@@ -238,7 +231,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RavePayActivity.RESULT_SUCCESS) {
             //just to be sure this fragment sent the receiving intent
-            if (requestCode == FOR_SA_BANK_ACCOUNT) {
+            if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
                 presenter.requeryTx(ravePayInitializer.getPublicKey(), flwRef);
             }
         } else {
