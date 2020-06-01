@@ -34,6 +34,9 @@ import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentManager;
 import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
+import com.flutterwave.raveutils.verification.AVSVBVFragment;
+import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.PinFragment;
 import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 
 import java.util.ArrayList;
@@ -373,8 +376,8 @@ public class MainActivity
 
                 cardPayManager = new CardPaymentManager(((RaveNonUIManager) raveManager), this, this);
                 card = new Card(
-//                        "5531886652142950", // Test MasterCard PIN authentication
-                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
+                        "5531886652142950", // Test MasterCard PIN authentication
+//                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
 //                        "4556052704172643", // Test VisaCard (Address Verification)
                         "12",
                         "30",
@@ -390,6 +393,35 @@ public class MainActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RaveConstants.RESULT_SUCCESS) {
+            switch (requestCode) {
+                case RaveConstants.PIN_REQUEST_CODE:
+                    String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
+                    // Use the collected PIN
+                    cardPayManager.submitPin(pin);
+                    break;
+                case RaveConstants.ADDRESS_DETAILS_REQUEST_CODE:
+                    String streetAddress = data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
+                    String state = data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
+                    String city = data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
+                    String zipCode = data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
+                    String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
+                    AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
+
+                    // Use the address details
+                    cardPayManager.submitAddress(address);
+                    break;
+                case RaveConstants.WEB_VERIFICATION_REQUEST_CODE:
+                    // Web authentication complete, proceed
+                    cardPayManager.onWebpageAuthenticationComplete();
+                    break;
+                case RaveConstants.OTP_REQUEST_CODE:
+                    String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
+                    // Use OTP
+                    cardPayManager.submitOtp(otp);
+                    break;
+            }
+        }
 
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
 
@@ -500,27 +532,21 @@ public class MainActivity
 
     @Override
     public void collectCardPin() {
-        Toast.makeText(this, "Submitting PIN", Toast.LENGTH_SHORT).show();
-        cardPayManager.submitPin("3310");
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showPinScreen();
     }
 
     @Override
     public void collectOtp(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Submitting OTP", Toast.LENGTH_SHORT).show();
-        cardPayManager.submitOtp("12345");
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showOtpScreen(message);
     }
 
     @Override
     public void collectAddress() {
         Toast.makeText(this, "Submitting address details", Toast.LENGTH_SHORT).show();
-        cardPayManager.submitAddress(new AddressDetails(
-                "8, Providence Street",
-                "Lekki Phase 1",
-                "Lagos",
-                "102102",
-                "NG")
-        );
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showAddressScreen();
     }
 
     @Override
