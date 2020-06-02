@@ -186,6 +186,8 @@ For example to charge cards, use the `CardPaymentManager`
 
         cardPayManager.chargeCard(card);
 
+>  We worked on a module to simplify charge verification when using the No-UI approach. You can read about using it [here](ChargeVerificationUtils.md)
+
 >  To see a more practical way of using the sdk, head to our sample app in the repository [here](https://github.com/Flutterwave/rave-android/tree/master/app)
 ## Functions definition
 | function        | parameter           | type | required  |
