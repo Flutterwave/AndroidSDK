@@ -29,6 +29,7 @@ import com.flutterwave.raveandroid.ach.AchFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
+import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.events.SessionFinishedEvent;
 import com.flutterwave.raveandroid.di.components.DaggerRaveUiComponent;
 import com.flutterwave.raveandroid.di.components.RaveUiComponent;
@@ -627,7 +628,7 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         RaveComponent raveComponent = DaggerRaveComponent.builder()
-                .deviceIdGetterModule(new DeviceIdGetterModule("")) /* This module won't be used but still need to be passed */
+                .deviceIdGetterModule(new DeviceIdGetterModule(new DeviceIdGetter(this).getDeviceId()))
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();

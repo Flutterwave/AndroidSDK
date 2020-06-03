@@ -371,6 +371,7 @@ public class MainActivity
                         .onStagingEnv(!isLiveSwitch.isChecked())
                         .setSubAccounts(subAccounts)
                         .setMeta(meta)
+                        .setUniqueDeviceId("1")
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .initialize();
 
