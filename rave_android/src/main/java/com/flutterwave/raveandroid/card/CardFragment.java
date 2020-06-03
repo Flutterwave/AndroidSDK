@@ -544,7 +544,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onCardSaveFailed(String message) {
 
-        showToast("Unable to save card");
+        showToast("Unable to save card:" + message);
         presenter.setCardSaveInProgress(false);
 
         Intent intent = new Intent();
