@@ -43,6 +43,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VB
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.GTB_OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_SAVED_CARD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
@@ -151,7 +152,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                             if (authModelUsed != null) {
                                 String flwRef = response.getData().getFlwRef();
 
-                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE)) {
+                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE) || authModelUsed.equalsIgnoreCase(NOAUTH_SAVED_CARD)) {
                                     String authUrlCrude = response.getData().getAuthurl();
                                     mCardInteractor.showWebPage(authUrlCrude, flwRef);
                                 } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)

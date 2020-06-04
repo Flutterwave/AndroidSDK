@@ -45,6 +45,7 @@ public class RaveConstants {
     public static String UGX = "UGX";
     public static String RWF = "RWF";
     public static String NOAUTH = "NOAUTH";
+    public static String NOAUTH_SAVED_CARD = "noauth-saved-card";
     public static String PIN = "PIN";
     public static String selectNetwork = "Select network";
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";

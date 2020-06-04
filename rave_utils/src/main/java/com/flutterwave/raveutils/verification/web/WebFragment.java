@@ -177,7 +177,7 @@ public class WebFragment extends Fragment implements WebContract.View {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             logEvent(new RedirectEvent(url).getEvent());
-            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK) || url.contains("http://127.0.0.0")) {
                 hideWebview();
             }
             view.loadUrl(url);
@@ -188,7 +188,7 @@ public class WebFragment extends Fragment implements WebContract.View {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             logEvent(new RedirectEvent(request.getUrl().toString()).getEvent());
-            if (request.getUrl().toString().contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+            if (request.getUrl().toString().contains(RaveConstants.RAVE_3DS_CALLBACK) || request.getUrl().toString().contains("http://127.0.0.0")) {
                 hideWebview();
             }
             view.loadUrl(request.getUrl().toString());
@@ -210,7 +210,7 @@ public class WebFragment extends Fragment implements WebContract.View {
             showProgressIndicator(false);
 
             Log.d("finished URLS", url);
-            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK)) {
+            if (url.contains(RaveConstants.RAVE_3DS_CALLBACK) || url.contains("http://127.0.0.0")) {
                 goBack();
             }
         }
