@@ -2,7 +2,7 @@
 
 Rave's Android SDK is Flutterwave's offical android sdk to integrate the Flutterwave payment gateway(Rave) into your android app. It comes with a readymade Drop In UI and non-UI module, depending on your preference.
 
-The payment methods currenly supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
+The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
 
 <img alt="Screenshot of Drop-In" src="https://i.imgur.com/UZZkC6e.png" width="900"/>
 
