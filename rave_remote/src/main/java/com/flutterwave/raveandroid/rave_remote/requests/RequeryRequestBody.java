@@ -8,6 +8,12 @@ public class RequeryRequestBody {
 
     private String order_ref;
 
+    private String tx_ref;
+
+    public void setTx_ref(String tx_ref) {
+        this.tx_ref = tx_ref;
+    }
+
     public String getPBFPubKey() {
         return PBFPubKey;
     }

@@ -66,4 +66,9 @@ public class NullGhMobileMoneyView implements GhMobileMoneyUiContract.View {
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
 
     }
+
+    @Override
+    public void showWebPage(String captchaLink) {
+
+    }
 }

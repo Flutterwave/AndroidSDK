@@ -39,6 +39,10 @@ public class GhanaMobileMoneyPaymentManager {
         charge(vodafone, voucher);
     }
 
+    public void onWebpageAuthenticationComplete() {
+        paymentHandler.requeryTx(manager.getPublicKey());
+    }
+
     private void charge(String network, String voucher) {
         Payload payload = createPayload(network, voucher);
 
