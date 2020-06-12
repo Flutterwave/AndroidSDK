@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -38,6 +40,14 @@ public class MobileMoneyChargeResponse {
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
+        String txRef;
+        String chargeResponseMessage;
+        String authurl;
+        String redirectUrl;
+        @SerializedName("link")
+        String captchaLink;
+        String code;
+
 
         public void setFlwRef(String flwRef) {
             this.flwRef = flwRef;
@@ -55,10 +65,6 @@ public class MobileMoneyChargeResponse {
             this.txRef = txRef;
         }
 
-        String txRef;
-        String chargeResponseMessage;
-        String authurl;
-
         public String getRedirectUrl() {
             return redirectUrl;
         }
@@ -67,7 +73,6 @@ public class MobileMoneyChargeResponse {
             this.chargeResponseCode = chargeResponseCode;
         }
 
-        String redirectUrl;
 
         public String getAuthurl() {
             return authurl;
@@ -92,6 +97,19 @@ public class MobileMoneyChargeResponse {
 
         public String getSuggested_auth() {
             return suggested_auth;
+        }
+
+
+        public String getTxRef() {
+            return txRef;
+        }
+
+        public String getCaptchaLink() {
+            return captchaLink;
+        }
+
+        public String getCode() {
+            return code;
         }
 
     }

@@ -19,4 +19,9 @@ public class NullGhMobileMoneyPaymentCallback implements GhanaMobileMoneyPayment
 
     }
 
+    @Override
+    public void showAuthenticationWebPage(String url) {
+
+    }
+
 }

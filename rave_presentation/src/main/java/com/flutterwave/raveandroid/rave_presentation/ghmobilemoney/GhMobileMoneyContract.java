@@ -16,6 +16,7 @@ public interface GhMobileMoneyContract {
         void onPaymentFailed(String message, String responseAsJSONString);
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
 
+        void showWebPage(String captchaLink);
     }
 
     interface Handler {
@@ -25,5 +26,7 @@ public interface GhMobileMoneyContract {
         void logEvent(Event event, String publicKey);
 
         void cancelPolling();
+
+        void requeryTx(String publicKey);
     }
 }

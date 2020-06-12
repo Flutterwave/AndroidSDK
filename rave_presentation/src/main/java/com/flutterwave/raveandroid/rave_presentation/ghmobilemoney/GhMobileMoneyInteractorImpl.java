@@ -51,6 +51,11 @@ class GhMobileMoneyInteractorImpl implements GhMobileMoneyContract.Interactor {
     }
 
     @Override
+    public void showWebPage(String captchaLink) {
+        callback.showAuthenticationWebPage(captchaLink);
+    }
+
+    @Override
     public void showFetchFeeFailed(String errorMessage) {
         feeCheckListener.onFetchFeeError(errorMessage);
     }
