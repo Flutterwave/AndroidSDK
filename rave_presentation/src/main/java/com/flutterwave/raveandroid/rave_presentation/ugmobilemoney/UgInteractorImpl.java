@@ -61,6 +61,11 @@ class UgInteractorImpl implements UgMobileMoneyContract.Interactor {
     }
 
     @Override
+    public void showWebPage(String captchaLink) {
+        callback.showAuthenticationWebPage(captchaLink);
+    }
+
+    @Override
     public void showPollingIndicator(boolean active) {
         // Todo: share validation message
         callback.showProgressIndicator(active);

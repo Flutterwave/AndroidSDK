@@ -62,4 +62,9 @@ public class NullUgMobileMoneyView implements UgMobileMoneyUiContract.View {
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
 
     }
+
+    @Override
+    public void showWebPage(String link) {
+
+    }
 }
