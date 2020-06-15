@@ -19,10 +19,14 @@ public interface RwfMobileMoneyContract {
         void onPaymentFailed(String message, String responseAsJSONString);
 
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
+
+        void showWebPage(String link);
     }
 
     interface Handler {
         void fetchFee(Payload payload);
+
+        void requeryTx(String publicKey);
 
         void requeryTx(String flwRef, String txRef, String publicKey);
 

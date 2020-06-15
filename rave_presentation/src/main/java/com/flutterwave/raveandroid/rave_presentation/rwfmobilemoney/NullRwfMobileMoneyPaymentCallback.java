@@ -19,4 +19,9 @@ public class NullRwfMobileMoneyPaymentCallback implements RwfMobileMoneyPaymentC
 
     }
 
+    @Override
+    public void showAuthenticationWebPage(String url) {
+
+    }
+
 }
