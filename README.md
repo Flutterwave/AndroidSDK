@@ -7,8 +7,7 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 <img alt="Screenshot of Drop-In" src="https://i.imgur.com/UZZkC6e.png" width="900"/>
 
 ## Before you begin
-- [Create your Rave staging keys from the sandbox environment](https://flutterwavedevelopers.readme.io/blog/how-to-get-your-staging-keys-from-the-rave-sandbox-environment)
-- [Create your Rave live keys from the Rave Dashboard](https://flutterwavedevelopers.readme.io/blog/how-to-get-your-live-keys-from-the-rave-dashboard)
+- Ensure you have your test (and live) [API keys](https://developer.flutterwave.com/docs/api-keys).
 
 ## Requirements
 - The minimum supported SDK version is 15
