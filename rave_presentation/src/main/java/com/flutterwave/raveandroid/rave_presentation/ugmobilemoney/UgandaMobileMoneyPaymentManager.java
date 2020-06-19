@@ -72,6 +72,11 @@ public class UgandaMobileMoneyPaymentManager {
         paymentHandler.fetchFee(feePayload);
     }
 
+    public void onWebpageAuthenticationComplete() {
+        paymentHandler.requeryTx(manager.getPublicKey());
+    }
+
+
     private void injectFields(RaveComponent component, UgandaMobileMoneyPaymentCallback callback) {
         interactor = new UgInteractorImpl(callback);
 

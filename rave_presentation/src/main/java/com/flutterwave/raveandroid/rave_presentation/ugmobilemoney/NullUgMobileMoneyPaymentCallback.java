@@ -19,4 +19,9 @@ public class NullUgMobileMoneyPaymentCallback implements UgandaMobileMoneyPaymen
 
     }
 
+    @Override
+    public void showAuthenticationWebPage(String url) {
+
+    }
+
 }

@@ -32,6 +32,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -40,6 +41,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -230,7 +232,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
     public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.charge) + charge_amount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
+        builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -263,6 +265,23 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showWebPage(String authenticationUrl) {
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showWebpageVerificationScreen(authenticationUrl);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+            //just to be sure this v sent the receiving intent
+            if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
+                presenter.requeryTx(ravePayInitializer.getPublicKey());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
         Intent intent = new Intent();

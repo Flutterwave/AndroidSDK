@@ -56,6 +56,12 @@ class RwfInteractorImpl implements RwfMobileMoneyContract.Interactor {
     }
 
     @Override
+    public void showWebPage(String captchaLink) {
+        callback.showAuthenticationWebPage(captchaLink);
+    }
+
+
+    @Override
     public void onPaymentError(String errorMessage) {
         callback.onError(errorMessage, null);
     }

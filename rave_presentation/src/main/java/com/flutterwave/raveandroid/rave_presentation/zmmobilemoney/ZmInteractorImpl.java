@@ -32,6 +32,12 @@ class ZmInteractorImpl implements ZmMobileMoneyContract.Interactor {
     }
 
     @Override
+    public void showWebPage(String captchaLink) {
+        callback.showAuthenticationWebPage(captchaLink);
+    }
+
+
+    @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
         try {
             Type type = new TypeToken<JsonObject>() {

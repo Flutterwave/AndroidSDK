@@ -8,4 +8,6 @@ public interface RwfMobileMoneyPaymentCallback {
     void onError(String errorMessage, @Nullable String flwRef);
 
     void onSuccessful(String flwRef);
+
+    void showAuthenticationWebPage(String url);
 }

@@ -73,6 +73,11 @@ public class RwfMobileMoneyPaymentManager {
         paymentHandler.fetchFee(feePayload);
     }
 
+    public void onWebpageAuthenticationComplete() {
+        paymentHandler.requeryTx(manager.getPublicKey());
+    }
+
+
     private void injectFields(RaveComponent component, RwfMobileMoneyPaymentCallback callback) {
         interactor = new RwfInteractorImpl(callback);
 

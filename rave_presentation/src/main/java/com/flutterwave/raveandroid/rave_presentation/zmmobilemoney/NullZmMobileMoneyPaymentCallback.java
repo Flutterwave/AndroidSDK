@@ -19,4 +19,9 @@ public class NullZmMobileMoneyPaymentCallback implements ZambiaMobileMoneyPaymen
 
     }
 
+    @Override
+    public void showAuthenticationWebPage(String url) {
+
+    }
+
 }

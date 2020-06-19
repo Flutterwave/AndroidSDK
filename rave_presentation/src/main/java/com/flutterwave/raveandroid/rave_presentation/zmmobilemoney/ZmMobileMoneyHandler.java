@@ -38,6 +38,7 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
     EventLogger eventLogger;
     private ZmMobileMoneyContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
+    private String txRef = null;
 
     @Inject
     public ZmMobileMoneyHandler(ZmMobileMoneyContract.Interactor mInteractor) {
@@ -78,6 +79,7 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
 
     @Override
     public void chargeZmMobileMoney(final Payload payload, final String encryptionKey) {
+        txRef = payload.getTxRef();
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
@@ -97,13 +99,17 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
 
                 mInteractor.showProgressIndicator(false);
 
-                if (response.getData() != null) {
-                    String flwRef = response.getData().getFlwRef();
-                    String txRef = response.getData().getTx_ref();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                } else {
-                    mInteractor.onPaymentError(noResponse);
-                }
+                MobileMoneyChargeResponse.Data data = response.getData();
+                if (data != null) {
+                    if (data.getCode() != null && data.getCode().equals("02")
+                            && data.getCaptchaLink() != null) {
+                        mInteractor.showWebPage(data.getCaptchaLink());
+                    } else {
+                        String flwRef = data.getFlwRef();
+                        String txRef = data.getTx_ref();
+                        requeryTx(flwRef, txRef, payload.getPBFPubKey());
+                    }
+                } else mInteractor.onPaymentError(noResponse);
 
             }
 
@@ -116,10 +122,16 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
     }
 
     @Override
+    public void requeryTx(final String publicKey) {
+        requeryTx(null, txRef, publicKey);
+    }
+
+    @Override
     public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
+        body.setTx_ref(txRef);
         body.setPBFPubKey(publicKey);
 
         mInteractor.showPollingIndicator(true);

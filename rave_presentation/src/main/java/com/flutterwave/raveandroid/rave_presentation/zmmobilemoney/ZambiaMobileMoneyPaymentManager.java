@@ -74,6 +74,11 @@ public class ZambiaMobileMoneyPaymentManager {
         paymentHandler.fetchFee(feePayload);
     }
 
+    public void onWebpageAuthenticationComplete() {
+        paymentHandler.requeryTx(manager.getPublicKey());
+    }
+
+
     private void injectFields(RaveComponent component, ZambiaMobileMoneyPaymentCallback callback) {
         interactor = new ZmInteractorImpl(callback);
 
