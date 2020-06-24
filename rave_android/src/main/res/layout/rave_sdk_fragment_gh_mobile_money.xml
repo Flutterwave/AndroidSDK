@@ -22,30 +22,24 @@
             android:padding="20dp"
             android:paddingTop="10dp">
 
-            <Button
-                android:id="@+id/rave_payButton"
-                style="?PayButtonStyle"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="15dp"
-                android:text="@string/pay" />
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundColor="@null">
 
-            <Spinner
-                android:id="@+id/rave_networkSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/rave_amountEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rave_card1"
+                    android:hint="@string/amount"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="2dp" />
 
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/instructionsTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="left"
-                tools:text="@string/vodafone_msg" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/rave_phoneTil"
@@ -83,24 +77,31 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Spinner
+                android:id="@+id/rave_networkSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/rave_amountTil"
+            <TextView
+                android:id="@+id/instructionsTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="left"
+                tools:text="@string/vodafone_msg" />
+
+            <Button
+                android:id="@+id/rave_payButton"
+                style="?PayButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundColor="@null">
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="15dp"
+                android:text="@string/pay" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/rave_amountEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rave_card1"
-                    android:hint="@string/amount"
-                    android:inputType="numberDecimal"
-                    android:paddingLeft="2dp" />
 
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
     </ScrollView>
