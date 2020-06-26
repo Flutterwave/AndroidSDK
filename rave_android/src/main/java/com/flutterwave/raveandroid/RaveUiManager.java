@@ -107,9 +107,27 @@ public class RaveUiManager extends RavePayManager {
 
     public RaveUiManager setCurrency(String currency) {
         this.currency = currency;
+        switch (currency) {
+            case "KES":
+                country = "KE";
+                break;
+            case "GHS":
+                country = "GH";
+                break;
+            case "ZAR":
+                country = "ZA";
+                break;
+            case "TZS":
+                country = "TZ";
+                break;
+            default:
+                country = "NG";
+                break;
+        }
         return this;
     }
 
+    @Deprecated
     public RaveUiManager setCountry(String country) {
         this.country = country;
         return this;

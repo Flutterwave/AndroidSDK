@@ -50,7 +50,6 @@ but if you are not interested in our default UI and you want to use yours and on
 Set the public key, encryption key and other required parameters. The `RaveUiManager` accepts a mandatory instance of  the calling `Activity` (or a `Fragment` that has a parent activity).
 
         new RaveUiManager(activity).setAmount(amount)
-                        .setCountry(country)
                         .setCurrency(currency)
                         .setEmail(email)
                         .setfName(fName)
@@ -140,7 +139,6 @@ First specify the theme in your `styles.xml` file. In this theme, you can edit t
  Then in your RavePayManager setup, add `.withTheme(<Reference to your style>)` anywhere before calling the `initialize()` function. e.g.
  ```java
   new RavePayManager(activity).setAmount(amount)
-                    .setCountry(country)
                     //...
                     //...
                     .withTheme(R.Style.MyCustomTheme)
@@ -154,7 +152,6 @@ Set the public key, encryption key and other required parameters.
         RaveNonUIManager raveNonUIManager =
                         new RaveNonUIManager()
                         .setAmount(amount)
-                        .setCountry(country)
                         .setCurrency(currency)
                         .setEmail(email)
                         .setfName(fName)
@@ -193,7 +190,6 @@ For example to charge cards, use the `CardPaymentManager`
 | function        | parameter           | type | required  |
 | ------------- |:-------------:| -----:| -----:|
 | setAmount(amount)      |  This is the amount to be charged from card/account | `double` | Required
-| setCountry(country)     | This is the route country for the transaction with respect to the currency. You can find a list of supported countries and currencies [here](https://flutterwavedevelopers.readme.io/docs/multicurrency-payments) | `String` | Required
 | setCurrency(currency) | This is the specified currency to charge the card in | `String` | Required
 | setfName(fName) | This is the first name of the card holder or the customer  | `String` | Required
 | setlName(lName) | This is the last name of the card holder or the customer | `String` | Required
