@@ -1,10 +1,8 @@
 package com.flutterwave.rave_android;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +13,43 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flutterwave.raveandroid.Meta;
-import com.flutterwave.raveandroid.RaveConstants;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+
 import com.flutterwave.raveandroid.RavePayActivity;
-import com.flutterwave.raveandroid.RavePayManager;
-import com.flutterwave.raveandroid.Utils;
-import com.flutterwave.raveandroid.responses.SubAccount;
+import com.flutterwave.raveandroid.RaveUiManager;
+import com.flutterwave.raveandroid.data.Utils;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.Meta;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
+import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
+import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
+import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
+import com.flutterwave.raveandroid.rave_presentation.card.Card;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
+import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentManager;
+import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
+import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
+import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
+import com.flutterwave.raveutils.verification.AVSVBVFragment;
+import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.PinFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity
+        extends AppCompatActivity
+        // Interfaces to implement for custom UI or no-UI usage
+        implements
+        FeeCheckListener, // Implement if you want to be able to check fees beforehand
+        SavedCardsListener, // Implement if you want to be able to save cards and charge saved cards
+        CardPaymentCallback {// Must be implemented to charge cards with custom UI or no-UI
 
     EditText emailEt;
     EditText amountEt;
@@ -49,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat ghMobileMoneySwitch;
     SwitchCompat ugMobileMoneySwitch;
     SwitchCompat ukbankSwitch;
+    SwitchCompat saBankSwitch;
     SwitchCompat francMobileMoneySwitch;
     SwitchCompat rwfMobileMoneySwitch;
     SwitchCompat zmMobileMoneySwitch;
@@ -61,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     SwitchCompat isMpesaSwitch;
     SwitchCompat accountAchSwitch;
     SwitchCompat addSubAccountsSwitch;
+    SwitchCompat useRaveUISwitch;
     SwitchCompat isPreAuthSwitch;
     SwitchCompat allowSavedCardsSwitch;
     SwitchCompat shouldDisplayFeeSwitch;
@@ -70,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout addSubaccountsLayout;
     LinearLayout expiryDetailsLayout;
     TextView vendorListTXT;
+
+    ProgressDialog progressDialog;
+    private CardPaymentManager cardPayManager;
+    private Card card;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
         ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
         ukbankSwitch = findViewById(R.id.accountUkbankSwitch);
+        saBankSwitch = findViewById(R.id.accountSaBankSwitch);
         francMobileMoneySwitch = findViewById(R.id.accountfrancMobileMoneySwitch);
         zmMobileMoneySwitch = findViewById(R.id.accountZmMobileMoneySwitch);
         rwfMobileMoneySwitch = findViewById(R.id.accountRwfMobileMoneySwitch);
@@ -112,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         barterSwitch = findViewById(R.id.barter_switch);
         isLiveSwitch = findViewById(R.id.isLiveSwitch);
         addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
+        useRaveUISwitch = findViewById(R.id.useRaveUISwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
         addVendorBtn = findViewById(R.id.addVendorBtn);
         clearVendorBtn = findViewById(R.id.clearVendorsBtn);
@@ -267,65 +298,131 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (valid) {
-            RavePayManager ravePayManager = new RavePayManager(this).setAmount(Double.parseDouble(amount))
-                    .setCountry(country)
-                    .setCurrency(currency)
-                    .setEmail(email)
-                    .setfName(fName)
-                    .setlName(lName)
-                    .setPhoneNumber(phoneNumber)
-                    .setNarration(narration)
-                    .setPublicKey(publicKey)
-                    .setEncryptionKey(encryptionKey)
-                    .setTxRef(txRef)
-                    .acceptMpesaPayments(isMpesaSwitch.isChecked())
-                    .acceptAccountPayments(accountSwitch.isChecked())
-                    .acceptCardPayments(cardSwitch.isChecked())
-                    .allowSaveCardFeature(allowSavedCardsSwitch.isChecked())
-                    .acceptAchPayments(accountAchSwitch.isChecked())
-                    .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
-                    .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
-                    .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
-                    .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
-                    .acceptUkPayments(ukbankSwitch.isChecked())
-                    .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
-                    .acceptBankTransferPayments(bankTransferSwitch.isChecked())
-                    .acceptUssdPayments(ussdSwitch.isChecked())
-                    .acceptBarterPayments(barterSwitch.isChecked())
-                    .onStagingEnv(!isLiveSwitch.isChecked())
-                    .setSubAccounts(subAccounts)
-                    .isPreAuth(isPreAuthSwitch.isChecked())
-                    .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
-//                    .setMeta(meta)
-//                    .withTheme(R.style.TestNewTheme)
-                    .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+            RavePayManager raveManager;
 
+            boolean shouldUseRaveUi = useRaveUISwitch.isChecked();
 
-            // Customize pay with bank transfer options (optional)
-            if (isPermanentAccountSwitch.isChecked())
-                ravePayManager.acceptBankTransferPayments(true, true);
-            else {
-                if (setExpirySwitch.isChecked()) {
-                    int duration = 0, frequency = 0;
-                    try {
-                        duration = Integer.parseInt(durationEt.getText().toString());
-                        frequency = Integer.parseInt(frequencyEt.getText().toString());
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
+            if (shouldUseRaveUi) {
+                raveManager = new RaveUiManager(this)
+                        .acceptMpesaPayments(isMpesaSwitch.isChecked())
+                        .acceptAccountPayments(accountSwitch.isChecked())
+                        .acceptCardPayments(cardSwitch.isChecked())
+                        .allowSaveCardFeature(allowSavedCardsSwitch.isChecked())
+                        .acceptAchPayments(accountAchSwitch.isChecked())
+                        .acceptGHMobileMoneyPayments(ghMobileMoneySwitch.isChecked())
+                        .acceptUgMobileMoneyPayments(ugMobileMoneySwitch.isChecked())
+                        .acceptZmMobileMoneyPayments(zmMobileMoneySwitch.isChecked())
+                        .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
+                        .acceptUkPayments(ukbankSwitch.isChecked())
+                        .acceptSaBankPayments(saBankSwitch.isChecked())
+                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
+                        .acceptBankTransferPayments(bankTransferSwitch.isChecked())
+                        .acceptUssdPayments(ussdSwitch.isChecked())
+                        .acceptBarterPayments(barterSwitch.isChecked())
+                        //                    .withTheme(R.style.TestNewTheme)
+                        .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
+                        .setAmount(Double.parseDouble(amount))
+                        .setCountry(country)
+                        .setCurrency(currency)
+                        .setEmail(email)
+                        .setfName(fName)
+                        .setlName(lName)
+                        .setPhoneNumber(phoneNumber)
+                        .setNarration(narration)
+                        .setPublicKey(publicKey)
+                        .setEncryptionKey(encryptionKey)
+                        .setTxRef(txRef)
+                        .onStagingEnv(!isLiveSwitch.isChecked())
+                        .setSubAccounts(subAccounts)
+                        .isPreAuth(isPreAuthSwitch.isChecked())
+                        .setMeta(meta)
+                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+
+                // Customize pay with bank transfer options (optional)
+                if (isPermanentAccountSwitch.isChecked())
+                    ((RaveUiManager) raveManager).acceptBankTransferPayments(true, true);
+                else {
+                    if (setExpirySwitch.isChecked()) {
+                        int duration = 0, frequency = 0;
+                        try {
+                            duration = Integer.parseInt(durationEt.getText().toString());
+                            frequency = Integer.parseInt(frequencyEt.getText().toString());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        ((RaveUiManager) raveManager).acceptBankTransferPayments(true, duration, frequency);
                     }
-                    ravePayManager.acceptBankTransferPayments(true, duration, frequency);
                 }
+
+                raveManager.initialize();
+
+            } else {
+                raveManager = new RaveNonUIManager().setAmount(Double.parseDouble(amount))
+                        .setCountry(country)
+                        .setCurrency(currency)
+                        .setEmail(email)
+                        .setfName(fName)
+                        .setlName(lName)
+                        .setPhoneNumber(phoneNumber)
+                        .setNarration(narration)
+                        .setPublicKey(publicKey)
+                        .setEncryptionKey(encryptionKey)
+                        .setTxRef(txRef)
+                        .onStagingEnv(!isLiveSwitch.isChecked())
+                        .setSubAccounts(subAccounts)
+                        .setMeta(meta)
+                        .setUniqueDeviceId("1")
+                        .isPreAuth(isPreAuthSwitch.isChecked())
+                        .initialize();
+
+                cardPayManager = new CardPaymentManager(((RaveNonUIManager) raveManager), this, this);
+                card = new Card(
+                        "5531886652142950", // Test MasterCard PIN authentication
+//                        "4242424242424242", // Test VisaCard 3D-Secure Authentication
+//                        "4556052704172643", // Test VisaCard (Address Verification)
+                        "12",
+                        "30",
+                        "123"
+                );
+
+//                cardPayManager.fetchSavedCards();
+//                cardPayManager.fetchTransactionFee(card,this);
+                cardPayManager.chargeCard(card);
             }
-
-
-            ravePayManager.initialize();
-
-
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RaveConstants.RESULT_SUCCESS) {
+            switch (requestCode) {
+                case RaveConstants.PIN_REQUEST_CODE:
+                    String pin = data.getStringExtra(PinFragment.EXTRA_PIN);
+                    // Use the collected PIN
+                    cardPayManager.submitPin(pin);
+                    break;
+                case RaveConstants.ADDRESS_DETAILS_REQUEST_CODE:
+                    String streetAddress = data.getStringExtra(AVSVBVFragment.EXTRA_ADDRESS);
+                    String state = data.getStringExtra(AVSVBVFragment.EXTRA_STATE);
+                    String city = data.getStringExtra(AVSVBVFragment.EXTRA_CITY);
+                    String zipCode = data.getStringExtra(AVSVBVFragment.EXTRA_ZIPCODE);
+                    String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
+                    AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
+
+                    // Use the address details
+                    cardPayManager.submitAddress(address);
+                    break;
+                case RaveConstants.WEB_VERIFICATION_REQUEST_CODE:
+                    // Web authentication complete, proceed
+                    cardPayManager.onWebpageAuthenticationComplete();
+                    break;
+                case RaveConstants.OTP_REQUEST_CODE:
+                    String otp = data.getStringExtra(OTPFragment.EXTRA_OTP);
+                    // Use OTP
+                    cardPayManager.submitOtp(otp);
+                    break;
+            }
+        }
 
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
 
@@ -342,6 +439,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                 Toast.makeText(this, "CANCELLED " + message, Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == RaveConstants.WEB_VERIFICATION_REQUEST_CODE) {
+            cardPayManager.onWebpageAuthenticationComplete();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -366,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.add_vendor_layout, null);
+        View dialogView = inflater.inflate(R.layout.rave_sdk_add_vendor_layout, null);
         dialogBuilder.setView(dialogView);
         final EditText vendorReferenceET = dialogView.findViewById(R.id.vendorReferecnceET);
         final EditText vendorRatioET = dialogView.findViewById(R.id.vendorRatioET);
@@ -409,4 +508,105 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    @Override
+    public void showProgressIndicator(boolean active) {
+        try {
+            if (isFinishing()) {
+                return;
+            }
+
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Please wait...");
+            }
+
+            if (active && !progressDialog.isShowing()) {
+                progressDialog.show();
+            } else {
+                progressDialog.dismiss();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void collectCardPin() {
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showPinScreen();
+    }
+
+    @Override
+    public void collectOtp(String message) {
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showOtpScreen(message);
+    }
+
+    @Override
+    public void collectAddress() {
+        Toast.makeText(this, "Submitting address details", Toast.LENGTH_SHORT).show();
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showAddressScreen();
+    }
+
+    @Override
+    public void showAuthenticationWebPage(String authenticationUrl) {
+        Toast.makeText(this, "Loading auth web page", Toast.LENGTH_SHORT).show();
+
+        // Load webpage
+        new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
+                .showWebpageVerificationScreen(authenticationUrl);
+    }
+
+    @Override
+    public void onError(String errorMessage, @Nullable String flwRef) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSuccessful(String flwRef) {
+        Toast.makeText(this, "Transaction Successful", Toast.LENGTH_LONG).show();
+//        cardPayManager.saveCard(); // Save card if needed
+    }
+
+    @Override
+    public void onSavedCardsLookupSuccessful(List<SavedCard> cards, String phoneNumber) {
+        // Check that the list is not empty, show the user to select which they'd like to charge, then proceed to chargeSavedCard()
+        if (cards.size() != 0) cardPayManager.chargeSavedCard(cards.get(0));
+        else
+            Toast.makeText(this, "No saved cards found for " + phoneNumber, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSavedCardsLookupFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void collectOtpForSaveCardCharge() {
+        collectOtp("Otp for saved card");
+    }
+
+    @Override
+    public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
+
+    }
+
+    @Override
+    public void onCardSaveFailed(String message) {
+
+    }
+
+    @Override
+    public void onTransactionFeeFetched(String chargeAmount, String fee) {
+        // Display the fee to the customer
+        Toast.makeText(this, "The transaction fee is " + fee, Toast.LENGTH_SHORT).show();
+//        cardPayManager.chargeCard(card);
+    }
+
+    @Override
+    public void onFetchFeeError(String errorMessage) {
+
+    }
 }
