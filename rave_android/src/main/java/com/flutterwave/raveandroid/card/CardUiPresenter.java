@@ -36,10 +36,10 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldE
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validCvvPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validExpiryDatePrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validic_credit_cardPrompt;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -73,7 +73,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
     SharedPrefsRepo sharedManager;
     @Inject
     Gson gson;
-    List<SavedCard> savedCards;
+    List<SavedCard> savedCards = new ArrayList<>();
     private CardUiContract.View mView;
     private boolean cardSaveInProgress = false;
     private String requeryInstruction = "Transaction is under processing, please use transaction requery to check status";
@@ -147,7 +147,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
         if (!isCardNoValid) {
             valid = false;
-            mView.showFieldError(cardNoStrippedID, validCreditCardPrompt, cardNoStrippedViewType);
+            mView.showFieldError(cardNoStrippedID, validic_credit_cardPrompt, cardNoStrippedViewType);
         }
 
         if (valid) {

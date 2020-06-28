@@ -20,12 +20,12 @@
     <string name="save_card">Save card</string>
     <string name="otp">OTP</string>
     <string name="enter_your_one_ntime_password_otp">Enter your one  time password (OTP)</string>
-    <string name="card_number">Card Number</string>
+    <string name="card_number">Card number</string>
     <string name="powered_by">by Flutterwave</string>
     <string name="please_enter_your_card_pin_nto_continue_your_transaction">Please enter your card pin  to continue your transaction.</string>
     <string name="otp_icon">otp icon</string>
-    <string name="cvc_cvv2">CVC/CVV2</string>
-    <string name="expiration">Valid Till (MM/YY)</string>
+    <string name="cvc_cvv2">Cvc/Cvv2</string>
+    <string name="expiration">Expiry(mm/yy)</string>
     <string name="email">Email</string>
     <string name="enter_your_billing_address_details">Enter your billing address details</string>
     <string name="billing_zip_code">Zip code e.g. 928302</string>
@@ -115,7 +115,7 @@
     <string name="cardNoStripped">cardNoStripped</string>
     <string name="validCvvPrompt">Enter a valid cvv</string>
     <string name="validExpiryDatePrompt">Enter a valid expiry date</string>
-    <string name="validCreditCardPrompt">Enter a valid credit card number</string>
+    <string name="validic_credit_cardPrompt">Enter a valid credit card number</string>
     <string name="validVoucherPrompt">Enter a valid voucher code</string>
     <string name="validNetworkPrompt">Select a network</string>
     <string name="unknownAuth">Unknown Auth Model</string>

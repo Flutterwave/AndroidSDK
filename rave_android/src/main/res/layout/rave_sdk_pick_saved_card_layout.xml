@@ -35,8 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            tools:listitem="@layout/rave_sdk_card_preview_item"
-            tools:layout_editor_absoluteX="24dp" />
+            tools:layout_editor_absoluteX="24dp"
+            tools:listitem="@layout/rave_sdk_card_preview_item" />
 
 
         <TextView
@@ -80,7 +80,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginBottom="4dp"
-                android:src="@drawable/flw_icon_coloured" />
+                android:src="@drawable/ic_flw_logo" />
 
             <TextView
                 android:id="@+id/secured_by_flutterwave_tv"
@@ -102,8 +102,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableStart="@drawable/ic_lock_outline_black_24dp"
-            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawableLeft="@drawable/ic_lock"
             android:drawablePadding="5dp"
             android:text="@string/pci_dss_compliant"
             android:textSize="12sp" />

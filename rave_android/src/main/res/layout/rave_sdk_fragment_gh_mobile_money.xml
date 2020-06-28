@@ -19,15 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:paddingTop="10dp">
+            android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundColor="@null">
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rave_amountEt"
@@ -35,8 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
                     android:hint="@string/amount"
-                    android:inputType="numberDecimal"
-                    android:paddingLeft="2dp" />
+                    android:inputType="numberDecimal" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -45,8 +42,7 @@
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundColor="@null">
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rave_phoneEt"
@@ -54,8 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
                     android:hint="Phone no"
-                    android:inputType="phone"
-                    android:paddingLeft="2dp" />
+                    android:inputType="phone" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,8 +58,7 @@
                 android:id="@+id/rave_voucherTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:boxBackgroundColor="@null">
+                android:layout_marginBottom="20dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rave_voucherEt"
@@ -72,16 +66,30 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
                     android:hint="Voucher"
-                    android:inputType="text"
-                    android:paddingLeft="2dp" />
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
-                android:id="@+id/rave_networkSpinner"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <Spinner
+                    android:id="@+id/rave_networkSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/rectangle"
+                    android:dropDownSelector="@drawable/ic_arrow_down" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_arrow_down" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/instructionsTv"
@@ -89,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:gravity="left"
+                android:visibility="gone"
                 tools:text="@string/vodafone_msg" />
 
             <Button
@@ -96,11 +105,9 @@
                 style="?PayButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:text="@string/pay" />
-
 
         </LinearLayout>
 
