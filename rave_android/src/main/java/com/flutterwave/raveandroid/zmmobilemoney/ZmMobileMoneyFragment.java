@@ -121,10 +121,11 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
     }
 
     private void setUpNetworks() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
                 R.array.zm_mobile_money_networks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         networkSpinner.setAdapter(adapter);
+        networkSpinner.setBackgroundResource(R.drawable.rectangle);
 
         networkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

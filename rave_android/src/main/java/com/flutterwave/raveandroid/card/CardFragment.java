@@ -131,9 +131,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS)) {
                 Type savedCardsListType = new TypeToken<List<SavedCard>>() {
                 }.getType();
-                presenter.savedCards = (new Gson()).fromJson(savedInstanceState.getString
-                                (STATE_PRESENTER_SAVEDCARDS),
-                        savedCardsListType);
+                try {
+                    presenter.savedCards = (new Gson()).fromJson(savedInstanceState.getString
+                                    (STATE_PRESENTER_SAVEDCARDS),
+                            savedCardsListType);
+                } catch (Exception ignore) {
+
+                }
             }
         }
 
@@ -216,15 +220,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         emailEt = v.findViewById(R.id.rave_emailEt);
         cvvTil = v.findViewById(R.id.rave_cvvTil);
         cvvTv = v.findViewById(R.id.rave_cvvTv);
-        useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
-        useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
+        useAnotherCardTv = v.findViewById(R.id.rave_use_new_card_tv);
+        useASavedCardTv = v.findViewById(R.id.rave_use_saved_card_tv);
         useASavedCardTv.setVisibility(GONE);
-        saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
-        saveCardPhoneNoEt = (EditText) v.findViewById(R.id.save_card_phoneNoTV);
-        saveCardEmailEt = (EditText) v.findViewById(R.id.save_card_emailTv);
-        saveCardPhoneNoTil = (TextInputLayout) v.findViewById(R.id.save_card_phoneNoTil);
-        saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
-        saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
+        saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
+        saveCardPhoneNoEt = v.findViewById(R.id.save_card_phoneNoTV);
+        saveCardEmailEt = v.findViewById(R.id.save_card_emailTv);
+        saveCardPhoneNoTil = v.findViewById(R.id.save_card_phoneNoTil);
+        saveCardEmailTil = v.findViewById(R.id.save_card_emailTil);
+        saveNewCardLayout = v.findViewById(R.id.rave_layout_for_saving_card);
 
 
     }

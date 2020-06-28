@@ -40,7 +40,7 @@
         />
 
     <com.google.android.material.textfield.TextInputLayout
-        app:boxBackgroundColor="@null"
+
         android:layout_width="match_parent"
         android:id="@+id/otpTil"
         android:layout_marginBottom="20dp"
@@ -49,16 +49,15 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:paddingLeft="2dp"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
-            android:drawableStart="@drawable/ic_lock_outline_black_24dp"
+            android:id="@+id/otpEv"
+            android:drawableStart="@drawable/ic_lock"
             android:hint="@string/otp"
             android:inputType="number"
             android:drawablePadding="10dp"
-            android:id="@+id/otpEv"
-            />
+            android:drawableLeft="@drawable/ic_lock" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

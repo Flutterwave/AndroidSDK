@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/rave_pay_activity_root"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:minHeight="50dp"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp">
 
-        <RelativeLayout
-            android:orientation="vertical"
+        <TextView
+            android:id="@+id/bankNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:letterSpacing="0.04"
+            android:textAllCaps="true"
+            android:textColor="#4a4a4a"
+            android:textSize="14sp" />
+
+        <View
             android:layout_width="match_parent"
-            android:minHeight="50dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:id="@+id/rave_pay_activity_root"
-            android:layout_height="50dp">
-
-            <TextView
-                android:id="@+id/bankNameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:letterSpacing="0.04"
-                android:textColor="#4a4a4a"
-                android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#4a4a4a"
-                android:layout_alignParentBottom="true"
-                />
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="#4a4a4a" />
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 </LinearLayout>
 

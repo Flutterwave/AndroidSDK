@@ -1,12 +1,13 @@
 package com.flutterwave.raveandroid.card.savedcards;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
@@ -62,9 +63,9 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
 
         ViewHolder(View v) {
             super(v);
-            cardTypeTv = (TextView) v.findViewById(R.id.card_type_tv);
-            maskedPanTv = (TextView) v.findViewById(R.id.masked_pan_tv);
-            cardBrandIv = (ImageView) v.findViewById(R.id.rave_card_brand_imageview);
+            cardTypeTv = v.findViewById(R.id.card_type_tv);
+            maskedPanTv = v.findViewById(R.id.masked_pan_tv);
+            cardBrandIv = v.findViewById(R.id.rave_card_brand_imageview);
 
             v.setOnClickListener(this);
         }
@@ -75,13 +76,13 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
             maskedPanTv.setText(card.getMasked_pan());
             if (card.getCard_brand().equalsIgnoreCase("mastercard")) {
                 cardBrandIv
-                        .setImageResource(R.drawable.master_card_logo_svg);
+                        .setImageResource(R.drawable.ic_master_card);
             } else if (card.getCard_brand().equalsIgnoreCase("visa")) {
-                cardBrandIv.setImageResource(R.drawable.visa_logo_new);
-            } else if (card.getCard_brand().equalsIgnoreCase("verve")) {
-                cardBrandIv.setImageResource(R.drawable.verve);
-            } else if (card.getCard_brand().equalsIgnoreCase("amex")) {
-                cardBrandIv.setImageResource(R.drawable.amex);
+                cardBrandIv.setImageResource(R.drawable.ic_visa);
+            } else if (card.getCard_brand().equalsIgnoreCase("ic_verve_logo")) {
+                cardBrandIv.setImageResource(R.drawable.ic_verve_logo);
+            } else if (card.getCard_brand().equalsIgnoreCase("ic_american_express")) {
+                cardBrandIv.setImageResource(R.drawable.ic_american_express);
             }
         }
 

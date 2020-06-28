@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 
-
 import com.flutterwave.raveandroid.R;
 
 import java.util.regex.Pattern;
@@ -15,16 +14,16 @@ import java.util.regex.Pattern;
  * Created by hamzafetuga on 24/07/2017.
  */
 
-class CreditCardTextWatcher implements TextWatcher {
+class ic_credit_cardTextWatcher implements TextWatcher {
 
     private static final char space = ' ';
-    private final int mDefaultDrawableResId = R.drawable.creditcard;
+    private final int mDefaultDrawableResId = R.drawable.ic_credit_card;
     private int mCurrentDrawableResId = 0;
     private Drawable mCurrentDrawable;
     String lastFormattedText;
     private SparseArray<Pattern> mCCPatterns = null;
 
-    CreditCardTextWatcher(){
+    ic_credit_cardTextWatcher() {
         init();
     }
 
@@ -32,14 +31,14 @@ class CreditCardTextWatcher implements TextWatcher {
         if (mCCPatterns == null) {
             mCCPatterns = new SparseArray<>();
             // With spaces for credit card masking
-            mCCPatterns.put(R.drawable.visa_logo_new, Pattern.compile(
+            mCCPatterns.put(R.drawable.ic_visa, Pattern.compile(
                     "^4[0-9]{2,12}(?:[0-9]{3})?$"));
-            mCCPatterns.put(R.drawable.master_card_logo_svg, Pattern.compile(
+            mCCPatterns.put(R.drawable.ic_master_card, Pattern.compile(
                     "^5[1-5][0-9]{1,14}$"));
-            mCCPatterns.put(R.drawable.amex, Pattern.compile(
+            mCCPatterns.put(R.drawable.ic_american_express, Pattern.compile(
                     "^3[47][0-9]{1,13}$"));
             ///^([506]{3})([0-9]{1,16})$/
-            mCCPatterns.put(R.drawable.verve, Pattern.compile(
+            mCCPatterns.put(R.drawable.ic_verve_logo, Pattern.compile(
                     "^([506]{3})([0-9]{1,16})$"
             ));
         }

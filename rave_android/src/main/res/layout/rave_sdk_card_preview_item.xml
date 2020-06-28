@@ -9,10 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
+        card_view:cardCornerRadius="4dp"
         card_view:contentPadding="8dp"
         card_view:contentPaddingLeft="16dp"
-        card_view:contentPaddingRight="16dp"
-        card_view:cardCornerRadius="4dp">
+        card_view:contentPaddingRight="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 android:layout_width="40dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/creditcard" />
+                android:src="@drawable/ic_credit_card" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
