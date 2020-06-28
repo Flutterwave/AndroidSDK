@@ -8,7 +8,7 @@
     <color name="tabIndicatorColor">@color/colorPrimary</color>
     <color name="paymentTileBackground">#fbeed8</color>
     <color name="white">#000000</color>
-    <color name="yellow">#212e67</color>
+    <color name="yellow">#000000</color>
     <color name="black">#ffffff</color>
     <color name="sisal">#cccccc</color>
     <color name="divider_color">#DCD4C9</color>

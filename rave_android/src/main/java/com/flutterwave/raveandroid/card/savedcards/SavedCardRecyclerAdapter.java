@@ -72,7 +72,7 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
 
         public void bind(SavedCard card) {
             this.card = card;
-            cardTypeTv.setText("YOUR " + card.getCard_brand());
+            cardTypeTv.setText(card.getCard_brand());
             maskedPanTv.setText(card.getMasked_pan());
             if (card.getCard_brand().equalsIgnoreCase("mastercard")) {
                 cardBrandIv
