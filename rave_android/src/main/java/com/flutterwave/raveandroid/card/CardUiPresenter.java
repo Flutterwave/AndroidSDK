@@ -36,10 +36,10 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldE
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldcardNoStripped;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validAmountPrompt;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validCreditCardPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validCvvPrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validExpiryDatePrompt;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validPhonePrompt;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.validic_credit_cardPrompt;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -147,7 +147,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
         if (!isCardNoValid) {
             valid = false;
-            mView.showFieldError(cardNoStrippedID, validic_credit_cardPrompt, cardNoStrippedViewType);
+            mView.showFieldError(cardNoStrippedID, validCreditCardPrompt, cardNoStrippedViewType);
         }
 
         if (valid) {

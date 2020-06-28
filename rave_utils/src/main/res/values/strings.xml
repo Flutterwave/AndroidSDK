@@ -115,7 +115,7 @@
     <string name="cardNoStripped">cardNoStripped</string>
     <string name="validCvvPrompt">Enter a valid cvv</string>
     <string name="validExpiryDatePrompt">Enter a valid expiry date</string>
-    <string name="validic_credit_cardPrompt">Enter a valid credit card number</string>
+    <string name="validCreditCardPrompt">Enter a valid credit card number</string>
     <string name="validVoucherPrompt">Enter a valid voucher code</string>
     <string name="validNetworkPrompt">Select a network</string>
     <string name="unknownAuth">Unknown Auth Model</string>
