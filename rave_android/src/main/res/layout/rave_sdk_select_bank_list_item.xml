@@ -21,14 +21,14 @@
             android:layout_centerVertical="true"
             android:letterSpacing="0.04"
             android:textAllCaps="true"
-            android:textColor="#4a4a4a"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="#4a4a4a" />
+            android:background="@color/black" />
 
 
     </RelativeLayout>
