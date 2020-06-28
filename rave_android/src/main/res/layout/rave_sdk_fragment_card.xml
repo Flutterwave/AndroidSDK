@@ -180,7 +180,6 @@
 
                 </LinearLayout>
 
-
                 <Button
                     android:id="@+id/rave_payButton"
                     style="?PayButtonStyle"

@@ -91,7 +91,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private static final String RAVEPAY = "ravepay";
     private View v;
     TextView useASavedCardTv;
-    TextView useAnotherCardTv;
     private Button payButton;
     private TextView pcidss_tv;
     private AlertDialog dialog;
@@ -220,7 +219,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         emailEt = v.findViewById(R.id.rave_emailEt);
         cvvTil = v.findViewById(R.id.rave_cvvTil);
         cvvTv = v.findViewById(R.id.rave_cvvTv);
-        useAnotherCardTv = v.findViewById(R.id.rave_use_new_card_tv);
         useASavedCardTv = v.findViewById(R.id.rave_use_saved_card_tv);
         useASavedCardTv.setVisibility(GONE);
         saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);

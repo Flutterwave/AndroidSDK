@@ -297,7 +297,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/email"
-                android:text="a@b.com"
+                android:text="mikelis135@gmail.com"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
@@ -391,7 +391,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:inputType="phone"
-                android:text="08012345456"
+                android:text="08132383284"
                 android:hint="@string/phone_number"
                 android:textSize="14sp" />
 

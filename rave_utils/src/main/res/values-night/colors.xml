@@ -5,6 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="otpColorTheme">#dd7a32</color>
     <color name="pinColorTheme">#dd7a32</color>
-    <color name="black">#999999</color>
+    <color name="black">#cccccc</color>
     <color name="tabIndicatorColor">@color/colorPrimary</color>
 </resources>

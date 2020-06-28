@@ -30,8 +30,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="6dp"
-                    android:text="YOUR "
-                    android:textSize="16sp" />
+                    android:text=""
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/masked_pan_tv"
@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="424242******4242"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
