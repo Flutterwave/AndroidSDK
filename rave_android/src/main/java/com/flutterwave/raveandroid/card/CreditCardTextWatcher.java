@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Created by hamzafetuga on 24/07/2017.
  */
 
-class ic_credit_cardTextWatcher implements TextWatcher {
+class CreditCardTextWatcher implements TextWatcher {
 
     private static final char space = ' ';
     private final int mDefaultDrawableResId = R.drawable.ic_credit_card;
@@ -23,7 +23,7 @@ class ic_credit_cardTextWatcher implements TextWatcher {
     String lastFormattedText;
     private SparseArray<Pattern> mCCPatterns = null;
 
-    ic_credit_cardTextWatcher() {
+    CreditCardTextWatcher() {
         init();
     }
 

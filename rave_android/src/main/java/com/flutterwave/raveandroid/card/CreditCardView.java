@@ -62,7 +62,7 @@ public class CreditCardView extends TextInputEditText {
         }
 
         setInputType(InputType.TYPE_CLASS_PHONE);
-        addTextChangedListener(new ic_credit_cardTextWatcher());
+        addTextChangedListener(new CreditCardTextWatcher());
     }
 
     @Override
