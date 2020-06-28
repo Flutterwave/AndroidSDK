@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Saved Cards"
-            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 

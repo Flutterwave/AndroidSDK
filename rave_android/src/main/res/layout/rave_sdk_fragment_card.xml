@@ -238,7 +238,7 @@
                     android:drawablePadding="4dp"
                     android:letterSpacing="-0.01"
                     android:text="@string/secured_by_flutterwave"
-                    android:textColor="@color/yellow"
+                    android:textColor="#F4B918"
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
