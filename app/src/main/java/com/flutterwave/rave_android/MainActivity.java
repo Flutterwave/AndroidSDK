@@ -242,7 +242,6 @@ public class MainActivity
         String txRef = txRefEt.getText().toString();
         String narration = narrationEt.getText().toString();
         String currency = currencyEt.getText().toString();
-        String country = countryEt.getText().toString();
         String fName = fNameEt.getText().toString();
         String lName = lNameEt.getText().toString();
         String phoneNumber = phoneNumberEt.getText().toString();
@@ -281,11 +280,6 @@ public class MainActivity
             currencyEt.setError("A valid currency code is required");
         }
 
-        if (country.length() < 1) {
-            valid = false;
-            countryEt.setError("A valid country code is required");
-        }
-
         if (setExpirySwitch.isChecked()) {
             if (accountDuration.isEmpty()) {
                 valid = false;
@@ -322,7 +316,6 @@ public class MainActivity
                         //                    .withTheme(R.style.TestNewTheme)
                         .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
                         .setAmount(Double.parseDouble(amount))
-                        .setCountry(country)
                         .setCurrency(currency)
                         .setEmail(email)
                         .setfName(fName)
@@ -358,7 +351,6 @@ public class MainActivity
 
             } else {
                 raveManager = new RaveNonUIManager().setAmount(Double.parseDouble(amount))
-                        .setCountry(country)
                         .setCurrency(currency)
                         .setEmail(email)
                         .setfName(fName)
