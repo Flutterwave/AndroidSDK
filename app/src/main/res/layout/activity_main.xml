@@ -297,6 +297,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/email"
+                tools:text="mikelis135@gmail.com"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
@@ -305,6 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                tools:text="1"
                 android:hint="@string/amount_to_charge_required"
                 android:inputType="number"
                 android:textSize="14sp" />
@@ -332,6 +334,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                tools:text="ref"
                 android:hint="@string/txref_required"
                 android:textSize="14sp" />
 
@@ -340,6 +343,7 @@
                 android:id="@+id/narrationTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:text="ravepay"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/narration"
                 android:textSize="14sp" />
@@ -349,6 +353,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                tools:text="NGN"
                 android:hint="@string/currency_code_e_g_ngn"
                 android:textSize="14sp" />
 
@@ -358,6 +363,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_marginBottom="10dp"
+                tools:text="NG"
                 android:hint="@string/country_code_e_g_ng"
                 android:textSize="14sp" />
 
@@ -367,6 +373,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                tools:text="taiwo"
                 android:hint="@string/first_name"
                 android:textSize="14sp" />
 
@@ -375,6 +382,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                tools:text="ade"
                 android:hint="@string/last_name"
                 android:textSize="14sp" />
 
@@ -384,6 +392,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:inputType="phone"
+                tools:text="08132383284"
                 android:hint="@string/phone_number"
                 android:textSize="14sp" />
 

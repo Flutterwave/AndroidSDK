@@ -2,8 +2,11 @@ package com.flutterwave.raveandroid.card.savedcards;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.R;
 
@@ -14,10 +17,23 @@ public class SavedCardsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getIntent() != null & getIntent().getIntExtra("theme", 0) != 0) {
             setTheme(getIntent().getIntExtra("theme", 0));
         }
         setContentView(R.layout.rave_sdk_activity_futher_verification);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         if (findViewById(R.id.frame_container) != null) {
             if (savedInstanceState != null) {

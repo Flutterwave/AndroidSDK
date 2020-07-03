@@ -11,10 +11,10 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/sliding_tabs"
+        style="?TabLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="?TabLayoutStyle"
         app:tabMode="fixed" />
 
     <androidx.viewpager.widget.ViewPager

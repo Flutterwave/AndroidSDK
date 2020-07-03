@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.flutterwave.raveandroid.RavePayActivity;
@@ -49,7 +50,7 @@ public class MainActivity
         implements
         FeeCheckListener, // Implement if you want to be able to check fees beforehand
         SavedCardsListener, // Implement if you want to be able to save cards and charge saved cards
-        CardPaymentCallback {// Must be implemented to charge cards with custom UI or no-UI
+        CardPaymentCallback { // Must be implemented to charge cards with custom UI or no-UI
 
     EditText emailEt;
     EditText amountEt;
@@ -104,6 +105,8 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         emailEt = findViewById(R.id.emailEt);
         amountEt = findViewById(R.id.amountEt);
@@ -511,10 +514,10 @@ public class MainActivity
                 progressDialog = new ProgressDialog(this);
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage("Please wait...");
-            }
-
-            if (active && !progressDialog.isShowing()) {
+            } else if (active && !progressDialog.isShowing()) {
                 progressDialog.show();
+            } else if (active && !progressDialog.isShowing()) {
+
             } else {
                 progressDialog.dismiss();
             }

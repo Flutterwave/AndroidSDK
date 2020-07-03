@@ -551,8 +551,8 @@ public class RavePayActivity extends AppCompatActivity {
         Collections.reverse(orderedPaymentTypesList);
 
         tileCount = orderedPaymentTypesList.size();
-        if (tileCount > 8) paymentTilesTextSize = 18f;
-        else paymentTilesTextSize = 20f;
+        if (tileCount > 8) paymentTilesTextSize = 16f;
+        else paymentTilesTextSize = 18f;
 
         for (int index = 0; index < orderedPaymentTypesList.size(); index++)
             addPaymentType(orderedPaymentTypesList.get(index));

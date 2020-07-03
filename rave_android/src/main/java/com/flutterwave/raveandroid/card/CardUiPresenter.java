@@ -73,7 +73,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
     SharedPrefsRepo sharedManager;
     @Inject
     Gson gson;
-    List<SavedCard> savedCards;
+    List<SavedCard> savedCards = new ArrayList<>();
     private CardUiContract.View mView;
     private boolean cardSaveInProgress = false;
     private String requeryInstruction = "Transaction is under processing, please use transaction requery to check status";

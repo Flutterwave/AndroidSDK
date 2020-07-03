@@ -1,11 +1,11 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:layout_height="wrap_content"
+    android:orientation="vertical"
     tools:context=".account.AccountFragment">
 
     <ScrollView
@@ -17,38 +17,32 @@
             android:id="@+id/rave_topLay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:orientation="vertical"
-            android:paddingTop="20dp">
+            android:paddingTop="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_amountEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
                     android:hint="@string/amount"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLength="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_emailTil"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_emailEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,34 +53,27 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_phoneEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
                     android:hint="@string/phone_number"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLength="15" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_accountNumberTil"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_accountNumberEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -99,16 +86,12 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_bvnTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_bvnEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -123,49 +106,45 @@
             <EditText
                 android:id="@+id/rave_bankEditText"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/rectangle"
                 android:focusableInTouchMode="false"
-                android:longClickable="false"
                 android:hint="@string/bank"
-                android:inputType="numberDecimal" />
-
+                android:inputType="numberDecimal"
+                android:longClickable="false"
+                android:padding="10dp" />
 
             <EditText
                 android:id="@+id/rave_dobEditText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="3dp"
-                android:longClickable="false"
-                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/rectangle"
                 android:clickable="true"
                 android:focusableInTouchMode="false"
-                android:layout_marginBottom="20dp"
                 android:hint="@string/date_of_birth"
-                android:inputType="text" />
-
+                android:inputType="text"
+                android:longClickable="false"
+                android:padding="10dp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/rave_payButton"
+                style="?PayButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                style="?PayButtonStyle"
-                android:text="@string/pay"
-                android:textColor="#FFF" />
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/pay" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/black_background_curved"
                 android:orientation="horizontal"
@@ -180,7 +159,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="4dp"
-                    android:src="@drawable/flw_icon_coloured" />
+                    android:src="@drawable/ic_flw_logo" />
 
                 <TextView
                     android:id="@+id/secured_by_flutterwave_tv"
@@ -196,7 +175,6 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
             </LinearLayout>
 
             <TextView
@@ -204,11 +182,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:drawableStart="@drawable/ic_lock_outline_black_24dp"
-                android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawableLeft="@drawable/ic_lock"
                 android:drawablePadding="5dp"
+                android:gravity="center_vertical"
                 android:text="@string/pci_dss_compliant"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </LinearLayout>
 

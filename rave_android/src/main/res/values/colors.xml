@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#212e67</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#dd7a32</color>
     <color name="otpColorTheme">#dd7a32</color>
     <color name="pinColorTheme">#dd7a32</color>
     <color name="tabIndicatorColor">@color/colorPrimary</color>
     <color name="paymentTileBackground">#fbeed8</color>
-    <color name="white">#fff</color>
-    <color name="black">#000</color>
-	<color name="sisal">#DCD4C9</color>
+    <color name="white">#ffffff</color>
+    <color name="background">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="sisal">#DCD4C9</color>
+    <color name="yellow">#F4B918</color>
     <color name="divider_color">#DCD4C9</color>
+    <color name="blackGrey">#999999</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/black</color>
+
 </resources>

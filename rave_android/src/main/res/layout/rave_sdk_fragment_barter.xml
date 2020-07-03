@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".barter.BarterFragment">
 
     <ScrollView
@@ -20,7 +19,6 @@
             android:paddingTop="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -36,14 +34,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <Button
                 android:id="@+id/rave_payButton"
                 style="?PayButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginBottom="15dp"
                 android:text="@string/pay" />
 

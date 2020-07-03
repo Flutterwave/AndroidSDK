@@ -19,18 +19,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:paddingTop="10dp">
+            android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_phoneTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
                     android:id="@+id/rave_phoneEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,18 +39,17 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                app:boxBackgroundColor="@null"
                 android:id="@+id/rave_amountTil"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:paddingLeft="2dp"
+
                     android:id="@+id/rave_amountEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rave_card1"
-                    android:layout_marginBottom="10dp"
                     android:hint="@string/amount"
                     android:inputType="numberDecimal" />
 
@@ -64,8 +60,7 @@
                 style="?PayButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
                 android:text="@string/pay" />
 
