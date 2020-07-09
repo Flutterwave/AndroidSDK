@@ -31,6 +31,7 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
+import com.flutterwave.raveandroid.data.EmailObfuscator;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.di.modules.CardUiModule;
@@ -85,6 +86,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Inject
     PhoneNumberObfuscator phoneNumberObfuscator;
+    @Inject
+    EmailObfuscator emailObfuscator;
     private static final int FOR_SAVED_CARDS = 777;
     private static final String STATE_PRESENTER_SAVEDCARDS = "presenter_saved_cards";
     public static final String INTENT_SENDER = "cardFrag";
@@ -530,7 +533,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectOtpForSaveCardCharge(Payload payload) {
         String authInstruction = "Enter the one time password (OTP) sent to " +
                 phoneNumberObfuscator.obfuscatePhoneNumber(payload
-                        .getPhonenumber());
+                        .getPhonenumber()) + " or " + emailObfuscator.obfuscateEmail(payload
+                .getEmail());
         showOTPLayoutForSavedCard(payload, authInstruction);
     }
 
