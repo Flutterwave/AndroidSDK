@@ -17,6 +17,16 @@ class NullSavedCardsListener implements SavedCardsListener {
     }
 
     @Override
+    public void onRemoveSavedCardRequestSuccessful() {
+
+    }
+
+    @Override
+    public void onRemoveSavedCardRequestFailed(String message) {
+
+    }
+
+    @Override
     public void collectOtpForSaveCardCharge() {
 
     }

@@ -302,9 +302,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
         }
 
-        if (!savedCards.isEmpty()) {
-            mView.setHasSavedCards(true, savedCards);
-        }
+        mView.setHasSavedCards(!savedCards.isEmpty(), savedCards);
     }
 
     @Override
@@ -344,7 +342,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             if (ravePayInitializer.getPhoneNumber() != null) {
                 if (ravePayInitializer.getPhoneNumber().length() > 0) {
                     lookupSavedCards(ravePayInitializer.getPublicKey(),
-                            ravePayInitializer.getPhoneNumber());
+                            ravePayInitializer.getPhoneNumber(), false);
                     mView.onPhoneNumberValidated(ravePayInitializer.getPhoneNumber());
                 }
             }

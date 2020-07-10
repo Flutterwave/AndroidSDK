@@ -27,6 +27,16 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
     }
 
     @Override
+    public void onSavedCardRemoveSuccessful() {
+
+    }
+
+    @Override
+    public void onSavedCardRemoveFailed(String message) {
+
+    }
+
+    @Override
     public void setHasSavedCards(boolean b, List<SavedCard> savedCards) {
 
     }

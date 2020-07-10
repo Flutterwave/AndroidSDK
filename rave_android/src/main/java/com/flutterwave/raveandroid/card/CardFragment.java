@@ -22,16 +22,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
+import com.flutterwave.raveandroid.SwipeToDeleteCallback;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardRecyclerAdapter;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
@@ -520,13 +523,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
         switchToSaveCards(true);
-//        Intent intent = new Intent(getContext(), SavedCardsActivity.class);
-//        Type savedCardsListType = new TypeToken<List<SavedCard>>() {
-//        }.getType();
-//        intent.putExtra(SavedCardsFragment.EXTRA_SAVED_CARDS,
-//                (new Gson()).toJson(savedCardsList, savedCardsListType));
-//        intent.putExtra(SavedCardsActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
-//        startActivityForResult(intent, FOR_SAVED_CARDS);
     }
 
     @Override
@@ -538,12 +534,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             setUpSavedCardsAdapter(savedCards);
         } else {
             useASavedCardTv.setVisibility(GONE);
+            if(savedCards == null) savedCards = new ArrayList();
+            setUpSavedCardsAdapter(savedCards);
         }
     }
 
-    private void setUpSavedCardsAdapter(List<SavedCard> savedCards){
-        if (savedCards == null) savedCards = new ArrayList<>();
-        SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
+    private void setUpSavedCardsAdapter(final List<SavedCard> savedCards){
+        final SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
         adapter.set(savedCards);
         adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {
             @Override
@@ -553,6 +550,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         });
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(requireContext()) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                SavedCard savedCard = adapter.getCards().get(viewHolder.getAdapterPosition());
+                presenter.deleteASavedCard(savedCard.getCardHash(), ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         recyclerView.setAdapter(adapter);
     }
 
@@ -594,7 +602,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
         // Perform lookup of saved savedCards and save to phone storage
-        presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), phoneNumber);
+        presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), phoneNumber, false);
 
     }
 
@@ -612,6 +620,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             getActivity().finish();
         }
 
+    }
+
+    @Override
+    public void onSavedCardRemoveSuccessful() {
+        presenter.lookupSavedCards(ravePayInitializer.getPublicKey(), ravePayInitializer.getPhoneNumber(), true);
+    }
+
+    @Override
+    public void onSavedCardRemoveFailed(String message) {
+        ((RecyclerView) v.findViewById(R.id.rave_recycler)).getAdapter().notifyDataSetChanged();
+        showToast(message);
     }
 
     @Override
@@ -638,6 +657,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void onSavedCardsLookupFailed(String message) {
+        setHasSavedCards(false, new ArrayList<SavedCard>());
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJsonString);
 

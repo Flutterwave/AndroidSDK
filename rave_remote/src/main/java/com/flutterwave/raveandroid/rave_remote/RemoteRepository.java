@@ -8,6 +8,7 @@ import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
@@ -183,6 +184,20 @@ public class RemoteRepository {
                 new TypeToken<LookupSavedCardsResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<LookupSavedCardsResponse>(callback)
+        );
+    }
+
+
+    public void deleteASavedCard(RemoveSavedCardRequestBody requestBody,
+                                 final ResultCallback callback) {
+
+        Call<String> call = service.deleteSavedCard(requestBody);
+
+        executor.execute(
+                call,
+                new TypeToken<SaveCardResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<SaveCardResponse>(callback)
         );
     }
 

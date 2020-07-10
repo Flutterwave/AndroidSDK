@@ -43,21 +43,8 @@ public class SharedPrefsRepo {
 
         savePhoneNumber(phoneNumber);
 
-        List<SavedCard> savedCards = getSavedCards(phoneNumber, publicKey);
-        List<SavedCard> repeatedCards = new ArrayList<>();
-        for (SavedCard s : savedCards) {
-            for (SavedCard c : cardsToSave) {
-                if (s.getCardHash().equalsIgnoreCase(c.getCardHash())) {
-                    repeatedCards.add(s);
-                    break;
-                }
-            }
-        }
-        savedCards.removeAll(repeatedCards);
-        savedCards.addAll(cardsToSave);
-
         Type type = new TypeToken<List<SavedCard>>() {}.getType();
-        String savedCardsJson = gson.toJson(savedCards, type);
+        String savedCardsJson = gson.toJson(cardsToSave, type);
 
         editor.putString(SAVED_CARDS_PREFIX + phoneNumber + publicKey, savedCardsJson).apply();
     }

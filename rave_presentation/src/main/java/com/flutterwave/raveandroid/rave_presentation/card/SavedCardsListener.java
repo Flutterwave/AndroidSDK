@@ -11,6 +11,10 @@ public interface SavedCardsListener {
 
     void onSavedCardsLookupFailed(String message);
 
+    void onRemoveSavedCardRequestSuccessful();
+
+    void onRemoveSavedCardRequestFailed(String message);
+
     void collectOtpForSaveCardCharge();
 
     void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber);

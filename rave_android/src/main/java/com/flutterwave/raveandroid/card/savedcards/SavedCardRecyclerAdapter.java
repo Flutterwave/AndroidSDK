@@ -27,6 +27,10 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
         this.cards = cards;
     }
 
+    public List<SavedCard> getCards(){
+        return cards;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

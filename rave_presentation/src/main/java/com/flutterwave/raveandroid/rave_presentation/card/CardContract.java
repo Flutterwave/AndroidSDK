@@ -40,6 +40,19 @@ public interface CardContract {
          */
         void onSavedCardsLookupFailed(String message);
 
+
+        /**
+         * Called when deleting saved cards retrieval is successful
+         */
+        void onSavedCardRemoveSuccessful();
+
+        /**
+         * Called when deleting saved cards retrieval fails
+         *
+         * @param message The error message
+         */
+        void onSavedCardRemoveFailed(String message);
+
         /**
          * Called when the call to {@link CardPaymentHandler#fetchFee(Payload) get the applicable transaction fee} has been completed successfully.
          *
@@ -154,7 +167,9 @@ public interface CardContract {
 
         void chargeCardWithPinAuthModel(Payload payload, String pin, String encryptionKey);
 
-        void lookupSavedCards(String publicKey, String phoneNumber);
+        void lookupSavedCards(String publicKey, String phoneNumber, boolean showLoader);
+
+        void deleteASavedCard(String cardHash, String phoneNumber, String publicKey);
 
         void chargeSavedCard(Payload payload, String encryptionKey);
 

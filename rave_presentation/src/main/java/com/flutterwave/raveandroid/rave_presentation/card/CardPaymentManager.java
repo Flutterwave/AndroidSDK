@@ -101,8 +101,12 @@ public class CardPaymentManager {
         interactor.setSavedCardsListener(listener);
     }
 
-    public void fetchSavedCards() {
-        paymentHandler.lookupSavedCards(manager.getPublicKey(), manager.getPhoneNumber());
+    public void fetchSavedCards(boolean showLoader) {
+        paymentHandler.lookupSavedCards(manager.getPublicKey(), manager.getPhoneNumber(), showLoader);
+    }
+
+    public void removeSavedCards(String cardhash) {
+        paymentHandler.deleteASavedCard(cardhash, manager.getPhoneNumber(), manager.getPublicKey());
     }
 
     public void fetchTransactionFee(Card card, FeeCheckListener feeCheckListener) {

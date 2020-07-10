@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
@@ -343,12 +344,35 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
+    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey){
+        mCardInteractor.showProgressIndicator(true);
+        RemoveSavedCardRequestBody body = new RemoveSavedCardRequestBody(cardHash, phoneNumber, publicKey);
+        networkRequest.deleteASavedCard(body, new ResultCallback<SaveCardResponse>() {
+            @Override
+            public void onSuccess(SaveCardResponse response) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onSavedCardRemoveSuccessful();
+            }
+
+            @Override
+            public void onError(String message) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onSavedCardRemoveFailed(message);
+            }
+        });
+    }
+
+    @Override
     public void lookupSavedCards(String publicKey,
-                                 String phoneNumber
+                                 final String phoneNumber,
+                                 boolean showLoader
     ) {
         LookupSavedCardsRequestBody body = new LookupSavedCardsRequestBody();
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
+
+        if(showLoader)
+            mCardInteractor.showProgressIndicator(true);
 
 
         networkRequest.lookupSavedCards(body, new ResultCallback<LookupSavedCardsResponse>() {
@@ -375,6 +399,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             @Override
             public void onError(String message) {
                 mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onSavedCardsLookupSuccessful(new ArrayList<SavedCard>(), phoneNumber);
                 mCardInteractor.onSavedCardsLookupFailed(message);
             }
         });

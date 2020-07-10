@@ -95,6 +95,16 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     }
 
     @Override
+    public void onSavedCardRemoveSuccessful() {
+        savedCardsListener.onRemoveSavedCardRequestSuccessful();
+    }
+
+    @Override
+    public void onSavedCardRemoveFailed(String message) {
+        savedCardsListener.onRemoveSavedCardRequestFailed(message);
+    }
+
+    @Override
     public void onSavedCardsLookupFailed(String message) {
         savedCardsListener.onSavedCardsLookupFailed(message);
     }

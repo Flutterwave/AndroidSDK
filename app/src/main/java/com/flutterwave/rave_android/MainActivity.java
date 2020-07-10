@@ -576,6 +576,16 @@ public class MainActivity
     }
 
     @Override
+    public void onRemoveSavedCardRequestSuccessful() {
+
+    }
+
+    @Override
+    public void onRemoveSavedCardRequestFailed(String message) {
+
+    }
+
+    @Override
     public void collectOtpForSaveCardCharge() {
         collectOtp("Otp for saved card");
     }

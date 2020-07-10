@@ -4,6 +4,7 @@ package com.flutterwave.raveandroid.rave_remote;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
+import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBodyv2;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
@@ -62,6 +63,9 @@ public interface ApiService {
 
     @POST("/v2/gpx/users/lookup")
     Call<String> lookupSavedCards(@Body LookupSavedCardsRequestBody requestBody);
+
+    @POST("/v2/gpx/users/remove")
+    Call<String> deleteSavedCard(@Body RemoveSavedCardRequestBody requestBody);
 
     @POST("/v2/gpx/users/send_otp")
     Call<String> sendRaveOtp(@Body SendOtpRequestBody requestBody);
