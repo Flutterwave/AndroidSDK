@@ -7,7 +7,7 @@
     android:clickable="true"
     android:focusable="true"
     android:id="@+id/rave_internetBankingBottomSheet"
-    android:textColor="@color/lightish_black"
+    android:textColor="@color/rave_lightish_black"
     android:orientation="vertical">
 
     <WebView

@@ -17,7 +17,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal|center_vertical"
             android:text="@string/please_select_a_card"
-            android:textColor="@color/light_grey"
+            android:textColor="@color/rave_light_grey"
             android:textSize="16sp"
             android:textStyle="bold" />
 
