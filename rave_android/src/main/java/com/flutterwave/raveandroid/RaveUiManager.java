@@ -42,6 +42,7 @@ public class RaveUiManager extends RavePayManager {
     private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
     private boolean allowSaveCard = true;
+    private boolean usePhoneAndEmailSuppliedToSaveCards = true;
     protected boolean showStagingLabel = true;
     private Boolean allowEditPhone = true;
 
@@ -186,6 +187,12 @@ public class RaveUiManager extends RavePayManager {
 
     public RaveUiManager allowSaveCardFeature(boolean allowSaveCard) {
         this.allowSaveCard = allowSaveCard;
+        return this;
+    }
+
+    public RaveUiManager allowSaveCardFeature(boolean allowSaveCard, boolean usePhoneAndEmailSuppliedToSaveCards) {
+        this.allowSaveCard = allowSaveCard;
+        this.usePhoneAndEmailSuppliedToSaveCards = usePhoneAndEmailSuppliedToSaveCards;
         return this;
     }
 
@@ -347,6 +354,7 @@ public class RaveUiManager extends RavePayManager {
                 getPhoneNumber(),
                 allowEditPhone,
                 allowSaveCard,
+                usePhoneAndEmailSuppliedToSaveCards,
                 isPermanent(),
                 getDuration(),
                 getFrequency(),

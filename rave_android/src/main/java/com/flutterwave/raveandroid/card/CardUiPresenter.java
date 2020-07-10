@@ -288,16 +288,8 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
     @Override
     public void retrieveSavedCardsFromMemory(String phoneNumber, String publicKey) {
-        if (phoneNumber != null)
-            if (!phoneNumber.isEmpty())
-                savedCards = sharedManager.getSavedCards(phoneNumber, publicKey);
-    }
-
-    private void retrievePhoneNumberFromMemory(RavePayInitializer ravePayInitializer) {
-        String phoneNumber = sharedManager.fetchPhoneNumber();
-        if (ravePayInitializer.getPhoneNumber() == null || ravePayInitializer.getPhoneNumber().isEmpty()) {
-            ravePayInitializer.setPhoneNumber(phoneNumber);
-        }
+        if (phoneNumber != null && !phoneNumber.isEmpty())
+            savedCards = sharedManager.getSavedCards(phoneNumber, publicKey);
     }
 
     @Override
@@ -306,8 +298,9 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             savedCards = new ArrayList<>();
         }
 
-        retrievePhoneNumberFromMemory(ravePayInitializer);
-        retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
+        if(ravePayInitializer.getPhoneNumber().equals(sharedManager.fetchPhoneNumber())){
+            retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
+        }
 
         if (!savedCards.isEmpty()) {
             mView.setHasSavedCards(true);
@@ -323,6 +316,15 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
     @Override
     public void onAttachView(CardUiContract.View view) {
         this.mView = view;
+    }
+
+
+    @Override
+    public void onSavedCardSwitchSwitchedOn(RavePayInitializer ravePayInitializer) {
+        boolean shouldHideSavedCardsLayout = ravePayInitializer.isUsePhoneAndEmailSuppliedToSaveCards() &&
+                emailValidator.isEmailValid(ravePayInitializer.getEmail()) &&
+                (ravePayInitializer.getPhoneNumber() != null && !ravePayInitializer.getPhoneNumber().isEmpty());
+        mView.setSavedCardsLayoutVisibility(!shouldHideSavedCardsLayout);
     }
 
     @Override

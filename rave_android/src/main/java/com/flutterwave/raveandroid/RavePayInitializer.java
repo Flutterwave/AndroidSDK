@@ -16,6 +16,7 @@ public class RavePayInitializer {
     private boolean isPhoneEditable = true;
     String phoneNumber = "";
     private boolean saveCardFeatureAllowed = true;
+    private boolean usePhoneAndEmailSuppliedToSaveCards = true;
     String email;
     double amount;
     String publicKey;
@@ -41,7 +42,8 @@ public class RavePayInitializer {
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
                               String currency, String country, String fName,
-                              String lName, int theme, String phoneNumber, boolean isPhoneEditable, boolean saveCardFeatureAllowed,
+                              String lName, int theme, String phoneNumber,
+                              boolean isPhoneEditable, boolean saveCardFeatureAllowed, boolean usePhoneAndEmailSuppliedToSaveCards,
                               boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
                               boolean showStagingLabel, boolean displayFee, ArrayList<Integer> orderedPaymentTypesList) {
@@ -67,6 +69,7 @@ public class RavePayInitializer {
         this.phoneNumber = phoneNumber;
         this.isPhoneEditable = isPhoneEditable;
         this.saveCardFeatureAllowed = saveCardFeatureAllowed;
+        this.usePhoneAndEmailSuppliedToSaveCards = usePhoneAndEmailSuppliedToSaveCards;
         this.showStagingLabel = showStagingLabel;
         this.displayFee = displayFee;
         if (!orderedPaymentTypesList.isEmpty())
@@ -259,5 +262,9 @@ public class RavePayInitializer {
 
     public boolean isSaveCardFeatureAllowed() {
         return saveCardFeatureAllowed;
+    }
+
+    public boolean isUsePhoneAndEmailSuppliedToSaveCards() {
+        return usePhoneAndEmailSuppliedToSaveCards;
     }
 }

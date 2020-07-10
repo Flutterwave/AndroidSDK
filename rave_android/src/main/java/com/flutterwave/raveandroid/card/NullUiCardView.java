@@ -47,6 +47,11 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
     }
 
     @Override
+    public void setSavedCardsLayoutVisibility(boolean showPhoneEmailFields) {
+
+    }
+
+    @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
 
     }

@@ -187,7 +187,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    saveNewCardLayout.setVisibility(VISIBLE);
+                    presenter.onSavedCardSwitchSwitchedOn(ravePayInitializer);
                     shouldISaveThisCard = true;
                 } else {
                     saveNewCardLayout.setVisibility(View.GONE);
@@ -195,6 +195,15 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 }
             }
         });
+    }
+
+    @Override
+    public void setSavedCardsLayoutVisibility(boolean showPhoneEmailFields) {
+        if (showPhoneEmailFields) {
+            saveNewCardLayout.setVisibility(VISIBLE);
+        } else {
+            saveNewCardLayout.setVisibility(View.GONE);
+        }
     }
 
     private void onSavedCardSelected(SavedCard savedCard) {

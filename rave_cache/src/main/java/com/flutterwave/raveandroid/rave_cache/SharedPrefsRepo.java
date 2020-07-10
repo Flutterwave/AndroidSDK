@@ -96,4 +96,8 @@ public class SharedPrefsRepo {
     public String fetchPhoneNumber() {
         return sharedPreferences.getString(PHONE_NUMBER, "");
     }
+
+    public void clear(){
+        editor.clear().apply();
+    }
 }

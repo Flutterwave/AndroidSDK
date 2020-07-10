@@ -33,6 +33,8 @@ public interface CardUiContract {
         void showCardSavingOption(boolean b);
 
         void setHasSavedCards(boolean b);
+
+        void setSavedCardsLayoutVisibility(boolean showPhoneEmailFields);
     }
 
     interface UserActionsListener extends CardContract.CardPaymentHandler {
@@ -44,6 +46,8 @@ public interface CardUiContract {
         void onAttachView(CardUiContract.View view);
 
         void init(RavePayInitializer ravePayInitializer);
+
+        void onSavedCardSwitchSwitchedOn(RavePayInitializer ravePayInitializer);
 
         void onDataCollected(HashMap<String, ViewObject> dataHashMap);
 

@@ -37,6 +37,7 @@ import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.francMobileMoney.FrancMobileMoneyFragment;
 import com.flutterwave.raveandroid.ghmobilemoney.GhMobileMoneyFragment;
 import com.flutterwave.raveandroid.mpesa.MpesaFragment;
+import com.flutterwave.raveandroid.rave_cache.SharedPrefsRepo;
 import com.flutterwave.raveandroid.rave_core.di.DeviceIdGetterModule;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
@@ -106,6 +107,9 @@ public class RavePayActivity extends AppCompatActivity {
 
     @Inject
     EventLogger eventLogger;
+
+    @Inject
+    SharedPrefsRepo sharedManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
