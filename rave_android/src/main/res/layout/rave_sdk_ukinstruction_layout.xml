@@ -22,7 +22,7 @@
             android:gravity="center"
             android:padding="20dp"
             android:text="@string/uk_instruction"
-            android:textColor="#333333"
+            android:textColor="@color/lightish_black"
             android:textSize="13sp" />
 
         <View

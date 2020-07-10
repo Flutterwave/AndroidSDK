@@ -21,13 +21,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:letterSpacing="0.04"
-                android:textColor="#4a4a4a"
+                android:textColor="@color/light_grey"
                 android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#4a4a4a"
+                android:textColor="@color/light_grey"
                 android:layout_alignParentBottom="true"
                 />
 
