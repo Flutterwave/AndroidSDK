@@ -18,17 +18,22 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.card.savedcards.SavedCardRecyclerAdapter;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
 import com.flutterwave.raveandroid.data.EmailObfuscator;
@@ -40,6 +45,7 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
+import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.flutterwave.raveutils.verification.AVSVBVFragment;
 import com.flutterwave.raveutils.verification.OTPFragment;
@@ -53,6 +59,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +132,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private TextInputLayout saveCardPhoneNoTil;
     private String responseAsJsonString;
     private SavedCard selectedSavedCard;
+    private ScrollView newCardOverallLay;
+    private NestedScrollView savedCardOverallLay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -176,6 +185,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         cardExpiryTv.addTextChangedListener(new ExpiryWatcher());
         payButton.setOnClickListener(this);
         useASavedCardTv.setOnClickListener(this);
+        useAnotherCardTv.setOnClickListener(this);
 
         cardExpiryTv.setOnFocusChangeListener(this);
         cardNoTv.setOnFocusChangeListener(this);
@@ -237,8 +247,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         saveCardPhoneNoTil = (TextInputLayout) v.findViewById(R.id.save_card_phoneNoTil);
         saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
         saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
-
-
+        newCardOverallLay = (ScrollView) v.findViewById(R.id.new_card_overall_lay);
+        savedCardOverallLay = (NestedScrollView) v.findViewById(R.id.saved_card_overall_lay);
     }
 
 
@@ -256,6 +266,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 clearErrors();
                 collectDataForSavedCardCharge();
             }
+        }
+        if(i == R.id.rave_use_new_card_tv){
+            switchToSaveCards(false);
+        }
+    }
+
+    private void switchToSaveCards(boolean switchToSaveCards){
+        if(switchToSaveCards){
+            savedCardOverallLay.setVisibility(VISIBLE);
+            newCardOverallLay.setVisibility(GONE);
+        } else {
+            savedCardOverallLay.setVisibility(GONE);
+            newCardOverallLay.setVisibility(VISIBLE);
         }
     }
 
@@ -496,20 +519,41 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
-        Intent intent = new Intent(getContext(), SavedCardsActivity.class);
-        Type savedCardsListType = new TypeToken<List<SavedCard>>() {
-        }.getType();
-        intent.putExtra(SavedCardsFragment.EXTRA_SAVED_CARDS,
-                (new Gson()).toJson(savedCardsList, savedCardsListType));
-        intent.putExtra(SavedCardsActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
-        startActivityForResult(intent, FOR_SAVED_CARDS);
+        switchToSaveCards(true);
+//        Intent intent = new Intent(getContext(), SavedCardsActivity.class);
+//        Type savedCardsListType = new TypeToken<List<SavedCard>>() {
+//        }.getType();
+//        intent.putExtra(SavedCardsFragment.EXTRA_SAVED_CARDS,
+//                (new Gson()).toJson(savedCardsList, savedCardsListType));
+//        intent.putExtra(SavedCardsActivity.ACTIVITY_MOTIVE, SavedCardsFragment.SAVED_CARD_MOTIVE);
+//        startActivityForResult(intent, FOR_SAVED_CARDS);
     }
 
     @Override
-    public void setHasSavedCards(boolean b) {
+    public void setHasSavedCards(boolean b, List<SavedCard> savedCards) {
         hasSavedCards = b;
-        if (b) useASavedCardTv.setVisibility(VISIBLE);
-        else useASavedCardTv.setVisibility(GONE);
+        switchToSaveCards(b);
+        if (b) {
+            useASavedCardTv.setVisibility(VISIBLE);
+            setUpSavedCardsAdapter(savedCards);
+        } else {
+            useASavedCardTv.setVisibility(GONE);
+        }
+    }
+
+    private void setUpSavedCardsAdapter(List<SavedCard> savedCards){
+        if (savedCards == null) savedCards = new ArrayList<>();
+        SavedCardRecyclerAdapter adapter = new SavedCardRecyclerAdapter();
+        adapter.set(savedCards);
+        adapter.setSavedCardSelectedListener(new Callbacks.SavedCardSelectedListener() {
+            @Override
+            public void onCardSelected(SavedCard savedCard) {
+                onSavedCardSelected(savedCard);
+            }
+        });
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
     }
 
     /**

@@ -303,7 +303,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
         }
 
         if (!savedCards.isEmpty()) {
-            mView.setHasSavedCards(true);
+            mView.setHasSavedCards(true, savedCards);
         }
     }
 

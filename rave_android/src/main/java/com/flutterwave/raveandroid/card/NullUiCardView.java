@@ -27,6 +27,11 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
     }
 
     @Override
+    public void setHasSavedCards(boolean b, List<SavedCard> savedCards) {
+
+    }
+
+    @Override
     public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
 
     }
@@ -53,11 +58,6 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
 
     @Override
     public void showSavedCardsLayout(List<SavedCard> savedCardsList) {
-
-    }
-
-    @Override
-    public void setHasSavedCards(boolean b) {
 
     }
 

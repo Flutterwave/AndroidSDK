@@ -32,7 +32,7 @@ public interface CardUiContract {
 
         void showCardSavingOption(boolean b);
 
-        void setHasSavedCards(boolean b);
+        void setHasSavedCards(boolean b, List<SavedCard> savedCards);
 
         void setSavedCardsLayoutVisibility(boolean showPhoneEmailFields);
     }

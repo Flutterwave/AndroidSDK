@@ -9,6 +9,7 @@
     tools:context=".card.CardFragment">
 
     <ScrollView
+        android:id="@+id/new_card_overall_lay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -277,6 +278,11 @@
             </LinearLayout>
 
     </ScrollView>
+
+
+    <include
+        android:id="@+id/saved_card_overall_lay"
+        android:visibility="gone" layout="@layout/rave_sdk_pick_saved_card_layout"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
