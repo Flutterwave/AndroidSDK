@@ -620,8 +620,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         //Save details to phone
         presenter.saveCardToSharedPreferences(cards, phoneNumber, ravePayInitializer.getPublicKey());
         // Save details in app memory
-        presenter.retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(),
-                ravePayInitializer.getPublicKey());
+        presenter.checkForSavedCardsInMemory(ravePayInitializer);
 
         presenter.setCardSaveInProgress(false);
 
