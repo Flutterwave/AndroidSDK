@@ -551,15 +551,17 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rave_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(requireContext()) {
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                SavedCard savedCard = adapter.getCards().get(viewHolder.getAdapterPosition());
-                presenter.deleteASavedCard(savedCard.getCardHash(), ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        if(isVisible()){
+            SwipeToDeleteCallback swipeHandler = new SwipeToDeleteCallback(getActivity()) {
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    SavedCard savedCard = adapter.getCards().get(viewHolder.getAdapterPosition());
+                    presenter.deleteASavedCard(savedCard.getCardHash(), ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
+                }
+            };
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+        }
 
         recyclerView.setAdapter(adapter);
     }
