@@ -202,6 +202,8 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
                     .setCountry(NG)
                     .setCurrency(NGN)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
+                    .setFirstname(ravePayInitializer.getfName())
+                    .setLastname(ravePayInitializer.getlName())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId())
                     .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
