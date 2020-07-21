@@ -6,4 +6,11 @@
     <color name="otpColorTheme">#dd7a32</color>
     <color name="pinColorTheme">#dd7a32</color>
     <color name="tabIndicatorColor">@color/colorPrimary</color>
+    <color name="rave_light_grey">#4A4A4A</color>
+    <color name="rave_lightish_black">#333333</color>
+    <color name="rave_lightish_grey_bg">#FFFFFF</color>
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+    <color name="sisal">#DCD4C9</color>
+    <color name="divider_color">#DCD4C9</color>
 </resources>
