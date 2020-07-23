@@ -3,13 +3,13 @@
     <!-- Base application theme. -->
     <style name="RaveAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/raveAndroidColorPrimary</item>
+        <item name="colorPrimaryDark">@color/raveAndroidColorPrimaryDark</item>
+        <item name="colorAccent">@color/raveAndroidColorAccent</item>
     </style>
 
     <style name="tabLayoutStyle" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@color/tabIndicatorColor</item>
+        <item name="tabIndicatorColor">@color/raveTabIndicatorColor</item>
     </style>
 
     <style name="tabLayoutStyle2" parent="Widget.Design.TabLayout">
@@ -17,35 +17,35 @@
     </style>
 
     <style name="otpHeaderStyle">
-        <item name="android:background">@color/otpColorTheme</item>
+        <item name="android:background">@color/raveOtpColorTheme</item>
     </style>
 
     <style name="pinHeaderStyle">
-        <item name="android:background">@color/pinColorTheme</item>
+        <item name="android:background">@color/ravePinColorTheme</item>
     </style>
 
     <style name="otpBtnStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/otp_button_curved</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/raveWhite</item>
     </style>
 
     <style name="pinButtonStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/otp_button_curved</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/raveWhite</item>
     </style>
 
     <style name="svdCardsBtnStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/blue_btn_curved</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/raveWhite</item>
     </style>
 
     <style name="payBtnStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/orange_button_curved</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/raveWhite</item>
     </style>
 
     <style name="paymentTileStyle">
-        <item name="android:background">@color/paymentTileBackground</item>
+        <item name="android:background">@color/ravePaymentTileBackground</item>
     </style>
 
     <style name="paymentTileTextStyle">
@@ -53,7 +53,7 @@
     </style>
 
     <style name="paymentTileDividerStyle">
-        <item name="android:background">@color/divider_color</item>
+        <item name="android:background">@color/rave_divider_color</item>
     </style>
 
 
@@ -63,9 +63,9 @@
     </style>
 
     <style name="DefaultTheme" parent="RaveAppTheme.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/raveAndroidColorPrimary</item>
+        <item name="colorPrimaryDark">@color/raveAndroidColorPrimaryDark</item>
+        <item name="colorAccent">@color/raveAndroidColorAccent</item>
         <item name="OTPButtonStyle">@style/otpBtnStyle</item>
         <item name="PayButtonStyle">@style/payBtnStyle</item>
         <item name="PinButtonStyle">@style/pinButtonStyle</item>

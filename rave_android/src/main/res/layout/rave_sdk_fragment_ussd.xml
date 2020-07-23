@@ -132,7 +132,7 @@
 				android:id="@+id/divider2"
 				android:layout_width="match_parent"
 				android:layout_height="1dp"
-				android:background="@color/sisal"
+				android:background="@color/raveSisal"
 				app:layout_constraintTop_toBottomOf="@id/reference_code_layout" />
 		</LinearLayout>
 
@@ -145,7 +145,7 @@
 			android:layout_marginTop="32dp"
 			android:layout_marginEnd="16dp"
 			android:text="@string/ussd_instructions"
-			android:textColor="@color/black"
+			android:textColor="@color/raveBlack"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />

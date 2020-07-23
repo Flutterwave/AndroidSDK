@@ -136,7 +136,7 @@ O objeto `message` da intent contém a resposta JSON bruta da API Rave. Isso pod
 Você pode aplicar uma nova aparência alterando a cor de certas partes da interface do usuário para destacar as cores da sua marca
 
         <style name="DefaultTheme" parent="RaveAppTheme.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/raveAndroidColorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="OTPButtonStyle">@style/otpBtnStyle</item>
