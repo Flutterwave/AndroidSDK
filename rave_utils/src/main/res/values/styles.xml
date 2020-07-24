@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="RaveUtilsAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/raveAndroidColorPrimary</item>
+        <item name="colorPrimaryDark">@color/raveAndroidColorPrimaryDark</item>
+        <item name="colorAccent">@color/raveAndroidColorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="RaveUtilsAppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="DefaultTheme" parent="AppTheme.NoActionBar">
+    <style name="DefaultTheme" parent="RaveUtilsAppTheme.NoActionBar">
         <item name="OTPButtonStyle">@style/otpBtnStyle</item>
         <item name="PinButtonStyle">@style/pinButtonStyle</item>
         <item name="OTPHeaderStyle">@style/otpHeaderStyle</item>
@@ -22,7 +22,7 @@
     </style>
 
     <style name="tabLayoutStyle" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@color/tabIndicatorColor</item>
+        <item name="tabIndicatorColor">@color/raveTabIndicatorColor</item>
     </style>
 
     <style name="tabLayoutStyle2" parent="Widget.Design.TabLayout">
@@ -30,11 +30,11 @@
     </style>
 
     <style name="otpHeaderStyle">
-        <item name="android:background">@color/otpColorTheme</item>
+        <item name="android:background">@color/raveOtpColorTheme</item>
     </style>
 
     <style name="pinHeaderStyle">
-        <item name="android:background">@color/pinColorTheme</item>
+        <item name="android:background">@color/ravePinColorTheme</item>
     </style>
 
     <style name="otpBtnStyle" parent="@android:style/Widget.Button">

@@ -1,14 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TestNewTheme" parent="AppTheme.NoActionBar">
+    <style name="TestNewTheme" parent="RaveAppTheme.NoActionBar">
         <item name="colorPrimary">#092342</item>
         <item name="colorPrimaryDark">#b71c1c</item>
         <item name="colorAccent">#7cb342</item>

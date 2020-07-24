@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             style="?PaymentTileDividerStyle"
-            android:background="@color/divider_color"
+            android:background="@color/rave_divider_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

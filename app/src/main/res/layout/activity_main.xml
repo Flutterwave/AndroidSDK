@@ -146,8 +146,7 @@
                     android:id="@+id/refIdsTV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Your current vendor refs are: "
-                    android:textColor="@color/black" />
+                    android:text="Your current vendor refs are: " />
 
             </LinearLayout>
 

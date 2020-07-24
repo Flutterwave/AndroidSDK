@@ -135,7 +135,7 @@ O objeto `message` da intent contém a resposta JSON bruta da API Rave. Isso pod
 ###  3. Customize o visual
 Você pode aplicar uma nova aparência alterando a cor de certas partes da interface do usuário para destacar as cores da sua marca
 
-        <style name="DefaultTheme" parent="AppTheme.NoActionBar">
+        <style name="DefaultTheme" parent="RaveAppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
