@@ -29,13 +29,13 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 If you want to use the default Drop In UI, add the `rave_android` module dependency
 
     dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_android:2.1.3'
+	     implementation 'com.github.Flutterwave.rave-android:rave_android:2.1.5'
 	}
 
 but if you are not interested in our default UI and you want to use yours and only want to interact with our core sdk, use the `rave_presentation` module
 
     dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.3'
+	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.5'
 	}
 
 **Step 3.** Add the  `INTERNET` permission to your android manifest
@@ -121,7 +121,7 @@ You can apply a new look by changing the color of certain parts of the UI to hig
 First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
 
     <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">
-        <item name="colorPrimary">@color/raveAndroidColorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
