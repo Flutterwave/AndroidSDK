@@ -252,6 +252,7 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
 
             boolean isEmailValid = emailValidator.isEmailValid(ravePayInitializer.getEmail());
             boolean isAmountValid = amountValidator.isAmountValid(ravePayInitializer.getAmount());
+            boolean isPhoneValid = phoneValidator.isPhoneValid(ravePayInitializer.getPhoneNumber());
 
             if (isEmailValid) {
                 mView.onEmailValidated(ravePayInitializer.getEmail(), View.GONE);
@@ -262,6 +263,11 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
                 mView.onAmountValidated(String.valueOf(ravePayInitializer.getAmount()), View.GONE);
             } else {
                 mView.onAmountValidated("", View.VISIBLE);
+            }
+            if(isPhoneValid){
+                mView.onPhoneNumberValidated(ravePayInitializer.getPhoneNumber(), View.VISIBLE);
+            } else {
+                mView.onPhoneNumberValidated("", View.VISIBLE);
             }
         }
     }

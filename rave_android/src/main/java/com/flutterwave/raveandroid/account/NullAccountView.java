@@ -20,6 +20,11 @@ public class NullAccountView implements AccountUiContract.View {
     }
 
     @Override
+    public void onPhoneNumberValidated(String phoneNumber, int visibility) {
+
+    }
+
+    @Override
     public void showProgressIndicator(boolean active) {
 
     }

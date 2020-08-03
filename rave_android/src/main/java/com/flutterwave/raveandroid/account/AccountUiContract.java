@@ -26,6 +26,8 @@ public interface AccountUiContract {
 
         void onAmountValidated(String amountToSet, int visibility);
 
+        void onPhoneNumberValidated(String phoneNumber, int visibility);
+
         void showDateOfBirth(int isVisible);
 
         void showBVN(int isVisible);

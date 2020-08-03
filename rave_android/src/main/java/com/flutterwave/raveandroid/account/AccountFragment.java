@@ -237,6 +237,12 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     }
 
     @Override
+    public void onPhoneNumberValidated(String phoneNumber, int visibility) {
+        phoneTil.setVisibility(visibility);
+        phoneEt.setText(phoneNumber);
+    }
+
+    @Override
     public void onDataValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
         presenter.processTransaction(dataHashMap, ravePayInitializer);
     }

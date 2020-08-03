@@ -77,6 +77,20 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <EditText
+                android:id="@+id/rave_bankEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="20dp"
+                android:focusableInTouchMode="false"
+                android:longClickable="false"
+                android:hint="@string/bank"
+                android:inputType="numberDecimal" />
+
+
             <com.google.android.material.textfield.TextInputLayout
                 app:boxBackgroundColor="@null"
                 android:id="@+id/rave_accountNumberTil"
@@ -119,19 +133,6 @@
                     android:maxLength="11" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <EditText
-                android:id="@+id/rave_bankEditText"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="20dp"
-                android:focusableInTouchMode="false"
-                android:longClickable="false"
-                android:hint="@string/bank"
-                android:inputType="numberDecimal" />
 
 
             <EditText
