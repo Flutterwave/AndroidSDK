@@ -1,7 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
-import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ class NullSavedCardsListener implements SavedCardsListener {
     }
 
     @Override
-    public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
+    public void onCardSaveSuccessful(String phoneNumber) {
 
     }
 
