@@ -105,7 +105,7 @@ public interface CardContract {
         void collectCardAddressDetails(Payload payload, String authModel);
 
         /**
-         * Called to display a {@link android.webkit.WebView} for cards that require 3D-Secure authentication.
+         * Called to display a {@link android.webkit.WebView} for charges that require webpage authentication.
          * When the payment is completed, the authentication page redirects to a {@link com.flutterwave.raveandroid.rave_java_commons.RaveConstants#RAVE_3DS_CALLBACK predefined url}
          * with the payment details appended to the url.
          * <p>

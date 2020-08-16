@@ -20,7 +20,7 @@ public class NullBarterPaymentCallback implements BarterPaymentCallback {
     }
 
     @Override
-    public void loadBarterCheckout(String authUrlCrude, String flwRef) {
+    public void loadBarterCheckout(String authenticationUrl, String flwRef) {
 
     }
 }
