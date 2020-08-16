@@ -1,6 +1,6 @@
-# Rave's Android SDK
+# Flutterwave Android SDK
 
-Rave's Android SDK is Flutterwave's offical android sdk to integrate the Flutterwave payment gateway(Rave) into your android app. It comes with a readymade Drop In UI and non-UI module, depending on your preference.
+Flutterwave's Android SDK can be used to integrate the Flutterwave payment gateway into your android app. It comes with a ready-made Drop In UI and non-UI module, depending on your preference.
 
 The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
 
@@ -17,31 +17,34 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 
 
 **Step 1.** Add it in your root build.gradle at the end of repositories:
-
+```groovy
     allprojects {
 		repositories {
-			...
+			//...
 			maven { url 'https://jitpack.io' }
 		}
 	}
-
+```
 **Step 2.** Add the dependency
 If you want to use the default Drop In UI, add the `rave_android` module dependency
-
+```groovy
     dependencies {
 	     implementation 'com.github.Flutterwave.rave-android:rave_android:2.1.6'
 	}
+```
 
 but if you are not interested in our default UI and you want to use yours and only want to interact with our core sdk, use the `rave_presentation` module
 
+```groovy
     dependencies {
 	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.6'
 	}
-
+```
 **Step 3.** Add the  `INTERNET` permission to your android manifest
 
-     <uses-permission android:name="android.permission.INTERNET" />
+     <uses-permission android:name="android.permission.INTERNET" /> 
 
+> The documentation shows how to use the Flutterwave Android SDK as a Drop-in UI (all the views for the payment process are handled by the SDK). If you would like to use your own custom UI instead, please see the docs [here](CustomUiImplementation.md).
 
 ## Usage
 ### For using the default UI
@@ -86,7 +89,7 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
 
 ###  2. Handle the response
 In the calling activity, override the `onActivityResult` method to receive the payment response as shown below
-
+```java
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         /*
@@ -109,6 +112,9 @@ In the calling activity, override the `onActivityResult` method to receive the p
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+    
+```
+
 The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed. Typical success response can be found [here](https://gist.github.com/bolaware/305ef5a6df7744694d9c35787580a2d2) and failed response [here](https://gist.github.com/bolaware/afa972cbca782bbb942984ddec9f5262).
 
 > **PLEASE NOTE**
@@ -119,7 +125,7 @@ The intent's `message` object contains the raw JSON response from the Rave API. 
 You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors.
 
 First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
-
+```XML
     <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -133,7 +139,7 @@ First specify the theme in your `styles.xml` file. In this theme, you can edit t
         <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
         <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
     </style>
-
+```
 
  Then in your RavePayManager setup, add `.withTheme(<Reference to your style>)` anywhere before calling the `initialize()` function. e.g.
  ```java
@@ -144,48 +150,9 @@ First specify the theme in your `styles.xml` file. In this theme, you can edit t
                     .initialize();
 ```
 
-### For using the non UI module
-###  1. Create a `RaveNonUIManager` instance
-Set the public key, encryption key and other required parameters.
 
-        RaveNonUIManager raveNonUIManager =
-                        new RaveNonUIManager()
-                        .setAmount(amount)
-                        .setCurrency(currency)
-                        .setEmail(email)
-                        .setfName(fName)
-                        .setlName(lName)
-                        .setNarration(narration)
-                        .setPublicKey(publicKey)
-                        .setEncryptionKey(encryptionKey)
-                        .setTxRef(txRef)
-                        .setPhoneNumber(phoneNumber, boolean)
-                        .onStagingEnv(boolean)
-                        .setMeta(List<Meta>)
-                        .isPreAuth(boolean)
-                        .setSubAccounts(List<SubAccount>)
-                        .shouldDisplayFee(boolean)
-                        .showStagingLabel(boolean)
-                        .initialize();
 
-###  2. Use the payment method's managers to charge
-For example to charge cards, use the `CardPaymentManager`
-
-       CardPaymentManager cardPayManager = new CardPaymentManager(
-       raveNonUIManager, CardPaymentCallback, SavedCardsListener);
-       Card card = new Card(
-                        "5531886652142950")
-                        "12",
-                        "22",
-                        "123"
-                ); // Test MasterCard PIN
-
-        cardPayManager.chargeCard(card);
-
->  We worked on a module to simplify charge verification when using the No-UI approach. You can read about using it [here](ChargeVerificationUtils.md)
-
->  To see a more practical way of using the sdk, head to our sample app in the repository [here](https://github.com/Flutterwave/rave-android/tree/master/app)
-## Functions definition
+## Function definitions
 | function        | parameter           | type | required  |
 | ------------- |:-------------:| -----:| -----:|
 | setAmount(amount)      |  This is the amount to be charged from card/account | `double` | Required
@@ -224,6 +191,9 @@ For example to charge cards, use the `CardPaymentManager`
 | initialize() | Launch the Rave Payment UI for when using the UI module,   |  N/A | Required
 
 > <strong>Note:</strong> The order in which you call the methods for accepting different payment types is the order in which they will show in the UI.
+
+>  To see a more practical way of using the sdk, head to our sample app in the repository [here](https://github.com/Flutterwave/rave-android/tree/master/app)
+
 ## Configuring Proguard
 To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
 ```
