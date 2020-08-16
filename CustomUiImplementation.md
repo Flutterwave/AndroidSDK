@@ -1,5 +1,5 @@
 # Custom UI Implementation
-The Flutterwave SDK can be used with you custom UI where you handle the entire User Interface. This doc shows how to do so.
+The Flutterwave SDK can be used with your custom UI where you handle the entire User Interface. This doc shows how to do so.
 
 ###  1. Create a `RaveNonUIManager` instance
 Set the public key, encryption key and other required parameters.
@@ -28,7 +28,7 @@ Set the public key, encryption key and other required parameters.
     <summary>Function Definitions</summary>
 
 
-| function        | parameter           | type | required  |
+| Function        | Parameter           | Type | Required  |
 | ------------- |:-------------:| -----:| -----:|
 | setAmount(amount)      |  This is the amount to be charged from card/account | `double` | Required
 | setCurrency(currency) | This is the specified currency to charge the card in | `String` | Required
@@ -66,6 +66,7 @@ Use the payment method's manager to initiate a charge. For example to charge car
 We have predefined callback classes for each payment method. Make your Fragment/Activity (or other class handling the payment interaction) implement the specified callback for the payment method you'd like to use, and override the specified callback functions. For example to charge cards, implement the `CardPaymentCallback`
 <details>
   <summary>See Example</summary>
+
 
   ```java
     public class PaymentActivity extends AppCompatActivity implements CardPaymentCallback {
@@ -119,8 +120,9 @@ We have predefined callback classes for each payment method. Make your Fragment/
 <details>
   <summary>See All Payment Managers and Callbacks</summary>
 
+
   ## Payment Methods and corresponding PaymentManager and Callback class names
-  | Payment Method        | Payment Manager Class           | Payment Callback Class |
+  | Payment Method        | Payment Manager Class Names           | Payment Callback Class Names |
   | ------------- |:-------------:| -----:|
   | Account (Direct Debit)      |  `AccountPaymentManager` | `AccountPaymentCallback`
   | ACH      |  `AchPaymentManager` | `AchPaymentCallback`
@@ -159,6 +161,7 @@ If you would like to include fee checks, make your calling class implement the `
 <details>
   <summary>Example</summary>
 
+
   ```java
 public class PaymentActivity extends AppCompatActivity
         implements FeeCheckListener // Implement if you want to be able to check fees beforehand
@@ -191,7 +194,7 @@ public class PaymentActivity extends AppCompatActivity
 </details>
 
 ### Card Save Feature
-For Card transactions, if you would like to implement the card saving feature, make your calling class implement the `SavedCardListener`, then pass this as an argument to the constructor of `CardPaymentManager`. You can also set the savedCardListener using `CardPaymentManager.setSavedCardsListener`.
+For Card transactions, if you would like to implement the card saving feature, make your calling class implement the `SavedCardListener`, then pass `this` as an argument to the constructor of `CardPaymentManager`. You can also set the savedCardListener using `CardPaymentManager.setSavedCardsListener(this)`.
 * To save a card, call `CardPaymentManager.saveCard()` after a card payment is successful (before starting another payment).
 * To fetch the user's saved cards, use `CardPaymentManager.fetchSavedCards(boolean)`.
 * To delete a saved card, use `CardPaymentManager.deleteSavedCard(cardHash)`.
@@ -199,6 +202,7 @@ For Card transactions, if you would like to implement the card saving feature, m
 
 <details>
   <summary>Example</summary>
+
 
   ```java
 public class PaymentActivity extends AppCompatActivity implements SavedCardsListener, CardPaymentCallback 
