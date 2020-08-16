@@ -109,7 +109,7 @@ public interface CardContract {
          * When the payment is completed, the authentication page redirects to a {@link com.flutterwave.raveandroid.rave_java_commons.RaveConstants#RAVE_3DS_CALLBACK predefined url}
          * with the payment details appended to the url.
          * <p>
-         * You should override the webview client's {@link android.webkit.WebViewClient#shouldOverrideUrlLoading(WebView, WebResourceRequest)}  shouldOverrideUrlLoading}
+         * You should override the webview client's {@link android.webkit.WebViewClient#shouldOverrideUrlLoading(WebView, WebResourceRequest)  shouldOverrideUrlLoading}
          * function to check if the {@link WebResourceRequest#getUrl() url being loaded} contains the
          * {@link com.flutterwave.raveandroid.rave_java_commons.RaveConstants#RAVE_3DS_CALLBACK predefined redirect url}.
          * <p>

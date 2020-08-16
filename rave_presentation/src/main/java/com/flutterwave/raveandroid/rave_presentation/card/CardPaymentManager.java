@@ -101,11 +101,21 @@ public class CardPaymentManager {
         interactor.setSavedCardsListener(listener);
     }
 
+    /**
+     * Fetch the saved cards associated with the user phone number (if available)
+     *
+     * @param showLoader If true, {@link CardPaymentCallback#showProgressIndicator(boolean)} will be used to indicate progress. Otherwise, request will be done silently
+     */
     public void fetchSavedCards(boolean showLoader) {
         paymentHandler.lookupSavedCards(manager.getPublicKey(), manager.getPhoneNumber(), showLoader);
     }
 
-    public void removeSavedCards(String cardhash) {
+    /**
+     * Delete a user's saved card.
+     *
+     * @param cardhash The {@link SavedCard#getCardHash() card hash} of the saved card to delete.
+     */
+    public void deleteSavedCard(String cardhash) {
         paymentHandler.deleteASavedCard(cardhash, manager.getPhoneNumber(), manager.getPublicKey());
     }
 

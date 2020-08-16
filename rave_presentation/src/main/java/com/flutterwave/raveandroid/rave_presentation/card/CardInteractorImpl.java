@@ -96,12 +96,12 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     @Override
     public void onSavedCardRemoveSuccessful() {
-        savedCardsListener.onRemoveSavedCardRequestSuccessful();
+        savedCardsListener.onDeleteSavedCardRequestSuccessful();
     }
 
     @Override
     public void onSavedCardRemoveFailed(String message) {
-        savedCardsListener.onRemoveSavedCardRequestFailed(message);
+        savedCardsListener.onDeleteSavedCardRequestFailed(message);
     }
 
     @Override
@@ -127,7 +127,7 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     @Override
     public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
-        savedCardsListener.onCardSaveSuccessful(response, phoneNumber);
+        savedCardsListener.onCardSaveSuccessful(phoneNumber);
     }
 
     @Override

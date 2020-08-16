@@ -33,7 +33,6 @@ import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentManager;
 import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
 import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
-import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 import com.flutterwave.raveutils.verification.AVSVBVFragment;
 import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.PinFragment;
@@ -576,12 +575,12 @@ public class MainActivity
     }
 
     @Override
-    public void onRemoveSavedCardRequestSuccessful() {
+    public void onDeleteSavedCardRequestSuccessful() {
 
     }
 
     @Override
-    public void onRemoveSavedCardRequestFailed(String message) {
+    public void onDeleteSavedCardRequestFailed(String message) {
 
     }
 
@@ -591,7 +590,7 @@ public class MainActivity
     }
 
     @Override
-    public void onCardSaveSuccessful(SaveCardResponse response, String phoneNumber) {
+    public void onCardSaveSuccessful(String phoneNumber) {
 
     }
 

@@ -17,12 +17,12 @@ class NullSavedCardsListener implements SavedCardsListener {
     }
 
     @Override
-    public void onRemoveSavedCardRequestSuccessful() {
+    public void onDeleteSavedCardRequestSuccessful() {
 
     }
 
     @Override
-    public void onRemoveSavedCardRequestFailed(String message) {
+    public void onDeleteSavedCardRequestFailed(String message) {
 
     }
 
