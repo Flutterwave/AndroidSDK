@@ -391,8 +391,6 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                     cards.add(card);
                 }
 
-                String phoneNumber = response.getData()[0].getMobile_number();
-
                 mCardInteractor.onSavedCardsLookupSuccessful(cards, phoneNumber);
             }
 
