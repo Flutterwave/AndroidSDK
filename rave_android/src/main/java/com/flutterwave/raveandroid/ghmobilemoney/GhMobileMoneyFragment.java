@@ -361,7 +361,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyUiCo
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

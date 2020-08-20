@@ -230,7 +230,7 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

@@ -338,9 +338,8 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity() != null) {
-            if (getActivity().isFinishing())
-                return;
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
         }
 
         if (pollingProgressDialog == null) {

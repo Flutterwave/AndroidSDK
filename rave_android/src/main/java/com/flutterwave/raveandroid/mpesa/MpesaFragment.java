@@ -260,7 +260,7 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

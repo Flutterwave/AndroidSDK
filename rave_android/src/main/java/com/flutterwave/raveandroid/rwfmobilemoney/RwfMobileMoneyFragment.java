@@ -269,7 +269,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

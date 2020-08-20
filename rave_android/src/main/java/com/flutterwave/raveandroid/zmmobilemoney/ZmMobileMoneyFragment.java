@@ -315,7 +315,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

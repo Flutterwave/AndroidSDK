@@ -258,7 +258,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

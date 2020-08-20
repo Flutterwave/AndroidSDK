@@ -142,6 +142,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        injectComponents();
+
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS)) {
                 Type savedCardsListType = new TypeToken<List<SavedCard>>() {
@@ -151,8 +153,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                         savedCardsListType);
             }
         }
-
-        injectComponents();
 
         v = inflater.inflate(R.layout.rave_sdk_fragment_card, container, false);
 

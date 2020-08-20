@@ -272,7 +272,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 

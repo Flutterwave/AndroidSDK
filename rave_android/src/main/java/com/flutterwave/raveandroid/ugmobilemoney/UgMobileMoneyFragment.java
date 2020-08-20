@@ -284,7 +284,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyUiCo
 
     @Override
     public void showPollingIndicator(boolean active) {
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 
