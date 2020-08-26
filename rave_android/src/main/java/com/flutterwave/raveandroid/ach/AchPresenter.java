@@ -28,6 +28,8 @@ import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ACH;
+
 
 public class AchPresenter extends AchHandler implements AchUiContract.UserActionsListener {
 
@@ -103,8 +105,7 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
+                    .setFullname(ravePayInitializer.getfName())
                     .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
@@ -137,7 +138,7 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACH, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 

@@ -10,53 +10,93 @@ import java.util.List;
  * Created by hamzafetuga on 05/07/2017.
  */
 
-public class Payload
-{
+public class Payload {
+    //Todo: Complete payment fields harmonising
+    public String is_mobile_money_gh;
+    public String is_mobile_money_ug;
+    public String network;
+    public String voucher;
+    public String bvn;
+    public boolean is_bank_transfer;
+    String token;
+    String SECKEY;
     private Boolean is_permanent;
     private Integer duration;
     private Integer frequency;
-
+    private String billingcity;
+    private String billingaddress;
+    private String billingstate;
+    private String billingcountry;
     private boolean is_ussd;
     private String orderRef;
+    private String order_id;
     private String is_barter;
     private String card_hash;
-
-    public String getCardBIN() {
-        return cardBIN;
-    }
-
     private String cardBIN;
-
     private boolean is_us_bank_charge;
     private boolean is_saved_card_charge;
-
+    private boolean preauthorize;//Todo: test preauth compatibility
     private boolean is_uk_bank_charge2;
-
     private String remember_device_mobile_key;
-
     private String device_key;
     private String otp;
+    private String is_internet_banking;
+    private String expiry_month;
+    private String PBFPubKey;
+    private String client_ip;
+    private String account_number;
+    private String account_name;
+    private String phone_number;
+    private String narration;
+    private String account_bank;
+    private String fullname;
+    private String currency;
+    private String country;
+    private String amount;
+    private String email;
+    private String expiry_year;
+    private String cvv;
+    private String device_fingerprint;
+    private String card_number;
+    private String tx_ref;
+    private String is_sa_call_pay;
+    private boolean is_mobile_money_franco;
+    private String payment_type;
+    private String is_remembered;
+    private String payment_plan;
+    private String remember_device_email;
+    private String charge_type;
+    private String is_mpesa;
+    private String is_mpesa_lipa;
+    private String passcode;
+    private String PBFSecKey;
+    private String pin;
+    private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
+    @SerializedName("suggested_auth")
+    private String suggestedAuth;
+    private List<Meta> meta;
+    private List<SubAccount> subaccounts;
+    private String billingzip;
 
     // Constructor for saved card charge
     public Payload(List<Meta> meta,
                    List<SubAccount> subaccounts, String narration, String PBFPubKey, String IP,
-                   String lastname, String firstname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String txRef, Boolean
-                           is_saved_card_charge, String phonenumber) {
+                   String fullname, String currency, String country, String amount,
+                   String email, String device_fingerprint, String tx_ref, Boolean
+                           is_saved_card_charge, String phone_number) {
         this.narration = narration;
         this.PBFPubKey = PBFPubKey;
-        this.IP = IP;
+        this.client_ip = IP;
         this.subaccounts = subaccounts;
-        this.lastname = lastname;
-        this.firstname = firstname;
+        this.fullname = fullname;
         this.currency = currency;
         this.country = country;
         this.amount = amount;
         this.email = email;
         this.device_fingerprint = device_fingerprint;
-        this.txRef = txRef;
+        this.tx_ref = tx_ref;
         this.is_saved_card_charge = is_saved_card_charge;
-        this.phonenumber = phonenumber;
+        this.phone_number = phone_number;
 
         if (meta == null) {
             meta = new ArrayList<>();
@@ -66,32 +106,165 @@ public class Payload
         this.meta = meta;
     }
 
+
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration,
+                   String expiry_month, String PBFPubKey, String IP,
+                   String fullname, String currency, String country, String amount,
+                   String email, String expiry_year, String cvv, String device_fingerprint,
+                   String card_number, String tx_ref) {
+        this.narration = narration;
+        this.expiry_month = expiry_month;
+        this.PBFPubKey = PBFPubKey;
+        this.client_ip = IP;
+        this.subaccounts = subaccounts;
+        this.fullname = fullname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.expiry_year = expiry_year;
+        this.cvv = cvv;
+        this.device_fingerprint = device_fingerprint;
+        this.card_number = card_number;
+        this.tx_ref = tx_ref;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
+    }
+
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
+                   String fullname, String currency, String country, String amount,
+                   String email, String device_fingerprint, String tx_ref, String PBFPubKey,
+                   String billingaddress, String billingcity, String billingstate, String billingzip, String billingcountry) {
+        this.narration = narration;
+        this.client_ip = IP;
+        this.account_number = accountnumber;
+        this.account_bank = accountbank;
+        this.fullname = fullname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.tx_ref = tx_ref;
+        this.PBFPubKey = PBFPubKey;
+        this.billingaddress = billingaddress;
+        this.billingstate = billingstate;
+        this.billingcity = billingcity;
+        this.billingcountry = billingcountry;
+        this.billingzip = billingzip;
+        this.subaccounts = subaccounts;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
+    }
+
+    public Payload(String phone_number,
+                   List<Meta> meta,
+                   List<SubAccount> subaccounts,
+                   String narration,
+                   String IP,
+                   String fullname,
+                   String currency,
+                   String country,
+                   String amount,
+                   String email,
+                   String device_fingerprint,
+                   String tx_ref,
+                   String PBFPubKey) {
+        this.meta = meta;
+        this.subaccounts = subaccounts;
+        this.narration = narration;
+        this.client_ip = IP;
+        this.phone_number = phone_number;
+        this.fullname = fullname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.tx_ref = tx_ref;
+        this.PBFPubKey = PBFPubKey;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
+    }
+
+    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
+                   String fullname, String currency, String country, String amount,
+                   String email, String device_fingerprint, String tx_ref, String PBFPubKey, String bvn, boolean is_us_bank_charge) {
+        this.meta = meta;
+        this.subaccounts = subaccounts;
+        this.narration = narration;
+        this.client_ip = IP;
+        this.account_number = accountnumber;
+        this.account_bank = accountbank;
+        this.fullname = fullname;
+        this.currency = currency;
+        this.country = country;
+        this.amount = amount;
+        this.email = email;
+        this.device_fingerprint = device_fingerprint;
+        this.tx_ref = tx_ref;
+        this.PBFPubKey = PBFPubKey;
+        this.bvn = bvn;
+        this.is_us_bank_charge = is_us_bank_charge;
+
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = meta;
+
+    }
+
+    public String getCardBIN() {
+        return cardBIN;
+    }
+
+    public void setCardBIN(String cardBIN) {
+        this.cardBIN = cardBIN;
+    }
+
     public String getOtp() {
         return otp;
-    }
-
-    private String remember_device_email;
-
-    private String charge_type;
-
-    public String getRemember_device_mobile_key() {
-        return remember_device_mobile_key;
-    }
-
-    private String bvn;
-
-    public void setRemember_device_mobile_key(String remember_device_mobile_key) {
-        this.remember_device_mobile_key = remember_device_mobile_key;
     }
 
     public void setOtp(String otp) {
         this.otp = otp;
     }
 
+    public String getRemember_device_mobile_key() {
+        return remember_device_mobile_key;
+    }
+
+    public void setRemember_device_mobile_key(String remember_device_mobile_key) {
+        this.remember_device_mobile_key = remember_device_mobile_key;
+    }
+
     public String getDevice_key() {
         return device_key;
     }
 
+    public void setDevice_key(String device_key) {
+        this.device_key = device_key;
+    }
 
     public String getRemember_device_email() {
         return remember_device_email;
@@ -109,10 +282,6 @@ public class Payload
         this.is_remembered = is_remembered;
     }
 
-    private String is_remembered;
-
-    private String payment_plan;
-
     public String getIs_mpesa() {
         return is_mpesa;
     }
@@ -128,46 +297,6 @@ public class Payload
     public void setIs_mpesa_lipa(String is_mpesa_lipa) {
         this.is_mpesa_lipa = is_mpesa_lipa;
     }
-
-    private String is_mpesa;
-
-    private String is_mpesa_lipa;
-
-    public void setDevice_key(String device_key) {
-        this.device_key = device_key;
-    }
-
-    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration,
-                   String expirymonth, String PBFPubKey, String IP, String lastname,
-                   String firstname, String currency, String country, String amount,
-                   String email, String expiryyear, String cvv, String device_fingerprint,
-                   String cardno, String txRef) {
-        this.narration = narration;
-        this.expirymonth = expirymonth;
-        this.PBFPubKey = PBFPubKey;
-        this.IP = IP;
-        this.subaccounts = subaccounts;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.currency = currency;
-        this.country = country;
-        this.amount = amount;
-        this.email = email;
-        this.expiryyear = expiryyear;
-        this.cvv = cvv;
-        this.device_fingerprint = device_fingerprint;
-        this.cardno = cardno;
-        this.txRef = txRef;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
-    }
-
 
     public String getBillingcity() {
         return billingcity;
@@ -189,7 +318,7 @@ public class Payload
         return bvn;
     }
 
-    public void setBVN(String bvn){
+    public void setBVN(String bvn) {
         this.bvn = bvn;
     }
 
@@ -209,116 +338,12 @@ public class Payload
         this.billingcountry = billingcountry;
     }
 
-    private String billingcity;
-    private String billingaddress;
-    private String billingstate;
-    private String billingcountry;
-
-    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
-                   String lastname, String firstname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String txRef, String PBFPubKey,
-                   String billingaddress, String billingcity, String billingstate, String billingzip, String billingcountry) {
-        this.narration = narration;
-        this.IP = IP;
-        this.accountnumber = accountnumber;
-        this.accountbank = accountbank;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.currency = currency;
-        this.country = country;
-        this.amount = amount;
-        this.email = email;
-        this.device_fingerprint = device_fingerprint;
-        this.txRef = txRef;
-        this.PBFPubKey = PBFPubKey;
-        this.billingaddress = billingaddress;
-        this.billingstate = billingstate;
-        this.billingcity = billingcity;
-        this.billingcountry = billingcountry;
-        this.billingzip = billingzip;
-        this.subaccounts = subaccounts;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
-    }
-
-    public Payload(String phonenumber,
-                   List<Meta> meta,
-                   List<SubAccount> subaccounts,
-                   String narration,
-                   String IP,
-                   String lastname,
-                   String firstname,
-                   String currency,
-                   String country,
-                   String amount,
-                   String email,
-                   String device_fingerprint,
-                   String txRef,
-                   String PBFPubKey) {
-        this.meta = meta;
-        this.subaccounts = subaccounts;
-        this.narration = narration;
-        this.IP = IP;
-        this.phonenumber = phonenumber;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.currency = currency;
-        this.country = country;
-        this.amount = amount;
-        this.email = email;
-        this.device_fingerprint = device_fingerprint;
-        this.txRef = txRef;
-        this.PBFPubKey = PBFPubKey;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
-    }
-
-    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
-                   String lastname, String firstname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String txRef, String PBFPubKey, String bvn, boolean is_us_bank_charge) {
-        this.meta = meta;
-        this.subaccounts = subaccounts;
-        this.narration = narration;
-        this.IP = IP;
-        this.accountnumber = accountnumber;
-        this.accountbank = accountbank;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.currency = currency;
-        this.country = country;
-        this.amount = amount;
-        this.email = email;
-        this.device_fingerprint = device_fingerprint;
-        this.txRef = txRef;
-        this.PBFPubKey = PBFPubKey;
-        this.bvn = bvn;
-        this.is_us_bank_charge = is_us_bank_charge;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
-    }
-
-
-
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getPasscode() {
@@ -328,8 +353,6 @@ public class Payload
     public void setPasscode(String passcode) {
         this.passcode = passcode;
     }
-
-    private String passcode;
 
     public String getPayment_plan() {
         return payment_plan;
@@ -343,15 +366,9 @@ public class Payload
         return charge_type;
     }
 
-    public void setCharge_type(String charge_type){
+    public void setCharge_type(String charge_type) {
         this.charge_type = charge_type;
     }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    String token;
 
     public List<Meta> getMeta() {
         return meta;
@@ -373,10 +390,6 @@ public class Payload
         this.pin = pin;
     }
 
-    private String pin;
-
-    private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
-
     public String getPBFSecKey() {
         return PBFSecKey;
     }
@@ -389,17 +402,6 @@ public class Payload
         this.SECKEY = SECKEY;
     }
 
-    String SECKEY;
-
-    private String PBFSecKey;
-
-    @SerializedName("suggested_auth")
-    private String suggestedAuth;
-
-    private List<Meta> meta;
-
-    private List<SubAccount> subaccounts;
-
     public String getBillingzip() {
         return billingzip;
     }
@@ -407,8 +409,6 @@ public class Payload
     public void setBillingzip(String billingzip) {
         this.billingzip = billingzip;
     }
-
-    private String billingzip;
 
     public String getPayment_type() {
         return payment_type;
@@ -418,10 +418,6 @@ public class Payload
         this.payment_type = payment_type;
     }
 
-    private boolean is_mobile_money_franco;
-
-    private String payment_type;
-
     public boolean getIs_mobile_money_franco() {
         return is_mobile_money_franco;
     }
@@ -430,222 +426,144 @@ public class Payload
         this.is_mobile_money_franco = is_mobile_money_franco;
     }
 
-    private String is_sa_call_pay;
-
-    public void setIs_sa_call_pay(String is_sa_call_pay){
-        this.is_sa_call_pay = is_sa_call_pay;
-    }
-
-    private String getIs_sa_call_pay(){
+    private String getIs_sa_call_pay() {
         return is_sa_call_pay;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public void setIs_sa_call_pay(String is_sa_call_pay) {
+        this.is_sa_call_pay = is_sa_call_pay;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public String getPhone_number() {
+        return phone_number;
     }
 
-    private String phonenumber;
-
-    private String narration;
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
 
     public void setIs_internet_banking(String is_internet_banking) {
         this.is_internet_banking = is_internet_banking;
     }
 
-    private String is_internet_banking;
-
-    private String expirymonth;
-
-    private String PBFPubKey;
-
-    private String IP;
-
-    private String accountnumber;
-
-    private String accountname;
-
     public String getAccountnumber() {
-        return accountnumber;
+        return account_number;
     }
 
     public void setAccountnumber(String accountnumber) {
-        this.accountnumber = accountnumber;
+        this.account_number = accountnumber;
     }
 
-    public String getAccountbank() {
-        return accountbank;
+    public String getAccount_bank() {
+        return account_bank;
     }
 
-    public void setAccountbank(String accountbank) {
-        this.accountbank = accountbank;
+    public void setAccount_bank(String account_bank) {
+        this.account_bank = account_bank;
     }
 
-    private String accountbank;
-
-    private String lastname;
-
-    private String firstname;
-
-    private String currency;
-
-    private String country;
-
-    private String amount;
-
-    private String email;
-
-    private String expiryyear;
-
-    private String cvv;
-
-    private String device_fingerprint;
-
-    private String cardno;
-
-    private String txRef;
-
-    public String getExpirymonth ()
-    {
-        return expirymonth;
+    public String getExpiry_month() {
+        return expiry_month;
     }
 
-    public void setExpirymonth (String expirymonth)
-    {
-        this.expirymonth = expirymonth;
+    public void setExpiry_month(String expiry_month) {
+        this.expiry_month = expiry_month;
     }
 
-    public String getPBFPubKey ()
-    {
+    public String getPBFPubKey() {
         return PBFPubKey;
     }
 
-    public void setPBFPubKey (String PBFPubKey)
-    {
+    public void setPBFPubKey(String PBFPubKey) {
         this.PBFPubKey = PBFPubKey;
     }
 
-    public String getIP ()
-    {
-        return IP;
+    public String getClient_ip() {
+        return client_ip;
     }
 
-    public void setIP (String IP)
-    {
-        this.IP = IP;
+    public void setClient_ip(String client_ip) {
+        this.client_ip = client_ip;
     }
 
-    public String getLastname ()
-    {
-        return lastname;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setLastname (String lastname)
-    {
-        this.lastname = lastname;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
-    public String getFirstname ()
-    {
-        return firstname;
-    }
-
-    public void setFirstname (String firstname)
-    {
-        this.firstname = firstname;
-    }
-
-    public String getCurrency ()
-    {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency (String currency)
-    {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
-    public String getCountry ()
-    {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry (String country)
-    {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public String getAmount ()
-    {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount (String amount)
-    {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
-    public String getEmail ()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail (String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getExpiryyear ()
-    {
-        return expiryyear;
+    public String getExpiry_year() {
+        return expiry_year;
     }
 
-    public void setExpiryyear (String expiryyear)
-    {
-        this.expiryyear = expiryyear;
+    public void setExpiry_year(String expiry_year) {
+        this.expiry_year = expiry_year;
     }
 
-    public String getCvv ()
-    {
+    public String getCvv() {
         return cvv;
     }
 
-    public void setCvv (String cvv)
-    {
+    public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 
-    public String getDevice_fingerprint ()
-    {
+    public String getDevice_fingerprint() {
         return device_fingerprint;
     }
 
-    public void setDevice_fingerprint (String device_fingerprint)
-    {
+    public void setDevice_fingerprint(String device_fingerprint) {
         this.device_fingerprint = device_fingerprint;
     }
 
-    public String getCardno ()
-    {
-        return cardno;
+    public String getCard_number() {
+        return card_number;
     }
 
-    public void setCardno (String cardno)
-    {
-        this.cardno = cardno;
+    public void setCard_number(String card_number) {
+        this.card_number = card_number;
     }
 
-    public String getTxRef ()
-    {
-        return txRef;
+    public String getTx_ref() {
+        return tx_ref;
     }
 
-    public void setTxRef (String txRef)
-    {
-        this.txRef = txRef;
+    public void setTx_ref(String tx_ref) {
+        this.tx_ref = tx_ref;
     }
 
     public void setSuggestedAuth(String suggestedAuth) {
@@ -653,26 +571,13 @@ public class Payload
     }
 
     @Override
-    public String toString()
-    {
-        return "ClassPojo [expirymonth = "+expirymonth+", PBFPubKey = "+PBFPubKey+", IP = "+IP+", lastname = "+lastname+", firstname = "+firstname+", currency = "+currency+", country = "+country+", amount = "+amount+", email = "+email+", expiryyear = "+expiryyear+", cvv = "+cvv+", device_fingerprint = "+device_fingerprint+", cardno = "+cardno+", txRef = "+txRef+"]";
+    public String toString() {
+        return "ClassPojo [expirymonth = " + expiry_month + ", PBFPubKey = " + PBFPubKey + ", IP = " + client_ip + ", fullname = " + fullname + ", currency = " + currency + ", country = " + country + ", amount = " + amount + ", email = " + email + ", expiryyear = " + expiry_year + ", cvv = " + cvv + ", device_fingerprint = " + device_fingerprint + ", cardno = " + card_number + ", txRef = " + tx_ref + "]";
     }
-
-    public void setCardBIN(String cardBIN) {
-        this.cardBIN = cardBIN;
-    }
-
-    public String is_mobile_money_gh;
-
-    public String is_mobile_money_ug;
 
     public void setNetwork(String network) {
         this.network = network;
     }
-
-    public String network;
-
-    public String voucher;
 
     public void setVoucher(String voucher) {
         this.voucher = voucher;
@@ -693,8 +598,6 @@ public class Payload
     public void setIs_us_bank_charge(boolean is_us_bank_charge) {
         this.is_us_bank_charge = is_us_bank_charge;
     }
-
-    public boolean is_bank_transfer;
 
     public String getCard_hash() {
         return card_hash;
@@ -758,11 +661,11 @@ public class Payload
     }
 
     public String getAccountname() {
-        return accountname;
+        return account_name;
     }
 
     public void setAccountname(String accountname) {
-        this.accountname = accountname;
+        this.account_name = accountname;
     }
 
     public String getIs_barter() {
@@ -777,7 +680,11 @@ public class Payload
         is_saved_card_charge = true;
         this.setCardBIN(savedCard.getMasked_pan().substring(0, 6));
         this.setCard_hash(savedCard.getCardHash());
-        this.setDevice_key(phonenumber);
+        this.setDevice_key(phone_number);
+    }
+
+    public void setPreauthorize(boolean preauthorize) {
+        this.preauthorize = preauthorize;
     }
 }
 

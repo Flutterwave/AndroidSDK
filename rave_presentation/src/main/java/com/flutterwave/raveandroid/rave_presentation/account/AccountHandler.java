@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidCharge;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
@@ -94,7 +95,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
 
         logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACCOUNT, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mAccountInteractor.showProgressIndicator(false);

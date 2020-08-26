@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ZM_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -79,7 +80,7 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
 
     @Override
     public void chargeZmMobileMoney(final Payload payload, final String encryptionKey) {
-        txRef = payload.getTxRef();
+        txRef = payload.getTx_ref();
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
@@ -93,7 +94,7 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
         logEvent(new ChargeAttemptEvent("Zambia Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ZM_MOMO, body, new ResultCallback<MobileMoneyChargeResponse>() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response) {
 

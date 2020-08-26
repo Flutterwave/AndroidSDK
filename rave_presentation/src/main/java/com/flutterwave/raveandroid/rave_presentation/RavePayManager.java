@@ -11,6 +11,7 @@ abstract public class RavePayManager  {
     protected String country = "NG";
     protected String fName = "";
     protected String lName = "";
+    protected String fullName = null;
     protected String meta = "";
     protected String subAccounts = "";
     protected String payment_plan;
@@ -57,12 +58,8 @@ abstract public class RavePayManager  {
         return country;
     }
 
-    public String getfName() {
-        return fName;
-    }
-
-    public String getlName() {
-        return lName;
+    public String getFullName() {
+        return fullName != null ? fullName : fName + " " + lName;
     }
 
     public String getMeta() {

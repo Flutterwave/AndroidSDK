@@ -22,6 +22,8 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_BANK_TRANSFER;
+
 /**
  * Created by hfetuga on 27/06/2018.
  */
@@ -98,7 +100,7 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
 
         logEvent(new ChargeAttemptEvent("Bank Transfer").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_BANK_TRANSFER, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 

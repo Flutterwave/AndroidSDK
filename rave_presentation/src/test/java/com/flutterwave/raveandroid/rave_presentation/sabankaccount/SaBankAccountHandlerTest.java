@@ -125,7 +125,7 @@ public class SaBankAccountHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).chargeSaBankAccount(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).chargeSaBankAccount(, any(ChargeRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateValidChargeResponse());
 
 //        verify(sharedPrefsRequest).saveFlwRef(any(String.class));
@@ -150,7 +150,7 @@ public class SaBankAccountHandlerTest {
         verify(interactor).showProgressIndicator(true);
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).chargeSaBankAccount(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).chargeSaBankAccount(, any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onSuccess(generateChargeResponseWithNoRedirectUrl());
         verify(interactor).showProgressIndicator(false);
@@ -175,7 +175,7 @@ public class SaBankAccountHandlerTest {
         verify(interactor).showProgressIndicator(true);
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).chargeSaBankAccount(any(ChargeRequestBody.class), captor.capture());
+        verify(networkRequest).chargeSaBankAccount(, any(ChargeRequestBody.class), captor.capture());
 
         captor.getAllValues().get(0).onError(message);
 

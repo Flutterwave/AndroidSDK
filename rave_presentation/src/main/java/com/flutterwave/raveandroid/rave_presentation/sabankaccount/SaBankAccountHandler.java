@@ -137,7 +137,7 @@ public class SaBankAccountHandler implements SaBankAccountContract.Handler {
         logEvent(new ChargeAttemptEvent("SA Bank Account").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeSaBankAccount(body, new ResultCallback<SaBankAccountResponse>() {
+        networkRequest.chargeSaBankAccount(payload.getPBFPubKey(), body, new ResultCallback<SaBankAccountResponse>() {
             @Override
             public void onSuccess(SaBankAccountResponse response) {
 

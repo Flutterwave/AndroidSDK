@@ -16,7 +16,6 @@ import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -37,6 +36,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_SA_BANK;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.expired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenNotFound;
@@ -64,9 +64,9 @@ public class RemoteRepository {
         this.executor = executor;
     }
 
-    public void charge(ChargeRequestBody body, final ResultCallback callback) {
+    public void charge(String publicKey, String chargeType, ChargeRequestBody body, final ResultCallback callback) {
         executor.execute(
-                service.charge(body),
+                service.charge(chargeType, "Bearer " + publicKey, body),
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
@@ -85,21 +85,10 @@ public class RemoteRepository {
         );
     }
 
-    public void chargeMobileMoneyWallet(ChargeRequestBody body, final ResultCallback callback) {
 
-        Call<String> call = service.charge(body);
-
-        executor.execute(
-                call,
-                new TypeToken<MobileMoneyChargeResponse>() {
-                }.getType(),
-                new GenericNetworkCallback<MobileMoneyChargeResponse>(callback)
-        );
-    }
-
-
-    public void chargeSaBankAccount(ChargeRequestBody requestBody, final ResultCallback callback) {
-        Call<String> call = service.charge(requestBody);
+    public void chargeSaBankAccount(String publicKey, ChargeRequestBody requestBody, final ResultCallback callback) {
+        Call<String> call = service.charge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, requestBody);
+        // Todo: confirm that  SA Bank account works
 
         executor.execute(
                 call,

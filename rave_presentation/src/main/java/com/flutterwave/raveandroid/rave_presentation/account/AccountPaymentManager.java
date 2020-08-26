@@ -52,7 +52,7 @@ public class AccountPaymentManager {
 
         Payload body = builder.createBankPayload();
         body.setPasscode(account.getDateOfBirth());
-        body.setPhonenumber(manager.getPhoneNumber());
+        body.setPhone_number(manager.getPhoneNumber());
 
         return body;
     }

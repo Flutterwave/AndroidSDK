@@ -134,13 +134,20 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
+    @Deprecated
     public RaveUiManager setfName(String fName) {
         this.fName = fName;
         return this;
     }
 
+    @Deprecated
     public RaveUiManager setlName(String lName) {
         this.lName = lName;
+        return this;
+    }
+
+    public RaveUiManager setFullName(String fullName) {
+        this.fullName = fullName;
         return this;
     }
 
@@ -348,8 +355,7 @@ public class RaveUiManager extends RavePayManager {
                 getNarration(),
                 getCurrency(),
                 getCountry(),
-                getfName(),
-                getlName(),
+                getFullName(),
                 theme,
                 getPhoneNumber(),
                 allowEditPhone,

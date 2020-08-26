@@ -202,8 +202,7 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
                     .setCountry(NG)
                     .setCurrency(NGN)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
+                    .setFullname(ravePayInitializer.getfName())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId())
                     .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
@@ -220,7 +219,7 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
 
             Payload body = builder.createBankPayload();
             body.setPasscode(dataHashMap.get(fieldDOB).getData());
-            body.setPhonenumber(dataHashMap.get(fieldPhone).getData());
+            body.setPhone_number(dataHashMap.get(fieldPhone).getData());
 
 
             boolean isInternetBanking = dataHashMap.get(fieldAccount) == null;

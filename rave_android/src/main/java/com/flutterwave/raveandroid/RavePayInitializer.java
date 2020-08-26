@@ -13,10 +13,7 @@ import java.util.ArrayList;
 @Parcel
 public class RavePayInitializer {
     private final ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
-    private boolean isPhoneEditable = true;
     String phoneNumber = "";
-    private boolean saveCardFeatureAllowed = true;
-    private boolean usePhoneAndEmailSuppliedToSaveCards = true;
     String email;
     double amount;
     String publicKey;
@@ -26,7 +23,6 @@ public class RavePayInitializer {
     String currency;
     String country;
     String fName;
-    String lName;
     String meta;
     String subAccounts;
     String payment_plan;
@@ -38,11 +34,13 @@ public class RavePayInitializer {
     boolean isPermanent;
     int frequency;
     int duration;
+    private boolean isPhoneEditable = true;
+    private boolean saveCardFeatureAllowed = true;
+    private boolean usePhoneAndEmailSuppliedToSaveCards = true;
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
-                              String currency, String country, String fName,
-                              String lName, int theme, String phoneNumber,
+                              String currency, String country, String fullName, int theme, String phoneNumber,
                               boolean isPhoneEditable, boolean saveCardFeatureAllowed, boolean usePhoneAndEmailSuppliedToSaveCards,
                               boolean isPermanent, int duration, int frequency,
                               boolean staging, String meta, String subAccounts, String payment_plan, boolean isPreAuth,
@@ -56,7 +54,6 @@ public class RavePayInitializer {
         this.currency = currency;
         this.country = country;
         this.fName = fName;
-        this.lName = lName;
         this.isPermanent = isPermanent;
         this.duration = duration;
         this.frequency = frequency;
@@ -96,20 +93,24 @@ public class RavePayInitializer {
         this.meta = meta;
     }
 
-    public String getSubAccount(){return subAccounts;}
+    public String getSubAccount() {
+        return subAccounts;
+    }
 
-    public void setSubAccount(String subAccounts){this.subAccounts=subAccounts;}
+    public void setSubAccount(String subAccounts) {
+        this.subAccounts = subAccounts;
+    }
 
     public boolean isStaging() {
         return staging;
     }
 
-    public ArrayList<Integer> getOrderedPaymentTypesList() {
-        return orderedPaymentTypesList;
-    }
-
     public void setStaging(boolean staging) {
         this.staging = staging;
+    }
+
+    public ArrayList<Integer> getOrderedPaymentTypesList() {
+        return orderedPaymentTypesList;
     }
 
     public int getTheme() {
@@ -201,15 +202,6 @@ public class RavePayInitializer {
         this.phoneNumber = phoneNumber;
     }
 
-
-    public String getlName() {
-        return lName;
-    }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
     public String getPayment_plan() {
         return payment_plan;
     }
@@ -222,18 +214,20 @@ public class RavePayInitializer {
         this.isPreAuth = isPreAuth;
     }
 
-    public boolean getIsPreAuth() { return  isPreAuth; }
+    public boolean getIsPreAuth() {
+        return isPreAuth;
+    }
 
     public boolean getIsDisplayFee() {
         return displayFee;
     }
 
-    public boolean getIsPhoneEditable() {
-        return isPhoneEditable;
-    }
-
     public void setIsDisplayFee(boolean displayFee) {
         this.displayFee = displayFee;
+    }
+
+    public boolean getIsPhoneEditable() {
+        return isPhoneEditable;
     }
 
     public boolean getIsPermanent() {

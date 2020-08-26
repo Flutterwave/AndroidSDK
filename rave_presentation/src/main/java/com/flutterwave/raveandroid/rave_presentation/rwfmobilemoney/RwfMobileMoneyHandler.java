@@ -21,6 +21,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_RW_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -81,7 +82,7 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
 
     @Override
     public void chargeRwfMobileMoney(final Payload payload, final String encryptionKey) {
-        txRef = payload.getTxRef();
+        txRef = payload.getTx_ref();
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
@@ -95,7 +96,7 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
         logEvent(new ChargeAttemptEvent("Rwanda Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_RW_MOMO, body, new ResultCallback<MobileMoneyChargeResponse>() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response) {
 

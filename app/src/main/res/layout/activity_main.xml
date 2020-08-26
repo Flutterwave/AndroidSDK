@@ -362,19 +362,11 @@
 
 
             <EditText
-                android:id="@+id/fNameEt"
+                android:id="@+id/fullNameEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="@string/first_name"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/lnameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/last_name"
+                android:hint="Customer Name"
                 android:textSize="14sp" />
 
             <EditText

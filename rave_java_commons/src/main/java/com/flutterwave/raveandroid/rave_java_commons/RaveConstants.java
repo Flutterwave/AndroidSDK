@@ -36,6 +36,22 @@ public class RaveConstants {
     public static String FLUTTERWAVE_UK_SORT_CODE = "04-00-53";
     public static String FLUTTERWAVE_UK_BENEFICIARY_NAME = "Barter Funding";
 
+    public static String CHARGE_TYPE_CARD = "card";
+    public static String CHARGE_TYPE_ACH = "ach_payment";
+    public static String CHARGE_TYPE_ACCOUNT = "debit_ng_account";
+    public static String CHARGE_TYPE_UK_ACCOUNT = "debit_uk_account";
+    public static String CHARGE_TYPE_BANK_TRANSFER = "bank_transfer";
+    public static String CHARGE_TYPE_SA_BANK = "ach_payment";
+    public static String CHARGE_TYPE_USSD = "ussd";
+    public static String CHARGE_TYPE_GH_MOMO = "mobile_money_ghana";
+    public static String CHARGE_TYPE_RW_MOMO = "mobile_money_rwanda";
+    public static String CHARGE_TYPE_UG_MOMO = "mobile_money_uganda";
+    public static String CHARGE_TYPE_ZM_MOMO = "mobile_money_zambia";
+    public static String CHARGE_TYPE_MPESA = "mpesa";
+    public static String CHARGE_TYPE_FRANC_MOMO = "mobile_money_franco";
+    public static String CHARGE_TYPE_BARTER = "barter";
+//     Todo: test barter for v3
+
 
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";

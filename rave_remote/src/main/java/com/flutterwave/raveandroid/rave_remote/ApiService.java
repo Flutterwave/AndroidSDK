@@ -14,7 +14,9 @@ import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -22,13 +24,14 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    @POST("/flwv3-pug/getpaidx/api/charge")
-//    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
-    Call<String> charge(@Body ChargeRequestBody body);
+    @POST("v3/sdkcheckout/charges")
+//    @POST("/flwv3-pug/getpaidx/api/charge")
+    Call<String> charge(@Query("type") String chargeType, @Header("Authorization") String authorizationHeader, @Body ChargeRequestBody body);
 
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> chargeWithPolling(@Body ChargeRequestBody body);
+    // Todo: Handle v3 charge with polling
 
     @POST("/flwv3-pug/getpaidx/api/validatecharge")
     Call<String> validateCardCharge(@Body ValidateChargeBody body);

@@ -15,12 +15,13 @@ import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_UG_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -77,7 +78,7 @@ public class UgMobileMoneyHandler implements UgMobileMoneyContract.Handler {
 
     @Override
     public void chargeUgMobileMoney(final Payload payload, final String encryptionKey) {
-        txRef = payload.getTxRef();
+        txRef = payload.getTx_ref();
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
 
@@ -91,13 +92,13 @@ public class UgMobileMoneyHandler implements UgMobileMoneyContract.Handler {
         logEvent(new ChargeAttemptEvent("UG Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_UG_MOMO, body, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(MobileMoneyChargeResponse response) {
+            public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
-                MobileMoneyChargeResponse.Data data = response.getData();
+                ChargeResponse.Data data = response.getData();
                 if (data != null) {
                     if (data.getCode() != null && data.getCode().equals("02")
                             && data.getCaptchaLink() != null) {

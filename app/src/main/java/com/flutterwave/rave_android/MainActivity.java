@@ -58,8 +58,7 @@ public class MainActivity
     EditText narrationEt;
     EditText currencyEt;
     EditText countryEt;
-    EditText fNameEt;
-    EditText lNameEt;
+    EditText fullNameEt;
     EditText durationEt;
     EditText frequencyEt;
     EditText phoneNumberEt;
@@ -112,8 +111,7 @@ public class MainActivity
         narrationEt = findViewById(R.id.narrationTV);
         currencyEt = findViewById(R.id.currencyEt);
         countryEt = findViewById(R.id.countryEt);
-        fNameEt = findViewById(R.id.fNameEt);
-        lNameEt = findViewById(R.id.lnameEt);
+        fullNameEt = findViewById(R.id.fullNameEt);
         phoneNumberEt = findViewById(R.id.phoneNumberEt);
         durationEt = findViewById(R.id.expiryDaysEt);
         frequencyEt = findViewById(R.id.frequencyEt);
@@ -241,8 +239,7 @@ public class MainActivity
         String txRef = txRefEt.getText().toString();
         String narration = narrationEt.getText().toString();
         String currency = currencyEt.getText().toString();
-        String fName = fNameEt.getText().toString();
-        String lName = lNameEt.getText().toString();
+        String fullName = fullNameEt.getText().toString();
         String phoneNumber = phoneNumberEt.getText().toString();
         String accountDuration = durationEt.getText().toString();
         String accountPaymentFrequency = frequencyEt.getText().toString();
@@ -317,8 +314,7 @@ public class MainActivity
                         .setAmount(Double.parseDouble(amount))
                         .setCurrency(currency)
                         .setEmail(email)
-                        .setfName(fName)
-                        .setlName(lName)
+                        .setFullName(fullName)
                         .setPhoneNumber(phoneNumber, false)
                         .setNarration(narration)
                         .setPublicKey(publicKey)
@@ -352,8 +348,7 @@ public class MainActivity
                 raveManager = new RaveNonUIManager().setAmount(Double.parseDouble(amount))
                         .setCurrency(currency)
                         .setEmail(email)
-                        .setfName(fName)
-                        .setlName(lName)
+                        .setFullName(fullName)
                         .setPhoneNumber(phoneNumber)
                         .setNarration(narration)
                         .setPublicKey(publicKey)
@@ -446,8 +441,7 @@ public class MainActivity
         narrationEt.setError(null);
         currencyEt.setError(null);
         countryEt.setError(null);
-        fNameEt.setError(null);
-        lNameEt.setError(null);
+        fullNameEt.setError(null);
         durationEt.setError(null);
         frequencyEt.setError(null);
     }

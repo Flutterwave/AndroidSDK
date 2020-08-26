@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -66,6 +68,24 @@ public class ChargeResponse {
         private String requery_url;
         private String orderRef;
 
+        String txRef;
+
+        String appFee;
+        String currency;
+        String charged_amount;
+        String note;
+        String amount;
+        String validateInstruction;
+        String transaction_reference;
+        String payment_code;
+
+        String chargeResponseMessage;
+        String authurl;
+        String redirectUrl;
+        @SerializedName("link")
+        String captchaLink;
+        String code;
+
 
         public void setFlw_reference(String flw_reference) {
             this.flw_reference = flw_reference;
@@ -126,13 +146,6 @@ public class ChargeResponse {
         public void setRedirectUrl(String redirectUrl) {
             this.redirectUrl = redirectUrl;
         }
-
-
-        String note;
-        String amount;
-        String validateInstruction;
-        String transaction_reference;
-        String payment_code;
 
         public Data getData() {
             return data;
@@ -201,18 +214,9 @@ public class ChargeResponse {
             this.txRef = txRef;
         }
 
-        String txRef;
-        String chargeResponseMessage;
-        String authurl;
-        String appFee;
-        String currency;
-        String charged_amount;
-
         public String getRedirectUrl() {
             return redirectUrl;
         }
-
-        String redirectUrl;
 
         public String getAuthurl() {
             return authurl;
@@ -321,6 +325,14 @@ public class ChargeResponse {
 
         public void setOrderRef(String orderRef) {
             this.orderRef = orderRef;
+        }
+
+        public String getCaptchaLink() {
+            return captchaLink;
+        }
+
+        public String getCode() {
+            return code;
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.flutterwave.raveandroid.account;
 
-import com.google.android.material.textfield.TextInputLayout;
 import android.view.View;
 
 import com.flutterwave.raveandroid.RavePayInitializer;
@@ -29,6 +28,7 @@ import com.flutterwave.raveandroid.validators.BvnValidator;
 import com.flutterwave.raveandroid.validators.DateOfBirthValidator;
 import com.flutterwave.raveandroid.validators.EmailValidator;
 import com.flutterwave.raveandroid.validators.PhoneValidator;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
 import org.junit.Before;
@@ -318,8 +318,8 @@ public class AccountPresenterTest {
         assertEquals(country, capturedPayload.getCountry());
         assertEquals(currency, capturedPayload.getCurrency());
         assertEquals(email, capturedPayload.getEmail());
-        assertEquals(fingerPrint, capturedPayload.getIP());
-        assertEquals(txRef, capturedPayload.getTxRef());
+        assertEquals(fingerPrint, capturedPayload.getClient_ip());
+        assertEquals(txRef, capturedPayload.getTx_ref());
         assertEquals(pubKey, capturedPayload.getPBFPubKey());
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
 
@@ -383,8 +383,8 @@ public class AccountPresenterTest {
         assertEquals(country, capturedPayload.getCountry());
         assertEquals(currency, capturedPayload.getCurrency());
         assertEquals(email, capturedPayload.getEmail());
-        assertEquals(fingerPrint, capturedPayload.getIP());
-        assertEquals(txRef, capturedPayload.getTxRef());
+        assertEquals(fingerPrint, capturedPayload.getClient_ip());
+        assertEquals(txRef, capturedPayload.getTx_ref());
         assertEquals(pubKey, capturedPayload.getPBFPubKey());
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
 

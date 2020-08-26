@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ACCESS_OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_CARD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.GTB_OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
@@ -119,7 +120,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_CARD, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -195,7 +196,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
     public void sendRaveOTP(final Payload payload) {
         SendOtpRequestBody body = new SendOtpRequestBody();
-        body.setDevice_key(payload.getPhonenumber());
+        body.setDevice_key(payload.getPhone_number());
         body.setPublic_key(payload.getPBFPubKey());
         body.setCard_hash(payload.getCard_hash());
 
@@ -406,7 +407,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     @Override
     public void fetchFee(final Payload payload) {
 
-        boolean isCardnoValid = cardNoValidator.isCardNoStrippedValid(payload.getCardno());
+        boolean isCardnoValid = cardNoValidator.isCardNoStrippedValid(payload.getCard_number());
 
         FeeCheckRequestBody body = new FeeCheckRequestBody();
         body.setAmount(payload.getAmount());
@@ -414,7 +415,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setPBFPubKey(payload.getPBFPubKey());
 
         if (isCardnoValid) {
-            body.setCard6(payload.getCardno().substring(0, 6));
+            body.setCard6(payload.getCard_number().substring(0, 6));
         } else {
             body.setCard6(payload.getCardBIN());
         }

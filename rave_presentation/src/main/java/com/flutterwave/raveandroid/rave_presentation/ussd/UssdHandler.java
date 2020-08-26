@@ -23,6 +23,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_USSD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
 public class UssdHandler implements UssdContract.Handler {
@@ -94,7 +95,7 @@ public class UssdHandler implements UssdContract.Handler {
         logEvent(new ChargeAttemptEvent("USSD").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_USSD, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
