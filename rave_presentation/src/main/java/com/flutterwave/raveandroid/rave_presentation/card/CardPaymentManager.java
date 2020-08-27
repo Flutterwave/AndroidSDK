@@ -1,10 +1,10 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
@@ -21,6 +21,7 @@ public class CardPaymentManager {
     public CardPaymentHandler paymentHandler;
     CardInteractorImpl interactor;
     private int chargeType;
+    //Todo: Look into making UI layer depend on payment managers
 
     public CardPaymentManager(RaveNonUIManager manager, CardPaymentCallback callback) {
         this.manager = manager;
@@ -87,8 +88,7 @@ public class CardPaymentManager {
         paymentHandler.chargeCardWithAddressDetails(
                 interactor.getPayload(),
                 addressDetails,
-                manager.getEncryptionKey(),
-                interactor.getAuthModel()
+                manager.getEncryptionKey()
         );
     }
 

@@ -5,9 +5,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
 
 import java.util.List;
@@ -97,12 +97,11 @@ public interface CardContract {
 
         /**
          * Called when the card used requires Address Verification.
-         * Collect the {@link AddressDetails} from the user and then continue the charge by calling {@link CardPaymentHandler#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} with that address.
+         * Collect the {@link AddressDetails} from the user and then continue the charge by calling {@link CardPaymentHandler#chargeCardWithAddressDetails(Payload, AddressDetails, String)} with that address.
          *
-         * @param payload   Payload with the charge details
-         * @param authModel Authentication Model to be passed to the {@link CardPaymentHandler#chargeCardWithAddressDetails(Payload, AddressDetails, String, String)} function.
+         * @param payload Payload with the charge details
          */
-        void collectCardAddressDetails(Payload payload, String authModel);
+        void collectCardAddressDetails(Payload payload);
 
         /**
          * Called to display a {@link android.webkit.WebView} for charges that require webpage authentication.
@@ -175,7 +174,7 @@ public interface CardContract {
 
         void logEvent(Event event, String publicKey);
 
-        void chargeCardWithAddressDetails(Payload payLoad, AddressDetails address, String encryptionKey, String authModel);
+        void chargeCardWithAddressDetails(Payload payload, AddressDetails address, String encryptionKey);
     }
 
 }

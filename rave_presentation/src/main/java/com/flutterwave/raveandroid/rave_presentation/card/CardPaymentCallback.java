@@ -5,7 +5,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 
 public interface CardPaymentCallback {
     /**

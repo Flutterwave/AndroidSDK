@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 
 /**
@@ -388,10 +389,6 @@ public class Payload {
         this.narration = narration;
     }
 
-    public void setPin(String pin) {
-        this.authorization = new Authorization(PIN, pin);
-    }
-
     public String getPBFSecKey() {
         return PBFSecKey;
     }
@@ -689,13 +686,37 @@ public class Payload {
         this.preauthorize = preauthorize;
     }
 
+    public void setPin(String pin) {
+        this.authorization = new Authorization(PIN, pin);
+    }
+
+    public void setAddressDetails(AddressDetails address) {
+        this.authorization = new Authorization(AVS_NOAUTH, address);
+    }
+
     private class Authorization {
         String mode;
         String pin;
+        String address;
+        String city;
+        String state;
+        String zipcode;
+        String country;
 
         Authorization(String mode, String pin) {
             this.mode = mode;
             this.pin = pin;
+        }
+
+        Authorization(String mode, AddressDetails addressDetails) {
+            this.mode = mode;
+            if (addressDetails != null) {
+                address = addressDetails.getStreetAddress();
+                city = addressDetails.getCity();
+                state = addressDetails.getState();
+                zipcode = addressDetails.getZipCode();
+                country = addressDetails.getCountry();
+            }
         }
     }
 }

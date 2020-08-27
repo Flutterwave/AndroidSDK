@@ -16,7 +16,6 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     private CardPaymentCallback callback;
     private String flwRef;
-    private String authModel;
     private Payload payload;
     private SavedCardsListener savedCardsListener;
     private FeeCheckListener feeCheckListener;
@@ -52,9 +51,8 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     }
 
     @Override
-    public void collectCardAddressDetails(Payload payload, String authModel) {
+    public void collectCardAddressDetails(Payload payload) {
         this.payload = payload;
-        this.authModel = authModel;
         callback.collectAddress();
     }
 
@@ -141,10 +139,6 @@ class CardInteractorImpl implements CardContract.CardInteractor {
 
     public Payload getPayload() {
         return payload;
-    }
-
-    String getAuthModel() {
-        return authModel;
     }
 
     public void setSavedCardsListener(SavedCardsListener savedCardsListener) {

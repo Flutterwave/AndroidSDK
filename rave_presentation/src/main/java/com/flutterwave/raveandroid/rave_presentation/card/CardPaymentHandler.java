@@ -4,10 +4,10 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
@@ -39,6 +39,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_CARD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
@@ -134,7 +135,9 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                         case REDIRECT:
                             mCardInteractor.showWebPage(response.getAuthUrl(), flwRef);
                             break;
-                        // Todo: test saved card charge
+                        case AVS_NOAUTH:
+                            mCardInteractor.collectCardAddressDetails(payload);
+                            // Todo: test saved card charge
                     }
 
                 } else {
@@ -233,16 +236,10 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void chargeCardWithAddressDetails(Payload payload, AddressDetails address, String encryptionKey, String authModel) {
-        payload.setSuggestedAuth(authModel);
-        payload.setBillingaddress(address.getStreetAddress());
-        payload.setBillingcity(address.getCity());
-        payload.setBillingzip(address.getZipCode());
-        payload.setBillingcountry(address.getCountry());
-        payload.setBillingstate(address.getState());
+    public void chargeCardWithAddressDetails(Payload payload, AddressDetails address, String encryptionKey) {
+        payload.setAddressDetails(address);
 
         logEvent(new ChargeAttemptEvent("AVS Card").getEvent(), payload.getPBFPubKey());
-
         chargeCard(payload, encryptionKey);
 
     }
