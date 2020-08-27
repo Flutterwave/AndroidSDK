@@ -120,8 +120,8 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
                 mCardInteractor.showProgressIndicator(false);
                 String authMode = response.getAuthMode();
+                String flwRef = response.getFlwRef();
                 if (authMode != null) {
-                    String flwRef = response.getData().getFlwRef();
                     switch (authMode) {
                         case PIN:
                             mCardInteractor.collectCardPin(payload);
@@ -250,25 +250,20 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     @Override
     public void chargeCardWithPinAuthModel(final Payload payload, String pin, String encryptionKey) {
         payload.setPin(pin);
-        payload.setSuggestedAuth(PIN);
 
         chargeCard(payload, encryptionKey);
-
     }
 
     @Override
     public void validateCardCharge(final String flwRef, String otp, final String publicKey) {
 
-        ValidateChargeBody body = new ValidateChargeBody();
-        body.setPBFPubKey(publicKey);
-        body.setOtp(otp);
-        body.setTransaction_reference(flwRef);
+        ValidateChargeBody body = new ValidateChargeBody(flwRef, otp, CHARGE_TYPE_CARD);
 
         mCardInteractor.showProgressIndicator(true);
 
         logEvent(new ValidationAttemptEvent("Card").getEvent(), publicKey);
 
-        networkRequest.validateCardCharge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.validateCardCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mCardInteractor.showProgressIndicator(false);

@@ -379,7 +379,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCardCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse);
         verify(interactor).onPaymentError(message);
 
@@ -403,7 +403,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCardCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message);
         verify(interactor).onPaymentError(message);
 

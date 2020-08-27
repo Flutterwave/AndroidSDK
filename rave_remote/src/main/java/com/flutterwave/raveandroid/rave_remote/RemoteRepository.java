@@ -99,9 +99,9 @@ public class RemoteRepository {
     }
 
 
-    public void validateCardCharge(ValidateChargeBody body, final ResultCallback callback) {
+    public void validateCardCharge(String publicKey, ValidateChargeBody body, final ResultCallback callback) {
 
-        Call<String> call = service.validateCardCharge(body);
+        Call<String> call = service.validateCardCharge("Bearer " + publicKey, body);
 
         executor.execute(
                 call,

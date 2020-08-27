@@ -131,10 +131,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
     @Override
     public void authenticateAccountCharge(final String flwRef, String otp, final String PBFPubKey) {
 
-        ValidateChargeBody body = new ValidateChargeBody();
-        body.setPBFPubKey(PBFPubKey);
-        body.setOtp(otp);
-        body.setTransactionreference(flwRef);
+        ValidateChargeBody body = new ValidateChargeBody(flwRef, otp, CHARGE_TYPE_ACCOUNT);
 
         mAccountInteractor.showProgressIndicator(true);
 

@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
+
 /**
  * Created by hamzafetuga on 05/07/2017.
  */
@@ -70,13 +72,13 @@ public class Payload {
     private String is_mpesa_lipa;
     private String passcode;
     private String PBFSecKey;
-    private String pin;
     private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
     @SerializedName("suggested_auth")
     private String suggestedAuth;
     private List<Meta> meta;
     private List<SubAccount> subaccounts;
     private String billingzip;
+    private Authorization authorization;
 
     // Constructor for saved card charge
     public Payload(List<Meta> meta,
@@ -387,7 +389,7 @@ public class Payload {
     }
 
     public void setPin(String pin) {
-        this.pin = pin;
+        this.authorization = new Authorization(PIN, pin);
     }
 
     public String getPBFSecKey() {
@@ -685,6 +687,16 @@ public class Payload {
 
     public void setPreauthorize(boolean preauthorize) {
         this.preauthorize = preauthorize;
+    }
+
+    private class Authorization {
+        String mode;
+        String pin;
+
+        Authorization(String mode, String pin) {
+            this.mode = mode;
+            this.pin = pin;
+        }
     }
 }
 

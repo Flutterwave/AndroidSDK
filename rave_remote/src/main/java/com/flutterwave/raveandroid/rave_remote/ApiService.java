@@ -33,8 +33,9 @@ public interface ApiService {
     Call<String> chargeWithPolling(@Body ChargeRequestBody body);
     // Todo: Handle v3 charge with polling and other v3 methods
 
-    @POST("/flwv3-pug/getpaidx/api/validatecharge")
-    Call<String> validateCardCharge(@Body ValidateChargeBody body);
+    @POST("/v3/sdkcheckout/validate-charge")
+//    @POST("/flwv3-pug/getpaidx/api/validatecharge")
+    Call<String> validateCardCharge(@Header("Authorization") String authorizationHeader, @Body ValidateChargeBody body);
 //    Call<ChargeResponse> validateCardCharge(@Body ValidateChargeBody body);
 
     @POST("/flwv3-pug/getpaidx/api/validate")

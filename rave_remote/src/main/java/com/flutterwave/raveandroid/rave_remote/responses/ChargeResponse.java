@@ -52,10 +52,9 @@ public class ChargeResponse {
     }
 
     public String getAuthMode() {
-//        return (meta == null) ? null
-//                : (meta.authorization == null) ? null
-//                : meta.authorization.mode;
-        return meta.authorization.mode;
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.mode;
         //Todo: test nullability
     }
 
@@ -63,6 +62,10 @@ public class ChargeResponse {
         return (meta == null) ? null
                 : (meta.authorization == null) ? null
                 : meta.authorization.redirect;
+    }
+
+    public String getFlwRef() {
+        return (data == null) ? null : data.getFlwRef();
     }
 
     public static class Data {
