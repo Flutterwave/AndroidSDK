@@ -99,9 +99,9 @@ public class RemoteRepository {
     }
 
 
-    public void validateCardCharge(String publicKey, ValidateChargeBody body, final ResultCallback callback) {
+    public void validateCharge(String publicKey, ValidateChargeBody body, final ResultCallback callback) {
 
-        Call<String> call = service.validateCardCharge("Bearer " + publicKey, body);
+        Call<String> call = service.validateCharge("Bearer " + publicKey, body);
 
         executor.execute(
                 call,
@@ -112,22 +112,9 @@ public class RemoteRepository {
 
     }
 
+    public void requeryTx(String publicKey, RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-    public void validateAccountCharge(ValidateChargeBody body, final ResultCallback callback) {
-
-        Call<String> call = service.validateAccountCharge(body);
-
-        executor.execute(
-                call,
-                new TypeToken<ChargeResponse>() {
-                }.getType(),
-                new GenericNetworkCallback<ChargeResponse>(callback)
-        );
-    }
-
-    public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
-
-        Call<String> call = service.requeryTx(requeryRequestBody);
+        Call<String> call = service.requeryTx("Bearer " + publicKey, requeryRequestBody);
 
         executor.execute(
                 call,

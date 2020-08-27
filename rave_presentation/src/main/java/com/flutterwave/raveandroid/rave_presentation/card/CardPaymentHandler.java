@@ -263,7 +263,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
         logEvent(new ValidationAttemptEvent("Card").getEvent(), publicKey);
 
-        networkRequest.validateCardCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.validateCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mCardInteractor.showProgressIndicator(false);
@@ -302,7 +302,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mCardInteractor.showProgressIndicator(false);

@@ -106,7 +106,7 @@ public class BarterHandler implements BarterContract.Handler {
 
         mInteractor.showPollingIndicator(true);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {

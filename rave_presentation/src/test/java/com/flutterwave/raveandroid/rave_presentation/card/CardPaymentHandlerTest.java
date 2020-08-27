@@ -379,7 +379,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse);
         verify(interactor).onPaymentError(message);
 
@@ -403,7 +403,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message);
         verify(interactor).onPaymentError(message);
 
@@ -523,7 +523,7 @@ public class CardPaymentHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString());
         verify(interactor).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, responseAsString);
 
         //assert

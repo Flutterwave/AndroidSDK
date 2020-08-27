@@ -199,7 +199,7 @@ public class UssdHandlerTest {
         String responseJson = generateRandomString();
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("00"), responseJson);
 
         verify(interactor).showPollingIndicator(false);
@@ -220,7 +220,7 @@ public class UssdHandlerTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
 
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("02"), responseJson);
 
         verify(interactor).showPollingIndicator(false);
@@ -239,14 +239,14 @@ public class UssdHandlerTest {
         paymentHandler.requeryTx(flwRef, encryptionKey, System.currentTimeMillis(), 300000);
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRequerySuccessful("02");
         String jsonResponse = generateRandomString();
 
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
-        verify(networkRequest, times(2)).requeryTx(any(RequeryRequestBody.class), any(Callbacks.OnRequeryRequestComplete.class));
+        verify(networkRequest, times(2)).requeryTx(publicKey, any(RequeryRequestBody.class), any(Callbacks.OnRequeryRequestComplete.class));
 
     }
 
@@ -259,7 +259,7 @@ public class UssdHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), time, 300);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
         verify(interactor).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
@@ -275,7 +275,7 @@ public class UssdHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), time, 300);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("099"), jsonResponse);
 
         verify(interactor).showProgressIndicator(false);
@@ -291,7 +291,7 @@ public class UssdHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), time, 300);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
 
         verify(interactor).onPaymentFailed(anyString(), anyString());

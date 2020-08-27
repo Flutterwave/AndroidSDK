@@ -193,7 +193,7 @@ public class SaBankAccountHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString());
         verify(interactor).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, jsonResponse);
         verify(interactor).onPaymentFailed(message, jsonResponse);
 

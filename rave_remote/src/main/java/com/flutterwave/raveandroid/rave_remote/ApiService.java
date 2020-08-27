@@ -35,15 +35,12 @@ public interface ApiService {
 
     @POST("/v3/sdkcheckout/validate-charge")
 //    @POST("/flwv3-pug/getpaidx/api/validatecharge")
-    Call<String> validateCardCharge(@Header("Authorization") String authorizationHeader, @Body ValidateChargeBody body);
+    Call<String> validateCharge(@Header("Authorization") String authorizationHeader, @Body ValidateChargeBody body);
 //    Call<ChargeResponse> validateCardCharge(@Body ValidateChargeBody body);
+    // Todo: code optimization, remove unused methods and fields.
 
-    @POST("/flwv3-pug/getpaidx/api/validate")
-    Call<String> validateAccountCharge(@Body ValidateChargeBody body);
-//    Call<ChargeResponse> validateAccountCharge(@Body ValidateChargeBody body);
-
-    @POST("/flwv3-pug/getpaidx/api/verify/mpesa")
-    Call<String> requeryTx(@Body RequeryRequestBody body);
+    @POST("v3/sdkcheckout/mpesa-verify")
+    Call<String> requeryTx(@Header("Authorization") String authorizationHeader, @Body RequeryRequestBody body);
 //    Call<RequeryResponse> requeryTx(@Body RequeryRequestBody body);
 
     @POST("/flwv3-pug/getpaidx/api/verify/pwbt")

@@ -30,7 +30,7 @@ public class WebPresenter implements WebContract.UserActionsListener {
         body.setOrder_ref(flwRef); // Uses Order ref instead of flwref
         body.setPBFPubKey(publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {

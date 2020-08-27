@@ -128,7 +128,7 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
 
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {

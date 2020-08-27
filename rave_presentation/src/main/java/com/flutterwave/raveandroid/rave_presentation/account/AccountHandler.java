@@ -129,15 +129,15 @@ public class AccountHandler implements AccountContract.AccountHandler {
     }
 
     @Override
-    public void authenticateAccountCharge(final String flwRef, String otp, final String PBFPubKey) {
+    public void authenticateAccountCharge(final String flwRef, String otp, final String publicKey) {
 
         ValidateChargeBody body = new ValidateChargeBody(flwRef, otp, CHARGE_TYPE_ACCOUNT);
 
         mAccountInteractor.showProgressIndicator(true);
 
-        logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
+        logEvent(new ValidationAttemptEvent("Account").getEvent(), publicKey);
 
-        networkRequest.validateAccountCharge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.validateCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mAccountInteractor.showProgressIndicator(false);
@@ -147,7 +147,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase(success)) {
-                        requeryTx(flwRef, PBFPubKey);
+                        requeryTx(flwRef, publicKey);
                     } else {
                         mAccountInteractor.onPaymentError(status);
                     }
@@ -209,7 +209,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mAccountInteractor.showProgressIndicator(false);

@@ -170,7 +170,7 @@ public class ZmMobileMoneyHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateNullQuery();
         String jsonResponse = generateRandomString();
@@ -190,7 +190,7 @@ public class ZmMobileMoneyHandlerTest {
         paymentHandler.requeryTx(flwRef, txRef, generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRequerySuccessful_00();
         String jsonResponse = generateRandomString();
@@ -211,7 +211,7 @@ public class ZmMobileMoneyHandlerTest {
         paymentHandler.requeryTx(flwRef, txRef, encryptionKey);
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRequerySuccessful_02();
         String jsonResponse = generateRandomString();
@@ -219,7 +219,7 @@ public class ZmMobileMoneyHandlerTest {
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
 
-        verify(networkRequest, times(2)).requeryTx(any(RequeryRequestBody.class), any(Callbacks.OnRequeryRequestComplete.class));
+        verify(networkRequest, times(2)).requeryTx(publicKey, any(RequeryRequestBody.class), any(Callbacks.OnRequeryRequestComplete.class));
 
     }
 
@@ -229,7 +229,7 @@ public class ZmMobileMoneyHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         RequeryResponse requeryResponse = generateRandomRequerySuccessful();
         String jsonResponse = generateRandomString();
@@ -247,7 +247,7 @@ public class ZmMobileMoneyHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString());
 
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
 
         String message = generateRandomString();
         String jsonResponse = generateRandomString();

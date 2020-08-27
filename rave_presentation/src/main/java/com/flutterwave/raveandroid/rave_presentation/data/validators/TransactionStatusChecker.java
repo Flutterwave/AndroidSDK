@@ -18,9 +18,9 @@ public class TransactionStatusChecker {
         try {
             JsonObject jsonObject = gson.fromJson(responseAsJSONString, JsonObject.class);
             JsonObject jsonData = jsonObject.getAsJsonObject("data");
-            String chargeResponse = jsonData.get("chargeResponseCode").getAsString();
+            String status = jsonData.get("status").getAsString();
 
-            if (chargeResponse.equalsIgnoreCase("00")) {
+            if (status.equalsIgnoreCase("successful")) {
                 return true;
             }
 
