@@ -65,7 +65,7 @@ class UkInteractorImpl implements UkContract.Interactor {
                 FLUTTERWAVE_UK_BENEFICIARY_NAME,
                 response.getData().getData().getPayment_code()
         );
-        this.flwRef = response.getData().getData().getFlw_reference();
+        this.flwRef = response.getData().getData().getFlwRef();
         this.txRef = response.getData().getData().getTransaction_reference();
     }
 

@@ -102,7 +102,7 @@ public class UssdHandler implements UssdContract.Handler {
                 mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    flwRef = response.getData().getUssdData().getFlw_reference();
+                    flwRef = response.getData().getUssdData().getFlwRef();
                     publicKey = payload.getPBFPubKey();
                     String note = null;
                     if (response.getData().getNote() != null) note = response.getData().getNote();

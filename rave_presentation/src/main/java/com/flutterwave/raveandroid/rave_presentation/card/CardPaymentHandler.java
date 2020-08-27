@@ -39,21 +39,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ACCESS_OTP;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_CARD;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.GTB_OTP;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_SAVED_CARD;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.unknownAuthmsg;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -125,58 +119,79 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             public void onSuccess(ChargeResponse response) {
 
                 mCardInteractor.showProgressIndicator(false);
-
-                if (response.getData() != null) {
-
-                    if (response.getData().getSuggested_auth() != null) {
-                        String suggested_auth = response.getData().getSuggested_auth();
-
-                        if (suggested_auth.equals(PIN)) {
+                String authMode = response.getAuthMode();
+                if (authMode != null) {
+                    String flwRef = response.getData().getFlwRef();
+                    switch (authMode) {
+                        case PIN:
                             mCardInteractor.collectCardPin(payload);
-                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
-                            mCardInteractor.collectCardAddressDetails(payload, AVS_VBVSECURECODE);
-                        } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
-                            mCardInteractor.collectCardAddressDetails(payload, NOAUTH_INTERNATIONAL);
-                        } else {
-                            mCardInteractor.onPaymentError(unknownAuthmsg);
-                        }
-                    } else {
-                        // Check if transaction is already successful
-                        if (response.getData().getChargeResponseCode() != null && response.getData().getChargeResponseCode().equalsIgnoreCase("00")) {
-                            String flwRef = response.getData().getFlwRef();
-
-                            requeryTx(flwRef, payload.getPBFPubKey());
-
-                        } else {
-
-                            String authModelUsed = response.getData().getAuthModelUsed();
-
-                            if (authModelUsed != null) {
-                                String flwRef = response.getData().getFlwRef();
-
-                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE) || authModelUsed.equalsIgnoreCase(NOAUTH_SAVED_CARD)) {
-                                    String authUrlCrude = response.getData().getAuthurl();
-                                    mCardInteractor.showWebPage(authUrlCrude, flwRef);
-                                } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
-                                        || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
-                                        || authModelUsed.toLowerCase().contains("otp")
-                                        || authModelUsed.equalsIgnoreCase(PIN)) {
-                                    String chargeResponseMessage = response.getData().getChargeResponseMessage();
-                                    chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
-                                    mCardInteractor.collectOtp(flwRef, chargeResponseMessage);
-                                } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
-                                    requeryTx(flwRef, payload.getPBFPubKey());
-                                } else {
-                                    mCardInteractor.onPaymentError(unknownAuthmsg);
-                                }
-                            } else {
-                                mCardInteractor.onPaymentError(unknownAuthmsg);
-                            }
-                        }
+                            break;
+                        case OTP:
+                            String processorResponse = response.getData().getProcessorResponse();
+                            processorResponse = (processorResponse == null || processorResponse.length() == 0) ? enterOTP : processorResponse;
+                            mCardInteractor.collectOtp(flwRef, processorResponse);
+                            break;
+                        case REDIRECT:
+                            mCardInteractor.showWebPage(response.getAuthUrl(), flwRef);
+                            break;
+                        // Todo: test saved card charge
                     }
+
                 } else {
                     mCardInteractor.onPaymentError(noResponse);
                 }
+
+//                if (response.getData() != null) {
+//
+//                    if (response.getData().getSuggested_auth() != null) {
+//                        String suggested_auth = response.getData().getSuggested_auth();
+//
+//                        if (suggested_auth.equals(PIN)) {
+//                            mCardInteractor.collectCardPin(payload);
+//                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
+//                            mCardInteractor.collectCardAddressDetails(payload, AVS_VBVSECURECODE);
+//                        } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
+//                            mCardInteractor.collectCardAddressDetails(payload, NOAUTH_INTERNATIONAL);
+//                        } else {
+//                            mCardInteractor.onPaymentError(unknownAuthmsg);
+//                        }
+//                    } else {
+//                        // Check if transaction is already successful
+//                        if (response.getData().getChargeResponseCode() != null && response.getData().getChargeResponseCode().equalsIgnoreCase("00")) {
+//                            String flwRef = response.getData().getFlwRef();
+//
+//                            requeryTx(flwRef, payload.getPBFPubKey());
+//
+//                        } else {
+//
+//                            String authModelUsed = response.getData().getAuthModelUsed();
+//
+//                            if (authModelUsed != null) {
+//                                String flwRef = response.getData().getFlwRef();
+//
+//                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE) || authModelUsed.equalsIgnoreCase(NOAUTH_SAVED_CARD)) {
+//                                    String authUrlCrude = response.getData().getAuthurl();
+//                                    mCardInteractor.showWebPage(authUrlCrude, flwRef);
+//                                } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+//                                        || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
+//                                        || authModelUsed.toLowerCase().contains("otp")
+//                                        || authModelUsed.equalsIgnoreCase(PIN)) {
+//                                    String chargeResponseMessage = response.getData().getChargeResponseMessage();
+//                                    chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
+//                                    mCardInteractor.collectOtp(flwRef, chargeResponseMessage);
+//                                } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
+//                                    requeryTx(flwRef, payload.getPBFPubKey());
+//                                } else {
+//                                    mCardInteractor.onPaymentError(unknownAuthmsg);
+//                                }
+//                            } else {
+//                                mCardInteractor.onPaymentError(unknownAuthmsg);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    mCardInteractor.onPaymentError(noResponse);
+//                }
             }
 
             @Override

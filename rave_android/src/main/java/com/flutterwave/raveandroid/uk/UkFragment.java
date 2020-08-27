@@ -235,7 +235,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
             dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.requeryTx(response.getData().getData().getFlw_reference(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
+                    presenter.requeryTx(response.getData().getData().getFlwRef(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
                 }
             });
             dialog.show();

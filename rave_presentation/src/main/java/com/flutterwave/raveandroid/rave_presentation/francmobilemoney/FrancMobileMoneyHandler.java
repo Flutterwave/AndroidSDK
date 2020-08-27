@@ -99,7 +99,7 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                 mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    String flwRef = response.getData().getData().getFlw_reference();
+                    String flwRef = response.getData().getData().getFlwRef();
                     String txRef = response.getData().getData().getTransaction_reference();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 } else {

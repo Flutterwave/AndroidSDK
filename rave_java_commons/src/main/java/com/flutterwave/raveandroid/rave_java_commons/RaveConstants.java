@@ -53,6 +53,11 @@ public class RaveConstants {
 //     Todo: test barter for v3
 
 
+    // Authentication methods
+    public static final String PIN = "pin";
+    public static final String OTP = "otp";
+    public static final String REDIRECT = "redirect";
+    public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";
@@ -62,9 +67,7 @@ public class RaveConstants {
     public static String RWF = "RWF";
     public static String NOAUTH = "NOAUTH";
     public static String NOAUTH_SAVED_CARD = "noauth-saved-card";
-    public static String PIN = "PIN";
     public static String selectNetwork = "Select network";
-    public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String enterOTP = "Enter your one time password (OTP)";
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";

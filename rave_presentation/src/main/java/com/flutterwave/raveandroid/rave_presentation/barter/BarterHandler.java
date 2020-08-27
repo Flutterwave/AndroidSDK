@@ -75,7 +75,7 @@ public class BarterHandler implements BarterContract.Handler {
                         }
                         String authUrlCrude = authUrlBuilder.build().toString();
 
-                        String flwRef = response.getData().getFlw_reference();
+                        String flwRef = response.getData().getFlwRef();
                         if (flwRef == null) flwRef = response.getData().getFlwRef();
 
                         mInteractor.loadBarterCheckout(authUrlCrude, flwRef);

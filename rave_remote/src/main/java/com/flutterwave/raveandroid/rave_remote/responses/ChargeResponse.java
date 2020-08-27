@@ -11,6 +11,7 @@ public class ChargeResponse {
     String status;
     String message;
     Data data;
+    ChargeMeta meta;
 
     public String getStatus() {
         return status;
@@ -50,6 +51,20 @@ public class ChargeResponse {
 
     }
 
+    public String getAuthMode() {
+//        return (meta == null) ? null
+//                : (meta.authorization == null) ? null
+//                : meta.authorization.mode;
+        return meta.authorization.mode;
+        //Todo: test nullability
+    }
+
+    public String getAuthUrl() {
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.redirect;
+    }
+
     public static class Data {
 
         Data data;
@@ -57,6 +72,8 @@ public class ChargeResponse {
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
+        String flw_ref;
+        // Todo: Harmonize charge response fields
 
         // Pay with bank (extra) response fields
         String flw_reference;
@@ -80,6 +97,7 @@ public class ChargeResponse {
         String payment_code;
 
         String chargeResponseMessage;
+        String processor_response;
         String authurl;
         String redirectUrl;
         @SerializedName("link")
@@ -93,6 +111,10 @@ public class ChargeResponse {
 
         public String getReference_code() {
             return payment_code;
+        }
+
+        public String getProcessorResponse() {
+            return processor_response;
         }
 
         public void setReference_code(String reference_code) {
@@ -168,10 +190,6 @@ public class ChargeResponse {
             this.validateInstruction = validateInstruction;
         }
 
-        public String getFlw_reference() {
-            return flw_reference;
-        }
-
         public String getResponse_code() {
             return response_code;
         }
@@ -223,7 +241,10 @@ public class ChargeResponse {
         }
 
         public String getFlwRef() {
-            return flwRef;
+
+            return flwRef != null ? flwRef :
+                    flw_ref != null ? flw_ref :
+                            flw_reference;
         }
 
         public void setValidateInstructions(AccountValidateInstructions validateInstructions) {
@@ -333,6 +354,15 @@ public class ChargeResponse {
 
         public String getCode() {
             return code;
+        }
+    }
+
+    private class ChargeMeta {
+        Authorization authorization;
+
+        private class Authorization {
+            String mode;
+            String redirect;
         }
     }
 }

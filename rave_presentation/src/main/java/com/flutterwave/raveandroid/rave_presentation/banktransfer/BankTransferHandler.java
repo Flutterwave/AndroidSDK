@@ -109,7 +109,7 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
                 if (response.getData() != null) {
                     hasTransferDetails = true;
 
-                    flwRef = response.getData().getFlw_reference();
+                    flwRef = response.getData().getFlwRef();
                     txRef = response.getData().getTx_ref();
                     orderRef = response.getData().getOrderRef();
                     publicKey = payload.getPBFPubKey();

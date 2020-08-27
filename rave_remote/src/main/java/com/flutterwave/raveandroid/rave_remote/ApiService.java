@@ -31,7 +31,7 @@ public interface ApiService {
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> chargeWithPolling(@Body ChargeRequestBody body);
-    // Todo: Handle v3 charge with polling
+    // Todo: Handle v3 charge with polling and other v3 methods
 
     @POST("/flwv3-pug/getpaidx/api/validatecharge")
     Call<String> validateCardCharge(@Body ValidateChargeBody body);
