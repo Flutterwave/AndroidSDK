@@ -9,20 +9,18 @@ import java.util.List;
 public class RequeryResponse {
 
     String status;
+    Data data;
 
     public Data getData() {
         return data;
     }
 
-    Data data;
-
-    public String getStatus() {
-        return status;
-    }
-
-
     public void setData(Data data) {
         this.data = data;
+    }
+
+    public String getStatus() {
+        return data == null ? null : data.status;
     }
 
     public void setStatus(String status) {
@@ -32,6 +30,9 @@ public class RequeryResponse {
     public static class Data {
 
         Data data;
+        String chargeResponseCode;
+        CardDets card;
+        String status;
 
         public Data getData() {
             return data;
@@ -41,17 +42,17 @@ public class RequeryResponse {
             this.data = data;
         }
 
-        String chargeResponseCode;
+        public String getChargeResponseCode() {
+            return chargeResponseCode;
+        }
 
-        public String getChargeResponseCode() { return chargeResponseCode; }
+        public void setChargeResponseCode(String chargeResponseCode) {
+            this.chargeResponseCode = chargeResponseCode;
+        }
 
         public CardDets getCard() {
             return card;
         }
-
-        CardDets card;
-
-        String status;
 
         public String getStatus() {
             return status;
@@ -59,10 +60,6 @@ public class RequeryResponse {
 
         public void setStatus(String status) {
             this.status = status;
-        }
-
-        public void setChargeResponseCode(String chargeResponseCode) {
-            this.chargeResponseCode = chargeResponseCode;
         }
     }
 
