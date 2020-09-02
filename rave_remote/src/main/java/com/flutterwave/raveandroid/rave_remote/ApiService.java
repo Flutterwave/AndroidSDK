@@ -43,8 +43,8 @@ public interface ApiService {
     Call<String> requeryTx(@Header("Authorization") String authorizationHeader, @Body RequeryRequestBody body);
 //    Call<RequeryResponse> requeryTx(@Body RequeryRequestBody body);
 
-    @POST("/flwv3-pug/getpaidx/api/verify/pwbt")
-    Call<String> requeryPayWithBankTx(@Body RequeryRequestBody body);
+    @POST("/v3/sdkcheckout/pwbt-verify")
+    Call<String> requeryPayWithBankTx(@Header("Authorization") String authorizationHeader, @Body RequeryRequestBody body);
 //    Call<RequeryResponse> requeryTx(@Body RequeryRequestBody body);
 
     @POST("/flwv3-pug/getpaidx/api/v2/verify")

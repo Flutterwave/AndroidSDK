@@ -37,7 +37,6 @@ public class ChargeResponse {
         this.data = data;
     }
 
-
     public static class AccountValidateInstructions {
         public String getInstruction() {
             return instruction;
@@ -73,6 +72,34 @@ public class ChargeResponse {
         return (meta == null) ? null
                 : (meta.authorization == null) ? null
                 : meta.authorization.note;
+    }
+
+    public String getTransferNote() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_note;
+    }
+
+    public String getTransferAmount() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_amount;
+    }
+
+    public String getTransferBankName() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_bank;
+    }
+
+    public String getTransferAccountNumber() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_account;
     }
 
     public String getFlwRef() {
@@ -382,6 +409,15 @@ public class ChargeResponse {
             String mode;
             String redirect;
             String note;
+
+            //Pay with bank transfer
+            String transfer_reference;
+            String transfer_account;
+            String transfer_bank;
+            String account_expiration;
+            String transfer_note;
+            String transfer_amount;
+
         }
     }
 }

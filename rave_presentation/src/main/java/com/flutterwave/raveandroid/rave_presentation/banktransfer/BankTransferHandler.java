@@ -14,7 +14,6 @@ import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -22,6 +21,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BANK_TRANSFER;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_BANK_TRANSFER;
 
 /**
@@ -87,40 +87,30 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
 
     @Override
     public void payWithBankTransfer(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
+        txRef = payload.getTx_ref();
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("Bank Transfer").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_BANK_TRANSFER, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_BANK_TRANSFER, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
-                if (response.getData() != null) {
+                if (response.getAuthMode() != null && response.getAuthMode().equalsIgnoreCase(BANK_TRANSFER)) {
                     hasTransferDetails = true;
 
-                    flwRef = response.getData().getFlwRef();
-                    txRef = response.getData().getTx_ref();
-                    orderRef = response.getData().getOrderRef();
+                    flwRef = response.getFlwRef();
                     publicKey = payload.getPBFPubKey();
-                    if (response.getData().getNote() != null && response.getData().getNote().contains("to ")) {
-                        beneficiaryName = response.getData().getNote().substring(
-                                response.getData().getNote().indexOf("to ") + 3
-                        );
+                    String note = response.getTransferNote();
+                    if (note != null && note.contains("to ")) {
+                        beneficiaryName = note.substring(note.indexOf("to ") + 3);
                     }
-                    amount = response.getData().getAmount();
-                    accountNumber = response.getData().getAccountnumber();
-                    bankName = response.getData().getBankname();
+                    amount = response.getTransferAmount();
+                    accountNumber = response.getTransferAccountNumber();
+                    bankName = response.getTransferBankName();
                     mInteractor.onTransferDetailsReceived(
                             amount,
                             accountNumber,
@@ -157,17 +147,18 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
+        body.setTx_ref(txRef);
         body.setPBFPubKey(publicKey);
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryPayWithBankTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryPayWithBankTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
+                if (response.getStatus() == null) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("01")) {
+                } else if (response.getStatus().equalsIgnoreCase("pending")) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
                         mInteractor.onPollingCanceled(flwRef, txRef, responseAsJSONString);
@@ -179,7 +170,7 @@ public class BankTransferHandler implements BankTransferContract.BankTransferHan
                             mInteractor.onPollingTimeout(flwRef, txRef, responseAsJSONString);
                         }
                     }
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {

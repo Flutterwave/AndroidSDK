@@ -124,9 +124,9 @@ public class RemoteRepository {
         );
     }
 
-    public void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
+    public void requeryPayWithBankTx(String publicKey, RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        Call<String> call = service.requeryPayWithBankTx(requeryRequestBody);
+        Call<String> call = service.requeryPayWithBankTx("Bearer " + publicKey, requeryRequestBody);
 
         executor.execute(
                 call,

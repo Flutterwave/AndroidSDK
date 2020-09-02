@@ -57,7 +57,11 @@ public class RaveConstants {
     public static final String PIN = "pin";
     public static final String OTP = "otp";
     public static final String REDIRECT = "redirect";
+    public static final String BANK_TRANSFER = "banktransfer";
+    public static final String CALLBACK = "callback";
     public static final String AVS_NOAUTH = "avs_noauth";
+
+
     public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
