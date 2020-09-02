@@ -111,7 +111,7 @@ public class ZmMobileMoneyHandler implements ZmMobileMoneyContract.Handler {
 
     @Override
     public void requeryTx(final String publicKey) {
-        requeryTx(null, txRef, publicKey);
+        requeryTx(flwRef, txRef, publicKey);
     }
 
     @Override
