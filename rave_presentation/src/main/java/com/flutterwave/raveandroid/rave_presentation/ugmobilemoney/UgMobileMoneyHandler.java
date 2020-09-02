@@ -6,14 +6,12 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -23,7 +21,7 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_UG_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
 
@@ -38,6 +36,7 @@ public class UgMobileMoneyHandler implements UgMobileMoneyContract.Handler {
     private UgMobileMoneyContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
     private String txRef = null;
+    private String flwRef = null;
 
     @Inject
     public UgMobileMoneyHandler(UgMobileMoneyContract.Interactor mInteractor) {
@@ -79,37 +78,23 @@ public class UgMobileMoneyHandler implements UgMobileMoneyContract.Handler {
     @Override
     public void chargeUgMobileMoney(final Payload payload, final String encryptionKey) {
         txRef = payload.getTx_ref();
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("UG Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_UG_MOMO, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_UG_MOMO, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
-                ChargeResponse.Data data = response.getData();
-                if (data != null) {
-                    if (data.getCode() != null && data.getCode().equals("02")
-                            && data.getCaptchaLink() != null) {
-                        mInteractor.showWebPage(data.getCaptchaLink());
-                    } else {
-                        String flwRef = data.getFlwRef();
-                        String txRef = data.getTx_ref();
-                        requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                    }
-                } else {
-                    mInteractor.onPaymentError(noResponse);
+                if (response.getAuthMode() != null && response.getAuthMode().equalsIgnoreCase(REDIRECT) && response.getAuthUrl() != null)
+                    mInteractor.showWebPage(response.getAuthUrl());
+                else {
+                    flwRef = response.getFlwRef();
+                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 }
 
             }
@@ -142,22 +127,18 @@ public class UgMobileMoneyHandler implements UgMobileMoneyContract.Handler {
         networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
+                if (response.getStatus() == null)
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
-//                    Log.d("Requery response",responseAsJSONString);
-                    if (pollingCancelled) {
-                        mInteractor.showPollingIndicator(false);
-                        mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                    }
-                    else requeryTx(flwRef, txRef, publicKey);
-
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                else if (response.getStatus().equalsIgnoreCase("pending")) {
+                    if (!pollingCancelled) {
+                        requeryTx(flwRef, txRef, publicKey);
+                    } else mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
-                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
             }
 
