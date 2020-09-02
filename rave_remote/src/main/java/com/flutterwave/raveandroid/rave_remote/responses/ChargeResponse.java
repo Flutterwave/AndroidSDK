@@ -79,6 +79,10 @@ public class ChargeResponse {
         return (data == null) ? null : data.getFlwRef();
     }
 
+    public String getTxRef() {
+        return (data == null) ? null : data.getTx_ref();
+    }
+
     public static class Data {
 
         Data data;

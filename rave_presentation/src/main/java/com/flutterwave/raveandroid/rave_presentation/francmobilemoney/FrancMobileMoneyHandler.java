@@ -6,14 +6,12 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -80,27 +78,20 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
 
     @Override
     public void chargeFranc(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("Francophone Mobile Money").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_FRANC_MOMO, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_FRANC_MOMO, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    String flwRef = response.getData().getData().getFlwRef();
-                    String txRef = response.getData().getData().getTransaction_reference();
+                    String flwRef = response.getFlwRef();
+                    String txRef = response.getTxRef();
                     requeryTx(flwRef, txRef, payload.getPBFPubKey());
                 } else {
                     mInteractor.onPaymentError(noResponse);
@@ -133,16 +124,17 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
 
-                if (response.getData() == null) {
+
+                if (response.getStatus() == null)
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                else if (response.getStatus().equalsIgnoreCase("pending")) {
                     requeryTx(flwRef, txRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
-                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
             }
 
