@@ -54,14 +54,25 @@ public class ChargeResponse {
     public String getAuthMode() {
         return (meta == null) ? null
                 : (meta.authorization == null) ? null
-                : meta.authorization.mode;
-        //Todo: test nullability
+                : meta.authorization.redirect;
+    }
+
+    public ChargeMeta getChargeMeta() {
+        return (meta != null) ? meta : data.meta;
     }
 
     public String getAuthUrl() {
+        ChargeMeta meta = getChargeMeta();
         return (meta == null) ? null
                 : (meta.authorization == null) ? null
                 : meta.authorization.redirect;
+    }
+
+    public String getUssdCode() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.note;
     }
 
     public String getFlwRef() {
@@ -366,6 +377,7 @@ public class ChargeResponse {
         private class Authorization {
             String mode;
             String redirect;
+            String note;
         }
     }
 }
