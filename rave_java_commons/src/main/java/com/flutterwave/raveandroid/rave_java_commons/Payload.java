@@ -562,9 +562,8 @@ public class Payload {
         return tx_ref;
     }
 
-    public void setTx_ref(String tx_ref) {
-        this.tx_ref = tx_ref;
-        this.txRef = tx_ref;
+    public void setTxRef(String txRef) {
+        this.txRef = txRef;
     }
 
     public void setSuggestedAuth(String suggestedAuth) {

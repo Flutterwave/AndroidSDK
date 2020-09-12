@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_BARTER;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -44,6 +43,7 @@ public class BarterHandler implements BarterContract.Handler {
 
     @Override
     public void chargeBarter(final Payload payload, final String encryptionKey) {
+        payload.setTxRef(payload.getTx_ref());
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
         encryptedCardRequestBody = encryptedCardRequestBody.trim();
@@ -56,7 +56,7 @@ public class BarterHandler implements BarterContract.Handler {
 
         mInteractor.showProgressIndicator(true);
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_BARTER, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.chargeV2(body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -111,12 +111,12 @@ public class BarterHandler implements BarterContract.Handler {
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(flwRef, responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                } else if ("02".equals(response.getData().getChargeResponseCode()) || "pending".equalsIgnoreCase(response.getData().getStatus())) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
                         mInteractor.onPollingCanceled(flwRef, responseAsJSONString);
                     } else requeryTx(flwRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if ("00".equals(response.getData().getChargeResponseCode()) || "successful".equalsIgnoreCase(response.getData().getStatus())) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {

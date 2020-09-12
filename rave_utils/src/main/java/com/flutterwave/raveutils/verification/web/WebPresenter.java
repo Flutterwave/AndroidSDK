@@ -35,9 +35,9 @@ public class WebPresenter implements WebContract.UserActionsListener {
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mView.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                } else if ("02".equals(response.getData().getChargeResponseCode()) || "pending".equalsIgnoreCase(response.getData().getStatus())) {
                     mView.onPollingRoundComplete(flwRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if ("00".equals(response.getData().getChargeResponseCode()) || "successful".equalsIgnoreCase(response.getData().getStatus())) {
                     mView.onPaymentSuccessful(responseAsJSONString);
                 } else {
                     mView.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
