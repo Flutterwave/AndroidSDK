@@ -20,7 +20,7 @@ public class Payload {
     public String network;
     public String voucher;
     public String bvn;
-    public boolean is_bank_transfer;
+    public Boolean is_bank_transfer;
     String token;
     String SECKEY;
     private Boolean is_permanent;
@@ -30,16 +30,16 @@ public class Payload {
     private String billingaddress;
     private String billingstate;
     private String billingcountry;
-    private boolean is_ussd;
+    private Boolean is_ussd;
     private String orderRef;
     private String order_id;
     private String is_barter;
     private String card_hash;
     private String cardBIN;
-    private boolean is_us_bank_charge;
-    private boolean is_saved_card_charge;
-    private boolean preauthorize;//Todo: test preauth compatibility
-    private boolean is_uk_bank_charge2;
+    private Boolean is_us_bank_charge;
+    private Boolean is_saved_card_charge;
+    private Boolean preauthorize;//Todo: test preauth compatibility
+    private Boolean is_uk_bank_charge2;
     private String remember_device_mobile_key;
     private String device_key;
     private String otp;
@@ -63,7 +63,7 @@ public class Payload {
     private String card_number;
     private String tx_ref;
     private String is_sa_call_pay;
-    private boolean is_mobile_money_franco;
+    private Boolean is_mobile_money_franco;
     private String payment_type;
     private String is_remembered;
     private String payment_plan;
@@ -210,7 +210,7 @@ public class Payload {
 
     public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String fullname, String currency, String country, String amount,
-                   String email, String device_fingerprint, String tx_ref, String PBFPubKey, String bvn, boolean is_us_bank_charge) {
+                   String email, String device_fingerprint, String tx_ref, String PBFPubKey, String bvn, Boolean is_us_bank_charge) {
         this.meta = meta;
         this.subaccounts = subaccounts;
         this.narration = narration;
@@ -417,11 +417,11 @@ public class Payload {
         this.payment_type = payment_type;
     }
 
-    public boolean getIs_mobile_money_franco() {
+    public Boolean getIs_mobile_money_franco() {
         return is_mobile_money_franco;
     }
 
-    public void setIs_mobile_money_franco(boolean is_mobile_money_franco) {
+    public void setIs_mobile_money_franco(Boolean is_mobile_money_franco) {
         this.is_mobile_money_franco = is_mobile_money_franco;
     }
 
@@ -590,11 +590,11 @@ public class Payload {
         this.is_mobile_money_ug = is_mobile_money_ug;
     }
 
-    public boolean isIs_us_bank_charge() {
+    public Boolean isIs_us_bank_charge() {
         return is_us_bank_charge;
     }
 
-    public void setIs_us_bank_charge(boolean is_us_bank_charge) {
+    public void setIs_us_bank_charge(Boolean is_us_bank_charge) {
         this.is_us_bank_charge = is_us_bank_charge;
     }
 
@@ -606,15 +606,15 @@ public class Payload {
         this.card_hash = card_hash;
     }
 
-    public void setIs_bank_transfer(boolean is_bank_transfer) {
+    public void setIs_bank_transfer(Boolean is_bank_transfer) {
         this.is_bank_transfer = is_bank_transfer;
     }
 
-    public boolean getIs_permanent() {
+    public Boolean getIs_permanent() {
         return is_permanent;
     }
 
-    public void setIs_permanent(boolean is_permanent) {
+    public void setIs_permanent(Boolean is_permanent) {
         this.is_permanent = is_permanent;
     }
 
@@ -634,11 +634,11 @@ public class Payload {
         this.frequency = frequency;
     }
 
-    public boolean getIs_ussd() {
+    public Boolean getIs_ussd() {
         return is_ussd;
     }
 
-    public void setIs_ussd(boolean is_ussd) {
+    public void setIs_ussd(Boolean is_ussd) {
         this.is_ussd = is_ussd;
     }
 
@@ -651,11 +651,11 @@ public class Payload {
 
     }
 
-    public boolean getIs_uk_bank_charge() {
+    public Boolean getIs_uk_bank_charge() {
         return is_uk_bank_charge2;
     }
 
-    public void setIs_uk_bank_charge2(boolean is_uk_bank_charge2) {
+    public void setIs_uk_bank_charge2(Boolean is_uk_bank_charge2) {
         this.is_uk_bank_charge2 = is_uk_bank_charge2;
     }
 
@@ -682,7 +682,7 @@ public class Payload {
         this.setDevice_key(phone_number);
     }
 
-    public void setPreauthorize(boolean preauthorize) {
+    public void setPreauthorize(Boolean preauthorize) {
         this.preauthorize = preauthorize;
     }
 

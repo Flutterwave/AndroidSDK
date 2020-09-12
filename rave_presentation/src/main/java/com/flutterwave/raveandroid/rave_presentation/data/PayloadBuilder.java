@@ -26,12 +26,12 @@ public class PayloadBuilder {
     private String bvn;
     private String voucher;
     private String otp;
-    private boolean isPreAuth = false;
-    private boolean is_us_bank_charge = false;
-    private boolean is_bank_transfer = false;
-    private boolean is_saved_card_charge = false;
+    private Boolean isPreAuth = null;
+    private Boolean is_us_bank_charge = null;
+    private Boolean is_bank_transfer = null;
+    private Boolean is_saved_card_charge = null;
     private SavedCard savedCard;
-    private boolean isPermanent;
+    private Boolean isPermanent;
     private int frequency;
     private int duration;
     private String is_mobile_money_rwf;
@@ -39,8 +39,8 @@ public class PayloadBuilder {
     private String is_mobile_money_ug;
     private String phonenumber;
     private String txRef;
-    private String meta = "";
-    private String subAccounts = "";
+    private String meta = null;
+    private String subAccounts = null;
     private String customer_phone;
     private String narration;
     private String pin;

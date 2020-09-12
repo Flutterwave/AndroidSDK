@@ -12,6 +12,6 @@ public class UrlValidator {
     }
 
     public boolean isUrlValid(String url) {
-        return Pattern.matches("^(https?|ftp|file|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", url);
+        return url != null && Pattern.matches("^(https?|ftp|file|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", url);
     }
 }

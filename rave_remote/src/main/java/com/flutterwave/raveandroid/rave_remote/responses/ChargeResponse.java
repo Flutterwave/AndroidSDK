@@ -51,9 +51,10 @@ public class ChargeResponse {
     }
 
     public String getAuthMode() {
+        ChargeMeta meta = getChargeMeta();
         return (meta == null) ? null
                 : (meta.authorization == null) ? null
-                : meta.authorization.redirect;
+                : meta.authorization.mode;
     }
 
     public ChargeMeta getChargeMeta() {
@@ -102,6 +103,13 @@ public class ChargeResponse {
                 : meta.authorization.transfer_account;
     }
 
+    public String getValidateInstructions() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.validate_instructions;
+    }
+
     public String getFlwRef() {
         return (data == null) ? null : data.getFlwRef();
     }
@@ -111,6 +119,8 @@ public class ChargeResponse {
     }
 
     public static class Data {
+
+        ChargeMeta meta;// For account charge
 
         Data data;
         String suggested_auth;
@@ -409,6 +419,7 @@ public class ChargeResponse {
             String mode;
             String redirect;
             String note;
+            String validate_instructions;
 
             //Pay with bank transfer
             String transfer_reference;
