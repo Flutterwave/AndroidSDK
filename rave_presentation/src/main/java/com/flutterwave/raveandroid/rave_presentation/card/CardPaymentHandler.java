@@ -39,16 +39,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ACCESS_OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_NOAUTH;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_CARD;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.GTB_OTP;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_SAVED_CARD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.unknownAuthmsg;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -205,11 +213,108 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         });
     }
 
+    /**
+     * Makes a generic call to the v2 charge endpoint with the payload provided. Handles both conditions
+     * for initial charge request and when the suggested auth has been added.
+     *
+     * @param payload       {@link Payload} object to be sent.
+     * @param encryptionKey Rave encryption key gotten from dashboard
+     * @deprecated This has been deprecated in favor of the {@link CardPaymentHandler#chargeCard(Payload, String) v3 charge}.
+     * It's only left for use for saved card charge (with Webpage authentication) which has not yet been migrated.
+     * Other auth models might not work well with this route.
+     */
+    @Deprecated
+    private void chargeCardV2(final Payload payload, final String encryptionKey) {
+        payload.setTx_ref(payload.getTx_ref());
+
+        String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+
+        final ChargeRequestBody body = new ChargeRequestBody();
+        body.setAlg("3DES-24");
+        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setClient(encryptedCardRequestBody);
+
+        mCardInteractor.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
+
+
+        networkRequest.chargeV2(body, new ResultCallback<ChargeResponse>() {
+            @Override
+            public void onSuccess(ChargeResponse response) {
+
+                mCardInteractor.showProgressIndicator(false);
+                if (response.getData() != null) {
+
+                    if (response.getData().getSuggested_auth() != null) {
+                        String suggested_auth = response.getData().getSuggested_auth();
+
+                        if (suggested_auth.equals(PIN)) {
+                            mCardInteractor.collectCardPin(payload);
+                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
+                            mCardInteractor.collectCardAddressDetails(payload
+//                                    , AVS_VBVSECURECODE
+                            );
+                        } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
+                            mCardInteractor.collectCardAddressDetails(payload
+//                                    , NOAUTH_INTERNATIONAL
+                            );
+                        } else {
+                            mCardInteractor.onPaymentError(unknownAuthmsg);
+                        }
+                    } else {
+                        // Check if transaction is already successful
+                        if (response.getData().getChargeResponseCode() != null && response.getData().getChargeResponseCode().equalsIgnoreCase("00")) {
+                            String flwRef = response.getData().getFlwRef();
+
+                            requeryTx(flwRef, payload.getPBFPubKey());
+
+                        } else {
+
+                            String authModelUsed = response.getData().getAuthModelUsed();
+
+                            if (authModelUsed != null) {
+                                String flwRef = response.getData().getFlwRef();
+
+                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE) || authModelUsed.equalsIgnoreCase(NOAUTH_SAVED_CARD)) {
+                                    String authUrlCrude = response.getData().getAuthurl();
+                                    mCardInteractor.showWebPage(authUrlCrude, flwRef);
+                                } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+                                        || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
+                                        || authModelUsed.toLowerCase().contains("otp")
+                                        || authModelUsed.equalsIgnoreCase(PIN)) {
+                                    String chargeResponseMessage = response.getData().getChargeResponseMessage();
+                                    chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
+                                    mCardInteractor.collectOtp(flwRef, chargeResponseMessage);
+                                } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
+                                    requeryTx(flwRef, payload.getPBFPubKey());
+                                } else {
+                                    mCardInteractor.onPaymentError(unknownAuthmsg);
+                                }
+                            } else {
+                                mCardInteractor.onPaymentError(unknownAuthmsg);
+                            }
+                        }
+                    }
+                } else {
+                    mCardInteractor.onPaymentError(noResponse);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onPaymentError(message);
+            }
+        });
+    }
+
     @Override
     public void chargeSavedCard(Payload payload, String encryptionKey) {
         if (payload.getOtp() == null || payload.getOtp() == "") {
             sendRaveOTP(payload);
-        } else chargeCard(payload, encryptionKey);
+        } else chargeCardV2(payload, encryptionKey);
     }
 
     public void sendRaveOTP(final Payload payload) {
@@ -352,7 +457,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey){
+    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey) {
         mCardInteractor.showProgressIndicator(true);
         RemoveSavedCardRequestBody body = new RemoveSavedCardRequestBody(cardHash, phoneNumber, publicKey);
         networkRequest.deleteASavedCard(body, new ResultCallback<SaveCardResponse>() {
@@ -379,7 +484,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
 
-        if(showLoader)
+        if (showLoader)
             mCardInteractor.showProgressIndicator(true);
 
 

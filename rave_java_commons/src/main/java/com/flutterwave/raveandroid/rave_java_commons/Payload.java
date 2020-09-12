@@ -62,6 +62,7 @@ public class Payload {
     private String device_fingerprint;
     private String card_number;
     private String tx_ref;
+    private String txRef;// Required for v2 charges
     private String is_sa_call_pay;
     private Boolean is_mobile_money_franco;
     private String payment_type;
@@ -563,6 +564,7 @@ public class Payload {
 
     public void setTx_ref(String tx_ref) {
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
     }
 
     public void setSuggestedAuth(String suggestedAuth) {

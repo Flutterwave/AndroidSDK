@@ -66,12 +66,36 @@ public class RemoteRepository {
 
     public void charge(String publicKey, String chargeType, ChargeRequestBody body, final ResultCallback callback) {
         executor.execute(
+                service.encryptedCharge(chargeType, "Bearer " + publicKey, body),
+                new TypeToken<ChargeResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<ChargeResponse>(callback)
+        );
+    }
+
+    public void charge(String publicKey, String chargeType, Payload body, final ResultCallback callback) {
+        executor.execute(
                 service.charge(chargeType, "Bearer " + publicKey, body),
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
         );
     }
+
+    /**
+     * @deprecated This has been deprecated in favor of the {@link RemoteRepository#charge(String, String, ChargeRequestBody, ResultCallback)} v3 charge}.
+     * It's only left for use for saved card charge and barter charges which have not yet been migrated to v3.
+     * Other charge types might not work well with this route.
+     */
+    public void chargeV2(ChargeRequestBody body, final ResultCallback callback) {
+        executor.execute(
+                service.chargeV2(body),
+                new TypeToken<ChargeResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<ChargeResponse>(callback)
+        );
+    }
+
 
     public void chargeWithPolling(ChargeRequestBody body, final ResultCallback callback) {
 
@@ -87,7 +111,7 @@ public class RemoteRepository {
 
 
     public void chargeSaBankAccount(String publicKey, ChargeRequestBody requestBody, final ResultCallback callback) {
-        Call<String> call = service.charge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, requestBody);
+        Call<String> call = service.encryptedCharge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, requestBody);
         // Todo: confirm that  SA Bank account works
 
         executor.execute(

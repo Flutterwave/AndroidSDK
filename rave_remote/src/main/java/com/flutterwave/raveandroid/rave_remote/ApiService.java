@@ -26,7 +26,10 @@ public interface ApiService {
 
     @POST("v3/sdkcheckout/charges")
 //    @POST("/flwv3-pug/getpaidx/api/charge")
-    Call<String> charge(@Query("type") String chargeType, @Header("Authorization") String authorizationHeader, @Body ChargeRequestBody body);
+    Call<String> encryptedCharge(@Query("type") String chargeType, @Header("Authorization") String authorizationHeader, @Body ChargeRequestBody body);
+
+    @POST("/flwv3-pug/getpaidx/api/charge")
+    Call<String> chargeV2(@Body ChargeRequestBody body);
 
 
     @POST("v3/sdkcheckout/charges")
