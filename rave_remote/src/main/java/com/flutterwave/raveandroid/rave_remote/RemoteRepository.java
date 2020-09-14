@@ -110,8 +110,8 @@ public class RemoteRepository {
     }
 
 
-    public void chargeSaBankAccount(String publicKey, ChargeRequestBody requestBody, final ResultCallback callback) {
-        Call<String> call = service.encryptedCharge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, requestBody);
+    public void chargeSaBankAccount(String publicKey, Payload payload, final ResultCallback callback) {
+        Call<String> call = service.charge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, payload);
         // Todo: confirm that  SA Bank account works
 
         executor.execute(

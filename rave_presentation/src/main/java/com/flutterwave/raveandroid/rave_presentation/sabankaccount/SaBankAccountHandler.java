@@ -6,7 +6,6 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
@@ -14,7 +13,6 @@ import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
@@ -124,28 +122,20 @@ public class SaBankAccountHandler implements SaBankAccountContract.Handler {
 
     @Override
     public void chargeSaBankAccount(final Payload payload, String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
 
         mView.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("SA Bank Account").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeSaBankAccount(payload.getPBFPubKey(), body, new ResultCallback<SaBankAccountResponse>() {
+        networkRequest.chargeSaBankAccount(payload.getPBFPubKey(), payload, new ResultCallback<SaBankAccountResponse>() {
             @Override
             public void onSuccess(SaBankAccountResponse response) {
 
                 mView.showProgressIndicator(false);
-
-                if (response.getData().getData().getRedirectUrl() != null) {
-                    String authUrl = response.getData().getData().getRedirectUrl();
-                    String flwRef = response.getData().getData().getFlwReference();
+                String authUrl = response.getAuthUrl();
+                if (authUrl != null) {
+                    String flwRef = response.getData().getFlwRef();
 
                     mView.showWebView(authUrl, flwRef);
                 } else {
