@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.rave_presentation.uk;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 
 
 public interface UkContract {
@@ -22,7 +21,7 @@ public interface UkContract {
 
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
 
-        void showTransactionPage(ChargeResponse response);
+        void showTransactionPage(String amount, String paymentCode, String flwRef, String txRef);
     }
 
     interface Handler {

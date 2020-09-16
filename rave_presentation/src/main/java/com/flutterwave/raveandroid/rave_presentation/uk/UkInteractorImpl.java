@@ -3,7 +3,6 @@ package com.flutterwave.raveandroid.rave_presentation.uk;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.NullFeeCheckListener;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -57,16 +56,16 @@ class UkInteractorImpl implements UkContract.Interactor {
     }
 
     @Override
-    public void showTransactionPage(ChargeResponse response) {
+    public void showTransactionPage(String amount, String paymentCode, final String flwRef, final String txRef) {
         callback.showTransactionDetails(
-                response.getData().getAmount(),
+                amount,
                 FLUTTERWAVE_UK_ACCOUNT,
                 FLUTTERWAVE_UK_SORT_CODE,
                 FLUTTERWAVE_UK_BENEFICIARY_NAME,
-                response.getData().getData().getPayment_code()
+                paymentCode
         );
-        this.flwRef = response.getData().getData().getFlwRef();
-        this.txRef = response.getData().getData().getTransaction_reference();
+        this.flwRef = flwRef;
+        this.txRef = txRef;
     }
 
     @Override

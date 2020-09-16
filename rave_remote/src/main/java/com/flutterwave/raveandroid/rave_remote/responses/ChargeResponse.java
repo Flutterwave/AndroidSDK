@@ -37,6 +37,7 @@ public class ChargeResponse {
         this.data = data;
     }
 
+
     public static class AccountValidateInstructions {
         public String getInstruction() {
             return instruction;
@@ -48,6 +49,14 @@ public class ChargeResponse {
 
         String instruction;
 
+    }
+
+    public String getAmount() {
+        return data == null ? null : data.amount;
+    }
+
+    public String getPaymentCode() {
+        return data == null ? null : data.payment_code;
     }
 
     public String getAuthMode() {
@@ -230,10 +239,6 @@ public class ChargeResponse {
 
         public void setData(Data data) {
             this.data = data;
-        }
-
-        public String getPayment_code() {
-            return payment_code;
         }
 
         public String getTransaction_reference() {

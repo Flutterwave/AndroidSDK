@@ -30,7 +30,6 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -219,7 +218,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
     }
 
     @Override
-    public void showTransactionPage(final ChargeResponse response) {
+    public void showTransactionPage(String amount, String paymentCode, final String flwRef, final String txRef) {
 
         if (getContext() != null) {
             final Dialog dialog = new Dialog(getContext());
@@ -227,20 +226,19 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
             dialog.setTitle("Flutterwave");
             presenter.logEvent(new InstructionsDisplayedEvent("UK").getEvent(), ravePayInitializer.getPublicKey());
 
-            ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", response.getData().getData().getAmount()));
+            ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", amount));
             ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
             ((TextView) dialog.findViewById(R.id.sortCode)).setText(getString(R.string.flutterwave_sortcode));
-            ((TextView) dialog.findViewById(R.id.reference)).setText(response.getData().getData().getPayment_code());
+            ((TextView) dialog.findViewById(R.id.reference)).setText(amount);
 
             dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.requeryTx(response.getData().getData().getFlwRef(), response.getData().getData().getTransaction_reference(), ravePayInitializer.getPublicKey());
+                    presenter.requeryTx(flwRef, txRef, ravePayInitializer.getPublicKey());
                 }
             });
             dialog.show();
         }
-
     }
 
     @Override
