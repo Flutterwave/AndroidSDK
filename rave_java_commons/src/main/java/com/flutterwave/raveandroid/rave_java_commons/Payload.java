@@ -77,7 +77,7 @@ public class Payload {
     private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
     @SerializedName("suggested_auth")
     private String suggestedAuth;
-    private List<Meta> meta;
+    private List<Meta> meta;// Todo: match meta to v3 standard
     private List<SubAccount> subaccounts;
     private String billingzip;
     private Authorization authorization;
@@ -99,6 +99,7 @@ public class Payload {
         this.email = email;
         this.device_fingerprint = device_fingerprint;
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
         this.is_saved_card_charge = is_saved_card_charge;
         this.phone_number = phone_number;
 
@@ -131,6 +132,7 @@ public class Payload {
         this.device_fingerprint = device_fingerprint;
         this.card_number = card_number;
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
 
         if (meta == null) {
             meta = new ArrayList<>();
@@ -156,6 +158,7 @@ public class Payload {
         this.email = email;
         this.device_fingerprint = device_fingerprint;
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
         this.PBFPubKey = PBFPubKey;
         this.billingaddress = billingaddress;
         this.billingstate = billingstate;
@@ -198,6 +201,7 @@ public class Payload {
         this.email = email;
         this.device_fingerprint = device_fingerprint;
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
         this.PBFPubKey = PBFPubKey;
 
         if (meta == null) {
@@ -225,6 +229,7 @@ public class Payload {
         this.email = email;
         this.device_fingerprint = device_fingerprint;
         this.tx_ref = tx_ref;
+        this.txRef = tx_ref;
         this.PBFPubKey = PBFPubKey;
         this.bvn = bvn;
         this.is_us_bank_charge = is_us_bank_charge;
@@ -560,10 +565,6 @@ public class Payload {
 
     public String getTx_ref() {
         return tx_ref;
-    }
-
-    public void setTxRef(String txRef) {
-        this.txRef = txRef;
     }
 
     public void setSuggestedAuth(String suggestedAuth) {

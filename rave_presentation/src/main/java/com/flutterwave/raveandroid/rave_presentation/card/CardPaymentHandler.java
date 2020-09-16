@@ -225,8 +225,6 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
      */
     @Deprecated
     private void chargeCardV2(final Payload payload, final String encryptionKey) {
-        payload.setTxRef(payload.getTx_ref());
-
         String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
 

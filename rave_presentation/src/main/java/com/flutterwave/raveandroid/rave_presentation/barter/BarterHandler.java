@@ -43,7 +43,6 @@ public class BarterHandler implements BarterContract.Handler {
 
     @Override
     public void chargeBarter(final Payload payload, final String encryptionKey) {
-        payload.setTxRef(payload.getTx_ref());
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
         encryptedCardRequestBody = encryptedCardRequestBody.trim();
