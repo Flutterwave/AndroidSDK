@@ -160,6 +160,17 @@ public class MainActivity
             }
         });
 
+        francMobileMoneySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    countryEt.setVisibility(View.VISIBLE);
+                } else {
+                    countryEt.setVisibility(View.GONE);
+                }
+            }
+        });
+
         isPermanentAccountSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -305,7 +316,7 @@ public class MainActivity
                         .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
                         .acceptUkPayments(ukbankSwitch.isChecked())
                         .acceptSaBankPayments(saBankSwitch.isChecked())
-                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
+                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked(), countryEt.getText().toString())
                         .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                         .acceptUssdPayments(ussdSwitch.isChecked())
                         .acceptBarterPayments(barterSwitch.isChecked())

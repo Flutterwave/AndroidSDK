@@ -224,6 +224,15 @@
                 android:checked="false"
                 android:text="@string/francophone" />
 
+            <EditText
+                android:id="@+id/countryEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/country_code_e_g_ng"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/accountUkbankSwitch"
                 android:layout_width="match_parent"
@@ -349,15 +358,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/currency_code_e_g_ngn"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/countryEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/country_code_e_g_ng"
                 android:textSize="14sp" />
 
 

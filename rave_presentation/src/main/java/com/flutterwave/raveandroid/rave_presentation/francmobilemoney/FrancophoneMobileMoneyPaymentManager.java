@@ -12,12 +12,14 @@ import javax.inject.Inject;
 public class FrancophoneMobileMoneyPaymentManager {
 
     private final RaveNonUIManager manager;
+    private final String country;
     @Inject
     public FrancMobileMoneyHandler paymentHandler;
     FrancMobileMoneyInteractorImpl interactor;
 
-    public FrancophoneMobileMoneyPaymentManager(RaveNonUIManager manager, FrancophoneMobileMoneyPaymentCallback callback) {
+    public FrancophoneMobileMoneyPaymentManager(RaveNonUIManager manager, String country, FrancophoneMobileMoneyPaymentCallback callback) {
         this.manager = manager;
+        this.country = country;
 
         injectFields(manager.getRaveComponent(), callback);
 
@@ -32,7 +34,7 @@ public class FrancophoneMobileMoneyPaymentManager {
     private Payload createPayload() {
         PayloadBuilder builder = new PayloadBuilder();
         builder.setAmount(String.valueOf(manager.getAmount()))
-                .setCountry(manager.getCountry())
+                .setCountry(country)
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
                 .setFullname(manager.getFullName())

@@ -85,7 +85,6 @@ public class RaveNonUIManager extends RavePayManager {
                 country = "TZ";
                 break;
             default:
-                country = "NG";
                 break;
         }
         return this;
