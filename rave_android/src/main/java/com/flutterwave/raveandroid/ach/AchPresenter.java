@@ -20,7 +20,6 @@ import com.flutterwave.raveandroid.rave_presentation.data.validators.Transaction
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
@@ -126,19 +125,12 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
-        String requestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = payloadEncryptor.getEncryptedData(requestBodyAsString, encryptionKey);
-
-        final ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(accountRequestBody);
-
         mView.showProgressIndicator(true);
+        //Todo: harmonize presenter and handler charge
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACH, body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACH, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
