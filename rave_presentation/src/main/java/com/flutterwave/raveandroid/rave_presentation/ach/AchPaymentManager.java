@@ -41,7 +41,6 @@ public class AchPaymentManager {
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())
                 .setPBFPubKey(manager.getPublicKey())
-                .setIsUsBankCharge(true)
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
         if (manager.getPayment_plan() != null) {

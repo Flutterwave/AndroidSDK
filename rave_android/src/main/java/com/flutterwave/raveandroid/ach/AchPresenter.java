@@ -109,7 +109,6 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsUsBankCharge(ravePayInitializer.getOrderedPaymentTypesList().contains(RaveConstants.PAYMENT_TYPE_ACH))
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
@@ -126,7 +125,6 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
         mView.showProgressIndicator(true);
-        //Todo: harmonize presenter and handler charge
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
@@ -179,7 +177,6 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
     public void requeryTx(String publicKey) {
         final String flwRef = sharedMgr.fetchFlwRef();
-        //todo call requery
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
