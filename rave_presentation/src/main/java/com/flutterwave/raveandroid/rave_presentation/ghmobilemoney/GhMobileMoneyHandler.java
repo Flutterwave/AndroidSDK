@@ -19,7 +19,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ZM_MOMO;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_GH_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -87,7 +87,7 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
         logEvent(new ChargeAttemptEvent("GH Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ZM_MOMO, payload, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_GH_MOMO, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
