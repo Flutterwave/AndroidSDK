@@ -37,20 +37,6 @@ public class ChargeResponse {
         this.data = data;
     }
 
-
-    public static class AccountValidateInstructions {
-        public String getInstruction() {
-            return instruction;
-        }
-
-        public void setInstruction(String instruction) {
-            this.instruction = instruction;
-        }
-
-        String instruction;
-
-    }
-
     public String getAmount() {
         return data == null ? null : data.amount;
     }
@@ -137,7 +123,6 @@ public class ChargeResponse {
         String authModelUsed;
         String flwRef;
         String flw_ref;
-        // Todo: Harmonize charge response fields
 
         // Pay with bank (extra) response fields
         String flw_reference;
@@ -274,12 +259,6 @@ public class ChargeResponse {
             return amount;
         }
 
-        public AccountValidateInstructions getValidateInstructions() {
-            return validateInstructions;
-        }
-
-        AccountValidateInstructions validateInstructions;
-
         public String getValidateInstruction() {
             return validateInstruction;
         }
@@ -305,10 +284,6 @@ public class ChargeResponse {
             return flwRef != null ? flwRef :
                     flw_ref != null ? flw_ref :
                             flw_reference;
-        }
-
-        public void setValidateInstructions(AccountValidateInstructions validateInstructions) {
-            this.validateInstructions = validateInstructions;
         }
 
         public String getChargeResponseMessage() {
@@ -388,28 +363,8 @@ public class ChargeResponse {
             return redirect_url;
         }
 
-        public void setRedirect_url(String redirect_url) {
-            this.redirect_url = redirect_url;
-        }
-
         public String getRequery_url() {
             return requery_url;
-        }
-
-        public void setRequery_url(String requery_url) {
-            this.requery_url = requery_url;
-        }
-
-        public String getOrderRef() {
-            return orderRef;
-        }
-
-        public void setOrderRef(String orderRef) {
-            this.orderRef = orderRef;
-        }
-
-        public String getCaptchaLink() {
-            return captchaLink;
         }
 
         public String getCode() {

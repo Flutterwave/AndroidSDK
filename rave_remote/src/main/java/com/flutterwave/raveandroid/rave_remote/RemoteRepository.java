@@ -97,22 +97,8 @@ public class RemoteRepository {
     }
 
 
-    public void chargeWithPolling(ChargeRequestBody body, final ResultCallback callback) {
-
-        Call<String> call = service.chargeWithPolling(body);
-
-        executor.execute(
-                call,
-                new TypeToken<ChargeResponse>() {
-                }.getType(),
-                new GenericNetworkCallback<ChargeResponse>(callback)
-        );
-    }
-
-
     public void chargeSaBankAccount(String publicKey, Payload payload, final ResultCallback callback) {
         Call<String> call = service.charge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, payload);
-        // Todo: confirm that  SA Bank account works
 
         executor.execute(
                 call,

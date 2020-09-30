@@ -49,9 +49,6 @@ public class RaveConstants {
     public static String CHARGE_TYPE_ZM_MOMO = "mobile_money_zambia";
     public static String CHARGE_TYPE_MPESA = "mpesa";
     public static String CHARGE_TYPE_FRANC_MOMO = "mobile_money_franco";
-    public static String CHARGE_TYPE_BARTER = "barter";
-//     Todo: test barter for v3
-
 
     // Authentication methods
     public static final String PIN = "pin";

@@ -145,7 +145,6 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                             break;
                         case AVS_NOAUTH:
                             mCardInteractor.collectCardAddressDetails(payload);
-                            // Todo: test saved card charge
                     }
 
                 } else {
