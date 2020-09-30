@@ -1,7 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.data;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
-import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 
@@ -66,10 +65,9 @@ public class PayloadBuilder {
     }
 
     public Payload createPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
 
-        Payload payload = new Payload(metaObj, subaccountsObj, narration, expirymonth,
+        Payload payload = new Payload(subaccountsObj, narration, expirymonth,
                 pbfPubKey, ip,
                 fullname, currency, country,
                 amount, email, expiryyear,
@@ -81,24 +79,24 @@ public class PayloadBuilder {
         }
 
         payload.setPreauthorize(isPreAuth);
+        payload.setMeta(Utils.pojofyMetaString(meta));
 
         return payload;
     }
 
     public Payload createBankPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(metaObj, subaccountsObj, narration, ip, accountnumber, accountbank,
+        Payload payload = new Payload(subaccountsObj, narration, ip, accountnumber, accountbank,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey, bvn);
         payload.setPayment_type("account");
+        payload.setMeta(Utils.pojofyMetaString(meta));
 
         return payload;
     }
 
     public Payload createBankTransferPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
 
         // Setup account expiry details
@@ -108,112 +106,112 @@ public class PayloadBuilder {
             if (duration > 0) payload.setDuration(duration);
             if (frequency > 0) payload.setFrequency(frequency);
         }
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createUssdPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setAccount_bank(accountbank);
         payload.setOrderRef(txRef);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createMpesaPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createFrancPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("mobilemoneyfranco");
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createUKPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
         payload.setAccountnumber("00000");
         payload.setAccountname("account rave mobile");
         payload.setAccount_bank("093");
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createSaBankAccountPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("account");
         payload.setAccountnumber("00000");
         payload.setAccount_bank("093");
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createBarterPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setPayment_type("barter");
         payload.setIs_barter("1");
+        payload.setMetaForV2(Utils.pojofyMetaStringForV2(meta));
         return payload;
     }
 
     public Payload createGhMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setVoucher(voucher);
         payload.setNetwork(network);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createZmMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setVoucher(voucher);
         payload.setNetwork(network);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createUgMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setNetwork(network);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createRwfMobileMoneyPayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
-        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip,
+        Payload payload = new Payload(phonenumber, subaccountsObj, narration, ip,
                 fullname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
         payload.setNetwork(network);
+        payload.setMeta(Utils.pojofyMetaString(meta));
         return payload;
     }
 
     public Payload createSavedCardChargePayload() {
-        List<Meta> metaObj = Utils.pojofyMetaString(meta);
         List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
 
-        Payload payload = new Payload(metaObj, subaccountsObj, narration,
+        Payload payload = new Payload(subaccountsObj, narration,
                 pbfPubKey, ip,
                 fullname, currency, country,
                 amount, email, device_fingerprint,
@@ -228,6 +226,7 @@ public class PayloadBuilder {
         payload.setCardBIN(savedCard.getMasked_pan().substring(0, 6));
         payload.setCard_hash(savedCard.getCardHash());
         payload.setDevice_key(phonenumber);
+        payload.setMetaForV2(Utils.pojofyMetaStringForV2(meta));
         return payload;
 
     }

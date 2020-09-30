@@ -1,8 +1,11 @@
 package com.flutterwave.raveandroid.rave_java_commons;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_NOAUTH;
@@ -51,13 +54,12 @@ public class Payload {
     private String payment_plan;
     private String passcode;
     private String redirect_url = RaveConstants.RAVE_3DS_CALLBACK;
-    private List<Meta> meta;// Todo: match meta to v3 standard
+    private JsonElement meta;
     private List<SubAccount> subaccounts;
     private Authorization authorization;
 
     // Constructor for saved card charge
-    public Payload(List<Meta> meta,
-                   List<SubAccount> subaccounts, String narration, String PBFPubKey, String IP,
+    public Payload(List<SubAccount> subaccounts, String narration, String PBFPubKey, String IP,
                    String fullname, String currency, String country, String amount,
                    String email, String device_fingerprint, String tx_ref, Boolean
                            is_saved_card_charge, String phone_number) {
@@ -75,17 +77,10 @@ public class Payload {
         this.txRef = tx_ref;
         this.is_saved_card_charge = is_saved_card_charge;
         this.phone_number = phone_number;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
     }
 
 
-    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration,
+    public Payload(List<SubAccount> subaccounts, String narration,
                    String expiry_month, String PBFPubKey, String IP,
                    String fullname, String currency, String country, String amount,
                    String email, String expiry_year, String cvv, String device_fingerprint,
@@ -106,19 +101,9 @@ public class Payload {
         this.card_number = card_number;
         this.tx_ref = tx_ref;
         this.txRef = tx_ref;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
     }
 
-    public Payload(String phone_number,
-                   List<Meta> meta,
-                   List<SubAccount> subaccounts,
+    public Payload(String phone_number, List<SubAccount> subaccounts,
                    String narration,
                    String IP,
                    String fullname,
@@ -129,7 +114,6 @@ public class Payload {
                    String device_fingerprint,
                    String tx_ref,
                    String PBFPubKey) {
-        this.meta = meta;
         this.subaccounts = subaccounts;
         this.narration = narration;
         this.client_ip = IP;
@@ -143,17 +127,9 @@ public class Payload {
         this.tx_ref = tx_ref;
         this.txRef = tx_ref;
         this.PBFPubKey = PBFPubKey;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
     }
 
-    public Payload(List<Meta> meta, List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
+    public Payload(List<SubAccount> subaccounts, String narration, String IP, String accountnumber, String accountbank,
                    String fullname, String currency, String country, String amount,
                    String email, String device_fingerprint, String tx_ref, String PBFPubKey, String bvn) {
         this.meta = meta;
@@ -172,14 +148,6 @@ public class Payload {
         this.txRef = tx_ref;
         this.PBFPubKey = PBFPubKey;
         this.bvn = bvn;
-
-        if (meta == null) {
-            meta = new ArrayList<>();
-        }
-
-        meta.add(new Meta("sdk", "android"));
-        this.meta = meta;
-
     }
 
     public String getCardBIN() {
@@ -214,13 +182,30 @@ public class Payload {
         this.payment_plan = payment_plan;
     }
 
-    public List<Meta> getMeta() {
-        return meta;
+    /**
+     * @param meta
+     * @deprecated This is deprecated way to set meta values. Only left because of charge methods that use v2 API
+     */
+    public void setMetaForV2(List<Meta> meta) {
+        if (meta == null) {
+            meta = new ArrayList<>();
+        }
+
+        meta.add(new Meta("sdk", "android"));
+        this.meta = new Gson().toJsonTree(meta);
     }
 
-    public void setMeta(List<Meta> meta) {
-        this.meta = meta;
+
+    public void setMeta(HashMap<String, String> meta) {
+        if (meta == null) {
+            meta = new HashMap<>();
+        }
+
+        meta.put("sdk", "android");
+        this.meta = new Gson().toJsonTree(meta);
+
     }
+
 
     public void setPayment_type(String payment_type) {
         this.payment_type = payment_type;
