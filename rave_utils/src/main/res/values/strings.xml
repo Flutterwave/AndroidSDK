@@ -188,9 +188,4 @@
         <item>MTN</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="please_select_a_card">Please select a card</string>
-    <string name="barter_funding">Barter Funding</string>
-
 </resources>
