@@ -188,7 +188,11 @@ public class AcquiredFragment extends Fragment implements AcquiredUiContract.Vie
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            showProgressIndicator(false);
+            if(url.contains("/api/v1/provider/return")){
+                showProgressIndicator(true);
+            } else {
+                showProgressIndicator(false);
+            }
             Log.d("finished URLS", url);
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK) || url.contains("http://127.0.0.0")) {
                 presenter.requeryTx(ravePayInitializer.getPublicKey(), flwRef);
