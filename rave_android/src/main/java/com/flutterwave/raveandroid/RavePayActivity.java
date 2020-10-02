@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,12 +21,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
 import com.flutterwave.raveandroid.account.AccountFragment;
 import com.flutterwave.raveandroid.ach.AchFragment;
+import com.flutterwave.raveandroid.acquireddotcom.AcquiredFragment;
 import com.flutterwave.raveandroid.banktransfer.BankTransferFragment;
 import com.flutterwave.raveandroid.barter.BarterFragment;
 import com.flutterwave.raveandroid.card.CardFragment;
@@ -58,6 +61,7 @@ import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -412,6 +416,19 @@ public class RavePayActivity extends AppCompatActivity {
     private void addFragmentToLayout(PaymentTile foundPaymentTile) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        boolean isBarter = isBarter();
+
+        ArrayList<String> supportedCurrenciesForAcquired = new ArrayList(
+                Arrays.asList("GBP", "EUR"));
+
+        Fragment cardFragment;
+
+        if(isBarter && supportedCurrenciesForAcquired.contains(ravePayInitializer.currency)){
+            cardFragment = new AcquiredFragment();
+        } else {
+            cardFragment = new CardFragment();
+        }
+
         switch (foundPaymentTile.paymentType) {
             case PAYMENT_TYPE_ACCOUNT:
                 transaction.replace(R.id.payment_fragment_container, new AccountFragment());
@@ -423,7 +440,7 @@ public class RavePayActivity extends AppCompatActivity {
                 transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
-                transaction.replace(R.id.payment_fragment_container, new CardFragment());
+                transaction.replace(R.id.payment_fragment_container, cardFragment);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
@@ -466,6 +483,24 @@ public class RavePayActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isBarter(){
+        String packageName = getApplicationContext().getPackageName();
+        return packageName.equals("com.flutterwave.flybarter");
+    }
+
+    public boolean appIsInDarkMode(){
+        boolean appIsInDarkMode = false;
+        int nightModeFlags =
+                getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                appIsInDarkMode = true;
+                break;
+        }
+        return appIsInDarkMode;
     }
 
 

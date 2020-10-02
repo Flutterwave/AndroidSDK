@@ -418,6 +418,16 @@ public class Payload
         this.payment_type = payment_type;
     }
 
+    private String template_mode;
+
+    public String getAcquiredTemplateType() {
+        return template_mode;
+    }
+
+    public void setAcquiredTemplateMode(String templateMode) {
+        this.template_mode = templateMode;
+    }
+
     private boolean is_mobile_money_franco;
 
     private String payment_type;

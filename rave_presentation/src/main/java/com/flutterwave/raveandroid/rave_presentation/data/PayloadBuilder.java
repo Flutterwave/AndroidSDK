@@ -7,6 +7,8 @@ import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 
 import java.util.List;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
+
 public class PayloadBuilder {
 
     private String expirymonth;
@@ -312,6 +314,24 @@ public class PayloadBuilder {
         payload.setIs_sa_call_pay("1");
         payload.setAccountnumber("00000");
         payload.setAccountbank("093");
+        return payload;
+    }
+
+
+    public Payload createAcquiredDotComPayload(boolean appIsInDarkMode) {
+        String templateMode;
+        if(appIsInDarkMode){
+            templateMode = "dark";
+        } else {
+            templateMode = "light";
+        }
+        List<Meta> metaObj = Utils.pojofyMetaString(meta);
+        List<SubAccount> subaccountsObj = Utils.pojofySubaccountString(subAccounts);
+        Payload payload = new Payload(phonenumber, metaObj, subaccountsObj, narration, ip, lastname,
+                firstname, currency, country, amount, email, device_fingerprint, txRef, pbfPubKey);
+        payload.setPayment_type("charge-card-gbp");
+        payload.setSuggestedAuth(VBV);
+        payload.setAcquiredTemplateMode(templateMode);
         return payload;
     }
 

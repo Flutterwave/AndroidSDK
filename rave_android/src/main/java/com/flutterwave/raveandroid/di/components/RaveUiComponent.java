@@ -5,6 +5,7 @@ import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
 import com.flutterwave.raveandroid.di.modules.AchModule;
+import com.flutterwave.raveandroid.di.modules.AcquiredModule;
 import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.di.modules.BankTransferModule;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
@@ -118,5 +119,7 @@ public interface RaveUiComponent {
     FrancComponent plus(FrancModule francModule);
 
     SaBankComponent plus(SaBankModule saBankModule);
+
+    AcquiredComponent plus(AcquiredModule acquiredModule);
 }
 
