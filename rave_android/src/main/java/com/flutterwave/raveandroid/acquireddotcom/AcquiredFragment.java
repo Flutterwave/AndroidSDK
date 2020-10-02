@@ -168,7 +168,6 @@ public class AcquiredFragment extends Fragment implements AcquiredUiContract.Vie
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
-            showProgressIndicator(true);
             return true;
         }
 
@@ -176,7 +175,6 @@ public class AcquiredFragment extends Fragment implements AcquiredUiContract.Vie
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             view.loadUrl(request.getUrl().toString());
-            showProgressIndicator(true);
             return true;
         }
 
