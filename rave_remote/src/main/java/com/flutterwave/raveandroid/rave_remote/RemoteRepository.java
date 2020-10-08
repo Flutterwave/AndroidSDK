@@ -16,7 +16,6 @@ import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -37,6 +36,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_SA_BANK;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.expired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenNotFound;
@@ -64,42 +64,41 @@ public class RemoteRepository {
         this.executor = executor;
     }
 
-    public void charge(ChargeRequestBody body, final ResultCallback callback) {
+    public void charge(String publicKey, String chargeType, ChargeRequestBody body, final ResultCallback callback) {
         executor.execute(
-                service.charge(body),
+                service.encryptedCharge(chargeType, "Bearer " + publicKey, body),
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
         );
     }
 
-    public void chargeWithPolling(ChargeRequestBody body, final ResultCallback callback) {
-
-        Call<String> call = service.chargeWithPolling(body);
-
+    public void charge(String publicKey, String chargeType, Payload body, final ResultCallback callback) {
         executor.execute(
-                call,
+                service.charge(chargeType, "Bearer " + publicKey, body),
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
         );
     }
 
-    public void chargeMobileMoneyWallet(ChargeRequestBody body, final ResultCallback callback) {
-
-        Call<String> call = service.charge(body);
-
+    /**
+     * @deprecated This has been deprecated in favor of the {@link RemoteRepository#charge(String, String, ChargeRequestBody, ResultCallback)} v3 charge}.
+     * It's only left for use for saved card charge and barter charges which have not yet been migrated to v3.
+     * Other charge types might not work well with this route.
+     */
+    public void chargeV2(ChargeRequestBody body, final ResultCallback callback) {
         executor.execute(
-                call,
-                new TypeToken<MobileMoneyChargeResponse>() {
+                service.chargeV2(body),
+                new TypeToken<ChargeResponse>() {
                 }.getType(),
-                new GenericNetworkCallback<MobileMoneyChargeResponse>(callback)
+                new GenericNetworkCallback<ChargeResponse>(callback)
         );
     }
 
 
-    public void chargeSaBankAccount(ChargeRequestBody requestBody, final ResultCallback callback) {
-        Call<String> call = service.charge(requestBody);
+    public void chargeSaBankAccount(String publicKey, Payload payload, final ResultCallback callback) {
+        Call<String> call = service.charge(CHARGE_TYPE_SA_BANK, "Bearer " + publicKey, payload);
 
         executor.execute(
                 call,
@@ -110,9 +109,9 @@ public class RemoteRepository {
     }
 
 
-    public void validateCardCharge(ValidateChargeBody body, final ResultCallback callback) {
+    public void validateCharge(String publicKey, ValidateChargeBody body, final ResultCallback callback) {
 
-        Call<String> call = service.validateCardCharge(body);
+        Call<String> call = service.validateCharge("Bearer " + publicKey, body);
 
         executor.execute(
                 call,
@@ -123,22 +122,9 @@ public class RemoteRepository {
 
     }
 
+    public void requeryTx(String publicKey, RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-    public void validateAccountCharge(ValidateChargeBody body, final ResultCallback callback) {
-
-        Call<String> call = service.validateAccountCharge(body);
-
-        executor.execute(
-                call,
-                new TypeToken<ChargeResponse>() {
-                }.getType(),
-                new GenericNetworkCallback<ChargeResponse>(callback)
-        );
-    }
-
-    public void requeryTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
-
-        Call<String> call = service.requeryTx(requeryRequestBody);
+        Call<String> call = service.requeryTx("Bearer " + publicKey, requeryRequestBody);
 
         executor.execute(
                 call,
@@ -148,9 +134,9 @@ public class RemoteRepository {
         );
     }
 
-    public void requeryPayWithBankTx(RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
+    public void requeryPayWithBankTx(String publicKey, RequeryRequestBody requeryRequestBody, final Callbacks.OnRequeryRequestComplete callback) {
 
-        Call<String> call = service.requeryPayWithBankTx(requeryRequestBody);
+        Call<String> call = service.requeryPayWithBankTx("Bearer " + publicKey, requeryRequestBody);
 
         executor.execute(
                 call,

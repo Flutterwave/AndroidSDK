@@ -133,8 +133,8 @@ public class SaBankAccountPresenterTest {
         assertEquals(email, capturedPayload.getEmail());
         assertEquals(firstName, capturedPayload.getFirstname());
         assertEquals(lastName, capturedPayload.getLastname());
-        assertEquals(fingerPrint, capturedPayload.getIP());
-        assertEquals(txRef, capturedPayload.getTxRef());
+        assertEquals(fingerPrint, capturedPayload.getClient_ip());
+        assertEquals(txRef, capturedPayload.getTx_ref());
         assertEquals(pubKey, capturedPayload.getPBFPubKey());
         assertEquals(deviceId, capturedPayload.getDevice_fingerprint());
 

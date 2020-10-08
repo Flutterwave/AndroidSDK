@@ -37,16 +37,15 @@ import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.SwipeToDeleteCallback;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardRecyclerAdapter;
-import com.flutterwave.raveandroid.card.savedcards.SavedCardsActivity;
 import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
 import com.flutterwave.raveandroid.data.EmailObfuscator;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -443,7 +442,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                     String country = data.getStringExtra(AVSVBVFragment.EXTRA_COUNTRY);
                     AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
 
-                    presenter.chargeCardWithAddressDetails(payLoad, address, ravePayInitializer.getEncryptionKey(), authModel);
+                    presenter.chargeCardWithAddressDetails(payLoad, address, ravePayInitializer.getEncryptionKey());
                     break;
                 case WEB_VERIFICATION_REQUEST_CODE:
                     presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
@@ -596,7 +595,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectOtpForSaveCardCharge(Payload payload) {
         String authInstruction = "Enter the one time password (OTP) sent to " +
                 phoneNumberObfuscator.obfuscatePhoneNumber(payload
-                        .getPhonenumber()) + " or " + emailObfuscator.obfuscateEmail(payload
+                        .getPhone_number()) + " or " + emailObfuscator.obfuscateEmail(payload
                 .getEmail());
         showOTPLayoutForSavedCard(payload, authInstruction);
     }
@@ -772,7 +771,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     }
 
     @Override
-    public void collectCardAddressDetails(final Payload payload, String authModel) {
+    public void collectCardAddressDetails(final Payload payload) {
         this.payLoad = payload;
         this.authModel = authModel;
         new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())

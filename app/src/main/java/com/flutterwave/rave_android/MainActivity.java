@@ -22,6 +22,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -32,7 +33,6 @@ import com.flutterwave.raveandroid.rave_presentation.card.Card;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentCallback;
 import com.flutterwave.raveandroid.rave_presentation.card.CardPaymentManager;
 import com.flutterwave.raveandroid.rave_presentation.card.SavedCardsListener;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveutils.verification.AVSVBVFragment;
 import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.PinFragment;
@@ -58,8 +58,7 @@ public class MainActivity
     EditText narrationEt;
     EditText currencyEt;
     EditText countryEt;
-    EditText fNameEt;
-    EditText lNameEt;
+    EditText fullNameEt;
     EditText durationEt;
     EditText frequencyEt;
     EditText phoneNumberEt;
@@ -112,8 +111,7 @@ public class MainActivity
         narrationEt = findViewById(R.id.narrationTV);
         currencyEt = findViewById(R.id.currencyEt);
         countryEt = findViewById(R.id.countryEt);
-        fNameEt = findViewById(R.id.fNameEt);
-        lNameEt = findViewById(R.id.lnameEt);
+        fullNameEt = findViewById(R.id.fullNameEt);
         phoneNumberEt = findViewById(R.id.phoneNumberEt);
         durationEt = findViewById(R.id.expiryDaysEt);
         frequencyEt = findViewById(R.id.frequencyEt);
@@ -158,6 +156,17 @@ public class MainActivity
                     isPermanentAccountSwitch.setVisibility(View.GONE);
                     setExpirySwitch.setVisibility(View.GONE);
                     expiryDetailsLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        francMobileMoneySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    countryEt.setVisibility(View.VISIBLE);
+                } else {
+                    countryEt.setVisibility(View.GONE);
                 }
             }
         });
@@ -241,8 +250,7 @@ public class MainActivity
         String txRef = txRefEt.getText().toString();
         String narration = narrationEt.getText().toString();
         String currency = currencyEt.getText().toString();
-        String fName = fNameEt.getText().toString();
-        String lName = lNameEt.getText().toString();
+        String fullName = fullNameEt.getText().toString();
         String phoneNumber = phoneNumberEt.getText().toString();
         String accountDuration = durationEt.getText().toString();
         String accountPaymentFrequency = frequencyEt.getText().toString();
@@ -308,7 +316,7 @@ public class MainActivity
                         .acceptRwfMobileMoneyPayments(rwfMobileMoneySwitch.isChecked())
                         .acceptUkPayments(ukbankSwitch.isChecked())
                         .acceptSaBankPayments(saBankSwitch.isChecked())
-                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked())
+                        .acceptFrancMobileMoneyPayments(francMobileMoneySwitch.isChecked(), countryEt.getText().toString())
                         .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                         .acceptUssdPayments(ussdSwitch.isChecked())
                         .acceptBarterPayments(barterSwitch.isChecked())
@@ -317,8 +325,7 @@ public class MainActivity
                         .setAmount(Double.parseDouble(amount))
                         .setCurrency(currency)
                         .setEmail(email)
-                        .setfName(fName)
-                        .setlName(lName)
+                        .setFullName(fullName)
                         .setPhoneNumber(phoneNumber, false)
                         .setNarration(narration)
                         .setPublicKey(publicKey)
@@ -352,8 +359,7 @@ public class MainActivity
                 raveManager = new RaveNonUIManager().setAmount(Double.parseDouble(amount))
                         .setCurrency(currency)
                         .setEmail(email)
-                        .setfName(fName)
-                        .setlName(lName)
+                        .setFullName(fullName)
                         .setPhoneNumber(phoneNumber)
                         .setNarration(narration)
                         .setPublicKey(publicKey)
@@ -446,8 +452,7 @@ public class MainActivity
         narrationEt.setError(null);
         currencyEt.setError(null);
         countryEt.setError(null);
-        fNameEt.setError(null);
-        lNameEt.setError(null);
+        fullNameEt.setError(null);
         durationEt.setError(null);
         frequencyEt.setError(null);
     }

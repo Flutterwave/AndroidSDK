@@ -6,23 +6,22 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
+import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
-import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_RW_MOMO;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
 /**
@@ -41,6 +40,7 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
     private RwfMobileMoneyContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
     private String txRef = null;
+    private String flwRef = null;
 
     @Inject
     public RwfMobileMoneyHandler(RwfMobileMoneyContract.Interactor mInteractor) {
@@ -81,37 +81,25 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
 
     @Override
     public void chargeRwfMobileMoney(final Payload payload, final String encryptionKey) {
-        txRef = payload.getTxRef();
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey).trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
+        txRef = payload.getTx_ref();
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("Rwanda Mobile Money").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_RW_MOMO, payload, new ResultCallback<ChargeResponse>() {
             @Override
-            public void onSuccess(MobileMoneyChargeResponse response) {
+            public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
-                MobileMoneyChargeResponse.Data data = response.getData();
-                if (data != null) {
-                    if (data.getCode() != null && data.getCode().equals("02")
-                            && data.getCaptchaLink() != null) {
-                        mInteractor.showWebPage(data.getCaptchaLink());
-                    } else {
-                        String flwRef = data.getFlwRef();
-                        String txRef = data.getTx_ref();
-                        requeryTx(flwRef, txRef, payload.getPBFPubKey());
-                    }
-                } else mInteractor.onPaymentError(noResponse);
+                if (response.getAuthMode() != null && response.getAuthMode().equalsIgnoreCase(REDIRECT) && response.getAuthUrl() != null)
+                    mInteractor.showWebPage(response.getAuthUrl());
+                else {
+                    flwRef = response.getFlwRef();
+                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
+                }
 
             }
 
@@ -126,7 +114,7 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
 
     @Override
     public void requeryTx(final String publicKey) {
-        requeryTx(null, txRef, publicKey);
+        requeryTx(flwRef, txRef, publicKey);
     }
 
     @Override
@@ -141,21 +129,21 @@ public class RwfMobileMoneyHandler implements RwfMobileMoneyContract.Handler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
+                if (response.getStatus() == null)
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                else if (response.getStatus().equalsIgnoreCase("pending")) {
                     if (!pollingCancelled) {
                         requeryTx(flwRef, txRef, publicKey);
                     } else mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
-                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
             }
 

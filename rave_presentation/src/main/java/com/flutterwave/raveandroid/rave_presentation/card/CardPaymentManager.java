@@ -1,10 +1,10 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_presentation.FeeCheckListener;
 import com.flutterwave.raveandroid.rave_presentation.RaveNonUIManager;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadBuilder;
 import com.flutterwave.raveandroid.rave_presentation.di.RaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.di.card.CardModule;
@@ -21,6 +21,7 @@ public class CardPaymentManager {
     public CardPaymentHandler paymentHandler;
     CardInteractorImpl interactor;
     private int chargeType;
+    //Todo: Look into making UI layer depend on payment managers
 
     public CardPaymentManager(RaveNonUIManager manager, CardPaymentCallback callback) {
         this.manager = manager;
@@ -52,8 +53,7 @@ public class CardPaymentManager {
                 .setCurrency(manager.getCurrency())
                 .setCvv(card.getCvv())
                 .setEmail(manager.getEmail())
-                .setFirstname(manager.getfName())
-                .setLastname(manager.getfName())
+                .setFullname(manager.getFullName())
                 .setIP(manager.getUniqueDeviceID())
                 .setTxRef(manager.getTxRef())
                 .setExpiryyear(card.getExpiryYear())
@@ -88,8 +88,7 @@ public class CardPaymentManager {
         paymentHandler.chargeCardWithAddressDetails(
                 interactor.getPayload(),
                 addressDetails,
-                manager.getEncryptionKey(),
-                interactor.getAuthModel()
+                manager.getEncryptionKey()
         );
     }
 
@@ -142,8 +141,7 @@ public class CardPaymentManager {
                 .setCountry(manager.getCountry())
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
-                .setFirstname(manager.getfName())
-                .setLastname(manager.getlName())
+                .setFullname(manager.getFullName())
                 .setIP(manager.getUniqueDeviceID())
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())

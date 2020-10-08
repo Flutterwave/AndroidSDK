@@ -151,7 +151,7 @@
     <string name="i_have_completed_this_payment">I have completed this payment  → </string>
     <string name="flutterwave_ukaccount">4327122</string>
     <string name="flutterwave_sortcode">04-00-53</string>
-    <string name="barter_funnding">Barter Funnding</string>
+    <string name="barter_funding">Barter Funding</string>
 
     <string name="reference_code">Reference Code</string>
     <string name="reference_code_placeholder">4990</string>
@@ -187,10 +187,5 @@
         <item>Select network</item>
         <item>MTN</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="please_select_a_card">Please select a card</string>
-    <string name="barter_funding">Barter Funding</string>
 
 </resources>

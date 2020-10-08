@@ -85,7 +85,6 @@ public class RaveNonUIManager extends RavePayManager {
                 country = "TZ";
                 break;
             default:
-                country = "NG";
                 break;
         }
         return this;
@@ -97,13 +96,20 @@ public class RaveNonUIManager extends RavePayManager {
         return this;
     }
 
+    @Deprecated
     public RaveNonUIManager setfName(String fName) {
         this.fName = fName;
         return this;
     }
 
+    @Deprecated
     public RaveNonUIManager setlName(String lName) {
         this.lName = lName;
+        return this;
+    }
+
+    public RaveNonUIManager setFullName(String fullName) {
+        this.fullName = fullName;
         return this;
     }
 

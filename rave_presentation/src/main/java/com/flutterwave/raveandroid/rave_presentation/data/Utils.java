@@ -21,6 +21,7 @@ import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -65,12 +66,29 @@ public class Utils {
         return gson.toJson(body, type);
     }
 
-    public static List<Meta> pojofyMetaString(String meta) {
+    public static List<Meta> pojofyMetaStringForV2(String meta) {
         try {
             Gson gson = new Gson();
             Type type = new TypeToken<List<Meta>>() {
             }.getType();
             return gson.fromJson(meta, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static HashMap<String, String> pojofyMetaString(String metas) {
+        try {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Meta>>() {
+            }.getType();
+            List<Meta> meta1 = gson.fromJson(metas, type);
+
+            HashMap<String, String> metaMap = new HashMap<>();
+            for (Meta meta : meta1) metaMap.put(meta.getMetaname(), meta.getMetavalue());
+
+            return metaMap;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

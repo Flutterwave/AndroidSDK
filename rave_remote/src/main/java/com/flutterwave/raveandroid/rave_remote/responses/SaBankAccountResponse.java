@@ -6,6 +6,7 @@ public class SaBankAccountResponse {
     private String status;
     private String message;
     private Data data;
+    ChargeMeta meta;
 
     public String getStatus() {
         return status;
@@ -125,13 +126,34 @@ public class SaBankAccountResponse {
         }
     }
 
+    public ChargeMeta getChargeMeta() {
+        return (meta != null) ? meta : data.meta;
+    }
 
-    public static class Data{
+    public String getAuthUrl() {
+        ChargeMeta meta = getChargeMeta();
+        return (data == null) ? null
+                : (data.authUrl != null) ? data.authUrl
+                : (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.redirect;
+    }
+
+    public static class Data {
+        ChargeMeta meta;
+        @SerializedName("auth_url")
+        String authUrl;
+        @SerializedName("flw_ref")
+        String flwRef;
         private Data_ data;
         @SerializedName("response_code")
         private String responseCode;
         @SerializedName("response_message")
         private String responseMessage;
+
+        public String getFlwRef() {
+            return flwRef;
+        }
 
         public Data_ getData() {
             return data;
@@ -158,6 +180,25 @@ public class SaBankAccountResponse {
         }
     }
 
+    private class ChargeMeta {
+        Authorization authorization;
+
+        private class Authorization {
+            String mode;
+            String redirect;
+            String note;
+            String validate_instructions;
+
+            //Pay with bank transfer
+            String transfer_reference;
+            String transfer_account;
+            String transfer_bank;
+            String account_expiration;
+            String transfer_note;
+            String transfer_amount;
+
+        }
+    }
 }
 
 

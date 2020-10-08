@@ -4,10 +4,10 @@ import android.util.Log;
 
 import com.flutterwave.raveandroid.rave_core.models.DeviceIdGetter;
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadToJsonConverter;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
@@ -40,13 +40,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ACCESS_OTP;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.AVS_VBVSECURECODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_CARD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.GTB_OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_INTERNATIONAL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH_SAVED_CARD;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
@@ -119,12 +123,125 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_CARD, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mCardInteractor.showProgressIndicator(false);
+                String authMode = response.getAuthMode();
+                String flwRef = response.getFlwRef();
+                if (authMode != null) {
+                    switch (authMode) {
+                        case PIN:
+                            mCardInteractor.collectCardPin(payload);
+                            break;
+                        case OTP:
+                            String processorResponse = response.getData().getProcessorResponse();
+                            processorResponse = (processorResponse == null || processorResponse.length() == 0) ? enterOTP : processorResponse;
+                            mCardInteractor.collectOtp(flwRef, processorResponse);
+                            break;
+                        case REDIRECT:
+                            mCardInteractor.showWebPage(response.getAuthUrl(), flwRef);
+                            break;
+                        case AVS_NOAUTH:
+                            mCardInteractor.collectCardAddressDetails(payload);
+                    }
 
+                } else {
+                    mCardInteractor.onPaymentError(noResponse);
+                }
+
+//                if (response.getData() != null) {
+//
+//                    if (response.getData().getSuggested_auth() != null) {
+//                        String suggested_auth = response.getData().getSuggested_auth();
+//
+//                        if (suggested_auth.equals(PIN)) {
+//                            mCardInteractor.collectCardPin(payload);
+//                        } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
+//                            mCardInteractor.collectCardAddressDetails(payload, AVS_VBVSECURECODE);
+//                        } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
+//                            mCardInteractor.collectCardAddressDetails(payload, NOAUTH_INTERNATIONAL);
+//                        } else {
+//                            mCardInteractor.onPaymentError(unknownAuthmsg);
+//                        }
+//                    } else {
+//                        // Check if transaction is already successful
+//                        if (response.getData().getChargeResponseCode() != null && response.getData().getChargeResponseCode().equalsIgnoreCase("00")) {
+//                            String flwRef = response.getData().getFlwRef();
+//
+//                            requeryTx(flwRef, payload.getPBFPubKey());
+//
+//                        } else {
+//
+//                            String authModelUsed = response.getData().getAuthModelUsed();
+//
+//                            if (authModelUsed != null) {
+//                                String flwRef = response.getData().getFlwRef();
+//
+//                                if (authModelUsed.equalsIgnoreCase(VBV) || authModelUsed.equalsIgnoreCase(AVS_VBVSECURECODE) || authModelUsed.equalsIgnoreCase(NOAUTH_SAVED_CARD)) {
+//                                    String authUrlCrude = response.getData().getAuthurl();
+//                                    mCardInteractor.showWebPage(authUrlCrude, flwRef);
+//                                } else if (authModelUsed.equalsIgnoreCase(GTB_OTP)
+//                                        || authModelUsed.equalsIgnoreCase(ACCESS_OTP)
+//                                        || authModelUsed.toLowerCase().contains("otp")
+//                                        || authModelUsed.equalsIgnoreCase(PIN)) {
+//                                    String chargeResponseMessage = response.getData().getChargeResponseMessage();
+//                                    chargeResponseMessage = (chargeResponseMessage == null || chargeResponseMessage.length() == 0) ? enterOTP : chargeResponseMessage;
+//                                    mCardInteractor.collectOtp(flwRef, chargeResponseMessage);
+//                                } else if (authModelUsed.equalsIgnoreCase(NOAUTH)) {
+//                                    requeryTx(flwRef, payload.getPBFPubKey());
+//                                } else {
+//                                    mCardInteractor.onPaymentError(unknownAuthmsg);
+//                                }
+//                            } else {
+//                                mCardInteractor.onPaymentError(unknownAuthmsg);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    mCardInteractor.onPaymentError(noResponse);
+//                }
+            }
+
+            @Override
+            public void onError(String message) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onPaymentError(message);
+            }
+        });
+    }
+
+    /**
+     * Makes a generic call to the v2 charge endpoint with the payload provided. Handles both conditions
+     * for initial charge request and when the suggested auth has been added.
+     *
+     * @param payload       {@link Payload} object to be sent.
+     * @param encryptionKey Rave encryption key gotten from dashboard
+     * @deprecated This has been deprecated in favor of the {@link CardPaymentHandler#chargeCard(Payload, String) v3 charge}.
+     * It's only left for use for saved card charge (with Webpage authentication) which has not yet been migrated.
+     * Other auth models might not work well with this route.
+     */
+    @Deprecated
+    private void chargeCardV2(final Payload payload, final String encryptionKey) {
+        String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
+        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
+
+        final ChargeRequestBody body = new ChargeRequestBody();
+        body.setAlg("3DES-24");
+        body.setPBFPubKey(payload.getPBFPubKey());
+        body.setClient(encryptedCardRequestBody);
+
+        mCardInteractor.showProgressIndicator(true);
+
+        logEvent(new ChargeAttemptEvent("Card").getEvent(), payload.getPBFPubKey());
+
+
+        networkRequest.chargeV2(body, new ResultCallback<ChargeResponse>() {
+            @Override
+            public void onSuccess(ChargeResponse response) {
+
+                mCardInteractor.showProgressIndicator(false);
                 if (response.getData() != null) {
 
                     if (response.getData().getSuggested_auth() != null) {
@@ -133,9 +250,13 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                         if (suggested_auth.equals(PIN)) {
                             mCardInteractor.collectCardPin(payload);
                         } else if (suggested_auth.equals(AVS_VBVSECURECODE)) { //address verification then verification by visa
-                            mCardInteractor.collectCardAddressDetails(payload, AVS_VBVSECURECODE);
+                            mCardInteractor.collectCardAddressDetails(payload
+//                                    , AVS_VBVSECURECODE
+                            );
                         } else if (suggested_auth.equalsIgnoreCase(NOAUTH_INTERNATIONAL)) {
-                            mCardInteractor.collectCardAddressDetails(payload, NOAUTH_INTERNATIONAL);
+                            mCardInteractor.collectCardAddressDetails(payload
+//                                    , NOAUTH_INTERNATIONAL
+                            );
                         } else {
                             mCardInteractor.onPaymentError(unknownAuthmsg);
                         }
@@ -190,12 +311,12 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     public void chargeSavedCard(Payload payload, String encryptionKey) {
         if (payload.getOtp() == null || payload.getOtp() == "") {
             sendRaveOTP(payload);
-        } else chargeCard(payload, encryptionKey);
+        } else chargeCardV2(payload, encryptionKey);
     }
 
     public void sendRaveOTP(final Payload payload) {
         SendOtpRequestBody body = new SendOtpRequestBody();
-        body.setDevice_key(payload.getPhonenumber());
+        body.setDevice_key(payload.getPhone_number());
         body.setPublic_key(payload.getPBFPubKey());
         body.setCard_hash(payload.getCard_hash());
 
@@ -217,16 +338,10 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void chargeCardWithAddressDetails(Payload payload, AddressDetails address, String encryptionKey, String authModel) {
-        payload.setSuggestedAuth(authModel);
-        payload.setBillingaddress(address.getStreetAddress());
-        payload.setBillingcity(address.getCity());
-        payload.setBillingzip(address.getZipCode());
-        payload.setBillingcountry(address.getCountry());
-        payload.setBillingstate(address.getState());
+    public void chargeCardWithAddressDetails(Payload payload, AddressDetails address, String encryptionKey) {
+        payload.setAddressDetails(address);
 
         logEvent(new ChargeAttemptEvent("AVS Card").getEvent(), payload.getPBFPubKey());
-
         chargeCard(payload, encryptionKey);
 
     }
@@ -234,25 +349,20 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     @Override
     public void chargeCardWithPinAuthModel(final Payload payload, String pin, String encryptionKey) {
         payload.setPin(pin);
-        payload.setSuggestedAuth(PIN);
 
         chargeCard(payload, encryptionKey);
-
     }
 
     @Override
     public void validateCardCharge(final String flwRef, String otp, final String publicKey) {
 
-        ValidateChargeBody body = new ValidateChargeBody();
-        body.setPBFPubKey(publicKey);
-        body.setOtp(otp);
-        body.setTransaction_reference(flwRef);
+        ValidateChargeBody body = new ValidateChargeBody(flwRef, otp, CHARGE_TYPE_CARD);
 
         mCardInteractor.showProgressIndicator(true);
 
         logEvent(new ValidationAttemptEvent("Card").getEvent(), publicKey);
 
-        networkRequest.validateCardCharge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.validateCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mCardInteractor.showProgressIndicator(false);
@@ -291,7 +401,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mCardInteractor.showProgressIndicator(false);
@@ -344,7 +454,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey){
+    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey) {
         mCardInteractor.showProgressIndicator(true);
         RemoveSavedCardRequestBody body = new RemoveSavedCardRequestBody(cardHash, phoneNumber, publicKey);
         networkRequest.deleteASavedCard(body, new ResultCallback<SaveCardResponse>() {
@@ -371,7 +481,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
 
-        if(showLoader)
+        if (showLoader)
             mCardInteractor.showProgressIndicator(true);
 
 
@@ -406,7 +516,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     @Override
     public void fetchFee(final Payload payload) {
 
-        boolean isCardnoValid = cardNoValidator.isCardNoStrippedValid(payload.getCardno());
+        boolean isCardnoValid = cardNoValidator.isCardNoStrippedValid(payload.getCard_number());
 
         FeeCheckRequestBody body = new FeeCheckRequestBody();
         body.setAmount(payload.getAmount());
@@ -414,7 +524,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setPBFPubKey(payload.getPBFPubKey());
 
         if (isCardnoValid) {
-            body.setCard6(payload.getCardno().substring(0, 6));
+            body.setCard6(payload.getCard_number().substring(0, 6));
         } else {
             body.setCard6(payload.getCardBIN());
         }

@@ -122,7 +122,6 @@ public class RaveUiManager extends RavePayManager {
                 country = "TZ";
                 break;
             default:
-                country = "NG";
                 break;
         }
         return this;
@@ -134,13 +133,20 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
+    @Deprecated
     public RaveUiManager setfName(String fName) {
         this.fName = fName;
         return this;
     }
 
+    @Deprecated
     public RaveUiManager setlName(String lName) {
         this.lName = lName;
+        return this;
+    }
+
+    public RaveUiManager setFullName(String fullName) {
+        this.fullName = fullName;
         return this;
     }
 
@@ -256,9 +262,10 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    public RaveUiManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
+    public RaveUiManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney, String country) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY) && withFrancMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+        this.country = country;
         return this;
     }
 
@@ -348,8 +355,7 @@ public class RaveUiManager extends RavePayManager {
                 getNarration(),
                 getCurrency(),
                 getCountry(),
-                getfName(),
-                getlName(),
+                getFullName(),
                 theme,
                 getPhoneNumber(),
                 allowEditPhone,

@@ -204,7 +204,7 @@ public class BankTransferHandlerTest {
         String responseJson = generateRandomString();
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("00"), responseJson);
 
         verify(interactor).showPollingIndicator(false);
@@ -225,7 +225,7 @@ public class BankTransferHandlerTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
 
         verify(interactor).showPollingIndicator(false);
@@ -257,7 +257,7 @@ public class BankTransferHandlerTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
 
         verify(paymentHandlerMock, times(2))
@@ -280,7 +280,7 @@ public class BankTransferHandlerTest {
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("01"), responseJson);
 
         verify(interactor).showPollingIndicator(false);
@@ -298,7 +298,7 @@ public class BankTransferHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(requeryResponse, jsonResponse);
 
         verify(interactor).onPaymentFailed(requeryResponse.getStatus(), jsonResponse);
@@ -314,7 +314,7 @@ public class BankTransferHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(generateRequerySuccessful("099"), jsonResponse);
 
         verify(interactor).showProgressIndicator(false);
@@ -330,7 +330,7 @@ public class BankTransferHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString(), generateRandomString(), true, time, time);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
 
-        verify(networkRequest).requeryPayWithBankTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryPayWithBankTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(generateRandomString(), generateRandomString());
 
         verify(interactor).onPaymentFailed(anyString(), anyString());

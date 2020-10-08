@@ -36,7 +36,30 @@ public class RaveConstants {
     public static String FLUTTERWAVE_UK_SORT_CODE = "04-00-53";
     public static String FLUTTERWAVE_UK_BENEFICIARY_NAME = "Barter Funding";
 
+    public static String CHARGE_TYPE_CARD = "card";
+    public static String CHARGE_TYPE_ACH = "ach_payment";
+    public static String CHARGE_TYPE_ACCOUNT = "debit_ng_account";
+    public static String CHARGE_TYPE_UK_ACCOUNT = "debit_uk_account";
+    public static String CHARGE_TYPE_BANK_TRANSFER = "bank_transfer";
+    public static String CHARGE_TYPE_SA_BANK = "ach_payment";
+    public static String CHARGE_TYPE_USSD = "ussd";
+    public static String CHARGE_TYPE_GH_MOMO = "mobile_money_ghana";
+    public static String CHARGE_TYPE_RW_MOMO = "mobile_money_rwanda";
+    public static String CHARGE_TYPE_UG_MOMO = "mobile_money_uganda";
+    public static String CHARGE_TYPE_ZM_MOMO = "mobile_money_zambia";
+    public static String CHARGE_TYPE_MPESA = "mpesa";
+    public static String CHARGE_TYPE_FRANC_MOMO = "mobile_money_franco";
 
+    // Authentication methods
+    public static final String PIN = "pin";
+    public static final String OTP = "otp";
+    public static final String REDIRECT = "redirect";
+    public static final String BANK_TRANSFER = "banktransfer";
+    public static final String CALLBACK = "callback";
+    public static final String AVS_NOAUTH = "avs_noauth";
+
+
+    public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String VBV = "VBVSECURECODE";
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";
@@ -46,9 +69,7 @@ public class RaveConstants {
     public static String RWF = "RWF";
     public static String NOAUTH = "NOAUTH";
     public static String NOAUTH_SAVED_CARD = "noauth-saved-card";
-    public static String PIN = "PIN";
     public static String selectNetwork = "Select network";
-    public static String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
     public static String enterOTP = "Enter your one time password (OTP)";
     public static String NOAUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
     public static String RAVEPAY = "ravepay";

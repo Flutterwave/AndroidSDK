@@ -132,7 +132,7 @@ public class NullUiCardView implements View.OnClickListener, CardUiContract.View
     }
 
     @Override
-    public void collectCardAddressDetails(Payload payload, String authModel) {
+    public void collectCardAddressDetails(Payload payload) {
 
     }
 

@@ -6,14 +6,13 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
+import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -21,6 +20,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_MPESA;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -38,6 +38,8 @@ public class MpesaHandler implements MpesaContract.Handler {
     RemoteRepository networkRequest;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    @Inject
+    TransactionStatusChecker transactionStatusChecker;
     private MpesaContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
 
@@ -80,23 +82,13 @@ public class MpesaHandler implements MpesaContract.Handler {
 
     @Override
     public void chargeMpesa(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey)
-                .trim().replaceAll("\\n", "");
-
-//        Log.d("encrypted", encryptedCardRequestBody);
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("MPesa").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_MPESA, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -131,21 +123,21 @@ public class MpesaHandler implements MpesaContract.Handler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-                if (response.getData() == null) {
+                if (response.getStatus() == null)
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                else if (response.getStatus().equalsIgnoreCase("pending")) {
                     if (!pollingCancelled) {
                         requeryTx(flwRef, txRef, publicKey);
                     } else mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
-                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
             }
 

@@ -15,7 +15,6 @@ import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -23,6 +22,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_USSD;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
 public class UssdHandler implements UssdContract.Handler {
@@ -80,41 +80,29 @@ public class UssdHandler implements UssdContract.Handler {
 
     @Override
     public void payWithUssd(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = payloadToJson.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-        encryptedCardRequestBody = encryptedCardRequestBody.trim().replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
 
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("USSD").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_USSD, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
 
-                if (response.getData() != null) {
-                    flwRef = response.getData().getUssdData().getFlw_reference();
+                String code = response.getUssdCode();
+
+                if (code != null) {
+                    flwRef = response.getFlwRef();
                     publicKey = payload.getPBFPubKey();
-                    String note = null;
-                    if (response.getData().getNote() != null) note = response.getData().getNote();
-                    else if (response.getData().getUssdData().getNote() != null)
-                        note = response.getData().getUssdData().getNote();
-                    else mInteractor.onPaymentError("No response data was returned");
-                    if (note != null) {
-                        if (note.contains("|")) {
-                            ussdCode = note.substring(0, note.indexOf("|"));
-                        } else ussdCode = note;
-                        referenceCode = response.getData().getUssdData().getReference_code();
-                        mInteractor.onUssdDetailsReceived(ussdCode, referenceCode);
-                    }
+                    if (code.contains("|")) {
+                        ussdCode = code.substring(0, code.indexOf("|"));
+                        if (code.length() > code.indexOf("|") + 1)
+                            referenceCode = code.substring(code.indexOf("|") + 1);
+                    } else ussdCode = code;
+                    mInteractor.onUssdDetailsReceived(ussdCode, referenceCode);
                 } else {
                     mInteractor.onPaymentError("No response data was returned");
                 }
@@ -144,15 +132,13 @@ public class UssdHandler implements UssdContract.Handler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
 
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
-
-                if (response.getData() == null) {
-                    mInteractor.showPollingIndicator(false);
+                if (response.getStatus() == null)
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                else if (response.getStatus().equalsIgnoreCase("pending")) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
                         mInteractor.onPollingCanceled(flwRef, responseAsJSONString);
@@ -164,12 +150,13 @@ public class UssdHandler implements UssdContract.Handler {
                             mInteractor.onPollingTimeout(flwRef, responseAsJSONString);
                         }
                     }
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
-                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
+                    mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 }
             }
 

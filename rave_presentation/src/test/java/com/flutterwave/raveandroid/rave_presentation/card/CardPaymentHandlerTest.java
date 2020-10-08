@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.card;
 
+import com.flutterwave.raveandroid.rave_java_commons.AddressDetails;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -7,7 +8,6 @@ import com.flutterwave.raveandroid.rave_presentation.DaggerTestRaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.TestNetworkModule;
 import com.flutterwave.raveandroid.rave_presentation.TestRaveComponent;
 import com.flutterwave.raveandroid.rave_presentation.TestUtilsModule;
-import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.validators.TransactionStatusChecker;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
@@ -137,7 +137,7 @@ public class CardPaymentHandlerTest {
 
         //assert
         verify(interactor).showProgressIndicator(false);
-        verify(interactor).collectCardAddressDetails(eq(payload), anyString());
+        verify(interactor).collectCardAddressDetails(eq(payload));
 
     }
 
@@ -155,7 +155,7 @@ public class CardPaymentHandlerTest {
         captor.getAllValues().get(0).onSuccess(chargeResponse);
 
         verify(interactor).showProgressIndicator(false);
-        verify(interactor).collectCardAddressDetails(payload, NOAUTH_INTERNATIONAL);
+        verify(interactor).collectCardAddressDetails(payload);
 
     }
 
@@ -379,7 +379,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onSuccess(chargeResponse);
         verify(interactor).onPaymentError(message);
 
@@ -403,7 +403,7 @@ public class CardPaymentHandlerTest {
 
         ArgumentCaptor<ResultCallback> captor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        verify(networkRequest).validateCardCharge(any(ValidateChargeBody.class), captor.capture());
+        verify(networkRequest).validateCharge(publicKey, any(ValidateChargeBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message);
         verify(interactor).onPaymentError(message);
 
@@ -523,7 +523,7 @@ public class CardPaymentHandlerTest {
         paymentHandler.requeryTx(generateRandomString(), generateRandomString());
         verify(interactor).showProgressIndicator(true);
         ArgumentCaptor<Callbacks.OnRequeryRequestComplete> captor = ArgumentCaptor.forClass(Callbacks.OnRequeryRequestComplete.class);
-        verify(networkRequest).requeryTx(any(RequeryRequestBody.class), captor.capture());
+        verify(networkRequest).requeryTx(publicKey, any(RequeryRequestBody.class), captor.capture());
         captor.getAllValues().get(0).onError(message, responseAsString);
 
         //assert

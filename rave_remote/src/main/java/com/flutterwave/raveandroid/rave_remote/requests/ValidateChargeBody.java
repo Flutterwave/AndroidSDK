@@ -5,42 +5,16 @@ package com.flutterwave.raveandroid.rave_remote.requests;
  */
 
 public class ValidateChargeBody {
-    String transaction_reference;
-
-    public String getTransactionreference() {
-        return transactionreference;
-    }
-
-    public void setTransactionreference(String transactionreference) {
-        this.transactionreference = transactionreference;
-    }
-
-    String transactionreference;
-    String PBFPubKey;
+    String flw_ref;
     String otp;
+    String type;
 
-    public String getTransaction_reference() {
-        return transaction_reference;
-    }
+    public ValidateChargeBody(String flw_ref,
+                              String otp,
+                              String type) {
 
-    public void setTransaction_reference(String transaction_reference) {
-        this.transaction_reference = transaction_reference;
-    }
-
-    public String getPBFPubKey() {
-        return PBFPubKey;
-    }
-
-    public void setPBFPubKey(String PBFPubKey) {
-        this.PBFPubKey = PBFPubKey;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
+        this.flw_ref = flw_ref;
         this.otp = otp;
+        this.type = type;
     }
-
 }

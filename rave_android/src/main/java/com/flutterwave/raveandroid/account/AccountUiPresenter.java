@@ -202,15 +202,13 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
                     .setCountry(NG)
                     .setCurrency(NGN)
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
+                    .setFullname(ravePayInitializer.getfName())
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId())
                     .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setAccountbank(dataHashMap.get(fieldBankCode).getData())
                     .setMeta(ravePayInitializer.getMeta())
                     .setSubAccount(ravePayInitializer.getSubAccount())
-                    .setBVN(dataHashMap.get(fieldBVN).getData())
                     .setIsPreAuth(ravePayInitializer.getIsPreAuth());
 
 
@@ -218,9 +216,13 @@ public class AccountUiPresenter extends AccountHandler implements AccountUiContr
                 builder.setAccountnumber(dataHashMap.get(fieldAccount).getData());
             }
 
+            if (dataHashMap.get(fieldBVN).getData() != null && !dataHashMap.get(fieldBVN).getData().isEmpty())
+                builder.setBVN(dataHashMap.get(fieldBVN).getData());
+
             Payload body = builder.createBankPayload();
-            body.setPasscode(dataHashMap.get(fieldDOB).getData());
-            body.setPhonenumber(dataHashMap.get(fieldPhone).getData());
+            String dob = dataHashMap.get(fieldDOB).getData();
+            if (dob != null && !dob.isEmpty()) body.setPasscode(dob);
+            body.setPhone_number(dataHashMap.get(fieldPhone).getData());
 
 
             boolean isInternetBanking = dataHashMap.get(fieldAccount) == null;

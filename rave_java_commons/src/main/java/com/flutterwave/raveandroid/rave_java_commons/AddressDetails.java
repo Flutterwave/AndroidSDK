@@ -1,4 +1,4 @@
-package com.flutterwave.raveandroid.rave_presentation.data;
+package com.flutterwave.raveandroid.rave_java_commons;
 
 public class AddressDetails {
     private final String streetAddress;

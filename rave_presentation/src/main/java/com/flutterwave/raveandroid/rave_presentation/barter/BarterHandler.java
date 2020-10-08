@@ -55,7 +55,7 @@ public class BarterHandler implements BarterContract.Handler {
 
         mInteractor.showProgressIndicator(true);
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.chargeV2(body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -74,7 +74,7 @@ public class BarterHandler implements BarterContract.Handler {
                         }
                         String authUrlCrude = authUrlBuilder.build().toString();
 
-                        String flwRef = response.getData().getFlw_reference();
+                        String flwRef = response.getData().getFlwRef();
                         if (flwRef == null) flwRef = response.getData().getFlwRef();
 
                         mInteractor.loadBarterCheckout(authUrlCrude, flwRef);
@@ -105,17 +105,17 @@ public class BarterHandler implements BarterContract.Handler {
 
         mInteractor.showPollingIndicator(true);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(flwRef, responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                } else if ("02".equals(response.getData().getChargeResponseCode()) || "pending".equalsIgnoreCase(response.getData().getStatus())) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
                         mInteractor.onPollingCanceled(flwRef, responseAsJSONString);
                     } else requeryTx(flwRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if ("00".equals(response.getData().getChargeResponseCode()) || "successful".equalsIgnoreCase(response.getData().getStatus())) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {

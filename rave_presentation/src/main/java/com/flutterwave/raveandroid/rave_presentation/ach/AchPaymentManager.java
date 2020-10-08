@@ -36,13 +36,11 @@ public class AchPaymentManager {
                 .setCountry(manager.getCountry())
                 .setCurrency(manager.getCurrency())
                 .setEmail(manager.getEmail())
-                .setFirstname(manager.getfName())
-                .setLastname(manager.getlName())
+                .setFullname(manager.getFullName())
                 .setIP(manager.getUniqueDeviceID())
                 .setTxRef(manager.getTxRef())
                 .setMeta(manager.getMeta())
                 .setPBFPubKey(manager.getPublicKey())
-                .setIsUsBankCharge(true)
                 .setDevice_fingerprint(manager.getUniqueDeviceID());
 
         if (manager.getPayment_plan() != null) {

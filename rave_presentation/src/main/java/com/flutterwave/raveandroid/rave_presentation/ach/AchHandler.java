@@ -15,7 +15,6 @@ import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -23,6 +22,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ACH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
 
@@ -48,19 +48,11 @@ public class AchHandler implements AchContract.Handler {
 
     public void chargeAccount(Payload payload, String encryptionKey) {
 
-        String requestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = payloadEncryptor.getEncryptedData(requestBodyAsString, encryptionKey);
-
-        final ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(accountRequestBody);
-
         interactor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACH, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -97,8 +89,6 @@ public class AchHandler implements AchContract.Handler {
     }
 
     public void requeryTx(String flwRef, String publicKey) {
-        //todo call requery
-
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
@@ -107,7 +97,7 @@ public class AchHandler implements AchContract.Handler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 interactor.showProgressIndicator(false);

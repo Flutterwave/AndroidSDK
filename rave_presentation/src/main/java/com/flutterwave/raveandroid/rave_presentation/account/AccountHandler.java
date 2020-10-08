@@ -17,7 +17,6 @@ import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
@@ -28,10 +27,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ACCOUNT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.REDIRECT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidCharge;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.unknownAuthmsg;
 
 /**
  * Created by hamzafetuga on 20/07/2017.
@@ -82,38 +87,34 @@ public class AccountHandler implements AccountContract.AccountHandler {
     @Override
     public void chargeAccount(final Payload payload, String encryptionKey) {
 
-        String cardRequestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
         mAccountInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("Account").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACCOUNT, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mAccountInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    String authUrlCrude = response.getData().getAuthurl();
-                    String flwRef = response.getData().getFlwRef();
-                    boolean isValidUrl = urlValidator.isUrlValid(authUrlCrude);
-                    if (authUrlCrude != null && isValidUrl) {
-                        mAccountInteractor.displayInternetBankingPage(authUrlCrude, flwRef);
-                    } else {
-                        if (response.getData().getValidateInstruction() != null) {
-                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstruction());
-                        } else if (response.getData().getValidateInstructions() != null &&
-                                response.getData().getValidateInstructions().getInstruction() != null) {
-                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, response.getData().getValidateInstructions().getInstruction());
-                        } else {
-                            mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, null);
+                    String authMode = response.getAuthMode();
+                    String flwRef = response.getFlwRef();
+                    if (authMode != null) {
+                        switch (authMode) {
+                            case OTP:
+                                String instructions = response.getValidateInstructions();
+                                instructions = (instructions == null || instructions.length() == 0) ? enterOTP : instructions;
+                                mAccountInteractor.collectOtp(payload.getPBFPubKey(), flwRef, instructions);
+                                break;
+                            case REDIRECT:
+                                mAccountInteractor.displayInternetBankingPage(response.getAuthUrl(), flwRef);
+                                break;
+                            default:
+                                mAccountInteractor.onPaymentError(unknownAuthmsg);
                         }
+
+                    } else {
+                        mAccountInteractor.onPaymentError(noResponse);
                     }
                 }
 
@@ -128,18 +129,15 @@ public class AccountHandler implements AccountContract.AccountHandler {
     }
 
     @Override
-    public void authenticateAccountCharge(final String flwRef, String otp, final String PBFPubKey) {
+    public void authenticateAccountCharge(final String flwRef, String otp, final String publicKey) {
 
-        ValidateChargeBody body = new ValidateChargeBody();
-        body.setPBFPubKey(PBFPubKey);
-        body.setOtp(otp);
-        body.setTransactionreference(flwRef);
+        ValidateChargeBody body = new ValidateChargeBody(flwRef, otp, "account");
 
         mAccountInteractor.showProgressIndicator(true);
 
-        logEvent(new ValidationAttemptEvent("Account").getEvent(), PBFPubKey);
+        logEvent(new ValidationAttemptEvent("Account").getEvent(), publicKey);
 
-        networkRequest.validateAccountCharge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.validateCharge(publicKey, body, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
                 mAccountInteractor.showProgressIndicator(false);
@@ -149,7 +147,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
                     String message = response.getMessage();
 
                     if (status.equalsIgnoreCase(success)) {
-                        requeryTx(flwRef, PBFPubKey);
+                        requeryTx(flwRef, publicKey);
                     } else {
                         mAccountInteractor.onPaymentError(status);
                     }
@@ -211,7 +209,7 @@ public class AccountHandler implements AccountContract.AccountHandler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mAccountInteractor.showProgressIndicator(false);

@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -9,6 +11,7 @@ public class ChargeResponse {
     String status;
     String message;
     Data data;
+    ChargeMeta meta;
 
     public String getStatus() {
         return status;
@@ -34,27 +37,92 @@ public class ChargeResponse {
         this.data = data;
     }
 
+    public String getAmount() {
+        return data == null ? null : data.amount;
+    }
 
-    public static class AccountValidateInstructions {
-        public String getInstruction() {
-            return instruction;
-        }
+    public String getPaymentCode() {
+        return data == null ? null : data.payment_code;
+    }
 
-        public void setInstruction(String instruction) {
-            this.instruction = instruction;
-        }
+    public String getAuthMode() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.mode;
+    }
 
-        String instruction;
+    public ChargeMeta getChargeMeta() {
+        return (meta != null) ? meta : data.meta;
+    }
 
+    public String getAuthUrl() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.redirect;
+    }
+
+    public String getUssdCode() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.note;
+    }
+
+    public String getTransferNote() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_note;
+    }
+
+    public String getTransferAmount() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_amount;
+    }
+
+    public String getTransferBankName() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_bank;
+    }
+
+    public String getTransferAccountNumber() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.transfer_account;
+    }
+
+    public String getValidateInstructions() {
+        ChargeMeta meta = getChargeMeta();
+        return (meta == null) ? null
+                : (meta.authorization == null) ? null
+                : meta.authorization.validate_instructions;
+    }
+
+    public String getFlwRef() {
+        return (data == null) ? null : data.getFlwRef();
+    }
+
+    public String getTxRef() {
+        return (data == null) ? null : data.getTx_ref();
     }
 
     public static class Data {
+
+        ChargeMeta meta;// For account charge
 
         Data data;
         String suggested_auth;
         String chargeResponseCode;
         String authModelUsed;
         String flwRef;
+        String flw_ref;
 
         // Pay with bank (extra) response fields
         String flw_reference;
@@ -66,6 +134,25 @@ public class ChargeResponse {
         private String requery_url;
         private String orderRef;
 
+        String txRef;
+
+        String appFee;
+        String currency;
+        String charged_amount;
+        String note;
+        String amount;
+        String validateInstruction;
+        String transaction_reference;
+        String payment_code;
+
+        String chargeResponseMessage;
+        String processor_response;
+        String authurl;
+        String redirectUrl;
+        @SerializedName("link")
+        String captchaLink;
+        String code;
+
 
         public void setFlw_reference(String flw_reference) {
             this.flw_reference = flw_reference;
@@ -73,6 +160,10 @@ public class ChargeResponse {
 
         public String getReference_code() {
             return payment_code;
+        }
+
+        public String getProcessorResponse() {
+            return processor_response;
         }
 
         public void setReference_code(String reference_code) {
@@ -127,23 +218,12 @@ public class ChargeResponse {
             this.redirectUrl = redirectUrl;
         }
 
-
-        String note;
-        String amount;
-        String validateInstruction;
-        String transaction_reference;
-        String payment_code;
-
         public Data getData() {
             return data;
         }
 
         public void setData(Data data) {
             this.data = data;
-        }
-
-        public String getPayment_code() {
-            return payment_code;
         }
 
         public String getTransaction_reference() {
@@ -153,10 +233,6 @@ public class ChargeResponse {
 
         public void setValidateInstruction(String validateInstruction) {
             this.validateInstruction = validateInstruction;
-        }
-
-        public String getFlw_reference() {
-            return flw_reference;
         }
 
         public String getResponse_code() {
@@ -183,12 +259,6 @@ public class ChargeResponse {
             return amount;
         }
 
-        public AccountValidateInstructions getValidateInstructions() {
-            return validateInstructions;
-        }
-
-        AccountValidateInstructions validateInstructions;
-
         public String getValidateInstruction() {
             return validateInstruction;
         }
@@ -201,29 +271,19 @@ public class ChargeResponse {
             this.txRef = txRef;
         }
 
-        String txRef;
-        String chargeResponseMessage;
-        String authurl;
-        String appFee;
-        String currency;
-        String charged_amount;
-
         public String getRedirectUrl() {
             return redirectUrl;
         }
-
-        String redirectUrl;
 
         public String getAuthurl() {
             return authurl;
         }
 
         public String getFlwRef() {
-            return flwRef;
-        }
 
-        public void setValidateInstructions(AccountValidateInstructions validateInstructions) {
-            this.validateInstructions = validateInstructions;
+            return flwRef != null ? flwRef :
+                    flw_ref != null ? flw_ref :
+                            flw_reference;
         }
 
         public String getChargeResponseMessage() {
@@ -303,24 +363,32 @@ public class ChargeResponse {
             return redirect_url;
         }
 
-        public void setRedirect_url(String redirect_url) {
-            this.redirect_url = redirect_url;
-        }
-
         public String getRequery_url() {
             return requery_url;
         }
 
-        public void setRequery_url(String requery_url) {
-            this.requery_url = requery_url;
+        public String getCode() {
+            return code;
         }
+    }
 
-        public String getOrderRef() {
-            return orderRef;
-        }
+    private class ChargeMeta {
+        Authorization authorization;
 
-        public void setOrderRef(String orderRef) {
-            this.orderRef = orderRef;
+        private class Authorization {
+            String mode;
+            String redirect;
+            String note;
+            String validate_instructions;
+
+            //Pay with bank transfer
+            String transfer_reference;
+            String transfer_account;
+            String transfer_bank;
+            String account_expiration;
+            String transfer_note;
+            String transfer_amount;
+
         }
     }
 }

@@ -20,13 +20,14 @@ import com.flutterwave.raveandroid.rave_presentation.data.validators.Transaction
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.validators.AmountValidator;
 
 import javax.inject.Inject;
+
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_ACH;
 
 
 public class AchPresenter extends AchHandler implements AchUiContract.UserActionsListener {
@@ -103,13 +104,11 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
                     .setCountry(ravePayInitializer.getCountry())
                     .setCurrency(ravePayInitializer.getCurrency())
                     .setEmail(ravePayInitializer.getEmail())
-                    .setFirstname(ravePayInitializer.getfName())
-                    .setLastname(ravePayInitializer.getlName())
+                    .setFullname(ravePayInitializer.getfName())
                     .setIP(deviceIdGetter.getDeviceId())
                     .setTxRef(ravePayInitializer.getTxRef())
                     .setMeta(ravePayInitializer.getMeta())
                     .setPBFPubKey(ravePayInitializer.getPublicKey())
-                    .setIsUsBankCharge(ravePayInitializer.getOrderedPaymentTypesList().contains(RaveConstants.PAYMENT_TYPE_ACH))
                     .setDevice_fingerprint(deviceIdGetter.getDeviceId());
 
             if (ravePayInitializer.getPayment_plan() != null) {
@@ -125,19 +124,11 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
     public void chargeAccount(Payload payload, String encryptionKey, final boolean isDisplayFee) {
 
-        String requestBodyAsString = payloadToJsonConverter.convertChargeRequestPayloadToJson(payload);
-        String accountRequestBody = payloadEncryptor.getEncryptedData(requestBodyAsString, encryptionKey);
-
-        final ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(accountRequestBody);
-
         mView.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("ACH").getEvent(), payload.getPBFPubKey());
 
-        networkRequest.charge(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_ACH, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
@@ -186,7 +177,6 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
     public void requeryTx(String publicKey) {
         final String flwRef = sharedMgr.fetchFlwRef();
-        //todo call requery
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
@@ -196,7 +186,7 @@ public class AchPresenter extends AchHandler implements AchUiContract.UserAction
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 mView.showProgressIndicator(false);

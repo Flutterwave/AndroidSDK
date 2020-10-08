@@ -6,14 +6,12 @@ import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
-import com.flutterwave.raveandroid.rave_presentation.data.Utils;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ChargeAttemptEvent;
 import com.flutterwave.raveandroid.rave_presentation.data.events.RequeryEvent;
 import com.flutterwave.raveandroid.rave_remote.Callbacks;
 import com.flutterwave.raveandroid.rave_remote.FeeCheckRequestBody;
 import com.flutterwave.raveandroid.rave_remote.RemoteRepository;
 import com.flutterwave.raveandroid.rave_remote.ResultCallback;
-import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
@@ -21,6 +19,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.CHARGE_TYPE_UK_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -40,6 +39,7 @@ public class UkHandler implements UkContract.Handler {
     PayloadEncryptor payloadEncryptor;
     private UkContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
+    String txRef = null;
 
     @Inject
     public UkHandler(UkContract.Interactor mInteractor) {
@@ -79,29 +79,22 @@ public class UkHandler implements UkContract.Handler {
 
     @Override
     public void chargeUk(final Payload payload, final String encryptionKey) {
-        String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
-        String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
-        encryptedCardRequestBody = encryptedCardRequestBody.trim();
-        encryptedCardRequestBody = encryptedCardRequestBody.replaceAll("\\n", "");
-
-        ChargeRequestBody body = new ChargeRequestBody();
-        body.setAlg("3DES-24");
-        body.setPBFPubKey(payload.getPBFPubKey());
-        body.setClient(encryptedCardRequestBody);
-
+        txRef = payload.getTx_ref();
         mInteractor.showProgressIndicator(true);
 
         logEvent(new ChargeAttemptEvent("UK").getEvent(), payload.getPBFPubKey());
 
 
-        networkRequest.chargeWithPolling(body, new ResultCallback<ChargeResponse>() {
+        networkRequest.charge(payload.getPBFPubKey(), CHARGE_TYPE_UK_ACCOUNT, payload, new ResultCallback<ChargeResponse>() {
             @Override
             public void onSuccess(ChargeResponse response) {
 
                 mInteractor.showProgressIndicator(false);
-
                 if (response.getData() != null) {
-                    mInteractor.showTransactionPage(response);
+                    String amount = response.getAmount();
+                    String paymentCode = response.getPaymentCode();
+                    String flwRef = response.getFlwRef();
+                    mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
                 } else {
                     mInteractor.onPaymentError(noResponse);
                 }
@@ -128,17 +121,17 @@ public class UkHandler implements UkContract.Handler {
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
-        networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {
+        networkRequest.requeryTx(publicKey, body, new Callbacks.OnRequeryRequestComplete() {
             @Override
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
+                } else if (response.getStatus().equalsIgnoreCase("pending")) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
                         mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                     } else requeryTx(flwRef, txRef, publicKey);
-                } else if (response.getData().getChargeResponseCode().equals("00")) {
+                } else if (response.getStatus().equalsIgnoreCase("successful")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
