@@ -62,4 +62,5 @@ public class NullUkView implements UkUiContract.View {
     public void showTransactionPage(String amount, String paymentCode, final String flwRef, final String txRef) {
 
     }
+
 }

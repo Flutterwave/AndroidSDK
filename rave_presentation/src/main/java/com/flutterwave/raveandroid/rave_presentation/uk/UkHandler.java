@@ -15,6 +15,7 @@ import com.flutterwave.raveandroid.rave_remote.ResultCallback;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.PollingResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
@@ -37,7 +38,9 @@ public class UkHandler implements UkContract.Handler {
     RemoteRepository networkRequest;
     @Inject
     PayloadEncryptor payloadEncryptor;
+    String txRef = null;
     private UkContract.Interactor mInteractor;
+
     private boolean pollingCancelled = false;
     String txRef = null;
 
@@ -98,6 +101,7 @@ public class UkHandler implements UkContract.Handler {
                 } else {
                     mInteractor.onPaymentError(noResponse);
                 }
+
 
             }
 

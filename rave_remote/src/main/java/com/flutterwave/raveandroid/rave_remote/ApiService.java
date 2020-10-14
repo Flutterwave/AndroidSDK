@@ -17,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -39,6 +40,10 @@ public interface ApiService {
     @POST("/v3/sdkcheckout/validate-charge")
 //    @POST("/flwv3-pug/getpaidx/api/validatecharge")
     Call<String> validateCharge(@Header("Authorization") String authorizationHeader, @Body ValidateChargeBody body);
+    @GET()
+//    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
+    Call<String> pollUrl(@Url String url);
+
 //    Call<ChargeResponse> validateCardCharge(@Body ValidateChargeBody body);
     // Todo: code optimization, remove unused methods and fields.
 

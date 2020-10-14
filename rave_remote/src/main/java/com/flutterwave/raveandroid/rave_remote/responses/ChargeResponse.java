@@ -63,6 +63,10 @@ public class ChargeResponse {
                 : meta.authorization.redirect;
     }
 
+    public String getPingUrl() {
+        return (data == null) ? null : data.ping_url;
+    }
+
     public String getUssdCode() {
         ChargeMeta meta = getChargeMeta();
         return (meta == null) ? null
@@ -117,6 +121,7 @@ public class ChargeResponse {
 
         ChargeMeta meta;// For account charge
 
+        String ping_url;
         Data data;
         String suggested_auth;
         String chargeResponseCode;

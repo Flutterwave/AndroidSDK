@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:animateLayoutChanges="true"
     tools:context="com.flutterwave.rave_android.MainActivity">
 
     <ScrollView
@@ -22,6 +22,151 @@
             android:padding="30dp">
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountPaymentSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/accept_account_payments" />
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountAchSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/ach" />
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/bankTransferSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/bank_transfer" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/isPermanentSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="Use a static account number"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/setExpirySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="Set account expiry"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/expiry_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <EditText
+                    android:id="@+id/expiryDaysEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Number of days till expiry"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:text="and/or" />
+
+                <EditText
+                    android:id="@+id/frequencyEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Number of payments till expiry"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/barter_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/accept_barter_payments" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/cardPaymentSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/accept_card_payments" />
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/isPreAuthSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="Pre Auth Charge" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/allowSavedCardsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="10dp"
+                android:checked="true"
+                android:text="@string/allow_saved_cards" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountfrancMobileMoneySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/francophone" />
+
+            <EditText
+                android:id="@+id/countryEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/country_code_e_g_ng"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountGHMobileMoneySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/ghana" />
+
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/accountMpesaSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,6 +174,60 @@
                 android:checked="true"
                 android:text="@string/mpesa" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountRwfMobileMoneySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/rwanda" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountSaBankSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/sa_bank" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountUgMobileMoneySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/uganda" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountUkbankSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/uk_bank" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/ussd_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/accept_ussd_payments" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/accountZmMobileMoneySwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:checked="false"
+                android:text="@string/zambia" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="#DCD4C9" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/isDisplayFeeSwitch"
@@ -45,63 +244,6 @@
                 android:layout_marginBottom="10dp"
                 android:checked="true"
                 android:text="@string/staging" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountAchSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/ach" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountGHMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/ghana" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountUgMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/uganda" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountRwfMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/rwanda" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountZmMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/zambia" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/ussd_switch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/accept_ussd_payments" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/barter_switch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/accept_barter_payments" />
-
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/addSubAccountsSwitch"
@@ -149,138 +291,6 @@
                     android:text="Your current vendor refs are: " />
 
             </LinearLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/bankTransferSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/bank_transfer" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/isPermanentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Use a static account number"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/setExpirySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Set account expiry"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-
-            <LinearLayout
-                android:id="@+id/expiry_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <EditText
-                    android:id="@+id/expiryDaysEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Number of days till expiry"
-                    android:inputType="number" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="8dp"
-                    android:text="and/or" />
-
-                <EditText
-                    android:id="@+id/frequencyEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Number of payments till expiry"
-                    android:inputType="number" />
-
-            </LinearLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountfrancMobileMoneySwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/francophone" />
-
-            <EditText
-                android:id="@+id/countryEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/country_code_e_g_ng"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountUkbankSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/uk_bank" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountSaBankSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="@string/sa_bank" />
-
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/cardPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_card_payments" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/allowSavedCardsSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/allow_saved_cards" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/accountPaymentSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="true"
-                android:text="@string/accept_account_payments" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/isPreAuthSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:checked="false"
-                android:text="Pre Auth Charge" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/useRaveUISwitch"
@@ -374,8 +384,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="phone"
                 android:hint="@string/phone_number"
+                android:inputType="phone"
                 android:textSize="14sp" />
 
             <Button
