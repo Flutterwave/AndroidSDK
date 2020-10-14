@@ -162,6 +162,19 @@ public class MainActivity
             }
         });
 
+        cardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    isPreAuthSwitch.setVisibility(View.VISIBLE);
+                    allowSavedCardsSwitch.setVisibility(View.VISIBLE);
+                } else {
+                    isPreAuthSwitch.setVisibility(View.GONE);
+                    allowSavedCardsSwitch.setVisibility(View.GONE);
+                }
+            }
+        });
+
         isPermanentAccountSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
