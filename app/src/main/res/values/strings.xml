@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">rave-android</string>
-    <string name="accept_card_payments">Accept card payments</string>
-    <string name="accept_account_payments">Accept account payments</string>
+    <string name="accept_card_payments">Accept Card payments</string>
+    <string name="accept_account_payments">Accept Account payments</string>
     <string name="email">Email</string>
     <string name="amount_to_charge_required">Amount to charge (required)</string>
     <string name="public_key">Public key</string>
