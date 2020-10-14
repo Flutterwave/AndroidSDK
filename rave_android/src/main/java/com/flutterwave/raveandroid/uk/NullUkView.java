@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.uk;
 
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
-import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 
 import java.util.HashMap;
 
@@ -60,7 +59,8 @@ public class NullUkView implements UkUiContract.View {
     }
 
     @Override
-    public void showTransactionPage(ChargeResponse response) {
+    public void showTransactionPage(String amount, String paymentCode, String flwRef, String txRef) {
 
     }
+
 }

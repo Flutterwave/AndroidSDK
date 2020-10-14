@@ -40,6 +40,7 @@ public class UkHandler implements UkContract.Handler {
     PayloadEncryptor payloadEncryptor;
     private UkContract.Interactor mInteractor;
     private boolean pollingCancelled = false;
+    String txRef = null;
 
     @Inject
     public UkHandler(UkContract.Interactor mInteractor) {
@@ -79,6 +80,8 @@ public class UkHandler implements UkContract.Handler {
 
     @Override
     public void chargeUk(final Payload payload, final String encryptionKey) {
+        txRef = payload.getTxRef();
+
         String cardRequestBodyAsString = Utils.convertChargeRequestPayloadToJson(payload);
         String encryptedCardRequestBody = payloadEncryptor.getEncryptedData(cardRequestBodyAsString, encryptionKey);
         encryptedCardRequestBody = encryptedCardRequestBody.trim();
@@ -101,7 +104,10 @@ public class UkHandler implements UkContract.Handler {
                 mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
-                    mInteractor.showTransactionPage(response);
+                    String amount = response.getAmount();
+                    String paymentCode = response.getPaymentCode();
+                    String flwRef = response.getFlwRef();
+                    mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
                 } else {
                     mInteractor.onPaymentError(noResponse);
                 }

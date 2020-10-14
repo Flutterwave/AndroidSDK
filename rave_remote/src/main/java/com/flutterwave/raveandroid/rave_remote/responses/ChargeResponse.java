@@ -34,6 +34,21 @@ public class ChargeResponse {
         this.data = data;
     }
 
+    public String getAmount() {
+        return data == null ? null : data.amount;
+    }
+
+    public String getPaymentCode() {
+        return data == null ? null : data.payment_code;
+    }
+
+    public String getFlwRef() {
+        return (data == null) ? null : data.getFlwRef();
+    }
+
+    public String getTxRef() {
+        return (data == null) ? null : data.getTx_ref();
+    }
 
     public static class AccountValidateInstructions {
         public String getInstruction() {
