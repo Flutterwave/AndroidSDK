@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 
 /**
  * Created by hamzafetuga on 18/07/2017.
@@ -29,6 +30,10 @@ public interface ApiService {
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> chargeWithPolling(@Body ChargeRequestBody body);
+
+    @GET()
+//    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
+    Call<String> pollUrl(@Url String url);
 
     @POST("/flwv3-pug/getpaidx/api/validatecharge")
     Call<String> validateCardCharge(@Body ValidateChargeBody body);

@@ -50,6 +50,10 @@ public class ChargeResponse {
         return (data == null) ? null : data.getTx_ref();
     }
 
+    public String getPingUrl() {
+        return (data == null) ? null : data.ping_url;
+    }
+
     public static class AccountValidateInstructions {
         public String getInstruction() {
             return instruction;
@@ -65,6 +69,7 @@ public class ChargeResponse {
 
     public static class Data {
 
+        String ping_url;
         Data data;
         String suggested_auth;
         String chargeResponseCode;
@@ -234,7 +239,7 @@ public class ChargeResponse {
         }
 
         public String getFlwRef() {
-            return flwRef;
+            return flwRef == null ? flw_reference : flwRef;
         }
 
         public void setValidateInstructions(AccountValidateInstructions validateInstructions) {

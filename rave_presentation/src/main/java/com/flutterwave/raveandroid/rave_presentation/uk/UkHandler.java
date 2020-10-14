@@ -17,6 +17,7 @@ import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.PollingResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
 import javax.inject.Inject;
@@ -38,9 +39,10 @@ public class UkHandler implements UkContract.Handler {
     RemoteRepository networkRequest;
     @Inject
     PayloadEncryptor payloadEncryptor;
-    private UkContract.Interactor mInteractor;
-    private boolean pollingCancelled = false;
     String txRef = null;
+    private UkContract.Interactor mInteractor;
+
+    private boolean pollingCancelled = false;
 
     @Inject
     public UkHandler(UkContract.Interactor mInteractor) {
@@ -101,16 +103,56 @@ public class UkHandler implements UkContract.Handler {
             @Override
             public void onSuccess(ChargeResponse response) {
 
-                mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
                     String amount = response.getAmount();
                     String paymentCode = response.getPaymentCode();
                     String flwRef = response.getFlwRef();
-                    mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
+                    if (amount != null && paymentCode != null) {
+                        mInteractor.showProgressIndicator(false);
+                        mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
+                    } else if (response.getPingUrl() != null) {
+                        callPingUrl(response.getPingUrl());
+                    } else {
+                        mInteractor.showProgressIndicator(false);
+                        mInteractor.onPaymentError(noResponse);
+                    }
+                } else {
+                    mInteractor.showProgressIndicator(false);
+                    mInteractor.onPaymentError(noResponse);
+                }
+
+            }
+
+            @Override
+            public void onError(String message) {
+                mInteractor.showProgressIndicator(false);
+                mInteractor.onPaymentError(message);
+            }
+        });
+    }
+
+    void callPingUrl(final String pingUrl) {
+
+        networkRequest.pollUrl(pingUrl, new ResultCallback<PollingResponse>() {
+            @Override
+            public void onSuccess(PollingResponse response) {
+
+                if (response.data != null) {
+                    if (response.getResponse() != null) {
+
+                        mInteractor.showProgressIndicator(false);
+                        String amount = response.getAmount();
+                        String paymentCode = response.getPaymentCode();
+                        String flwRef = response.getFlwRef();
+                        if (amount != null && paymentCode != null)
+                            mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
+                        else mInteractor.onPaymentError(noResponse);
+                    } else callPingUrl(pingUrl);
                 } else {
                     mInteractor.onPaymentError(noResponse);
                 }
+
 
             }
 

@@ -17,6 +17,7 @@ import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.PollingResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaBankAccountResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.SaveCardResponse;
@@ -82,6 +83,18 @@ public class RemoteRepository {
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
+        );
+    }
+
+    public void pollUrl(String url, final ResultCallback callback) {
+
+        Call<String> call = service.pollUrl(url);
+
+        executor.execute(
+                call,
+                new TypeToken<PollingResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<PollingResponse>(callback)
         );
     }
 
