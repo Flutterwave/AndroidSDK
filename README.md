@@ -31,10 +31,10 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 ```
 **Step 2.** Add the dependency
 
-If you want to use the default Drop In UI, add the `rave_android` module dependency
+If you want to use the default Drop In UI, add the `rave-android` module dependency
 ```groovy
     dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_android:2.1.8'
+	     implementation 'com.github.Flutterwave.rave-android:2.1.8'
 	}
 ```
 
