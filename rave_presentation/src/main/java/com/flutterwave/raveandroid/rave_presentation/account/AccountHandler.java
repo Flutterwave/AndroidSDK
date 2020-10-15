@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.rave_presentation.account;
 
 import android.util.Log;
 
-import com.flutterwave.raveandroid.rave_core.models.Bank;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
@@ -24,11 +23,10 @@ import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.accountBanksList;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.invalidCharge;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.transactionError;
@@ -61,21 +59,22 @@ public class AccountHandler implements AccountContract.AccountHandler {
     @Override
     public void getBanksList() {
 
-        mAccountInteractor.showProgressIndicator(true);
-
-        networkRequest.getBanks(new ResultCallback<List<Bank>>() {
-            @Override
-            public void onSuccess(List<Bank> banks) {
-                mAccountInteractor.showProgressIndicator(false);
-                mAccountInteractor.onBanksListRetrieved(banks);
-            }
-
-            @Override
-            public void onError(String message) {
-                mAccountInteractor.showProgressIndicator(false);
-                mAccountInteractor.onGetBanksRequestFailed("An error occurred while retrieving banks");
-            }
-        });
+        mAccountInteractor.onBanksListRetrieved(accountBanksList);
+//        mAccountInteractor.showProgressIndicator(true);
+//
+//        networkRequest.getBanks(new ResultCallback<List<Bank>>() {
+//            @Override
+//            public void onSuccess(List<Bank> banks) {
+//                mAccountInteractor.showProgressIndicator(false);
+//                mAccountInteractor.onBanksListRetrieved(banks);
+//            }
+//
+//            @Override
+//            public void onError(String message) {
+//                mAccountInteractor.showProgressIndicator(false);
+//                mAccountInteractor.onGetBanksRequestFailed("An error occurred while retrieving banks");
+//            }
+//        });
 
     }
 

@@ -5,6 +5,7 @@ import com.flutterwave.raveandroid.rave_core.models.Bank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by hamzafetuga on 14/07/2017.
@@ -129,6 +130,10 @@ public class RaveConstants {
             new Bank("Zenith bank PLC", "057"),
             new Bank("Sterling Bank PLC", "232"),
             new Bank("United Bank for Africa", "033")
+    ));
+    public static List<Bank> accountBanksList = new ArrayList<>(Arrays.asList(
+            new Bank(bankNameGtb, "058"),
+            new Bank("FIRST BANK PLC", "011")
     ));
 
     public static final int PAYMENT_TYPE_CARD = 101;
