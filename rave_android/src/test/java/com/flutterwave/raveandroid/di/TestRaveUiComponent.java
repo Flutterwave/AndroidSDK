@@ -5,6 +5,8 @@ import com.flutterwave.raveandroid.account.AccountPresenterTest;
 import com.flutterwave.raveandroid.account.AccountUiPresenter;
 import com.flutterwave.raveandroid.ach.AchPresenter;
 import com.flutterwave.raveandroid.ach.AchPresenterTest;
+import com.flutterwave.raveandroid.acquireddotcom.AcquiredPresenter;
+import com.flutterwave.raveandroid.acquireddotcom.AcquiredPresenterTest;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenter;
 import com.flutterwave.raveandroid.banktransfer.BankTransferPresenterTest;
 import com.flutterwave.raveandroid.card.CardPresenterTest;
@@ -65,6 +67,8 @@ public interface TestRaveUiComponent extends RaveUiComponent {
 
     void inject(FrancMobileMoneyPresenterTest francMobileMoneyPresenterTest);
 
+    void inject(AcquiredPresenterTest acquiredPresenterTest);
+
     void inject(CardUiPresenter cardUiPresenter);
 
     void inject(AccountUiPresenter accountUiPresenter);
@@ -90,5 +94,7 @@ public interface TestRaveUiComponent extends RaveUiComponent {
     void inject(RwfMobileMoneyPresenter rwfMobileMoneyPresenter);
 
     void inject(ZmMobileMoneyPresenter zmMobileMoneyPresenter);
+
+    void inject(AcquiredPresenter acquiredPresenter);
 
 }
