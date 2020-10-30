@@ -213,7 +213,7 @@ dontwarn com.flutterwave.raveandroid.card.CardFragment
 
 
 ##  Help
-* Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/enQtMjU2MjkyNDM5MTcxLWFlOWNlYmE5MTIxNjAwYzc5MDVjZjNhYTJjNTA0ZTQyNDJlMDhhZjJkN2QwZGJmNWMyODhlYjMwNGUyZDQxNTE) for support
+* Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/zt-7mdxu82t-~WwizwN3eWKjUXLY275AzQ) for support
 * Find a bug? [Open an issue](https://github.com/Flutterwave/rave-android/issues)
 * Want to contribute? [Check out contributing guidelines]() and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
 
