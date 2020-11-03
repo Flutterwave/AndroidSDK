@@ -229,19 +229,25 @@ public class RavePayFragment extends Fragment {
             }
             // Set title view
 
-            View titleView = root.findViewById(R.id.title_container);
+            View titleView = root.getViewById(R.id.title_container);
 
             if (titleView == null) {
                 titleView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
                 root.addView(titleView);
+            }else{
+                try{
+                    set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
+                    set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+                    set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+                    set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+                    set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+                    set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
+
+                }catch (Exception ignore){
+
+                }
             }
-            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
-            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
-            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-            set.constrainWidth(root.findViewById(titleView.getId()).getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.constrainHeight(root.findViewById(titleView.getId()).getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.setVisibility(root.findViewById(titleView.getId()).getId(), ConstraintSet.VISIBLE);
 
             if (animated) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -699,44 +705,40 @@ public class RavePayFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        rootView.setVisibility(View.GONE);
-        super.onDetach();
-    }
-
-    @Override
     public void onDestroy() {
-        rootView.setVisibility(View.GONE);
         super.onDestroy();
     }
 
     public void onBackPressed() {
 
-        if (getActivity() != null){
-            getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
-                @Override
-                public void handleOnBackPressed() {
+         new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if ((AppCompatActivity) getActivity() != null) {
                     setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
-                    getActivity().finish();
+                    ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack();
+                    getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
+                }else{
+                    setEnabled(false);
+                    onDestroy();
                 }
-            });
-        }
-
+            }
+        };
     }
 
     public void setRavePayResult(int result, Bundle bundle) {
         if (result == RESULT_CANCELLED) {
             Event event = new SessionFinishedEvent("Payment cancelled").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
+            eventLogger.logEvent(event);
         } else if (result == RESULT_ERROR) {
             Event event = new SessionFinishedEvent("Payment error").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
+            eventLogger.logEvent(event);
         } else if (result == RESULT_SUCCESS) {
             Event event = new SessionFinishedEvent("Payment successful").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
+            eventLogger.logEvent(event);
         }
 
     }
