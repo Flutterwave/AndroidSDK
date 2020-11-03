@@ -419,4 +419,17 @@
 
     </FrameLayout>
 
+    <Button
+        android:id="@+id/first"
+        android:text="First Screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/second"
+        android:text="Second Screen"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

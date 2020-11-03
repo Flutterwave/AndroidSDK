@@ -196,9 +196,10 @@ public class RavePayFragment extends Fragment {
             singlePaymentTileView.setOnClickListener(null);
         } else {
             View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
-            if (fragmentContainerLayout != null) {
-                renderAsHidden(fragmentContainerLayout, animated);
+            if (fragmentContainerLayout == null) {
+                fragmentContainerLayout = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
             }
+            renderAsHidden(fragmentContainerLayout, animated);
 
             ConstraintSet set = new ConstraintSet();
             set.clone(root);
@@ -227,20 +228,20 @@ public class RavePayFragment extends Fragment {
 
             }
             // Set title view
+
             View titleView = root.findViewById(R.id.title_container);
-            
+
             if (titleView == null) {
                 titleView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
                 root.addView(titleView);
             }
-            set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
-            set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
-            set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
-            set.connect(titleView.getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
-            set.constrainWidth(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
-            set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
-
+            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
+            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
+            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
+            set.connect(root.findViewById(titleView.getId()).getId(), ConstraintSet.RIGHT, root.getId(), ConstraintSet.RIGHT);
+            set.constrainWidth(root.findViewById(titleView.getId()).getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.constrainHeight(root.findViewById(titleView.getId()).getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
+            set.setVisibility(root.findViewById(titleView.getId()).getId(), ConstraintSet.VISIBLE);
 
             if (animated) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -698,11 +699,15 @@ public class RavePayFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        if (getActivity() != null){
-            getActivity().getSupportFragmentManager().popBackStack();
-        }
-        super.onDestroyView();
+    public void onDetach() {
+        rootView.setVisibility(View.GONE);
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        rootView.setVisibility(View.GONE);
+        super.onDestroy();
     }
 
     public void onBackPressed() {
@@ -712,7 +717,7 @@ public class RavePayFragment extends Fragment {
                 @Override
                 public void handleOnBackPressed() {
                     setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    getActivity().finish();
                 }
             });
         }

@@ -342,7 +342,7 @@ public class RaveUiManager extends RavePayManager {
                 });
 
                 if (viewId != 0) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack("").commit();
                 }else{
                     throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                 }
@@ -361,18 +361,21 @@ public class RaveUiManager extends RavePayManager {
                 bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
                 fragment.setArguments(bundle);
 
-                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        Log.d("okh", requestKey+ " "+result.getString("response"));
-                    }
-                });
+                if ( activity.getSupportFragmentManager() !=null){
+                    activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
+                        @Override
+                        public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                            Log.d("okh", requestKey+ " "+result.getString("response"));
+                        }
+                    });
 
-                if (viewId != 0) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
-                }else{
-                    throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
+                    if (viewId != 0) {
+                        activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack("").commit();
+                    }else{
+                        throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
+                    }
                 }
+
 
             }else{
                 Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);

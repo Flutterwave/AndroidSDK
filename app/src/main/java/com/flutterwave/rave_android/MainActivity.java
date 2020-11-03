@@ -65,6 +65,8 @@ public class MainActivity
     EditText phoneNumberEt;
     Button startPayBtn;
     Button addVendorBtn;
+    Button firstBtn;
+    Button secondBtn;
     Button clearVendorBtn;
     SwitchCompat cardSwitch;
     SwitchCompat accountSwitch;
@@ -144,6 +146,8 @@ public class MainActivity
         useRaveUISwitch = findViewById(R.id.useRaveUISwitch);
         shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
         addVendorBtn = findViewById(R.id.addVendorBtn);
+        firstBtn = findViewById(R.id.first);
+        secondBtn = findViewById(R.id.second);
         clearVendorBtn = findViewById(R.id.clearVendorsBtn);
         vendorListTXT = findViewById(R.id.refIdsTV);
         vendorListTXT.setText("Your current vendor refs are: ");
@@ -208,7 +212,7 @@ public class MainActivity
         startPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateEntries();
+                validateEntries(amountEt.getText().toString());
             }
         });
 
@@ -236,6 +240,20 @@ public class MainActivity
             }
         });
 
+        firstBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateEntries("3.0");
+            }
+        });
+
+        secondBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateEntries("");
+            }
+        });
+
     }
 
     private void clear() {
@@ -245,10 +263,10 @@ public class MainActivity
         addSubAccountsSwitch.setChecked(false);
     }
 
-    private void validateEntries() {
+    private void validateEntries(String amounts) {
         clearErrors();
         String email = emailEt.getText().toString();
-        String amount = amountEt.getText().toString();
+        String amount = amounts;
         String publicKey = publicKeyEt.getText().toString();
         String encryptionKey = encryptionKeyEt.getText().toString();
         String txRef = txRefEt.getText().toString();
@@ -309,6 +327,8 @@ public class MainActivity
             boolean shouldUseRaveUi = useRaveUISwitch.isChecked();
 
             if (shouldUseRaveUi) {
+
+
                 raveManager = new RaveUiManager(this)
                         .acceptMpesaPayments(isMpesaSwitch.isChecked())
                         .acceptAccountPayments(accountSwitch.isChecked())
@@ -341,8 +361,16 @@ public class MainActivity
                         .setSubAccounts(subAccounts)
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .setMeta(meta)
-                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked())
-                        .embedFragment(R.id.container);
+                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+
+                if (amount.equals("0")){
+                    ((RaveUiManager) raveManager).acceptZmMobileMoneyPayments(true);
+                    ((RaveUiManager) raveManager).acceptGHMobileMoneyPayments(true);
+                    ((RaveUiManager) raveManager).showStagingLabel(true);
+                    ((RaveUiManager) raveManager).onStagingEnv(true);
+                }
+
+                ((RaveUiManager) raveManager).embedFragment(R.id.container, this);
 
                 // Customize pay with bank transfer options (optional)
                 if (isPermanentAccountSwitch.isChecked())
