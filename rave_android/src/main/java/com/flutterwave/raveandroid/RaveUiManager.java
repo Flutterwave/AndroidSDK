@@ -22,6 +22,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
@@ -342,7 +343,7 @@ public class RaveUiManager extends RavePayManager {
                 });
 
                 if (viewId != 0) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack("").commit();
+                    activity.getSupportFragmentManager().beginTransaction().add(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
                 }else{
                     throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                 }
@@ -370,7 +371,7 @@ public class RaveUiManager extends RavePayManager {
                     });
 
                     if (viewId != 0) {
-                        activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack("").commit();
+                        activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
                     }else{
                         throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                     }
