@@ -702,10 +702,10 @@ public class RavePayFragment extends Fragment {
         raveUiComponent.inject(this);
 
     }
-    
+
     public void onBackPressed() {
 
-        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if ((AppCompatActivity) getActivity() != null) {
@@ -713,12 +713,11 @@ public class RavePayFragment extends Fragment {
                     getChildFragmentManager().popBackStack();
                     getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
                 }else{
-                    setEnabled(false);
+                    onDestroy();
                 }
             }
         };
 
-        onBackPressedCallback.setEnabled(false);
     }
 
     public void setRavePayResult(int result, Bundle bundle) {
