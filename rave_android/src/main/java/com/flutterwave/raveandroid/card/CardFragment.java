@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -692,7 +693,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         Intent intent = new Intent();
         intent.putExtra("response", responseAsJsonString);
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
+            RavePayActivity ravePayActivity = new RavePayActivity();
+            ravePayActivity.setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
             getActivity().finish();
         }
     }
