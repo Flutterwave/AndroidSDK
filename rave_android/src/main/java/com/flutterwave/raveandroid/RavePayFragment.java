@@ -123,6 +123,12 @@ public class RavePayFragment extends Fragment {
 
     private View rootView;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        onBackPressed();
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -154,8 +160,6 @@ public class RavePayFragment extends Fragment {
         eventLogger.logEvent(event);
 
         setupMainContent();
-
-        onBackPressed();
 
         return rootView;
     }
@@ -435,7 +439,7 @@ public class RavePayFragment extends Fragment {
     }
 
     private void addFragmentToLayout(PaymentTile foundPaymentTile) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         boolean isBarter = isBarter();
 
@@ -706,24 +710,32 @@ public class RavePayFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     public void onBackPressed() {
 
-         new OnBackPressedCallback(true) {
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if ((AppCompatActivity) getActivity() != null) {
                     setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
-                    ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack();
+                    getChildFragmentManager().popBackStack();
                     getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
                 }else{
                     setEnabled(false);
-                    onDestroy();
+                    onDestroyView();
                 }
             }
         };
+
+        onBackPressedCallback.setEnabled(false);
     }
 
     public void setRavePayResult(int result, Bundle bundle) {
