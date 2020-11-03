@@ -697,14 +697,26 @@ public class RavePayFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        if (getActivity() != null){
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+        super.onDestroyView();
+    }
+
     public void onBackPressed() {
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
+
+        if (getActivity() != null){
+            getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            });
+        }
+
     }
 
     public void setRavePayResult(int result, Bundle bundle) {

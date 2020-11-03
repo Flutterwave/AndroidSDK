@@ -171,9 +171,10 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    public RaveUiManager embedFragment(int viewId) {
+    public RaveUiManager embedFragment(int viewId, AppCompatActivity activity) {
         this.embed = true;
         this.viewId = viewId;
+        this.activity = activity;
         return this;
     }
 
@@ -382,25 +383,7 @@ public class RaveUiManager extends RavePayManager {
         } else if (fragment != null && fragment.getActivity() != null) {
 
             if (embed){
-                Fragment fragment = new RavePayFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(EMBED_FRAGMENT, true);
-                bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
-                fragment.setArguments(bundle);
-
-                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        Log.d("okh", requestKey+ " "+result.getString("response"));
-                    }
-                });
-
-                if (viewId != 0) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
-                }else{
-                    throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
-                }
-
+                throw new IllegalStateException("You need to embed an androidx fragment.");
             }else {
                 Intent intent = new Intent(fragment.getActivity(), RavePayActivity.class);
                 intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
