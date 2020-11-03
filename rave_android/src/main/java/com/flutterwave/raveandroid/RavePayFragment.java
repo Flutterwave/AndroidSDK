@@ -702,18 +702,7 @@ public class RavePayFragment extends Fragment {
         raveUiComponent.inject(this);
 
     }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
+    
     public void onBackPressed() {
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
@@ -725,7 +714,6 @@ public class RavePayFragment extends Fragment {
                     getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
                 }else{
                     setEnabled(false);
-//                    onDestroyView();
                 }
             }
         };
