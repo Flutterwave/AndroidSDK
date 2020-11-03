@@ -724,15 +724,15 @@ public class RavePayFragment extends Fragment {
         if (result == RESULT_CANCELLED) {
             Event event = new SessionFinishedEvent("Payment cancelled").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         } else if (result == RESULT_ERROR) {
             Event event = new SessionFinishedEvent("Payment error").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         } else if (result == RESULT_SUCCESS) {
             Event event = new SessionFinishedEvent("Payment successful").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         }
 
     }

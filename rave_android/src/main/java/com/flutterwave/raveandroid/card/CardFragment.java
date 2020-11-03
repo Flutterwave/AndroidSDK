@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -690,12 +689,22 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void onPaymentFailed(String status, String responseAsJsonString) {
         dismissDialog();
 
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsJsonString);
-        if (getActivity() != null) {
-            RavePayActivity ravePayActivity = new RavePayActivity();
-            ravePayActivity.setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
+        if (embedFragment){
+            Bundle bundle = new Bundle();
+            bundle.putString("response", responseAsJsonString);
+            RavePayFragment ravePayFragment = new RavePayFragment();
+            ravePayFragment.setRavePayResult(RavePayActivity.RESULT_ERROR, bundle);
+            getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
+        }else{
+            Intent intent = new Intent();
+            intent.putExtra("response", responseAsJsonString);
+
+            if (getActivity() != null) {
+                RavePayActivity ravePayActivity = new RavePayActivity();
+                ravePayActivity.setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
+                ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
+                getActivity().finish();
+            }
         }
     }
 
@@ -735,6 +744,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 intent.putExtra("response", responseAsJSONString);
 
                 if (getActivity() != null) {
+                    RavePayActivity ravePayActivity = new RavePayActivity();
+                    ravePayActivity.setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
                     ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
                     getActivity().finish();
                 }
