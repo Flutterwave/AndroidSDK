@@ -353,13 +353,60 @@ public class RaveUiManager extends RavePayManager {
             }
 
         } else if (supportFragment != null && supportFragment.getContext() != null) {
-            Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);
-            intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
-            supportFragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
+            if (embed){
+                Fragment fragment = new RavePayFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(EMBED_FRAGMENT, true);
+                bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                fragment.setArguments(bundle);
+
+                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        Log.d("okh", requestKey+ " "+result.getString("response"));
+                    }
+                });
+
+                if (viewId != 0) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
+                }else{
+                    throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
+                }
+
+            }else{
+                Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);
+                intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                supportFragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
+            }
+
         } else if (fragment != null && fragment.getActivity() != null) {
-            Intent intent = new Intent(fragment.getActivity(), RavePayActivity.class);
-            intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
-            fragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
+
+            if (embed){
+                Fragment fragment = new RavePayFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(EMBED_FRAGMENT, true);
+                bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                fragment.setArguments(bundle);
+
+                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        Log.d("okh", requestKey+ " "+result.getString("response"));
+                    }
+                });
+
+                if (viewId != 0) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
+                }else{
+                    throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
+                }
+
+            }else {
+                Intent intent = new Intent(fragment.getActivity(), RavePayActivity.class);
+                intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                fragment.startActivityForResult(intent, RAVE_REQUEST_CODE);
+            }
+
         } else {
             Log.d(RAVEPAY, "Context is required!");
         }

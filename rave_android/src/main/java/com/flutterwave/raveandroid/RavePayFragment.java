@@ -142,14 +142,13 @@ public class RavePayFragment extends Fragment {
 
         if (theme != 0) {
             try {
-//                getActivity().setTheme(theme);
+                getActivity().setTheme(theme);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         
         root = rootView.findViewById(R.id.rave_pay_activity_rootview);
-        root.setClickable(true);
         Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
         event.setPublicKey(ravePayInitializer.getPublicKey());
         eventLogger.logEvent(event);
