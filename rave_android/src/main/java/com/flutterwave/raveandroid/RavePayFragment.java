@@ -123,12 +123,6 @@ public class RavePayFragment extends Fragment {
 
     private View rootView;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        onBackPressed();
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -160,6 +154,8 @@ public class RavePayFragment extends Fragment {
         eventLogger.logEvent(event);
 
         setupMainContent();
+
+        onBackPressed();
 
         return rootView;
     }
@@ -729,7 +725,7 @@ public class RavePayFragment extends Fragment {
                     getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
                 }else{
                     setEnabled(false);
-                    onDestroyView();
+//                    onDestroyView();
                 }
             }
         };
