@@ -195,8 +195,7 @@ public class RavePayFragment extends Fragment {
             View singlePaymentTileView = paymentTiles.get(0).view;
             singlePaymentTileView.callOnClick(); // Show payment fragment
             singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
-            ((TextView) singlePaymentTileView.findViewById(R.id.rave_payment_type_title_textView)).setGravity(Gravity.CENTER);
-
+            singlePaymentTileView.setVisibility(View.GONE);
             singlePaymentTileView.setOnClickListener(null);
         } else {
             View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
