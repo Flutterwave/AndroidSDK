@@ -298,7 +298,8 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             savedCards = new ArrayList<>();
         }
 
-        if(ravePayInitializer.getPhoneNumber().equals(sharedManager.fetchPhoneNumber())){
+        String phoneNumber = sharedManager.fetchPhoneNumber();
+        if(ravePayInitializer.getPhoneNumber().equals(phoneNumber)){
             retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
         }
 

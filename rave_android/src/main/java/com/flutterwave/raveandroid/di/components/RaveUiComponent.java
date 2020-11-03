@@ -1,6 +1,7 @@
 package com.flutterwave.raveandroid.di.components;
 
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.data.DeviceIdGetter;
 import com.flutterwave.raveandroid.data.PhoneNumberObfuscator;
 import com.flutterwave.raveandroid.di.modules.AccountModule;
@@ -90,6 +91,8 @@ public interface RaveUiComponent {
     Gson gson();
 
     void inject(RavePayActivity ravePayActivity);
+
+    void inject(RavePayFragment ravePayFragment);
 
     MpesaComponent plus(MpesaModule mpesaModule);
 

@@ -39,6 +39,8 @@ public class RaveConstants {
 
 
     public static String VBV = "VBVSECURECODE";
+    public static String EMBED_FRAGMENT = "embedFragment";
+
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";
     public static String NG = "NG";

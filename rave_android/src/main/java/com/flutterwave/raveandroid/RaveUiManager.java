@@ -2,12 +2,17 @@ package com.flutterwave.raveandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
+import com.flutterwave.raveandroid.di.modules.AndroidModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.flutterwave.raveandroid.rave_presentation.RavePayManager;
@@ -18,6 +23,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_BANK_TRANSFER;
@@ -37,7 +43,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_P
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 
 public class RaveUiManager extends RavePayManager {
-    private Activity activity;
+    private AppCompatActivity activity;
     private Fragment supportFragment;
     private android.app.Fragment fragment;
     private int theme = R.style.DefaultTheme;
@@ -48,7 +54,7 @@ public class RaveUiManager extends RavePayManager {
 
     private ArrayList<Integer> orderedPaymentTypesList = new ArrayList<>();
 
-    public RaveUiManager(Activity activity) {
+    public RaveUiManager(AppCompatActivity activity) {
         super();
         this.activity = activity;
     }
@@ -162,6 +168,12 @@ public class RaveUiManager extends RavePayManager {
 
     public RaveUiManager onStagingEnv(boolean isStaging) {
         this.staging = isStaging;
+        return this;
+    }
+
+    public RaveUiManager embedFragment(int viewId) {
+        this.embed = true;
+        this.viewId = viewId;
         return this;
     }
 
@@ -313,9 +325,33 @@ public class RaveUiManager extends RavePayManager {
         }
 
         if (activity != null) {
-            Intent intent = new Intent(activity, RavePayActivity.class);
-            intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
-            activity.startActivityForResult(intent, RAVE_REQUEST_CODE);
+
+            if (embed){
+                Fragment fragment = new RavePayFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(EMBED_FRAGMENT, true);
+                bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                fragment.setArguments(bundle);
+
+                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        Log.d("okh", requestKey+ " "+result.getString("response"));
+                    }
+                });
+
+                if (viewId != 0) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment).addToBackStack(null).commit();
+                }else{
+                    throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
+                }
+
+            }else{
+                Intent intent = new Intent(activity, RavePayActivity.class);
+                intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
+                activity.startActivityForResult(intent, RAVE_REQUEST_CODE);
+            }
+
         } else if (supportFragment != null && supportFragment.getContext() != null) {
             Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);
             intent.putExtra(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));

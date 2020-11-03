@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
@@ -108,7 +109,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getRaveUiComponent()
+            RavePayFragment.getRaveUiComponent()
                     .plus(new AccountModule(this))
                     .inject(this);
         }
@@ -116,7 +117,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
 
     private void initializePresenter() {
         if (getActivity() != null) {
-            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            ravePayInitializer = RavePayFragment.getRavePayInitializer();
             presenter.init(ravePayInitializer);
         }
     }

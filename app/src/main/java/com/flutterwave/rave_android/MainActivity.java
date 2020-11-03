@@ -341,7 +341,8 @@ public class MainActivity
                         .setSubAccounts(subAccounts)
                         .isPreAuth(isPreAuthSwitch.isChecked())
                         .setMeta(meta)
-                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
+                        .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked())
+                        .embedFragment(R.id.container);
 
                 // Customize pay with bank transfer options (optional)
                 if (isPermanentAccountSwitch.isChecked())

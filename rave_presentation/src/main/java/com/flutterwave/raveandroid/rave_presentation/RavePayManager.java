@@ -19,6 +19,8 @@ abstract public class RavePayManager  {
     protected boolean showStagingLabel = true;
     protected boolean displayFee = true;
     protected boolean staging = true;
+    protected boolean embed = false;
+    protected int viewId = 0;
     protected boolean isPermanent = false;
     protected int duration = 0;
     protected int frequency = 0;

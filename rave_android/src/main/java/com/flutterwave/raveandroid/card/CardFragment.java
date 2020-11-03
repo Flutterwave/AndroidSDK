@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.SwipeToDeleteCallback;
 import com.flutterwave.raveandroid.ViewObject;
@@ -72,9 +73,11 @@ import javax.inject.Inject;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ADDRESS_DETAILS_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
@@ -138,6 +141,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private ScrollView newCardOverallLay;
     private NestedScrollView savedCardOverallLay;
 
+    private Boolean embedFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -158,6 +163,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         initializeViews();
 
+        embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         setListeners();
@@ -170,7 +177,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private void injectComponents() {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getRaveUiComponent()
+            RavePayFragment.getRaveUiComponent()
                     .plus(new CardUiModule(this))
                     .inject(this);
         }
@@ -178,7 +185,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     private void initializePresenter() {
         if (getActivity() != null) {
-            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            ravePayInitializer = RavePayFragment.getRavePayInitializer();
             Log.d("okh", ravePayInitializer.isStaging() + " staging");
             presenter.init(ravePayInitializer);
         }
@@ -714,13 +721,23 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
 
         if (!presenter.isCardSaveInProgress()) {
-            Intent intent = new Intent();
-            intent.putExtra("response", responseAsJSONString);
 
-            if (getActivity() != null) {
-                ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
-                getActivity().finish();
+            if (embedFragment){
+                Bundle bundle = new Bundle();
+                bundle.putString("response", responseAsJSONString);
+                RavePayFragment ravePayFragment = new RavePayFragment();
+                ravePayFragment.setRavePayResult(RavePayActivity.RESULT_SUCCESS, bundle);
+                getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
+            }else{
+                Intent intent = new Intent();
+                intent.putExtra("response", responseAsJSONString);
+
+                if (getActivity() != null) {
+                    ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
+                    getActivity().finish();
+                }
             }
+
         }// else, result will be delivered after card save [in onCardSaveSuccessful()]
 
     }

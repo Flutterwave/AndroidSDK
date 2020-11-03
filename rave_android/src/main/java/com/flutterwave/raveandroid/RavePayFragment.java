@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,14 +13,20 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
@@ -58,12 +65,14 @@ import com.flutterwave.raveandroid.zmmobilemoney.ZmMobileMoneyFragment;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.HORIZONTAL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.LIVE_URL;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACCOUNT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ACH;
@@ -80,9 +89,10 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
-public class RavePayActivity extends AppCompatActivity {
+public class RavePayFragment extends Fragment {
 
     public static String BASE_URL;
     View.OnClickListener onClickListener;
@@ -103,7 +113,7 @@ public class RavePayActivity extends AppCompatActivity {
     private float paymentTilesTextSize;
     private long transitionDuration = 350;
 
-    RaveUiComponent raveUiComponent;
+    static RaveUiComponent raveUiComponent;
 
     @Inject
     EventLogger eventLogger;
@@ -111,41 +121,49 @@ public class RavePayActivity extends AppCompatActivity {
     @Inject
     SharedPrefsRepo sharedManager;
 
+    private View rootView;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        rootView = inflater.inflate(R.layout.rave_sdk_activity_rave_pay, container, false);
 
         try {
-            ravePayInitializer = Parcels.unwrap(getIntent().getParcelableExtra(RAVE_PARAMS));
+            ravePayInitializer = Parcels.unwrap(getArguments().getParcelable(RAVE_PARAMS));
         } catch (Exception e) {
             e.printStackTrace();
             Log.d(RAVEPAY, "Error retrieving initializer");
         }
+
         buildGraph();
 
         theme = ravePayInitializer.getTheme();
 
         if (theme != 0) {
             try {
-                setTheme(theme);
+                getActivity().setTheme(theme);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        setContentView(R.layout.rave_sdk_activity_rave_pay);
-
-        root = findViewById(R.id.rave_pay_activity_rootview);
-
+        
+        root = rootView.findViewById(R.id.rave_pay_activity_rootview);
+        root.setBackgroundResource(R.color.raveWhite);
+        root.setClickable(true);
         Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
         event.setPublicKey(ravePayInitializer.getPublicKey());
         eventLogger.logEvent(event);
 
         setupMainContent();
 
-    }
+        onBackPressed();
 
+        return rootView;
+    }
+    
     private void setupMainContent() {
+        
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,11 +171,11 @@ public class RavePayActivity extends AppCompatActivity {
             }
         };
 
-        topGuide = createGuideline(this, HORIZONTAL);
+        topGuide = createGuideline(requireContext(), HORIZONTAL);
         root.addView(topGuide);
         topGuide.setGuidelinePercent(0.08f);
 
-        bottomGuide = createGuideline(this, HORIZONTAL);
+        bottomGuide = createGuideline(requireContext(), HORIZONTAL);
         root.addView(bottomGuide);
         bottomGuide.setGuidelinePercent(0.92f);
 
@@ -212,6 +230,7 @@ public class RavePayActivity extends AppCompatActivity {
             }
             // Set title view
             View titleView = root.findViewById(R.id.title_container);
+            
             if (titleView == null) {
                 titleView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
                 root.addView(titleView);
@@ -325,6 +344,7 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void displayPaymentFragment(final PaymentTile foundPaymentTile) {
+        
         View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
         if (fragmentContainerLayout == null) {
             fragmentContainerLayout
@@ -346,7 +366,7 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         if (ravePayInitializer.isStaging() && ravePayInitializer.getShowStagingLabel()) {
-            findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.stagingModeBannerLay).setVisibility(View.VISIBLE);
         }
 
         int topToBottomConstraint = ((ConstraintLayout.LayoutParams)
@@ -410,7 +430,24 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private void addFragmentToLayout(PaymentTile foundPaymentTile) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+        boolean isBarter = isBarter();
+
+        ArrayList<String> supportedCurrenciesForAcquired = new ArrayList(
+                Arrays.asList("GBP", "EUR"));
+
+        Fragment cardFragment = new CardFragment();
+
+        if(isBarter && supportedCurrenciesForAcquired.contains(ravePayInitializer.currency)){
+//            cardFragment = new AcquiredFragment();
+        } else {
+            Bundle bundle = new Bundle();
+            boolean embedFragment = getArguments().getBoolean(EMBED_FRAGMENT, false);
+            bundle.putBoolean(EMBED_FRAGMENT, embedFragment);
+            cardFragment = new CardFragment();
+            cardFragment.setArguments(bundle);
+        }
 
         switch (foundPaymentTile.paymentType) {
             case PAYMENT_TYPE_ACCOUNT:
@@ -423,7 +460,7 @@ public class RavePayActivity extends AppCompatActivity {
                 transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
-                transaction.replace(R.id.payment_fragment_container, new CardFragment());
+                transaction.replace(R.id.payment_fragment_container, cardFragment);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
@@ -466,6 +503,24 @@ public class RavePayActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isBarter(){
+        String packageName = getActivity().getApplicationContext().getPackageName();
+        return packageName.equals("com.flutterwave.flybarter");
+    }
+
+    public boolean appIsInDarkMode(){
+        boolean appIsInDarkMode = false;
+        int nightModeFlags =
+                getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                appIsInDarkMode = true;
+                break;
+        }
+        return appIsInDarkMode;
     }
 
 
@@ -579,6 +634,7 @@ public class RavePayActivity extends AppCompatActivity {
     }
 
     private View createPaymentTileView(String title) {
+        
         View tileView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_type_tile_layout, root, false);
         TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
         tileView.setId(ViewCompat.generateViewId());
@@ -596,9 +652,8 @@ public class RavePayActivity extends AppCompatActivity {
 
     private void generateGuides(int count) {
 
-
         for (int i = 0; i <= count; i++) {
-            Guideline guideline = createGuideline(this, HORIZONTAL);
+            Guideline guideline = createGuideline(requireContext(), HORIZONTAL);
             root.addView(guideline);
             double percent;
             if (count > 8) percent = (1 - (0.07 * i));
@@ -632,48 +687,50 @@ public class RavePayActivity extends AppCompatActivity {
         }
 
         RaveComponent raveComponent = DaggerRaveComponent.builder()
-                .deviceIdGetterModule(new DeviceIdGetterModule(new DeviceIdGetter(this).getDeviceId()))
+                .deviceIdGetterModule(new DeviceIdGetterModule(new DeviceIdGetter(requireContext()).getDeviceId()))
                 .remoteModule(new RemoteModule(BASE_URL))
                 .eventLoggerModule(new EventLoggerModule())
                 .build();
 
         raveUiComponent = DaggerRaveUiComponent.builder()
-                .androidModule(new AndroidModule(this))
+                .androidModule(new AndroidModule(requireContext()))
                 .raveComponent(raveComponent).build();
         raveUiComponent.inject(this);
 
     }
 
-
-    @Override
     public void onBackPressed() {
-        setRavePayResult(RavePayActivity.RESULT_CANCELLED, new Intent());
-        super.onBackPressed();
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
-    public void setRavePayResult(int result, Intent intent) {
+    public void setRavePayResult(int result, Bundle bundle) {
         if (result == RESULT_CANCELLED) {
             Event event = new SessionFinishedEvent("Payment cancelled").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         } else if (result == RESULT_ERROR) {
             Event event = new SessionFinishedEvent("Payment error").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         } else if (result == RESULT_SUCCESS) {
             Event event = new SessionFinishedEvent("Payment successful").getEvent();
             event.setPublicKey(ravePayInitializer.getPublicKey());
-            eventLogger.logEvent(event);
+//            eventLogger.logEvent(event);
         }
 
-        setResult(result, intent);
     }
 
-    public RaveUiComponent getRaveUiComponent() {
+    public static RaveUiComponent getRaveUiComponent() {
         return raveUiComponent;
     }
 
-    public RavePayInitializer getRavePayInitializer() {
+    public static RavePayInitializer getRavePayInitializer() {
         return ravePayInitializer;
     }
 

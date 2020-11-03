@@ -2,6 +2,8 @@ package com.flutterwave.raveandroid;
 
 import android.app.Activity;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,10 +24,12 @@ import static org.junit.Assert.assertNotEquals;
 
 public class RaveUiManagerTest {
 
+    AppCompatActivity appCompatActivity;
+
     @Test
     public void ravePayManagerSetup_PaymentTypesNotAddedMoreThanOnce() {
         // Attempt to add same payment types multiple times
-        RaveUiManager manager = new RaveUiManager((Activity) null);
+        RaveUiManager manager = new RaveUiManager(appCompatActivity);
         manager
                 .acceptCardPayments(true)
                 .acceptAccountPayments(true)
@@ -81,7 +85,7 @@ public class RaveUiManagerTest {
 
     @Test
     public void ravePayManagerSetup_AllPaymentTypesAddedAreInPaymentTypesList() {
-        RaveUiManager manager = new RaveUiManager((Activity) null);
+        RaveUiManager manager = new RaveUiManager(appCompatActivity);
         manager.acceptCardPayments(true)
                 .acceptAccountPayments(true)
                 .acceptAchPayments(true)
