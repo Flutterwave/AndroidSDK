@@ -147,6 +147,7 @@ public class RavePayFragment extends Fragment {
         }
 
         root = rootView.findViewById(R.id.rave_pay_activity_rootview);
+
         Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
         event.setPublicKey(ravePayInitializer.getPublicKey());
         eventLogger.logEvent(event);
@@ -453,46 +454,46 @@ public class RavePayFragment extends Fragment {
 
         switch (foundPaymentTile.paymentType) {
             case PAYMENT_TYPE_ACCOUNT:
-                transaction.add(R.id.payment_fragment_container, new AccountFragment());
+                transaction.replace(R.id.payment_fragment_container, new AccountFragment());
                 break;
             case PAYMENT_TYPE_ACH:
-                transaction.add(R.id.payment_fragment_container, new AchFragment());
+                transaction.replace(R.id.payment_fragment_container, new AchFragment());
                 break;
             case PAYMENT_TYPE_BANK_TRANSFER:
-                transaction.add(R.id.payment_fragment_container, new BankTransferFragment());
+                transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
                 transaction.replace(R.id.payment_fragment_container, cardFragment);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
-                transaction.add(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
+                transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_GH_MOBILE_MONEY:
-                transaction.add(R.id.payment_fragment_container, new GhMobileMoneyFragment());
+                transaction.replace(R.id.payment_fragment_container, new GhMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_MPESA:
-                transaction.add(R.id.payment_fragment_container, new MpesaFragment());
+                transaction.replace(R.id.payment_fragment_container, new MpesaFragment());
                 break;
             case PAYMENT_TYPE_RW_MOBILE_MONEY:
-                transaction.add(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
+                transaction.replace(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_UG_MOBILE_MONEY:
-                transaction.add(R.id.payment_fragment_container, new UgMobileMoneyFragment());
+                transaction.replace(R.id.payment_fragment_container, new UgMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_UK:
-                transaction.add(R.id.payment_fragment_container, new UkFragment());
+                transaction.replace(R.id.payment_fragment_container, new UkFragment());
                 break;
             case PAYMENT_TYPE_BARTER:
-                transaction.add(R.id.payment_fragment_container, new BarterFragment());
+                transaction.replace(R.id.payment_fragment_container, new BarterFragment());
                 break;
             case PAYMENT_TYPE_USSD:
-                transaction.add(R.id.payment_fragment_container, new UssdFragment());
+                transaction.replace(R.id.payment_fragment_container, new UssdFragment());
                 break;
             case PAYMENT_TYPE_ZM_MOBILE_MONEY:
-                transaction.add(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
+                transaction.replace(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_SA_BANK_ACCOUNT:
-                transaction.add(R.id.payment_fragment_container, new SaBankAccountFragment());
+                transaction.replace(R.id.payment_fragment_container, new SaBankAccountFragment());
                 break;
             default:
                 Log.d("Adding Payment Fragment", "Payment type does not exist in payment types list");
