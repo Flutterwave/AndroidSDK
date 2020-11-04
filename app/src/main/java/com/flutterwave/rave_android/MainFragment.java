@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 
 
 public class MainFragment
@@ -262,10 +263,9 @@ public class MainFragment
             }
         });
 
-        getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE + "", this, new FragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                Log.d("okh", "i am listening");
                 String message = result.getString("response");
                 int resultCode = result.getInt("resultCode");
 

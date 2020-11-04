@@ -2,7 +2,6 @@ package com.flutterwave.raveandroid.card;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -75,12 +74,14 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.flutterwave.raveandroid.RavePayActivity.RESULT_CANCELLED;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ADDRESS_DETAILS_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
@@ -187,7 +188,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                 @Override
                 public void handleOnBackPressed() {
                     if ((AppCompatActivity) getActivity() != null) {
-                        getActivity().getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_CODE + "", bundle);
+                        if (bundle.isEmpty()){
+                            bundle.putInt("resultCode",  RESULT_CANCELLED);
+                            getActivity().getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                        }
+                        getActivity().getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
                 }
@@ -727,7 +732,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             bundle.putString("response", responseAsJsonString);
             bundle.putInt("resultCode", RavePayActivity.RESULT_ERROR);
             if (getActivity() != null) {
-                getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE + "", bundle);
+                getParentFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
                 getActivity().onBackPressed();
             }
         }else{

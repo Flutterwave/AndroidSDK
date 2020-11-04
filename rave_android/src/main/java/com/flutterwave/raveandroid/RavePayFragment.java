@@ -87,6 +87,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
 public class RavePayFragment extends Fragment {
@@ -715,7 +716,6 @@ public class RavePayFragment extends Fragment {
                 if ((AppCompatActivity) getActivity() != null) {
                     if ((AppCompatActivity) getActivity() != null) {
                         getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
-                        setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
                 } else {
@@ -723,23 +723,6 @@ public class RavePayFragment extends Fragment {
                 }
             }
         };
-
-    }
-
-    public void setRavePayResult(int result, Bundle bundle) {
-        if (result == RESULT_CANCELLED) {
-            Event event = new SessionFinishedEvent("Payment cancelled").getEvent();
-            event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
-        } else if (result == RESULT_ERROR) {
-            Event event = new SessionFinishedEvent("Payment error").getEvent();
-            event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
-        } else if (result == RESULT_SUCCESS) {
-            Event event = new SessionFinishedEvent("Payment successful").getEvent();
-            event.setPublicKey(ravePayInitializer.getPublicKey());
-//            eventLogger.logEvent(event);
-        }
 
     }
 

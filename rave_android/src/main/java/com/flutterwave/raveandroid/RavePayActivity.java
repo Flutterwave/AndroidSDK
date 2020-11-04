@@ -94,7 +94,6 @@ public class RavePayActivity extends AppCompatActivity {
     private Guideline bottomGuide;
     private ConstraintLayout root;
 
-
     public static int RESULT_SUCCESS = RaveConstants.RESULT_SUCCESS;
     public static int RESULT_ERROR = RaveConstants.RESULT_ERROR;
     public static int RESULT_CANCELLED = RaveConstants.RESULT_CANCELLED;
