@@ -90,9 +90,9 @@ public interface RaveUiComponent {
 
     Gson gson();
 
-    void inject(RavePayActivity ravePayActivity);
-
     void inject(RavePayFragment ravePayFragment);
+
+    void inject(RavePayActivity ravePayActivity);
 
     MpesaComponent plus(MpesaModule mpesaModule);
 

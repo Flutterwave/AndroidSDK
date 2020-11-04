@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.data.PaymentTypesCurrencyChecker;
@@ -64,6 +65,7 @@ public class RaveUiManager extends RavePayManager {
         super();
         this.supportFragment = fragment;
     }
+
 
     public RaveUiManager(android.app.Fragment fragment) {
         super();
@@ -326,7 +328,7 @@ public class RaveUiManager extends RavePayManager {
             return this;
         }
 
-        if (activity != null) {
+        if (activity != null && supportFragment == null) {
 
             if (embed){
                 Fragment fragment = new RavePayFragment();
@@ -334,13 +336,6 @@ public class RaveUiManager extends RavePayManager {
                 bundle.putBoolean(EMBED_FRAGMENT, true);
                 bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
                 fragment.setArguments(bundle);
-
-                activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        Log.d("okh", requestKey+ " "+result.getString("response"));
-                    }
-                });
 
                 if (viewId != 0) {
                     activity.getSupportFragmentManager().beginTransaction().add(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
@@ -362,21 +357,14 @@ public class RaveUiManager extends RavePayManager {
                 bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
                 fragment.setArguments(bundle);
 
-                if ( activity.getSupportFragmentManager() !=null){
-                    activity.getSupportFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE+"", fragment, new FragmentResultListener(){
-                        @Override
-                        public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                            Log.d("okh", requestKey+ " "+result.getString("response"));
-                        }
-                    });
+                if ( activity != null){
 
                     if (viewId != 0) {
-                        activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
+                        supportFragment.getParentFragmentManager().beginTransaction().replace(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
                     }else{
                         throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                     }
                 }
-
 
             }else{
                 Intent intent = new Intent(supportFragment.getContext(), RavePayActivity.class);

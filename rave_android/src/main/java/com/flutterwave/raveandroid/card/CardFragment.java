@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.card;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -22,8 +23,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -142,12 +145,11 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private NestedScrollView savedCardOverallLay;
 
     private Boolean embedFragment;
+    Bundle bundle = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        injectComponents();
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS)) {
@@ -163,29 +165,60 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         initializeViews();
 
-        embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+        if (getArguments() != null){
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            injectComponents(embedFragment);
+            initializePresenter(embedFragment);
+        }
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         setListeners();
 
-        initializePresenter();
+        onBackPressed();
 
         return v;
     }
 
-    private void injectComponents() {
+    public void onBackPressed() {
 
-        if (getActivity() != null) {
-            RavePayFragment.getRaveUiComponent()
-                    .plus(new CardUiModule(this))
-                    .inject(this);
+        if (embedFragment && getActivity() != null) {
+            getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    if ((AppCompatActivity) getActivity() != null) {
+                        getActivity().getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_CODE + "", bundle);
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                }
+            });
         }
     }
 
-    private void initializePresenter() {
+    private void injectComponents(Boolean embedFragment) {
+
         if (getActivity() != null) {
-            ravePayInitializer = RavePayFragment.getRavePayInitializer();
+
+            if (embedFragment){
+                RavePayFragment.getRaveUiComponent()
+                        .plus(new CardUiModule(this))
+                        .inject(this);
+            }else{
+                ((RavePayActivity) getActivity()).getRaveUiComponent()
+                        .plus(new CardUiModule(this))
+                        .inject(this);
+            }
+        }
+    }
+
+    private void initializePresenter(Boolean embedFragment) {
+        if (getActivity() != null) {
+            if (embedFragment){
+                ravePayInitializer = RavePayFragment.getRavePayInitializer();
+            }else{
+                ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            }
+
             Log.d("okh", ravePayInitializer.isStaging() + " staging");
             presenter.init(ravePayInitializer);
         }
@@ -690,11 +723,13 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         dismissDialog();
 
         if (embedFragment){
-            Bundle bundle = new Bundle();
+            bundle = new Bundle();
             bundle.putString("response", responseAsJsonString);
-            RavePayFragment ravePayFragment = new RavePayFragment();
-            ravePayFragment.setRavePayResult(RavePayActivity.RESULT_ERROR, bundle);
-            getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
+            bundle.putInt("resultCode", RavePayActivity.RESULT_ERROR);
+            if (getActivity() != null) {
+                getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE + "", bundle);
+                getActivity().onBackPressed();
+            }
         }else{
             Intent intent = new Intent();
             intent.putExtra("response", responseAsJsonString);
@@ -734,11 +769,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         if (!presenter.isCardSaveInProgress()) {
 
             if (embedFragment){
-                Bundle bundle = new Bundle();
+                bundle = new Bundle();
                 bundle.putString("response", responseAsJSONString);
-                RavePayFragment ravePayFragment = new RavePayFragment();
-                ravePayFragment.setRavePayResult(RavePayActivity.RESULT_SUCCESS, bundle);
+                bundle.putInt("resultCode", RavePayActivity.RESULT_SUCCESS);
                 getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
+               if (getActivity() != null) {
+                   getActivity().onBackPressed();
+               }
+
             }else{
                 Intent intent = new Intent();
                 intent.putExtra("response", responseAsJSONString);

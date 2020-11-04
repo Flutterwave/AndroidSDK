@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/accept_account_payments" />
 
 
@@ -171,7 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/mpesa" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -234,7 +234,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/should_display_fee" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -315,6 +315,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/email"
+                android:text="gyfsh@dc.co"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
@@ -325,6 +326,7 @@
                 android:layout_marginBottom="10dp"
                 android:hint="@string/amount_to_charge_required"
                 android:inputType="number"
+                android:text="121"
                 android:textSize="14sp" />
 
             <EditText
@@ -350,6 +352,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:text="2121"
                 android:hint="@string/txref_required"
                 android:textSize="14sp" />
 
@@ -360,6 +363,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/narration"
+                android:text="212"
                 android:textSize="14sp" />
 
             <EditText
@@ -367,6 +371,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:text="NGN"
                 android:hint="@string/currency_code_e_g_ngn"
                 android:textSize="14sp" />
 
@@ -386,6 +391,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/first_name"
+                android:text="wdsd"
                 android:textSize="14sp" />
 
             <EditText
@@ -394,6 +400,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/last_name"
+                android:text="dsds"
                 android:textSize="14sp" />
 
             <EditText
@@ -403,6 +410,7 @@
                 android:layout_marginBottom="10dp"
                 android:hint="@string/phone_number"
                 android:inputType="phone"
+                android:text="22132323"
                 android:textSize="14sp" />
 
             <Button

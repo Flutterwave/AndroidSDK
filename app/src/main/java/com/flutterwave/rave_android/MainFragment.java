@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -13,10 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RaveUiManager;
@@ -41,9 +45,11 @@ import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 
-public class MainActivity
-        extends AppCompatActivity
+
+public class MainFragment
+        extends Fragment
         // Interfaces to implement for custom UI or no-UI usage
         implements
         FeeCheckListener, // Implement if you want to be able to check fees beforehand
@@ -101,57 +107,57 @@ public class MainActivity
     private CardPaymentManager cardPayManager;
     private Card card;
 
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment()).commit();
+        View rootView = inflater.inflate(R.layout.activity_main, container, false);
 
-        emailEt = findViewById(R.id.emailEt);
-        amountEt = findViewById(R.id.amountEt);
-        publicKeyEt = findViewById(R.id.publicKeyEt);
-        encryptionKeyEt = findViewById(R.id.encryptionEt);
-        txRefEt = findViewById(R.id.txRefEt);
-        narrationEt = findViewById(R.id.narrationTV);
-        currencyEt = findViewById(R.id.currencyEt);
-        countryEt = findViewById(R.id.countryEt);
-        fNameEt = findViewById(R.id.fNameEt);
-        lNameEt = findViewById(R.id.lnameEt);
-        phoneNumberEt = findViewById(R.id.phoneNumberEt);
-        durationEt = findViewById(R.id.expiryDaysEt);
-        frequencyEt = findViewById(R.id.frequencyEt);
-        startPayBtn = findViewById(R.id.startPaymentBtn);
-        cardSwitch = findViewById(R.id.cardPaymentSwitch);
-        allowSavedCardsSwitch = findViewById(R.id.allowSavedCardsSwitch);
-        accountSwitch = findViewById(R.id.accountPaymentSwitch);
-        accountAchSwitch = findViewById(R.id.accountAchSwitch);
-        isMpesaSwitch = findViewById(R.id.accountMpesaSwitch);
-        isPreAuthSwitch = findViewById(R.id.isPreAuthSwitch);
-        shouldDisplayFeeSwitch = findViewById(R.id.isDisplayFeeSwitch);
-        ghMobileMoneySwitch = findViewById(R.id.accountGHMobileMoneySwitch);
-        ugMobileMoneySwitch = findViewById(R.id.accountUgMobileMoneySwitch);
-        ukbankSwitch = findViewById(R.id.accountUkbankSwitch);
-        saBankSwitch = findViewById(R.id.accountSaBankSwitch);
-        francMobileMoneySwitch = findViewById(R.id.accountfrancMobileMoneySwitch);
-        zmMobileMoneySwitch = findViewById(R.id.accountZmMobileMoneySwitch);
-        rwfMobileMoneySwitch = findViewById(R.id.accountRwfMobileMoneySwitch);
-        bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
-        isPermanentAccountSwitch = findViewById(R.id.isPermanentSwitch);
-        setExpirySwitch = findViewById(R.id.setExpirySwitch);
-        bankTransferSwitch = findViewById(R.id.bankTransferSwitch);
-        expiryDetailsLayout = findViewById(R.id.expiry_layout);
-        ussdSwitch = findViewById(R.id.ussd_switch);
-        barterSwitch = findViewById(R.id.barter_switch);
-        isLiveSwitch = findViewById(R.id.isLiveSwitch);
-        addSubAccountsSwitch = findViewById(R.id.addSubAccountsSwitch);
-        useRaveUISwitch = findViewById(R.id.useRaveUISwitch);
-        shouldShowStagingLabelSwitch = findViewById(R.id.shouldShowStagingLabelSwitch);
-        addVendorBtn = findViewById(R.id.addVendorBtn);
-        firstBtn = findViewById(R.id.first);
-        secondBtn = findViewById(R.id.second);
-        clearVendorBtn = findViewById(R.id.clearVendorsBtn);
-        vendorListTXT = findViewById(R.id.refIdsTV);
+        emailEt = rootView.findViewById(R.id.emailEt);
+        amountEt = rootView.findViewById(R.id.amountEt);
+        publicKeyEt = rootView.findViewById(R.id.publicKeyEt);
+        encryptionKeyEt = rootView.findViewById(R.id.encryptionEt);
+        txRefEt = rootView.findViewById(R.id.txRefEt);
+        narrationEt = rootView.findViewById(R.id.narrationTV);
+        currencyEt = rootView.findViewById(R.id.currencyEt);
+        countryEt = rootView.findViewById(R.id.countryEt);
+        fNameEt = rootView.findViewById(R.id.fNameEt);
+        lNameEt = rootView.findViewById(R.id.lnameEt);
+        phoneNumberEt = rootView.findViewById(R.id.phoneNumberEt);
+        durationEt = rootView.findViewById(R.id.expiryDaysEt);
+        frequencyEt = rootView.findViewById(R.id.frequencyEt);
+        startPayBtn = rootView.findViewById(R.id.startPaymentBtn);
+        cardSwitch = rootView.findViewById(R.id.cardPaymentSwitch);
+        allowSavedCardsSwitch = rootView.findViewById(R.id.allowSavedCardsSwitch);
+        accountSwitch = rootView.findViewById(R.id.accountPaymentSwitch);
+        accountAchSwitch = rootView.findViewById(R.id.accountAchSwitch);
+        isMpesaSwitch = rootView.findViewById(R.id.accountMpesaSwitch);
+        isPreAuthSwitch = rootView.findViewById(R.id.isPreAuthSwitch);
+        shouldDisplayFeeSwitch = rootView.findViewById(R.id.isDisplayFeeSwitch);
+        ghMobileMoneySwitch = rootView.findViewById(R.id.accountGHMobileMoneySwitch);
+        ugMobileMoneySwitch = rootView.findViewById(R.id.accountUgMobileMoneySwitch);
+        ukbankSwitch = rootView.findViewById(R.id.accountUkbankSwitch);
+        saBankSwitch = rootView.findViewById(R.id.accountSaBankSwitch);
+        francMobileMoneySwitch = rootView.findViewById(R.id.accountfrancMobileMoneySwitch);
+        zmMobileMoneySwitch = rootView.findViewById(R.id.accountZmMobileMoneySwitch);
+        rwfMobileMoneySwitch = rootView.findViewById(R.id.accountRwfMobileMoneySwitch);
+        bankTransferSwitch = rootView.findViewById(R.id.bankTransferSwitch);
+        isPermanentAccountSwitch = rootView.findViewById(R.id.isPermanentSwitch);
+        setExpirySwitch = rootView.findViewById(R.id.setExpirySwitch);
+        bankTransferSwitch = rootView.findViewById(R.id.bankTransferSwitch);
+        expiryDetailsLayout = rootView.findViewById(R.id.expiry_layout);
+        ussdSwitch = rootView.findViewById(R.id.ussd_switch);
+        barterSwitch = rootView.findViewById(R.id.barter_switch);
+        isLiveSwitch = rootView.findViewById(R.id.isLiveSwitch);
+        addSubAccountsSwitch = rootView.findViewById(R.id.addSubAccountsSwitch);
+        useRaveUISwitch = rootView.findViewById(R.id.useRaveUISwitch);
+        shouldShowStagingLabelSwitch = rootView.findViewById(R.id.shouldShowStagingLabelSwitch);
+        addVendorBtn = rootView.findViewById(R.id.addVendorBtn);
+        firstBtn = rootView.findViewById(R.id.first);
+        secondBtn = rootView.findViewById(R.id.second);
+        clearVendorBtn = rootView.findViewById(R.id.clearVendorsBtn);
+        vendorListTXT = rootView.findViewById(R.id.refIdsTV);
         vendorListTXT.setText("Your current vendor refs are: ");
 
         bankTransferSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -206,7 +212,7 @@ public class MainActivity
         publicKeyEt.setText(RaveConstants.PUBLIC_KEY);
         encryptionKeyEt.setText(RaveConstants.ENCRYPTION_KEY);
 
-        addSubaccountsLayout = findViewById(R.id.addSubAccountsLayout);
+        addSubaccountsLayout = rootView.findViewById(R.id.addSubAccountsLayout);
 
         meta.add(new Meta("test key 1", "test value 1"));
         meta.add(new Meta("test key 2", "test value 2"));
@@ -215,7 +221,6 @@ public class MainActivity
             @Override
             public void onClick(View v) {
                 validateEntries(amountEt.getText().toString());
-//                getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment()).commit();
             }
         });
 
@@ -257,6 +262,30 @@ public class MainActivity
             }
         });
 
+        getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_CODE + "", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                Log.d("okh", "i am listening");
+                String message = result.getString("response");
+                int resultCode = result.getInt("resultCode");
+
+                if (message != null) {
+                    Log.d("rave response", message);
+                }
+
+                if (getActivity() != null) {
+                    if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+                        Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
+                    } else if (resultCode == RavePayActivity.RESULT_ERROR) {
+                        Toast.makeText(requireContext(), "ERROR " + message, Toast.LENGTH_SHORT).show();
+                    } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
+                        Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        return rootView;
     }
 
     private void clear() {
@@ -370,14 +399,14 @@ public class MainActivity
                         .setMeta(meta)
                         .shouldDisplayFee(shouldDisplayFeeSwitch.isChecked());
 
-                if (amount.equals("0")){
+                if (amount.equals("0")) {
                     ((RaveUiManager) raveManager).acceptZmMobileMoneyPayments(true);
                     ((RaveUiManager) raveManager).acceptGHMobileMoneyPayments(true);
                     ((RaveUiManager) raveManager).showStagingLabel(true);
                     ((RaveUiManager) raveManager).onStagingEnv(true);
                 }
 
-//                ((RaveUiManager) raveManager).embedFragment(R.id.container, this);
+                ((RaveUiManager) raveManager).embedFragment(R.id.container, (AppCompatActivity) getActivity());
 
                 // Customize pay with bank transfer options (optional)
                 if (isPermanentAccountSwitch.isChecked())
@@ -432,8 +461,9 @@ public class MainActivity
         }
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RaveConstants.RESULT_SUCCESS) {
             switch (requestCode) {
                 case RaveConstants.PIN_REQUEST_CODE:
@@ -473,11 +503,11 @@ public class MainActivity
             }
 
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-                Toast.makeText(this, "SUCCESS " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
             } else if (resultCode == RavePayActivity.RESULT_ERROR) {
-                Toast.makeText(this, "ERROR " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "ERROR " + message, Toast.LENGTH_SHORT).show();
             } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
-                Toast.makeText(this, "CANCELLED " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == RaveConstants.WEB_VERIFICATION_REQUEST_CODE) {
             cardPayManager.onWebpageAuthenticationComplete();
@@ -502,7 +532,7 @@ public class MainActivity
     }
 
     private void addVendorDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
         // ...Irrelevant code for customizing the buttons and title
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.rave_sdk_add_vendor_layout, null);
@@ -551,12 +581,12 @@ public class MainActivity
     @Override
     public void showProgressIndicator(boolean active) {
         try {
-            if (isFinishing()) {
+            if (getActivity().isFinishing()) {
                 return;
             }
 
             if (progressDialog == null) {
-                progressDialog = new ProgressDialog(this);
+                progressDialog = new ProgressDialog(requireContext());
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage("Please wait...");
             }
@@ -585,14 +615,14 @@ public class MainActivity
 
     @Override
     public void collectAddress() {
-        Toast.makeText(this, "Submitting address details", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Submitting address details", Toast.LENGTH_SHORT).show();
         new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
                 .showAddressScreen();
     }
 
     @Override
     public void showAuthenticationWebPage(String authenticationUrl) {
-        Toast.makeText(this, "Loading auth web page", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Loading auth web page", Toast.LENGTH_SHORT).show();
 
         // Load webpage
         new RaveVerificationUtils(this, isLiveSwitch.isChecked(), publicKeyEt.getText().toString())
@@ -601,12 +631,12 @@ public class MainActivity
 
     @Override
     public void onError(String errorMessage, @Nullable String flwRef) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onSuccessful(String flwRef) {
-        Toast.makeText(this, "Transaction Successful", Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), "Transaction Successful", Toast.LENGTH_LONG).show();
 //        cardPayManager.saveCard(); // Save card if needed
     }
 
@@ -615,12 +645,12 @@ public class MainActivity
         // Check that the list is not empty, show the user to select which they'd like to charge, then proceed to chargeSavedCard()
         if (cards.size() != 0) cardPayManager.chargeSavedCard(cards.get(0));
         else
-            Toast.makeText(this, "No saved cards found for " + phoneNumber, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "No saved cards found for " + phoneNumber, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSavedCardsLookupFailed(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -651,7 +681,7 @@ public class MainActivity
     @Override
     public void onTransactionFeeFetched(String chargeAmount, String fee) {
         // Display the fee to the customer
-        Toast.makeText(this, "The transaction fee is " + fee, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "The transaction fee is " + fee, Toast.LENGTH_SHORT).show();
 //        cardPayManager.chargeCard(card);
     }
 

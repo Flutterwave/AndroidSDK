@@ -3,7 +3,6 @@ package com.flutterwave.raveandroid;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -12,7 +11,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +87,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
 
 public class RavePayFragment extends Fragment {
@@ -147,7 +144,7 @@ public class RavePayFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        
+
         root = rootView.findViewById(R.id.rave_pay_activity_rootview);
         Event event = new ScreenLaunchEvent("Payment Activity").getEvent();
         event.setPublicKey(ravePayInitializer.getPublicKey());
@@ -159,9 +156,9 @@ public class RavePayFragment extends Fragment {
 
         return rootView;
     }
-    
+
     private void setupMainContent() {
-        
+
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,8 +230,8 @@ public class RavePayFragment extends Fragment {
             if (titleView == null) {
                 titleView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
                 root.addView(titleView);
-            }else{
-                try{
+            } else {
+                try {
                     set.connect(titleView.getId(), ConstraintSet.TOP, root.getId(), ConstraintSet.TOP);
                     set.connect(titleView.getId(), ConstraintSet.BOTTOM, guidelineMap.get(10 - paymentTiles.size() + 1).getId(), ConstraintSet.BOTTOM);
                     set.connect(titleView.getId(), ConstraintSet.LEFT, root.getId(), ConstraintSet.LEFT);
@@ -243,7 +240,7 @@ public class RavePayFragment extends Fragment {
                     set.constrainHeight(titleView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
                     set.setVisibility(titleView.getId(), ConstraintSet.VISIBLE);
 
-                }catch (Exception ignore){
+                } catch (Exception ignore) {
 
                 }
             }
@@ -348,7 +345,7 @@ public class RavePayFragment extends Fragment {
     }
 
     private void displayPaymentFragment(final PaymentTile foundPaymentTile) {
-        
+
         View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
         if (fragmentContainerLayout == null) {
             fragmentContainerLayout
@@ -443,7 +440,7 @@ public class RavePayFragment extends Fragment {
 
         Fragment cardFragment = new CardFragment();
 
-        if(isBarter && supportedCurrenciesForAcquired.contains(ravePayInitializer.currency)){
+        if (isBarter && supportedCurrenciesForAcquired.contains(ravePayInitializer.currency)) {
 //            cardFragment = new AcquiredFragment();
         } else {
             Bundle bundle = new Bundle();
@@ -455,46 +452,46 @@ public class RavePayFragment extends Fragment {
 
         switch (foundPaymentTile.paymentType) {
             case PAYMENT_TYPE_ACCOUNT:
-                transaction.replace(R.id.payment_fragment_container, new AccountFragment());
+                transaction.add(R.id.payment_fragment_container, new AccountFragment());
                 break;
             case PAYMENT_TYPE_ACH:
-                transaction.replace(R.id.payment_fragment_container, new AchFragment());
+                transaction.add(R.id.payment_fragment_container, new AchFragment());
                 break;
             case PAYMENT_TYPE_BANK_TRANSFER:
-                transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
+                transaction.add(R.id.payment_fragment_container, new BankTransferFragment());
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
                 transaction.replace(R.id.payment_fragment_container, cardFragment);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
+                transaction.add(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_GH_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new GhMobileMoneyFragment());
+                transaction.add(R.id.payment_fragment_container, new GhMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_MPESA:
-                transaction.replace(R.id.payment_fragment_container, new MpesaFragment());
+                transaction.add(R.id.payment_fragment_container, new MpesaFragment());
                 break;
             case PAYMENT_TYPE_RW_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
+                transaction.add(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_UG_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new UgMobileMoneyFragment());
+                transaction.add(R.id.payment_fragment_container, new UgMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_UK:
-                transaction.replace(R.id.payment_fragment_container, new UkFragment());
+                transaction.add(R.id.payment_fragment_container, new UkFragment());
                 break;
             case PAYMENT_TYPE_BARTER:
-                transaction.replace(R.id.payment_fragment_container, new BarterFragment());
+                transaction.add(R.id.payment_fragment_container, new BarterFragment());
                 break;
             case PAYMENT_TYPE_USSD:
-                transaction.replace(R.id.payment_fragment_container, new UssdFragment());
+                transaction.add(R.id.payment_fragment_container, new UssdFragment());
                 break;
             case PAYMENT_TYPE_ZM_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
+                transaction.add(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
                 break;
             case PAYMENT_TYPE_SA_BANK_ACCOUNT:
-                transaction.replace(R.id.payment_fragment_container, new SaBankAccountFragment());
+                transaction.add(R.id.payment_fragment_container, new SaBankAccountFragment());
                 break;
             default:
                 Log.d("Adding Payment Fragment", "Payment type does not exist in payment types list");
@@ -503,18 +500,25 @@ public class RavePayFragment extends Fragment {
         }
 
         try {
-            transaction.commit();
+            if (getActivity() != null) {
+                transaction.commit();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean isBarter(){
-        String packageName = getActivity().getApplicationContext().getPackageName();
-        return packageName.equals("com.flutterwave.flybarter");
+    private boolean isBarter() {
+        if (getActivity() != null) {
+            String packageName = getActivity().getApplicationContext().getPackageName();
+            return packageName.equals("com.flutterwave.flybarter");
+        } else {
+            return false;
+        }
     }
 
-    public boolean appIsInDarkMode(){
+    public boolean appIsInDarkMode() {
         boolean appIsInDarkMode = false;
         int nightModeFlags =
                 getResources().getConfiguration().uiMode &
@@ -638,7 +642,7 @@ public class RavePayFragment extends Fragment {
     }
 
     private View createPaymentTileView(String title) {
-        
+
         View tileView = getLayoutInflater().inflate(R.layout.rave_sdk_payment_type_tile_layout, root, false);
         TextView tv2 = tileView.findViewById(R.id.rave_payment_type_title_textView);
         tileView.setId(ViewCompat.generateViewId());
@@ -709,10 +713,12 @@ public class RavePayFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 if ((AppCompatActivity) getActivity() != null) {
-                    setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
-                    getChildFragmentManager().popBackStack();
-                    getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
-                }else{
+                    if ((AppCompatActivity) getActivity() != null) {
+                        getActivity().getOnBackPressedDispatcher().addCallback((AppCompatActivity) getActivity(), this);
+                        setRavePayResult(RavePayFragment.RESULT_CANCELLED, new Bundle());
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                } else {
                     onDestroy();
                 }
             }
