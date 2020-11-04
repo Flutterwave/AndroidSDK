@@ -153,12 +153,12 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
                              Bundle savedInstanceState) {
 
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS)) {
+            if (savedInstanceState.containsKey(STATE_PRESENTER_SAVEDCARDS) && presenter != null) {
                 Type savedCardsListType = new TypeToken<List<SavedCard>>() {
                 }.getType();
-                presenter.savedCards = (new Gson()).fromJson(savedInstanceState.getString
-                                (STATE_PRESENTER_SAVEDCARDS),
-                        savedCardsListType);
+                    presenter.savedCards = (new Gson()).fromJson(savedInstanceState.getString
+                                    (STATE_PRESENTER_SAVEDCARDS),
+                            savedCardsListType);
             }
         }
 
