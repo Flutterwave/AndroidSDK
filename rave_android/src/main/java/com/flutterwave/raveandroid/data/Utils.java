@@ -2,11 +2,20 @@ package com.flutterwave.raveandroid.data;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
@@ -24,6 +33,10 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 
 import javax.crypto.Cipher;
+
+import static com.flutterwave.raveandroid.RavePayActivity.RESULT_CANCELLED;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 
 /**
  * Created by hamzafetuga on 05/07/2017.
@@ -63,6 +76,48 @@ public class Utils {
         Type type = new TypeToken<Payload>() {
         }.getType();
         return gson.toJson(body, type);
+    }
+
+    public static Bundle bundle = new Bundle();
+
+    public static void onBackPressed(Boolean embedFragment, final AppCompatActivity activity){
+        if (embedFragment && activity != null) {
+            activity.getOnBackPressedDispatcher().addCallback(activity, new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    if (activity != null) {
+                        if (bundle.isEmpty()){
+                            bundle.putInt("resultCode",  RESULT_CANCELLED);
+                            activity.getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                        }
+                        activity.getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                        activity.getSupportFragmentManager().popBackStack();
+                    }
+                }
+            });
+        }
+
+    }
+
+    public static void setResult(Boolean embedFragment, String responseAsJSONString, int status, Fragment fragment, AppCompatActivity activity){
+        if (embedFragment){
+            bundle = new Bundle();
+            bundle.putString("response", responseAsJSONString);
+            bundle.putInt("resultCode", status);
+            fragment.getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
+            if (activity != null) {
+                activity.onBackPressed();
+            }
+
+        }else{
+            Intent intent = new Intent();
+            intent.putExtra("response", responseAsJSONString);
+
+            if (activity != null) {
+                ((RavePayActivity) activity).setRavePayResult(status, intent);
+                activity.finish();
+            }
+        }
     }
 
     public static List<Meta> pojofyMetaString(String meta) {

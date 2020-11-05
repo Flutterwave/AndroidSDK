@@ -13,14 +13,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.di.modules.BarterModule;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.google.android.material.textfield.TextInputEditText;
@@ -32,6 +35,7 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
 
@@ -57,6 +61,8 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
         // Required empty public constructor
     }
 
+    private Boolean embedFragment;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +71,6 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        injectComponents();
 
         v = inflater.inflate(R.layout.rave_sdk_fragment_barter, container, false);
 
@@ -73,16 +78,27 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
         setListeners();
 
-        initializePresenter();
+        if (getArguments() != null) {
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            injectComponents(embedFragment);
+            initializePresenter(embedFragment);
+            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+        }
 
         return v;
     }
 
-    private void injectComponents() {
+    private void injectComponents(Boolean embedFragment) {
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getRaveUiComponent()
-                    .plus(new BarterModule(this))
-                    .inject(this);
+            if (embedFragment){
+                RavePayFragment.getRaveUiComponent()
+                        .plus(new BarterModule(this))
+                        .inject(this);
+            }else{
+                ((RavePayActivity) getActivity()).getRaveUiComponent()
+                        .plus(new BarterModule(this))
+                        .inject(this);
+            }
         }
     }
 
@@ -114,9 +130,13 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
         presenter.onDataCollected(dataHashMap);
     }
 
-    private void initializePresenter() {
+    private void initializePresenter(Boolean embedFragment) {
         if (getActivity() != null) {
-            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            if (embedFragment){
+                ravePayInitializer = RavePayFragment.getRavePayInitializer();
+            }else{
+                ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            }
             presenter.init(ravePayInitializer);
         }
     }
@@ -259,23 +279,12 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
     @Override
     public void onPaymentSuccessful(String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsString);
-
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
+        Utils.setResult(embedFragment, responseAsString, RavePayActivity.RESULT_SUCCESS, this, (AppCompatActivity) getActivity());
     }
 
     @Override
     public void onPaymentFailed(String flwRef, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
-        }
+        Utils.setResult(embedFragment, responseAsJSONString, RavePayActivity.RESULT_ERROR, this, (AppCompatActivity) getActivity());
     }
 
     @Override

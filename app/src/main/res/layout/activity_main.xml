@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:checked="false"
+                android:checked="true"
                 android:text="@string/accept_account_payments" />
 
 
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/accept_card_payments" />
 
 
@@ -326,7 +326,7 @@
                 android:layout_marginBottom="10dp"
                 android:hint="@string/amount_to_charge_required"
                 android:inputType="number"
-                android:text="121"
+                android:text="121.0"
                 android:textSize="14sp" />
 
             <EditText
@@ -430,6 +430,7 @@
     <Button
         android:id="@+id/first"
         android:text="First Screen"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -437,6 +438,7 @@
         android:id="@+id/second"
         android:text="Second Screen"
         android:layout_gravity="end"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

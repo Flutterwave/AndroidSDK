@@ -13,15 +13,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.di.modules.MpesaModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
@@ -34,6 +37,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
@@ -61,37 +65,50 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
     private int rave_phoneEtInt;
     private RavePayInitializer ravePayInitializer;
 
+    private Boolean embedFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        injectComponents();
-
         v = inflater.inflate(R.layout.rave_sdk_fragment_mpesa, container, false);
 
         initializeViews();
 
-        setListeners();
+        if (getArguments() != null){
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            injectComponents(embedFragment);
+            initializePresenter(embedFragment);
+            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+        }
 
-        initializePresenter();
+        setListeners();
 
         return v;
     }
 
-
-    private void injectComponents() {
+    private void injectComponents(Boolean embedFragment) {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getRaveUiComponent()
-                    .plus(new MpesaModule(this))
-                    .inject(this);
+            if (embedFragment){
+                RavePayFragment.getRaveUiComponent()
+                        .plus(new MpesaModule(this))
+                        .inject(this);
+            }else{
+                ((RavePayActivity) getActivity()).getRaveUiComponent()
+                        .plus(new MpesaModule(this))
+                        .inject(this);
+            }
         }
     }
 
-    private void initializePresenter() {
+    private void initializePresenter(Boolean embedFragment) {
         if (getActivity() != null) {
-            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            if (embedFragment){
+                ravePayInitializer = RavePayFragment.getRavePayInitializer();
+            }else{
+                ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            }
             presenter.init(ravePayInitializer);
         }
     }
@@ -233,23 +250,13 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
 
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsString);
+        Utils.setResult(embedFragment, responseAsString, RavePayActivity.RESULT_SUCCESS, this, ((AppCompatActivity) getActivity()));
 
-        if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
     }
 
     @Override
     public void onPaymentFailed(String message, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra(response, responseAsJSONString);
-        if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
-        }
+        Utils.setResult(embedFragment, responseAsJSONString, RavePayActivity.RESULT_ERROR, this, ((AppCompatActivity) getActivity()));
     }
 
     @Override

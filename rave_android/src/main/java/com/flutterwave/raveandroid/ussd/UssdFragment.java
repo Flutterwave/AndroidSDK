@@ -20,12 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
+import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
 import com.flutterwave.raveandroid.data.Utils;
@@ -33,6 +35,7 @@ import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.InstructionsDisplayedEvent;
 import com.flutterwave.raveandroid.data.events.ListItemSelectedEvent;
 import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
+import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.di.modules.UssdModule;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -46,6 +49,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,6 +85,7 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
         // Required empty public constructor
     }
 
+    private Boolean embedFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,21 +93,30 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.rave_sdk_fragment_ussd, container, false);
 
-        injectComponents();
         initializeViews();
         setUpBanks();
         setOnClickListeners();
-        initializePresenter();
+
+        if (getArguments() != null) {
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            injectComponents(embedFragment);
+            initializePresenter(embedFragment);
+            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+        }
+
         return rootView;
     }
 
-    private void initializePresenter() {
+    private void initializePresenter(Boolean embedFragment) {
         if (getActivity() != null) {
-            ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            if (embedFragment){
+                ravePayInitializer = RavePayFragment.getRavePayInitializer();
+            }else{
+                ravePayInitializer = ((RavePayActivity) getActivity()).getRavePayInitializer();
+            }
             presenter.init(ravePayInitializer);
         }
     }
-
 
     @Override
     public void onAmountValidationFailed() {
@@ -138,12 +152,18 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
         }
     }
 
-    private void injectComponents() {
+    private void injectComponents(Boolean embedFragment) {
 
         if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).getRaveUiComponent()
-                    .plus(new UssdModule(this))
-                    .inject(this);
+            if (embedFragment){
+                RavePayFragment.getRaveUiComponent()
+                        .plus(new UssdModule(this))
+                        .inject(this);
+            }else{
+                ((RavePayActivity) getActivity()).getRaveUiComponent()
+                        .plus(new UssdModule(this))
+                        .inject(this);
+            }
         }
     }
 
@@ -367,13 +387,7 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
 
     @Override
     public void onPaymentFailed(String message, final String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsJSONString);
-        if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_ERROR, intent);
-            getActivity().finish();
-        }
-
+        Utils.setResult(embedFragment, responseAsJSONString, RavePayActivity.RESULT_ERROR, this, (AppCompatActivity) getActivity());
     }
 
     @Override
@@ -408,13 +422,7 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
 
     @Override
     public void onPaymentSuccessful(String status, final String responseAsString) {
-        Intent intent = new Intent();
-        intent.putExtra("response", responseAsString);
-
-        if (getActivity() != null) {
-            ((RavePayActivity) getActivity()).setRavePayResult(RavePayActivity.RESULT_SUCCESS, intent);
-            getActivity().finish();
-        }
+        Utils.setResult(embedFragment, responseAsString, RavePayActivity.RESULT_SUCCESS, this, (AppCompatActivity) getActivity());
     }
 
     @Override

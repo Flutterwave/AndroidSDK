@@ -436,64 +436,92 @@ public class RavePayFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         boolean isBarter = isBarter();
+        Bundle bundle = new Bundle();
+        boolean embedFragment = getArguments().getBoolean(EMBED_FRAGMENT, false);
+        bundle.putBoolean(EMBED_FRAGMENT, embedFragment);
 
         ArrayList<String> supportedCurrenciesForAcquired = new ArrayList(
                 Arrays.asList("GBP", "EUR"));
 
-        Fragment cardFragment = new CardFragment();
+        Fragment fragment = new CardFragment();
 
         if (isBarter && supportedCurrenciesForAcquired.contains(ravePayInitializer.currency)) {
 //            cardFragment = new AcquiredFragment();
         } else {
-            Bundle bundle = new Bundle();
-            boolean embedFragment = getArguments().getBoolean(EMBED_FRAGMENT, false);
-            bundle.putBoolean(EMBED_FRAGMENT, embedFragment);
-            cardFragment = new CardFragment();
-            cardFragment.setArguments(bundle);
+           fragment = new CardFragment();
+           fragment.setArguments(bundle);
         }
 
         switch (foundPaymentTile.paymentType) {
             case PAYMENT_TYPE_ACCOUNT:
-                transaction.replace(R.id.payment_fragment_container, new AccountFragment());
+                fragment= new AccountFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_ACH:
-                transaction.replace(R.id.payment_fragment_container, new AchFragment());
+                fragment = new AchFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_BANK_TRANSFER:
-                transaction.replace(R.id.payment_fragment_container, new BankTransferFragment());
+                fragment = new BankTransferFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case RaveConstants.PAYMENT_TYPE_CARD:
-                transaction.replace(R.id.payment_fragment_container, cardFragment);
+                fragment = new CardFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new FrancMobileMoneyFragment());
+                fragment = new FrancMobileMoneyFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_GH_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new GhMobileMoneyFragment());
+                fragment = new GhMobileMoneyFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_MPESA:
-                transaction.replace(R.id.payment_fragment_container, new MpesaFragment());
+                fragment = new MpesaFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_RW_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new RwfMobileMoneyFragment());
+                fragment = new RwfMobileMoneyFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_UG_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new UgMobileMoneyFragment());
+                fragment = new UgMobileMoneyFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_UK:
-                transaction.replace(R.id.payment_fragment_container, new UkFragment());
+                fragment = new UkFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_BARTER:
-                transaction.replace(R.id.payment_fragment_container, new BarterFragment());
+                fragment = new BarterFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_USSD:
-                transaction.replace(R.id.payment_fragment_container, new UssdFragment());
+                fragment = new UssdFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_ZM_MOBILE_MONEY:
-                transaction.replace(R.id.payment_fragment_container, new ZmMobileMoneyFragment());
+                fragment = new ZmMobileMoneyFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             case PAYMENT_TYPE_SA_BANK_ACCOUNT:
-                transaction.replace(R.id.payment_fragment_container, new SaBankAccountFragment());
+                fragment = new SaBankAccountFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.payment_fragment_container, fragment);
                 break;
             default:
                 Log.d("Adding Payment Fragment", "Payment type does not exist in payment types list");
