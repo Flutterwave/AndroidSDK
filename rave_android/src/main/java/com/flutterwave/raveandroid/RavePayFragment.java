@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -87,8 +88,8 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMENT_TYPE_ZM_MOBILE_MONEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.STAGING_URL;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 
 public class RavePayFragment extends Fragment {
 
@@ -433,12 +434,16 @@ public class RavePayFragment extends Fragment {
     }
 
     private void addFragmentToLayout(PaymentTile foundPaymentTile) {
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
         boolean isBarter = isBarter();
         Bundle bundle = new Bundle();
+
         boolean embedFragment = getArguments().getBoolean(EMBED_FRAGMENT, false);
+        int viewId = getArguments().getInt(VIEW_ID);
+
         bundle.putBoolean(EMBED_FRAGMENT, embedFragment);
+        bundle.putInt(VIEW_ID, viewId);
 
         ArrayList<String> supportedCurrenciesForAcquired = new ArrayList(
                 Arrays.asList("GBP", "EUR"));
@@ -471,7 +476,8 @@ public class RavePayFragment extends Fragment {
             case RaveConstants.PAYMENT_TYPE_CARD:
                 fragment = new CardFragment();
                 fragment.setArguments(bundle);
-                transaction.replace(R.id.payment_fragment_container, fragment);
+                String fragmentTag = UUID.randomUUID().toString();
+                transaction.add(R.id.payment_fragment_container, fragment, fragmentTag);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 fragment = new FrancMobileMoneyFragment();

@@ -20,6 +20,7 @@ public class RaveConstants {
 
     public static final int RAVE_REQUEST_CODE = 4199;
     public static final String RAVE_REQUEST_KEY = "4199";
+    public static final String VERIFICATION_REQUEST_KEY = "4190";
     public static final int OTP_REQUEST_CODE = 5399;
     public static final int WEB_VERIFICATION_REQUEST_CODE = 5340;
     public static final int BARTER_CHECKOUT_REQUEST_CODE = 5341;
@@ -46,6 +47,7 @@ public class RaveConstants {
 
     public static String VBV = "VBVSECURECODE";
     public static String EMBED_FRAGMENT = "embedFragment";
+    public static String VIEW_ID = "viewId";
 
     public static String GTB_OTP = "GTB_OTP";
     public static String ACCESS_OTP = "ACCESS_OTP";

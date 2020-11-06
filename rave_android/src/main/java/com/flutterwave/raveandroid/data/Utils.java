@@ -18,6 +18,7 @@ import com.flutterwave.raveandroid.RavePayFragment;
 import com.flutterwave.raveandroid.di.modules.CardUiModule;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_java_commons.SubAccount;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +38,7 @@ import javax.crypto.Cipher;
 import static com.flutterwave.raveandroid.RavePayActivity.RESULT_CANCELLED;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
 
 /**
  * Created by hamzafetuga on 05/07/2017.
@@ -80,21 +82,25 @@ public class Utils {
 
     public static Bundle bundle = new Bundle();
 
-    public static void onBackPressed(Boolean embedFragment, final AppCompatActivity activity){
+    public static void onBackPressed(Boolean embedFragment, final Fragment fragment, final AppCompatActivity activity){
         if (embedFragment && activity != null) {
-            activity.getOnBackPressedDispatcher().addCallback(activity, new OnBackPressedCallback(true) {
+
+          bundle.clear();
+
+          new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
-                    if (activity != null) {
-                        if (bundle.isEmpty()){
-                            bundle.putInt("resultCode",  RESULT_CANCELLED);
-                            activity.getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                    if (activity != null && fragment != null) {
+                        activity.getOnBackPressedDispatcher().addCallback((AppCompatActivity) activity, this);
+                        if (bundle.isEmpty()) {
+                            bundle.putInt("resultCode", RESULT_CANCELLED);
                         }
-                        activity.getSupportFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
-                        activity.getSupportFragmentManager().popBackStack();
+                        bundle.putInt("requestCode", RaveConstants.RAVE_REQUEST_CODE);
+                        fragment.getParentFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                        fragment.getParentFragmentManager().popBackStack();
                     }
                 }
-            });
+            };
         }
 
     }
@@ -104,9 +110,11 @@ public class Utils {
             bundle = new Bundle();
             bundle.putString("response", responseAsJSONString);
             bundle.putInt("resultCode", status);
-            fragment.getParentFragmentManager().setFragmentResult(RAVE_REQUEST_CODE+"", bundle);
-            if (activity != null) {
-                activity.onBackPressed();
+            bundle.putInt("requestCode", RaveConstants.RAVE_REQUEST_CODE);
+
+            if (activity != null){
+                fragment.getParentFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
+                fragment.getParentFragmentManager().popBackStack();
             }
 
         }else{

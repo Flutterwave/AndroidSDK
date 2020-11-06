@@ -53,6 +53,7 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
@@ -91,12 +92,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     private Calendar calendar = Calendar.getInstance();
 
     private Boolean embedFragment;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
-        super.onCreate(savedInstanceState);
-    }
+    private int viewId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,9 +104,10 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
 
         if (getArguments() != null){
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            viewId = getArguments().getInt(VIEW_ID);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
@@ -414,7 +411,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     public void collectOtp(String publicKey, String flutterwaveReference, String validateInstruction) {
         this.flwRef = flutterwaveReference;
 
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showOtpScreen(validateInstruction);
     }
 
@@ -437,7 +434,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Override
     public void displayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showWebpageVerificationScreen(authurl);
     }
 

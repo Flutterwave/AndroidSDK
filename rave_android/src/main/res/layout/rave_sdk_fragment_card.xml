@@ -8,11 +8,16 @@
     android:layout_height="wrap_content"
     tools:context=".card.CardFragment">
 
-    <ScrollView
-        android:id="@+id/new_card_overall_lay"
+    <FrameLayout
+        android:id="@+id/card_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/new_card_overall_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -277,12 +282,15 @@
 
             </LinearLayout>
 
-    </ScrollView>
+        </ScrollView>
+
+        <include
+            android:id="@+id/saved_card_overall_lay"
+            android:visibility="gone" layout="@layout/rave_sdk_pick_saved_card_layout"/>
+
+    </FrameLayout>
 
 
-    <include
-        android:id="@+id/saved_card_overall_lay"
-        android:visibility="gone" layout="@layout/rave_sdk_pick_saved_card_layout"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

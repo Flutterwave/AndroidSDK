@@ -45,7 +45,6 @@ import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 
 
@@ -266,14 +265,49 @@ public class MainFragment
         getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                String message = result.getString("response");
-                int resultCode = result.getInt("resultCode");
 
-                if (message != null) {
-                    Log.d("rave response", message);
+                int resultCode = result.getInt("resultCode");
+                int requestCode = result.getInt("requestCode");
+
+                if (resultCode == RaveConstants.RESULT_SUCCESS) {
+
+                    switch (requestCode) {
+                        case RaveConstants.PIN_REQUEST_CODE:
+                            String pin = result.getString(PinFragment.EXTRA_PIN);
+                            // Use the collected PIN
+                            cardPayManager.submitPin(pin);
+                            break;
+                        case RaveConstants.ADDRESS_DETAILS_REQUEST_CODE:
+                            String streetAddress = result.getString(AVSVBVFragment.EXTRA_ADDRESS);
+                            String state = result.getString(AVSVBVFragment.EXTRA_STATE);
+                            String city = result.getString(AVSVBVFragment.EXTRA_CITY);
+                            String zipCode = result.getString(AVSVBVFragment.EXTRA_ZIPCODE);
+                            String country = result.getString(AVSVBVFragment.EXTRA_COUNTRY);
+                            AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
+
+                            // Use the address details
+                            cardPayManager.submitAddress(address);
+                            break;
+                        case RaveConstants.WEB_VERIFICATION_REQUEST_CODE:
+                            // Web authentication complete, proceed
+                            cardPayManager.onWebpageAuthenticationComplete();
+                            break;
+                        case RaveConstants.OTP_REQUEST_CODE:
+                            String otp = result.getString(OTPFragment.EXTRA_OTP);
+                            // Use OTP
+                            cardPayManager.submitOtp(otp);
+                            break;
+                    }
                 }
 
-                if (getActivity() != null) {
+                if (requestCode == RaveConstants.RAVE_REQUEST_CODE && result != null) {
+
+                    String message = result.getString("response");
+
+                    if (message != null) {
+                        Log.d("rave response", message);
+                    }
+
                     if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                         Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
                     } else if (resultCode == RavePayActivity.RESULT_ERROR) {
@@ -281,6 +315,8 @@ public class MainFragment
                     } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                         Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
                     }
+                } else if (requestCode == RaveConstants.WEB_VERIFICATION_REQUEST_CODE) {
+                    cardPayManager.onWebpageAuthenticationComplete();
                 }
             }
         });

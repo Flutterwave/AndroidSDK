@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
 
@@ -62,6 +63,7 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     }
 
     private Boolean embedFragment;
+    private int viewId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,9 +82,10 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            viewId = getArguments().getInt(VIEW_ID);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         return v;
@@ -193,7 +196,7 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     public void loadBarterCheckout(String authUrlCrude, String flwRef) {
 
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showBarterCheckoutScreen(authUrlCrude, flwRef);
 
     }

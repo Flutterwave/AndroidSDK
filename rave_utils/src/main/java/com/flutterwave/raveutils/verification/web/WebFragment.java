@@ -15,6 +15,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
@@ -25,12 +26,19 @@ import com.flutterwave.raveandroid.rave_logger.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_logger.events.ScreenMinimizeEvent;
 import com.flutterwave.raveutils.R;
 import com.flutterwave.raveutils.di.WebModule;
+import com.flutterwave.raveutils.verification.Utils;
 import com.flutterwave.raveutils.verification.VerificationActivity;
+import com.flutterwave.raveutils.verification.VerificationFragment;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_ERROR;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_SUCCESS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
+import static com.flutterwave.raveutils.verification.Utils.REQUEST_CODE;
+import static com.flutterwave.raveutils.verification.Utils.RESULT_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
 
 /**
@@ -56,15 +64,22 @@ public class WebFragment extends Fragment implements WebContract.View {
         // Required empty public constructor
     }
 
+    private boolean embedFragment = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        injectComponents();
-
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.rave_sdk_fragment_web, container, false);
+
+
+        if (getArguments() != null) {
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+        }
+
+        injectComponents(embedFragment);
+
         webView = v.findViewById(R.id.rave_webview);
         authurl = getArguments().getString(EXTRA_AUTH_URL);
         try {
@@ -73,7 +88,10 @@ public class WebFragment extends Fragment implements WebContract.View {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         onDisplayInternetBankingPage(authurl);
+
+        Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
 
         logEvent(new ScreenLaunchEvent("Web Fragment").getEvent());
         initPresenter();
@@ -96,11 +114,17 @@ public class WebFragment extends Fragment implements WebContract.View {
         }
     }
 
-    private void injectComponents() {
+    private void injectComponents(boolean embedFragment) {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getVerificationComponent()
-                    .plus(new WebModule(this))
-                    .inject(this);
+            if (embedFragment) {
+                VerificationFragment.getVerificationComponent()
+                        .plus(new WebModule(this))
+                        .inject(this);
+            } else {
+                ((VerificationActivity) getActivity()).getVerificationComponent()
+                        .plus(new WebModule(this))
+                        .inject(this);
+            }
         }
     }
 
@@ -120,12 +144,27 @@ public class WebFragment extends Fragment implements WebContract.View {
     }
 
     public void goBack() {
-        Intent intent = new Intent();
-        logEvent(new ScreenMinimizeEvent("Web Fragment").getEvent());
-        if (getActivity() != null) {
-            getActivity().setResult(RESULT_SUCCESS, intent);
-            getActivity().finish();
+
+        if (embedFragment) {
+            Bundle bundle = new Bundle();
+            logEvent(new ScreenMinimizeEvent("Web Fragment").getEvent());
+
+            bundle.putInt(RESULT_CODE, RESULT_SUCCESS);
+            bundle.putInt(REQUEST_CODE, WEB_VERIFICATION_REQUEST_CODE);
+            getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
+            getParentFragmentManager().popBackStack();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+        } else {
+            Intent intent = new Intent();
+            logEvent(new ScreenMinimizeEvent("Web Fragment").getEvent());
+            if (getActivity() != null) {
+                getActivity().setResult(RESULT_SUCCESS, intent);
+                getActivity().finish();
+            }
         }
+
     }
 
     @Override
@@ -134,12 +173,28 @@ public class WebFragment extends Fragment implements WebContract.View {
     }
 
     private void goBack(int result, String responseAsJSONString) {
-        Intent intent = new Intent();
-        intent.putExtra(RaveConstants.response, responseAsJSONString);
-        if (getActivity() != null) {
-            getActivity().setResult(result, intent);
-            getActivity().finish();
+
+        if (embedFragment) {
+            Bundle bundle = new Bundle();
+            logEvent(new ScreenMinimizeEvent("Web Fragment").getEvent());
+
+            bundle.putString(RaveConstants.response, responseAsJSONString);
+            getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
+            getParentFragmentManager().popBackStack();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+        }else {
+
+            Intent intent = new Intent();
+            intent.putExtra(RaveConstants.response, responseAsJSONString);
+            if (getActivity() != null) {
+                getActivity().setResult(result, intent);
+                getActivity().finish();
+            }
+
         }
+
     }
 
 

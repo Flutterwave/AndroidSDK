@@ -79,7 +79,7 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         setListeners();

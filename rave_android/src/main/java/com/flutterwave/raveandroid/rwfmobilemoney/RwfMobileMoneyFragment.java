@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
 
@@ -63,6 +64,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
     private RavePayInitializer ravePayInitializer;
 
     private Boolean embedFragment;
+    private int viewId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,9 +80,10 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
 
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            viewId = getArguments().getInt(VIEW_ID);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment,this,  (AppCompatActivity) getActivity());
         }
 
         return v;
@@ -239,7 +242,7 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
 
     @Override
     public void showWebPage(String authenticationUrl) {
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showWebpageVerificationScreen(authenticationUrl);
     }
 

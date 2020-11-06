@@ -35,6 +35,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
 
@@ -56,6 +57,7 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     private RavePayInitializer ravePayInitializer;
 
     private Boolean embedFragment;
+    private int viewId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,9 +71,10 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
 
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            viewId = getArguments().getInt(VIEW_ID);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         return v;
@@ -180,7 +183,7 @@ public class AchFragment extends Fragment implements AchUiContract.View, View.On
     @Override
     public void showWebView(String authUrl, String flwRef) {
 
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showWebpageVerificationScreen(authUrl);
     }
 

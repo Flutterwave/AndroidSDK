@@ -81,7 +81,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
         return v;
     }

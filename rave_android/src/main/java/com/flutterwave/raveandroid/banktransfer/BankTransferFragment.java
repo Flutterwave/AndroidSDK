@@ -93,7 +93,7 @@ public class BankTransferFragment extends Fragment implements BankTransferUiCont
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         return v;

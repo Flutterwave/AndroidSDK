@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,15 +76,14 @@ import javax.inject.Inject;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.flutterwave.raveandroid.RavePayActivity.RESULT_CANCELLED;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ADDRESS_DETAILS_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.MANUAL_CARD_CHARGE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN_REQUEST_CODE;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
-import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.SAVED_CARD_CHARGE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldCardExpiry;
@@ -91,6 +91,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldC
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldEmail;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldcardNoStripped;
+import static com.flutterwave.raveutils.verification.Utils.RESULT_SUCCESS;
 
 
 /**
@@ -146,7 +147,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private ScrollView newCardOverallLay;
     private NestedScrollView savedCardOverallLay;
 
-    private Boolean embedFragment;
+    private boolean embedFragment = false;
+    private int viewId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -168,14 +170,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
-            injectComponents(embedFragment);
-            initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            viewId = getArguments().getInt(VIEW_ID);
         }
+
+        injectComponents(embedFragment);
+        initializePresenter(embedFragment);
+
+        Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         setListeners();
+
+        onFragmentResult();
 
         return v;
     }
@@ -444,7 +451,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void collectCardPin(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showPinScreen();
     }
 
@@ -493,6 +500,60 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         }
     }
 
+    private void onFragmentResult() {
+
+        getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                int requestCode = result.getInt("requestCode");
+                int resultCode = result.getInt("resultCode");
+
+                if (resultCode == RESULT_SUCCESS) {
+                    //just to be sure this v sent the receiving intent
+                    switch (requestCode) {
+                        case PIN_REQUEST_CODE:
+                            String pin = result.getString(PinFragment.EXTRA_PIN);
+                            presenter.chargeCardWithPinAuthModel(payLoad, pin, ravePayInitializer.getEncryptionKey());
+                            break;
+                        case ADDRESS_DETAILS_REQUEST_CODE:
+                            String streetAddress = result.getString(AVSVBVFragment.EXTRA_ADDRESS);
+                            String state = result.getString(AVSVBVFragment.EXTRA_STATE);
+                            String city = result.getString(AVSVBVFragment.EXTRA_CITY);
+                            String zipCode = result.getString(AVSVBVFragment.EXTRA_ZIPCODE);
+                            String country = result.getString(AVSVBVFragment.EXTRA_COUNTRY);
+                            AddressDetails address = new AddressDetails(streetAddress, city, state, zipCode, country);
+
+                            presenter.chargeCardWithAddressDetails(payLoad, address, ravePayInitializer.getEncryptionKey(), authModel);
+                            break;
+                        case WEB_VERIFICATION_REQUEST_CODE:
+                            presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+                            break;
+                        case OTP_REQUEST_CODE:
+                            String otp = result.getString(OTPFragment.EXTRA_OTP);
+                            if (result.getBoolean(OTPFragment.IS_SAVED_CARD_CHARGE, false)) {
+                                payLoad.setOtp(otp);
+                                presenter.chargeSavedCard(payLoad, ravePayInitializer.getEncryptionKey());
+                            } else
+                                presenter.validateCardCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+                            break;
+                        case FOR_SAVED_CARDS:
+                            String savedCards = result.getString(SavedCardsFragment.EXTRA_SAVED_CARDS);
+                            if (!savedCards.isEmpty() && savedCards != null ) {
+                                SavedCard savedCardToCharge = new Gson().fromJson(
+                                        result.getString(SavedCardsFragment.EXTRA_SAVED_CARDS),
+                                        SavedCard.class);
+                                onSavedCardSelected(savedCardToCharge);
+                            }
+                            presenter.checkForSavedCardsInMemory(ravePayInitializer);
+                            break;
+                    }
+                }
+
+            }
+        });
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Type savedCardsListType = new TypeToken<List<SavedCard>>() {
@@ -531,14 +592,14 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectOtp(String flwRef, String message) {
         this.flwRef = flwRef;
         dismissDialog();
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showOtpScreen(message);
     }
 
     public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
         this.payLoad = payload;
         dismissDialog();
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(), this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showOtpScreenForSavedCard(authInstruction);
     }
 
@@ -599,7 +660,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showWebPage(String authenticationUrl, String flwRef) {
 
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showWebpageVerificationScreen(authenticationUrl);
     }
 
@@ -784,7 +845,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectCardAddressDetails(final Payload payload, String authModel) {
         this.payLoad = payload;
         this.authModel = authModel;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showAddressScreen();
     }
 

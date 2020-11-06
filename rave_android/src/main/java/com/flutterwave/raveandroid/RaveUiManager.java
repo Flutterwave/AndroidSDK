@@ -43,6 +43,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PAYMEN
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_PARAMS;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVE_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 
 public class RaveUiManager extends RavePayManager {
     private AppCompatActivity activity;
@@ -334,11 +335,14 @@ public class RaveUiManager extends RavePayManager {
                 Fragment fragment = new RavePayFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(EMBED_FRAGMENT, true);
+                bundle.putInt(VIEW_ID, viewId);
                 bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
                 fragment.setArguments(bundle);
 
                 if (viewId != 0) {
-                    activity.getSupportFragmentManager().beginTransaction().add(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
+                    String fragmentTag = UUID.randomUUID().toString();
+                    activity.getSupportFragmentManager().beginTransaction().add(viewId, fragment, fragmentTag).addToBackStack("").commit();
+                Log.d("okh", fragmentTag +" fragmentTag");
                 }else{
                     throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                 }
@@ -354,13 +358,16 @@ public class RaveUiManager extends RavePayManager {
                 Fragment fragment = new RavePayFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(EMBED_FRAGMENT, true);
+                bundle.putInt(VIEW_ID, viewId);
                 bundle.putParcelable(RAVE_PARAMS, Parcels.wrap(createRavePayInitializer()));
                 fragment.setArguments(bundle);
 
                 if ( activity != null){
 
                     if (viewId != 0) {
-                        supportFragment.getParentFragmentManager().beginTransaction().replace(viewId, fragment, UUID.randomUUID().toString()).addToBackStack("").commit();
+                        String fragmentTag = UUID.randomUUID().toString();
+                        supportFragment.getParentFragmentManager().beginTransaction().add(viewId, fragment, fragmentTag).addToBackStack("").commit();
+                        Log.d("okh", fragmentTag +" fragmentTag");
                     }else{
                         throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
                     }

@@ -21,7 +21,12 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_SUCCESS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
+import static com.flutterwave.raveutils.verification.Utils.REQUEST_CODE;
+import static com.flutterwave.raveutils.verification.Utils.RESULT_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
 
 /**
@@ -37,6 +42,7 @@ public class PinFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private boolean embedFragment = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +54,15 @@ public class PinFragment extends Fragment {
         final TextInputLayout pinTil = v.findViewById(R.id.rave_pinTil);
         final TextInputEditText pinEt = v.findViewById(R.id.rave_pinEv);
 
-        injectComponents();
+        if (getArguments() != null) {
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            if (getArguments().getInt("theme", 0) != 0) {
+                getActivity().setTheme(getArguments().getInt("theme", 0));
+            }
+        }
+
+        injectComponents(embedFragment);
+
         logEvent(new ScreenLaunchEvent("PIN Fragment").getEvent());
 
         pinBtn.setOnClickListener(new View.OnClickListener() {
@@ -80,10 +94,15 @@ public class PinFragment extends Fragment {
         return v;
     }
 
-    private void injectComponents() {
+    private void injectComponents(boolean embedFragment) {
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getVerificationComponent()
-                    .inject(this);
+            if (embedFragment) {
+                VerificationFragment.getVerificationComponent()
+                        .inject(this);
+            } else {
+                ((VerificationActivity) getActivity()).getVerificationComponent()
+                        .inject(this);
+            }
         }
     }
 
@@ -98,13 +117,31 @@ public class PinFragment extends Fragment {
     }
 
     public void goBack(){
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_PIN,pin);
-        logEvent(new SubmitEvent("PIN").getEvent());
-        if (getActivity() != null) {
-            getActivity().setResult(RESULT_SUCCESS, intent);
-            getActivity().finish();
+
+        if (embedFragment) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(REQUEST_CODE, OTP_REQUEST_CODE);
+            bundle.putString(EXTRA_PIN,pin);
+            bundle.putInt(RESULT_CODE, RESULT_SUCCESS);
+
+            logEvent(new SubmitEvent("PIN").getEvent());
+
+            getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
+            getParentFragmentManager().popBackStack();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+
+        }else {
+           Intent intent = new Intent();
+            intent.putExtra(EXTRA_PIN,pin);
+            logEvent(new SubmitEvent("PIN").getEvent());
+            if (getActivity() != null) {
+                getActivity().setResult(RESULT_SUCCESS, intent);
+                getActivity().finish();
+            }
         }
+
     }
 
 }

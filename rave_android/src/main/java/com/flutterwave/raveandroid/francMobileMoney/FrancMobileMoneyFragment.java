@@ -80,7 +80,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
             injectComponents(embedFragment);
             initializePresenter(embedFragment);
-            Utils.onBackPressed(embedFragment, (AppCompatActivity) getActivity());
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
         return v;

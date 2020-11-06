@@ -21,7 +21,12 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_SUCCESS;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
+import static com.flutterwave.raveutils.verification.Utils.REQUEST_CODE;
+import static com.flutterwave.raveutils.verification.Utils.RESULT_CODE;
 import static com.flutterwave.raveutils.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
 
 
@@ -48,12 +53,24 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
     }
 
 
+    private boolean embedFragment = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.rave_sdk_fragment_avsvbv, container, false);
-        injectComponents();
+
+
+        if (getArguments() != null) {
+            embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
+            if (getArguments().getInt("theme", 0) != 0) {
+                getActivity().setTheme(getArguments().getInt("theme", 0));
+            }
+        }
+
+        injectComponents(embedFragment);
+
         logEvent(new ScreenLaunchEvent("OTP Fragment").getEvent());
 
         final TextInputEditText addressEt = v.findViewById(R.id.rave_billAddressEt);
@@ -126,11 +143,18 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
         return v;
     }
 
-    private void injectComponents() {
+    private void injectComponents(boolean embedFragment) {
+
         if (getActivity() != null) {
-            ((VerificationActivity) getActivity()).getVerificationComponent()
-                    .inject(this);
+            if (embedFragment) {
+                VerificationFragment.getVerificationComponent()
+                        .inject(this);
+            } else {
+                ((VerificationActivity) getActivity()).getVerificationComponent()
+                        .inject(this);
+            }
         }
+
     }
 
     private void logEvent(Event event) {
@@ -144,17 +168,40 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
     }
 
     public void goBack() {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_ADDRESS, address);
-        intent.putExtra(EXTRA_CITY, city);
-        intent.putExtra(EXTRA_ZIPCODE, zipCode);
-        intent.putExtra(EXTRA_COUNTRY, country);
-        intent.putExtra(EXTRA_STATE, state);
-        logEvent(new SubmitEvent("Address Details").getEvent());
-        if (getActivity() != null) {
-            getActivity().setResult(RESULT_SUCCESS, intent);
-            getActivity().finish();
+
+
+        if (embedFragment) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(REQUEST_CODE, OTP_REQUEST_CODE);
+            bundle.putInt(RESULT_CODE, RESULT_SUCCESS);
+            bundle.putString(EXTRA_ADDRESS, address);
+            bundle.putString(EXTRA_CITY, city);
+            bundle.putString(EXTRA_ZIPCODE, zipCode);
+            bundle.putString(EXTRA_COUNTRY, country);
+            bundle.putString(EXTRA_STATE, state);
+
+            logEvent(new SubmitEvent("Address Details").getEvent());
+
+            getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
+            getParentFragmentManager().popBackStack();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+
+        }else {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_ADDRESS, address);
+            intent.putExtra(EXTRA_CITY, city);
+            intent.putExtra(EXTRA_ZIPCODE, zipCode);
+            intent.putExtra(EXTRA_COUNTRY, country);
+            intent.putExtra(EXTRA_STATE, state);
+            logEvent(new SubmitEvent("Address Details").getEvent());
+            if (getActivity() != null) {
+                getActivity().setResult(RESULT_SUCCESS, intent);
+                getActivity().finish();
+            }
         }
+
     }
 
     @Override
