@@ -35,14 +35,14 @@ public class Utils {
                 @Override
                 public void handleOnBackPressed() {
 
-                    if (activity != null && fragment != null) {
+                    if (fragment != null) {
                         activity.getOnBackPressedDispatcher().addCallback((AppCompatActivity) activity, this);
 
                         if (bundle.isEmpty()) {
                             bundle.putInt("resultCode", RESULT_CANCELLED);
                         }
                         activity.getSupportFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
-                        activity.getSupportFragmentManager().popBackStack();
+//                        activity.getSupportFragmentManager().popBackStack();
                     }
                 }
             };
