@@ -58,7 +58,7 @@ public class VerificationFragment extends Fragment {
 
         buildGraph();
 
-        if (rootView.findViewById(R.id.frame_container) != null) {
+        if (rootView.findViewById(viewId) != null) {
             if (savedInstanceState != null) {
                 return rootView;
             }
