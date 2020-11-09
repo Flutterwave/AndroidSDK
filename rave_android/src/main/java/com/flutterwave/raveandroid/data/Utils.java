@@ -114,7 +114,6 @@ public class Utils {
 
             if (activity != null){
                 fragment.getParentFragmentManager().setFragmentResult(RAVE_REQUEST_KEY, bundle);
-//                fragment.getParentFragmentManager().popBackStack();
             }
 
         }else{
