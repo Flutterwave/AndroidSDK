@@ -12,9 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
@@ -36,6 +38,7 @@ import javax.inject.Inject;
 import static android.view.View.GONE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
@@ -87,6 +90,8 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
             initializePresenter(embedFragment);
             Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
+
+        onFragmentResult();
 
         return v;
     }
@@ -233,6 +238,30 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
 
             builder.show();
         }
+    }
+
+    private void onFragmentResult() {
+
+        getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                getParentFragmentManager().popBackStack();
+
+                int requestCode = result.getInt("requestCode");
+                int resultCode = result.getInt("resultCode");
+
+                if (requestCode == BARTER_CHECKOUT_REQUEST_CODE) {
+                    if (result != null && result.getString(response) != null) {
+                        if (resultCode == RavePayActivity.RESULT_SUCCESS)
+                            onPaymentSuccessful(flwRef, result.getString(response));
+                        else if (resultCode == RavePayActivity.RESULT_ERROR)
+                            onPaymentFailed(flwRef, result.getString(response));
+                    } else presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+                }
+
+            }
+        });
     }
 
     @Override

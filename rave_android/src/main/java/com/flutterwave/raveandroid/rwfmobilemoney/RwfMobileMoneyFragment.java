@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
@@ -40,9 +42,12 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
 
 
 /**
@@ -85,6 +90,8 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
             initializePresenter(embedFragment);
             Utils.onBackPressed(embedFragment,this,  (AppCompatActivity) getActivity());
         }
+
+        onFragmentResult();
 
         return v;
     }
@@ -245,6 +252,30 @@ public class RwfMobileMoneyFragment extends Fragment implements RwfMobileMoneyUi
         new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showWebpageVerificationScreen(authenticationUrl);
     }
+
+
+    private void onFragmentResult() {
+
+        getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                getParentFragmentManager().popBackStack();
+
+                int requestCode = result.getInt("requestCode");
+                int resultCode = result.getInt("resultCode");
+
+                if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+                    //just to be sure this v sent the receiving intent
+                    if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
+                        presenter.requeryTx(ravePayInitializer.getPublicKey());
+                    }
+                }
+
+            }
+        });
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

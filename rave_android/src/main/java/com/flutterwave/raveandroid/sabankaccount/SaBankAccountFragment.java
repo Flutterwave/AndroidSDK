@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 
@@ -80,6 +82,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
             Utils.onBackPressed(embedFragment, this,  (AppCompatActivity) getActivity());
         }
 
+        onFragmentResult();
 
         return v;
     }
@@ -236,6 +239,29 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
     @Override
     public void onPaymentSuccessful(String status, String responseAsString) {
         Utils.setResult(embedFragment, responseAsString, RavePayActivity.RESULT_SUCCESS, this, (AppCompatActivity) getActivity());
+    }
+
+
+    private void onFragmentResult() {
+
+        getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                getParentFragmentManager().popBackStack();
+
+                int requestCode = result.getInt("requestCode");
+                int resultCode = result.getInt("resultCode");
+
+                if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+                    //just to be sure this fragment sent the receiving intent
+                    if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
+                        presenter.requeryTx(ravePayInitializer.getPublicKey(), flwRef);
+                    }
+                }
+
+            }
+        });
     }
 
 

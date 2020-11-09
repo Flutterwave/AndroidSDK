@@ -17,10 +17,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +55,7 @@ import javax.inject.Inject;
 
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.EMBED_FRAGMENT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VERIFICATION_REQUEST_KEY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VIEW_ID;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAccount;
@@ -113,6 +116,8 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
         setListeners();
+
+        onFragmentResult();
 
         return v;
     }
@@ -413,6 +418,31 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
 
         new RaveVerificationUtils((AppCompatActivity) getActivity(),this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme(), embedFragment, viewId)
                 .showOtpScreen(validateInstruction);
+    }
+
+    private void onFragmentResult() {
+
+        getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                getParentFragmentManager().popBackStack();
+
+                int requestCode = result.getInt("requestCode");
+                int resultCode = result.getInt("resultCode");
+
+                if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+
+                    if (requestCode == OTP_REQUEST_CODE) {
+                        String otp = result.getString(OTPFragment.EXTRA_OTP);
+                        presenter.authenticateAccountCharge(flwRef, otp, ravePayInitializer.getPublicKey());
+                    } else if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
+                        presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
