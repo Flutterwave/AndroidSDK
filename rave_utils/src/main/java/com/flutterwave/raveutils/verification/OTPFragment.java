@@ -179,7 +179,6 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
             bundle.putInt(RESULT_CODE, RESULT_SUCCESS);
             bundle.putBoolean(IS_SAVED_CARD_CHARGE, isSavedCardCharge);
             getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
-//            getParentFragmentManager().popBackStack();
 
         } else {
             Intent intent = new Intent();
