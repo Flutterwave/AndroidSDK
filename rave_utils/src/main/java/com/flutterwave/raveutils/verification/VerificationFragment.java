@@ -51,7 +51,7 @@ public class VerificationFragment extends Fragment {
         
         if (getArguments() != null) {
             viewId = getArguments().getInt(VIEW_ID);
-            if (getActivity() !=null && getArguments().getInt("theme", 0) != 0){
+            if (getArguments().getInt("theme", 0) != 0){
                 getActivity().setTheme(getArguments().getInt("theme", 0));
             }
         }
@@ -112,6 +112,15 @@ public class VerificationFragment extends Fragment {
                         Log.e(TAG, "No extra value matching motives");
                 }
             }
+
+//            getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
+//                @Override
+//                public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+////                    Fragment fragment = getParentFragmentManager().findFragmentById(viewId);
+////                    fragment.getParentFragmentManager().setFragmentResult(requestKey, result);
+////                    fragment.getParentFragmentManager().popBackStack();
+//                }
+//            });
 
         }
 

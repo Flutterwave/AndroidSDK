@@ -42,6 +42,7 @@ public class Utils {
                             bundle.putInt("resultCode", RESULT_CANCELLED);
                         }
                         activity.getSupportFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
+//                        activity.getSupportFragmentManager().popBackStack();
                     }
                 }
             };
