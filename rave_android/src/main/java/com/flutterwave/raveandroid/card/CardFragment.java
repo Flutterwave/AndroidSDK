@@ -504,6 +504,8 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
 
+                getParentFragmentManager().popBackStack();
+
                 int requestCode = result.getInt("requestCode");
                 int resultCode = result.getInt("resultCode");
 

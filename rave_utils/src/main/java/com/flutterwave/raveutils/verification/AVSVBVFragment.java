@@ -184,9 +184,6 @@ public class AVSVBVFragment extends Fragment implements View.OnFocusChangeListen
 
             getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
             getParentFragmentManager().popBackStack();
-            if (getActivity() != null) {
-                getActivity().onBackPressed();
-            }
 
         }else {
             Intent intent = new Intent();

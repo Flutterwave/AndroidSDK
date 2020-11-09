@@ -128,9 +128,6 @@ public class PinFragment extends Fragment {
 
             getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
             getParentFragmentManager().popBackStack();
-            if (getActivity() != null) {
-                getActivity().onBackPressed();
-            }
 
         }else {
            Intent intent = new Intent();

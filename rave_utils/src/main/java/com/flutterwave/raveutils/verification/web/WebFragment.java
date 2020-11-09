@@ -181,9 +181,6 @@ public class WebFragment extends Fragment implements WebContract.View {
             bundle.putString(RaveConstants.response, responseAsJSONString);
             getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
             getParentFragmentManager().popBackStack();
-//            if (getActivity() != null) {
-//                getActivity().onBackPressed();
-//            }
         }else {
 
             Intent intent = new Intent();
