@@ -85,8 +85,6 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
         Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
 
-//        onFragmentResult();
-
         return v;
     }
 

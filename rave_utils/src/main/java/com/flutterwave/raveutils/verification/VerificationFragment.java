@@ -58,7 +58,7 @@ public class VerificationFragment extends Fragment {
 
         buildGraph();
 
-        if (rootView.findViewById(viewId) != null) {
+        if (rootView.findViewById(R.id.frame_container) != null) {
             if (savedInstanceState != null) {
                 return rootView;
             }
@@ -112,15 +112,6 @@ public class VerificationFragment extends Fragment {
                         Log.e(TAG, "No extra value matching motives");
                 }
             }
-
-//            getParentFragmentManager().setFragmentResultListener(VERIFICATION_REQUEST_KEY, this, new FragmentResultListener() {
-//                @Override
-//                public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-////                    Fragment fragment = getParentFragmentManager().findFragmentById(viewId);
-////                    fragment.getParentFragmentManager().setFragmentResult(requestKey, result);
-////                    fragment.getParentFragmentManager().popBackStack();
-//                }
-//            });
 
         }
 

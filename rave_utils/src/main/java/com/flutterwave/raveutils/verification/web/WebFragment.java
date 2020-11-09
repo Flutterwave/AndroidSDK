@@ -81,6 +81,10 @@ public class WebFragment extends Fragment implements WebContract.View {
         injectComponents(embedFragment);
 
         webView = v.findViewById(R.id.rave_webview);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
         authurl = getArguments().getString(EXTRA_AUTH_URL);
         try {
             flwRef = getArguments().getString(EXTRA_FLW_REF);
