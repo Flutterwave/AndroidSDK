@@ -477,7 +477,7 @@ public class RavePayFragment extends Fragment {
                 fragment = new CardFragment();
                 fragment.setArguments(bundle);
                 String fragmentTag = UUID.randomUUID().toString();
-                transaction.add(R.id.payment_fragment_container, fragment, fragmentTag);
+                transaction.replace(R.id.payment_fragment_container, fragment, fragmentTag);
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 fragment = new FrancMobileMoneyFragment();

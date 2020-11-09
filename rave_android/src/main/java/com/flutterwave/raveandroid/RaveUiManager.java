@@ -341,7 +341,7 @@ public class RaveUiManager extends RavePayManager {
 
                 if (viewId != 0) {
                     String fragmentTag = UUID.randomUUID().toString();
-                    activity.getSupportFragmentManager().beginTransaction().add(viewId, fragment, fragmentTag).addToBackStack("").commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(viewId, fragment, fragmentTag).addToBackStack("").commit();
                 Log.d("okh", fragmentTag +" fragmentTag");
                 }else{
                     throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");
@@ -366,7 +366,7 @@ public class RaveUiManager extends RavePayManager {
 
                     if (viewId != 0) {
                         String fragmentTag = UUID.randomUUID().toString();
-                        supportFragment.getParentFragmentManager().beginTransaction().add(viewId, fragment, fragmentTag).addToBackStack("").commit();
+                        supportFragment.getParentFragmentManager().beginTransaction().replace(viewId, fragment, fragmentTag).addToBackStack("").commit();
                         Log.d("okh", fragmentTag +" fragmentTag");
                     }else{
                         throw new IllegalStateException("Correct view id for the fragment must be set while embedding fragment.");

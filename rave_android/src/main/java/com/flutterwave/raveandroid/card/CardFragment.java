@@ -171,12 +171,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
             viewId = getArguments().getInt(VIEW_ID);
+            injectComponents(embedFragment);
+            initializePresenter(embedFragment);
+            Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
-
-        injectComponents(embedFragment);
-        initializePresenter(embedFragment);
-
-        Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
 
         pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
