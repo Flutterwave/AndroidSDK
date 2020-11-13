@@ -1,49 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/card_view"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/storyLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    card_view:contentPadding="8dp"
-    card_view:contentPaddingLeft="16dp"
-    card_view:contentPaddingRight="16dp"
-    card_view:cardCornerRadius="4dp">
+    android:padding="8dp">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/rave_card_brand_imageview"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:scaleType="centerInside"
+        card_view:layout_constraintBottom_toBottomOf="@id/card_type_tv"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintTop_toTopOf="@id/masked_pan_tv"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/creditcard" />
+
+
+    <TextView
+        android:id="@+id/masked_pan_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textStyle="bold"
+        card_view:layout_constraintEnd_toStartOf="@id/rave_card_brand_imageview"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute"
+        tools:text="424242******4242" />
+
+
+    <TextView
+        android:id="@+id/card_type_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toBottomOf="@id/masked_pan_tv"
+        tools:text="Mastercard" />
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0.5dp"
+        android:layout_marginHorizontal="6dp"
+        android:layout_marginVertical="16dp"
+        android:alpha="0.5"
+        android:background="#cccccc"
+        card_view:layout_constraintTop_toBottomOf="@id/card_type_tv" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/card_type_tv"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="6dp"
-                android:text="YOUR "
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/masked_pan_tv"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="424242******4242"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/rave_card_brand_imageview"
-            android:layout_width="40dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/creditcard" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

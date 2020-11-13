@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
@@ -59,6 +60,7 @@ import com.flutterwave.raveutils.verification.AVSVBVFragment;
 import com.flutterwave.raveutils.verification.OTPFragment;
 import com.flutterwave.raveutils.verification.PinFragment;
 import com.flutterwave.raveutils.verification.RaveVerificationUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -113,7 +115,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private static final String RAVEPAY = "ravepay";
     private View v;
     TextView useASavedCardTv;
-    TextView useAnotherCardTv;
+    FloatingActionButton useAnotherCardTv;
     private Button payButton;
     private TextView pcidss_tv;
     private AlertDialog dialog;
@@ -145,7 +147,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private String responseAsJsonString;
     private SavedCard selectedSavedCard;
     private ScrollView newCardOverallLay;
-    private NestedScrollView savedCardOverallLay;
+    private ConstraintLayout savedCardOverallLay;
 
     private boolean embedFragment = false;
     private int viewId;
@@ -268,7 +270,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         emailEt = v.findViewById(R.id.rave_emailEt);
         cvvTil = v.findViewById(R.id.rave_cvvTil);
         cvvTv = v.findViewById(R.id.rave_cvvTv);
-        useAnotherCardTv = (TextView) v.findViewById(R.id.rave_use_new_card_tv);
+        useAnotherCardTv = (FloatingActionButton) v.findViewById(R.id.rave_use_new_card_tv);
         useASavedCardTv = (TextView) v.findViewById(R.id.rave_use_saved_card_tv);
         useASavedCardTv.setVisibility(GONE);
         saveCardSwitch = (SwitchCompat) v.findViewById(R.id.rave_saveCardSwitch);
@@ -278,7 +280,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
         saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
         newCardOverallLay = (ScrollView) v.findViewById(R.id.new_card_overall_lay);
-        savedCardOverallLay = (NestedScrollView) v.findViewById(R.id.saved_card_overall_lay);
+        savedCardOverallLay = (ConstraintLayout) v.findViewById(R.id.saved_card_overall_lay);
     }
 
 

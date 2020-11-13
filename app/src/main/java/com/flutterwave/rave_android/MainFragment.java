@@ -417,7 +417,6 @@ public class MainFragment
                         .acceptBankTransferPayments(bankTransferSwitch.isChecked())
                         .acceptUssdPayments(ussdSwitch.isChecked())
                         .acceptBarterPayments(barterSwitch.isChecked())
-                        //                    .withTheme(R.style.TestNewTheme)
                         .showStagingLabel(shouldShowStagingLabelSwitch.isChecked())
                         .setAmount(Double.parseDouble(amount))
                         .setCurrency(currency)
