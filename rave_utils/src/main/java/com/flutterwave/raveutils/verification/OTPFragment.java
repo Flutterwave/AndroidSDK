@@ -7,20 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_logger.events.ScreenLaunchEvent;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
 import com.flutterwave.raveutils.R;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import javax.inject.Inject;
 
@@ -40,8 +37,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     public static final String EXTRA_OTP = "extraOTP";
     public static final String IS_SAVED_CARD_CHARGE = "is_saved_card_charge";
     private Boolean isSavedCardCharge = false;
-    TextInputEditText otpEt;
-    TextInputLayout otpTil;
+    EditText otpEt;
     TextView chargeMessage;
     Button otpButton;
 
@@ -110,8 +106,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initializeViews() {
-        otpTil = v.findViewById(R.id.otpTil);
-        otpEt = v.findViewById(R.id.otpEv);
+        otpEt = v.findViewById(R.id.otpEt);
         otpButton = v.findViewById(R.id.otpButton);
         chargeMessage = v.findViewById(R.id.otpChargeMessage);
     }
@@ -145,9 +140,9 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
             clearErrors();
             otp = otpEt.getText().toString();
             if (otp.length() < 1) {
-                otpTil.setError("Enter a valid one time password");
+                otpEt.setHint("Enter an OTP");
             } else {
-                if (getActivity() !=null){
+                if (getActivity() != null) {
                     Utils.hideKeyboard(getActivity());
                 }
                 goBack();
@@ -156,8 +151,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     }
 
     private void clearErrors() {
-        otpTil.setErrorEnabled(false);
-        otpTil.setError(null);
+        otpEt.setHint("");
     }
 
     private void setChargeMessage() {

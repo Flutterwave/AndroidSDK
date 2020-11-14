@@ -6,6 +6,7 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
+    android:background="@color/raveWhite"
     tools:context=".card.CardFragment">
 
     <FrameLayout
@@ -22,6 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/rave_topLay"
                 android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -246,6 +248,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#f2f2f2"
+                    android:textAllCaps="false"
                     android:text="@string/pay"
                     app:layout_constraintBottom_toBottomOf="parent" />
 

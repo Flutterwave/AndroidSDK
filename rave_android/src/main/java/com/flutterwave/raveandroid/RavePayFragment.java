@@ -171,7 +171,7 @@ public class RavePayFragment extends Fragment {
 
         topGuide = createGuideline(requireContext(), HORIZONTAL);
         root.addView(topGuide);
-        topGuide.setGuidelinePercent(0.08f);
+        topGuide.setGuidelinePercent(0.00f);
 
         bottomGuide = createGuideline(requireContext(), HORIZONTAL);
         root.addView(bottomGuide);
@@ -190,18 +190,18 @@ public class RavePayFragment extends Fragment {
         if (tileCount == 1) {
             View singlePaymentTileView = paymentTiles.get(0).view;
             singlePaymentTileView.callOnClick(); // Show payment fragment
-            singlePaymentTileView.findViewById(R.id.arrowIv2).setVisibility(View.GONE);
             singlePaymentTileView.setVisibility(View.GONE);
             singlePaymentTileView.setOnClickListener(null);
         } else {
-            View fragmentContainerLayout = root.getViewById(R.id.payment_fragment_container_layout);
+            View fragmentContainerLayout = ((ConstraintLayout) rootView.findViewById(R.id.rave_pay_activity_rootview)).getViewById(R.id.payment_fragment_container_layout);
             if (fragmentContainerLayout == null) {
-                fragmentContainerLayout = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, root, false);
+                fragmentContainerLayout = getLayoutInflater().inflate(R.layout.rave_sdk_payment_title_layout, ((ConstraintLayout) rootView.findViewById(R.id.rave_pay_activity_rootview)), false);
+                renderAsHidden(fragmentContainerLayout, animated);
             }
             renderAsHidden(fragmentContainerLayout, animated);
 
             ConstraintSet set = new ConstraintSet();
-            set.clone(root);
+            set.clone(((ConstraintLayout) rootView.findViewById(R.id.rave_pay_activity_rootview)));
 
             for (int i = 0; i < paymentTiles.size(); i++) {
 
@@ -224,7 +224,6 @@ public class RavePayFragment extends Fragment {
                     if (arrowIv != null)
                         arrowIv.animate().rotation(0f).setDuration(transitionDuration);
                 }
-
             }
             // Set title view
 
@@ -316,7 +315,6 @@ public class RavePayFragment extends Fragment {
             renderToTop(foundPaymentTile.view);
 
             displayPaymentFragment(foundPaymentTile);
-
 
             if (tileCount > 1) {
                 if (tileId == paymentTiles.get(paymentTiles.size() - 1).view.getId()) {
@@ -422,15 +420,12 @@ public class RavePayFragment extends Fragment {
         if (tileCount == 1)
             fragmentContainerLayout.findViewById(R.id.choose_another_payment_method_tv).setVisibility(View.GONE);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();
             transition.setDuration(transitionDuration);
             TransitionManager.beginDelayedTransition(root, transition);
-            set.applyTo(root);
-        } else {
-            set.applyTo(root);
         }
+        set.applyTo(root);
     }
 
     private void addFragmentToLayout(PaymentTile foundPaymentTile) {
@@ -582,7 +577,6 @@ public class RavePayFragment extends Fragment {
         View arrowIv = tv.findViewById(R.id.arrowIv2);
         if (arrowIv != null)
             arrowIv.animate().rotation(180f).setDuration(transitionDuration);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AutoTransition transition = new AutoTransition();

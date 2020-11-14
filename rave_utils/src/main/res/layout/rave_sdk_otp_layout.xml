@@ -1,77 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    app:behavior_peekHeight="0dp"
     android:id="@+id/OTPButtomSheet"
-    android:background="@color/rave_lightish_grey_bg"
-    app:behavior_hideable="true"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_marginBottom="40dp"
-        android:layout_height="2dp"
-        style="?OTPHeaderStyle"/>
+    android:background="@color/rave_lightish_grey_bg"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/otpIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
         android:contentDescription="@string/otp_icon"
-        android:src="@drawable/otp"
-        />
+        android:src="@drawable/ic_lock_outline_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
 
     <TextView
+        android:id="@+id/otpChargeMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/rave_lightish_black"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/otpChargeMessage"
-        android:layout_marginLeft="30dp"
-        android:text="@string/enter_your_one_ntime_password_otp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="10dp"
         android:gravity="center_vertical|center_horizontal"
-        />
+        android:text="@string/enter_your_one_ntime_password_otp"
+        android:textColor="@color/rave_lightish_black"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/otpIcon" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        app:boxBackgroundColor="@null"
+    <EditText
+        android:id="@+id/otpEt"
         android:layout_width="match_parent"
-        android:id="@+id/otpTil"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/buttoncorner"
+        android:gravity="center"
+        android:hint="@string/otp"
+        android:inputType="number"
+        android:minHeight="50dp"
+        android:paddingHorizontal="10dp"
+        app:boxBackgroundColor="@null"
+        app:layout_constraintTop_toBottomOf="@id/otpChargeMessage">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:paddingLeft="2dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
-            android:drawableStart="@drawable/ic_lock_outline_black_24dp"
-            android:hint="@string/otp"
-            android:inputType="number"
-            android:drawablePadding="10dp"
-            android:id="@+id/otpEv"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
+    </EditText>
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:imeOptions="actionDone"
         android:id="@+id/otpButton"
-        style="?OTPButtonStyle"
+        style="?PayButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
-        android:text="@string/enter"
-        />
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:minHeight="50dp"
+        android:text="@string/continue_"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/otpEt" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

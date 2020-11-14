@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".verification.VerificationActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light"/>
     </application>
 </manifest>

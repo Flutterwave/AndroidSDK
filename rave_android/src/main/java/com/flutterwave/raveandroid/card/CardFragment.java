@@ -178,8 +178,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
             Utils.onBackPressed(embedFragment, this, (AppCompatActivity) getActivity());
         }
 
-        pcidss_tv.setMovementMethod(LinkMovementMethod.getInstance());
-
         setListeners();
 
         onFragmentResult();
@@ -306,6 +304,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     private void switchToSaveCards(boolean switchToSaveCards){
         if(switchToSaveCards){
+            if (getActivity() != null){
+                com.flutterwave.raveutils.verification.Utils.hideKeyboard(getActivity());
+            }
             savedCardOverallLay.setVisibility(VISIBLE);
             newCardOverallLay.setVisibility(GONE);
         } else {
