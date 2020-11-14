@@ -145,7 +145,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private TextInputLayout saveCardPhoneNoTil;
     private String responseAsJsonString;
     private SavedCard selectedSavedCard;
-    private ScrollView newCardOverallLay;
+    private ConstraintLayout newCardOverallLay;
     private ConstraintLayout savedCardOverallLay;
 
     private boolean embedFragment = false;
@@ -275,7 +275,7 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         saveCardPhoneNoTil = (TextInputLayout) v.findViewById(R.id.save_card_phoneNoTil);
         saveCardEmailTil = (TextInputLayout) v.findViewById(R.id.save_card_emailTil);
         saveNewCardLayout = (LinearLayout) v.findViewById(R.id.rave_layout_for_saving_card);
-        newCardOverallLay = (ScrollView) v.findViewById(R.id.new_card_overall_lay);
+        newCardOverallLay = (ConstraintLayout) v.findViewById(R.id.new_card_overall_lay);
         savedCardOverallLay = (ConstraintLayout) v.findViewById(R.id.saved_card_overall_lay);
     }
 

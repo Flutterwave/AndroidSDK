@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingHorizontal="10dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingHorizontal="10dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rave_recycler"
@@ -21,9 +21,9 @@
         android:id="@+id/rave_use_new_card_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/fabStyle"
         android:layout_marginHorizontal="16dp"
         android:src="@drawable/ic_baseline_add_24"
+        android:theme="@style/fabStyle"
         app:layout_constraintBottom_toTopOf="@id/rave_pcidss_compliant_tv"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -45,9 +45,9 @@
         android:id="@+id/secured_by_flutterwave_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:background="@drawable/black_background_curved"
         android:gravity="center_vertical"
-        android:layout_marginVertical="4dp"
         android:padding="6dp"
         android:text="@string/secured_by_flutterwave"
         android:textColor="#F4B918"
