@@ -1,18 +1,21 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/raveWhite"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:background="@color/raveWhite"
     tools:context=".card.CardFragment">
 
     <FrameLayout
         android:id="@+id/card_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:id="@+id/new_card_overall_lay"
@@ -23,8 +26,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/rave_topLay"
                 android:layout_width="match_parent"
-                android:layout_marginTop="16dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -210,14 +213,14 @@
                         android:id="@+id/rave_saveCardSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
                         android:layout_marginTop="10dp"
                         android:checked="true"
                         android:gravity="center_vertical"
-                        android:textSize="14sp"
-                        android:layout_marginHorizontal="4dp"
                         android:paddingVertical="15dp"
                         android:text="@string/save_card"
                         android:textColor="#4A4848"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:layout_constraintStart_toStartOf="@id/rave_layout_for_saving_card"
                         app:layout_constraintTop_toBottomOf="@id/rave_layout_for_saving_card" />
@@ -248,8 +251,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#f2f2f2"
-                    android:textAllCaps="false"
                     android:text="@string/pay"
+                    android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -265,5 +268,4 @@
 
     </FrameLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
