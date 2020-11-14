@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.flutterwave.raveutils.verification.web.WebFragment"
+    android:background="@color/raveWhite"
     android:clickable="true"
     android:focusable="true"
-    android:id="@+id/rave_internetBankingBottomSheet"
+    android:orientation="vertical"
     android:textColor="@color/rave_lightish_black"
-    android:orientation="vertical">
+    tools:context="com.flutterwave.raveutils.verification.web.WebFragment">
 
     <WebView
+        android:id="@+id/rave_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rave_webview"/>
+        android:layout_height="match_parent" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:background="#80000000"
-        android:visibility="gone"
-        android:id="@+id/rave_progressContainer"
-        android:layout_height="match_parent">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"/>
-
-
-    </FrameLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

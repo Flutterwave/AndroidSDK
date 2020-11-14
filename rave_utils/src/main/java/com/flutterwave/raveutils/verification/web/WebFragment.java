@@ -73,7 +73,6 @@ public class WebFragment extends Fragment implements WebContract.View {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.rave_sdk_fragment_web, container, false);
 
-
         if (getArguments() != null) {
             embedFragment = getArguments().getBoolean(EMBED_FRAGMENT);
         }
@@ -184,7 +183,7 @@ public class WebFragment extends Fragment implements WebContract.View {
 
             bundle.putString(RaveConstants.response, responseAsJSONString);
             getParentFragmentManager().setFragmentResult(VERIFICATION_REQUEST_KEY, bundle);
-        }else {
+        } else {
 
             Intent intent = new Intent();
             intent.putExtra(RaveConstants.response, responseAsJSONString);
@@ -236,6 +235,7 @@ public class WebFragment extends Fragment implements WebContract.View {
                 hideWebview();
             }
             view.loadUrl(url);
+
             return true;
         }
 
@@ -247,6 +247,7 @@ public class WebFragment extends Fragment implements WebContract.View {
                 hideWebview();
             }
             view.loadUrl(request.getUrl().toString());
+
             return true;
         }
 
@@ -266,6 +267,7 @@ public class WebFragment extends Fragment implements WebContract.View {
 
             Log.d("finished URLS", url);
             if (url.contains(RaveConstants.RAVE_3DS_CALLBACK) || url.contains("http://127.0.0.0")) {
+                hideWebview();
                 goBack();
             }
         }

@@ -135,7 +135,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     private TextInputLayout cardExpiryTil;
     private TextInputEditText cardExpiryTv;
     private SwitchCompat saveCardSwitch;
-    private FrameLayout progressContainer;
     private RavePayInitializer ravePayInitializer;
     private boolean shouldISaveThisCard = false;
     Boolean hasSavedCards = false;
@@ -254,7 +253,6 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
 
     private void initializeViews() {
-        progressContainer = v.findViewById(R.id.rave_progressContainer);
         pcidss_tv = v.findViewById(R.id.rave_pcidss_compliant_tv);
         saveCardSwitch = v.findViewById(R.id.rave_saveCardSwitch);
         cardExpiryTil = v.findViewById(R.id.rave_cardExpiryTil);

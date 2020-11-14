@@ -1,6 +1,5 @@
 package com.flutterwave.raveutils.verification;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +41,7 @@ public class RaveVerificationUtils {
         this.theme = theme;
     }
 
-    public RaveVerificationUtils(AppCompatActivity activity,Fragment fragment, boolean isStaging, String publicKey, int theme, boolean embedFragment, int viewId) {
+    public RaveVerificationUtils(AppCompatActivity activity, Fragment fragment, boolean isStaging, String publicKey, int theme, boolean embedFragment, int viewId) {
         this.activity = activity;
         this.fragment = fragment;
         this.context = fragment.getContext();
@@ -81,7 +80,7 @@ public class RaveVerificationUtils {
 
     private void showOtpScreen(String validateInstruction, boolean forSavedCards) {
 
-        if (embedFragment){
+        if (embedFragment) {
 
             VerificationFragment verificationFragment = new VerificationFragment();
             Bundle bundle = new Bundle();
@@ -98,12 +97,12 @@ public class RaveVerificationUtils {
 
             verificationFragment.setArguments(bundle);
 
-            if (activity != null){
+            if (activity != null) {
                 String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
             }
 
-        }else{
+        } else {
 
             Intent intent = new Intent(context, VerificationActivity.class);
             intent.putExtra(EXTRA_IS_STAGING, isStaging);
@@ -114,7 +113,8 @@ public class RaveVerificationUtils {
                 intent.putExtra(OTPFragment.EXTRA_CHARGE_MESSAGE, validateInstruction);
             }
             intent.putExtra("theme", theme);
-            if (activity != null && fragment == null) activity.startActivityForResult(intent, OTP_REQUEST_CODE);
+            if (activity != null && fragment == null)
+                activity.startActivityForResult(intent, OTP_REQUEST_CODE);
             else fragment.startActivityForResult(intent, OTP_REQUEST_CODE);
 
         }
@@ -122,7 +122,7 @@ public class RaveVerificationUtils {
 
     public void showWebpageVerificationScreen(String authurl) {
 
-        if (embedFragment){
+        if (embedFragment) {
 
             VerificationFragment verificationFragment = new VerificationFragment();
             Bundle bundle = new Bundle();
@@ -135,12 +135,12 @@ public class RaveVerificationUtils {
 
             verificationFragment.setArguments(bundle);
 
-            if (activity != null){
+            if (activity != null) {
                 String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().replace(viewId, verificationFragment).addToBackStack("").commit();
             }
 
-        }else {
+        } else {
 
             Intent intent = new Intent(context, VerificationActivity.class);
             intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
@@ -157,7 +157,7 @@ public class RaveVerificationUtils {
 
     public void showBarterCheckoutScreen(String authurl, String flwRef) {
 
-        if (embedFragment){
+        if (embedFragment) {
 
             VerificationFragment verificationFragment = new VerificationFragment();
             Bundle bundle = new Bundle();
@@ -170,12 +170,12 @@ public class RaveVerificationUtils {
 
             verificationFragment.setArguments(bundle);
 
-            if (activity != null){
+            if (activity != null) {
                 String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
             }
 
-        }else {
+        } else {
 
             Intent intent = new Intent(context, VerificationActivity.class);
             intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
@@ -184,7 +184,8 @@ public class RaveVerificationUtils {
             intent.putExtra(EXTRA_IS_STAGING, isStaging);
             intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);
             intent.putExtra("theme", theme);
-            if (activity != null) activity.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
+            if (activity != null)
+                activity.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
             else fragment.startActivityForResult(intent, BARTER_CHECKOUT_REQUEST_CODE);
 
         }
@@ -193,7 +194,7 @@ public class RaveVerificationUtils {
 
     public void showPinScreen() {
 
-        if (embedFragment){
+        if (embedFragment) {
 
             VerificationFragment verificationFragment = new VerificationFragment();
             Bundle bundle = new Bundle();
@@ -204,7 +205,7 @@ public class RaveVerificationUtils {
             bundle.putInt("theme", theme);
             verificationFragment.setArguments(bundle);
 
-            if (activity != null){
+            if (activity != null) {
                 String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
             }
@@ -226,7 +227,7 @@ public class RaveVerificationUtils {
 
     public void showAddressScreen() {
 
-        if (embedFragment){
+        if (embedFragment) {
 
             VerificationFragment verificationFragment = new VerificationFragment();
             Bundle bundle = new Bundle();
@@ -238,12 +239,12 @@ public class RaveVerificationUtils {
 
             verificationFragment.setArguments(bundle);
 
-            if (activity != null){
+            if (activity != null) {
                 String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
             }
 
-        }else {
+        } else {
 
             Intent intent = new Intent(context, VerificationActivity.class);
             intent.putExtra(EXTRA_IS_STAGING, isStaging);
