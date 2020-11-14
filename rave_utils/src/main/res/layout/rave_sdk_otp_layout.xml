@@ -10,19 +10,6 @@
     app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <ImageView
-        android:id="@+id/otpIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/otp_icon"
-        android:src="@drawable/ic_lock_outline_black_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35" />
-
     <TextView
         android:id="@+id/otpChargeMessage"
         android:layout_width="match_parent"
@@ -33,7 +20,11 @@
         android:text="@string/enter_your_one_ntime_password_otp"
         android:textColor="@color/rave_lightish_black"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/otpIcon" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
 
     <EditText
         android:id="@+id/otpEt"
@@ -50,19 +41,23 @@
         app:boxBackgroundColor="@null"
         app:layout_constraintTop_toBottomOf="@id/otpChargeMessage">
 
+        <requestFocus />
+
     </EditText>
 
     <Button
         android:id="@+id/otpButton"
-        style="?PayButtonStyle"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
+        android:background="#f2f2f2"
         android:minHeight="50dp"
         android:text="@string/continue_"
         android:textAllCaps="false"
+        android:textColor="#263238"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/otpEt" />
