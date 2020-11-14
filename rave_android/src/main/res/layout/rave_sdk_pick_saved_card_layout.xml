@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:padding="10dp"
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rave_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
         app:layout_constraintBottom_toTopOf="@id/rave_use_new_card_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,41 +20,42 @@
         android:id="@+id/rave_use_new_card_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:theme="@style/fabStyle"
         android:layout_marginHorizontal="16dp"
         android:src="@drawable/ic_baseline_add_24"
-        app:layout_constraintBottom_toTopOf="@id/secured_by_flutterwave_tv"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/secured_by_flutterwave_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:gravity="center_vertical"
-        android:text="@string/secured_by_flutterwave"
-        android:textColor="#F4B918"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:drawableLeftCompat="@drawable/ic_bartericon"
-        app:drawableStartCompat="@drawable/ic_bartericon"
         app:layout_constraintBottom_toTopOf="@id/rave_pcidss_compliant_tv"
-        app:layout_constraintEnd_toEndOf="@id/rave_recycler"
-        app:layout_constraintStart_toStartOf="@id/rave_recycler" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/rave_pcidss_compliant_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="5dp"
-        android:alpha="0.4"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:gravity="center_horizontal"
         android:text="@string/pci_dss_compliant"
-        android:textColor="#F4B918"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/raveBlack"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@id/secured_by_flutterwave_tv"
         app:layout_constraintEnd_toEndOf="@id/secured_by_flutterwave_tv"
         app:layout_constraintStart_toStartOf="@id/secured_by_flutterwave_tv" />
+
+    <TextView
+        android:id="@+id/secured_by_flutterwave_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black_background_curved"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="4dp"
+        android:padding="6dp"
+        android:text="@string/secured_by_flutterwave"
+        android:textColor="#F4B918"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:drawableLeftCompat="@drawable/ic_logo"
+        app:drawableStartCompat="@drawable/ic_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rave_recycler"
+        app:layout_constraintStart_toStartOf="@id/rave_recycler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

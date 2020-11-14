@@ -2,22 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/storyLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
     <ImageView
         android:id="@+id/rave_card_brand_imageview"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="30dp"
         android:scaleType="centerInside"
+        android:layout_marginHorizontal="10dp"
         card_view:layout_constraintBottom_toBottomOf="@id/card_type_tv"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintTop_toTopOf="@id/masked_pan_tv"
         tools:ignore="ContentDescription"
         tools:src="@drawable/creditcard" />
-
 
     <TextView
         android:id="@+id/masked_pan_tv"
@@ -27,6 +26,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
+        android:textSize="16sp"
         android:textStyle="bold"
         card_view:layout_constraintEnd_toStartOf="@id/rave_card_brand_imageview"
         card_view:layout_constraintStart_toStartOf="parent"

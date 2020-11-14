@@ -79,7 +79,7 @@ public class SavedCardRecyclerAdapter extends RecyclerView.Adapter<SavedCardRecy
             maskedPanTv.setText(card.getMasked_pan());
             if (card.getCard_brand().equalsIgnoreCase("mastercard")) {
                 cardBrandIv
-                        .setImageResource(R.drawable.master_card_logo_svg);
+                        .setImageResource(R.drawable.mastercard_logo_svg);
             } else if (card.getCard_brand().equalsIgnoreCase("visa")) {
                 cardBrandIv.setImageResource(R.drawable.visa_logo_new);
             } else if (card.getCard_brand().equalsIgnoreCase("verve")) {

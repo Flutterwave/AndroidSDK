@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">RaveAndroid</string>
     <string name="action_settings">Settings</string>
-
-
     <string name="grant_permission">Grant permission</string>
     <string name="permission_required_image">permission_required_image</string>
     <string name="title_activity_entry">EntryActivity</string>
@@ -16,23 +14,23 @@
     <string name="cancel">CANCEL</string>
     <string name="enter">ENTER</string>
     <string name="choose_saved_card">CHOOSE SAVED CARD</string>
-    <string name="pay">PAY</string>
-    <string name="save_card">Save card</string>
+    <string name="pay">Pay</string>
+    <string name="save_card">Save   </string>
     <string name="otp">OTP</string>
     <string name="enter_your_one_ntime_password_otp">Enter your one  time password (OTP)</string>
     <string name="card_number">Card Number</string>
     <string name="powered_by">by Flutterwave</string>
     <string name="please_enter_your_card_pin_nto_continue_your_transaction">Please enter your card pin  to continue your transaction.</string>
     <string name="otp_icon">otp icon</string>
-    <string name="cvc_cvv2">CVC/CVV2</string>
-    <string name="expiration">Valid Till (MM/YY)</string>
+    <string name="cvc_cvv2">Cvc/Cvv</string>
+    <string name="expiration">Valid (mm/yy)</string>
     <string name="email">Email</string>
     <string name="enter_your_billing_address_details">Enter your billing address details</string>
     <string name="billing_zip_code">Zip code e.g. 928302</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="bvn">BVN</string>
     <string name="use_a_new_card">Use another card</string>
-    <string name="use_a_saved_card">Use a saved card</string>
+    <string name="use_a_saved_card">Use saved cards</string>
     <string name="vodafone_msg">
         <![CDATA[
         <b>Please follow the instruction below to get your voucher code</b>
@@ -163,7 +161,6 @@
     <string name="how_would_you_like_to_pay">How would you\nlike to pay?</string>
     <string name="you_are_currently_on_staging_mode">You are currently on staging mode</string>
     <string name="choose_another_payment_method">Choose another payment method</string>
-    <string name="secured_by_flutterwave">SECURED BY FLUTTERWAVE</string>
 
     <string-array name="gh_mobile_money_networks">
         <item>Select network</item>
@@ -192,5 +189,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_select_a_card">Please select a card</string>
     <string name="barter_funding">Barter Funding</string>
+    <string name="secured_by_flutterwave">SECURED BY FLUTTERWAVE</string>
 
 </resources>

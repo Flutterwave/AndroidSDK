@@ -476,8 +476,7 @@ public class RavePayFragment extends Fragment {
             case RaveConstants.PAYMENT_TYPE_CARD:
                 fragment = new CardFragment();
                 fragment.setArguments(bundle);
-                String fragmentTag = UUID.randomUUID().toString();
-                transaction.replace(R.id.payment_fragment_container, fragment, fragmentTag);
+                transaction.replace(R.id.payment_fragment_container, fragment, UUID.randomUUID().toString());
                 break;
             case PAYMENT_TYPE_FRANCO_MOBILE_MONEY:
                 fragment = new FrancMobileMoneyFragment();
@@ -546,7 +545,7 @@ public class RavePayFragment extends Fragment {
     }
 
     private boolean isBarter() {
-        if (getActivity() != null) {
+        if (getActivity() != null && getActivity().getApplicationContext().getPackageName() != null) {
             String packageName = getActivity().getApplicationContext().getPackageName();
             return packageName.equals("com.flutterwave.flybarter");
         } else {

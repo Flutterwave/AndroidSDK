@@ -99,8 +99,7 @@ public class RaveVerificationUtils {
             verificationFragment.setArguments(bundle);
 
             if (activity != null){
-                String fragmentTag = UUID.randomUUID().toString();
-                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
+                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, UUID.randomUUID().toString()).addToBackStack("").commit();
             }
 
         }else{
@@ -136,7 +135,6 @@ public class RaveVerificationUtils {
             verificationFragment.setArguments(bundle);
 
             if (activity != null){
-                String fragmentTag = UUID.randomUUID().toString();
                 fragment.getParentFragmentManager().beginTransaction().replace(viewId, verificationFragment).addToBackStack("").commit();
             }
 
@@ -171,8 +169,7 @@ public class RaveVerificationUtils {
             verificationFragment.setArguments(bundle);
 
             if (activity != null){
-                String fragmentTag = UUID.randomUUID().toString();
-                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
+                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, UUID.randomUUID().toString()).addToBackStack("").commit();
             }
 
         }else {
@@ -205,8 +202,7 @@ public class RaveVerificationUtils {
             verificationFragment.setArguments(bundle);
 
             if (activity != null){
-                String fragmentTag = UUID.randomUUID().toString();
-                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
+                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, UUID.randomUUID().toString()).addToBackStack("").commit();
             }
 
         } else {
@@ -239,8 +235,7 @@ public class RaveVerificationUtils {
             verificationFragment.setArguments(bundle);
 
             if (activity != null){
-                String fragmentTag = UUID.randomUUID().toString();
-                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, fragmentTag).addToBackStack("").commit();
+                fragment.getParentFragmentManager().beginTransaction().add(viewId, verificationFragment, UUID.randomUUID().toString()).addToBackStack("").commit();
             }
 
         }else {

@@ -9,15 +9,16 @@
         android:id="@+id/secured_by_flutterwave_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
         android:layout_marginLeft="17dp"
         android:layout_marginTop="25dp"
-        android:drawableLeft="@drawable/padlock"
-        android:drawableTint="@color/rave_light_grey"
         android:drawablePadding="10dp"
-        android:letterSpacing="-0.01"
-        android:text="SECURED BY FLUTTERWAVE"
+        android:gravity="center_vertical"
+        android:text="@string/secured_by_flutterwave"
         android:textColor="@color/rave_light_grey"
-        android:textSize="10sp"
+        android:textSize="12sp"
+        app:drawableLeftCompat="@drawable/padlock"
+        app:drawableStartCompat="@drawable/padlock"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,9 +32,9 @@
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toBottomOf="@+id/secured_by_flutterwave_tv"
         app:layout_constraintVertical_bias="0.32" />
 
@@ -44,11 +45,11 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="64dp"
         android:background="@color/raveAndroidColorAccent"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

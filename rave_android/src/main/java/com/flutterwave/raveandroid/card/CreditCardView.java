@@ -52,7 +52,7 @@ public class CreditCardView extends TextInputEditText {
             // With spaces for credit card masking
             mCCPatterns.put(R.drawable.visa_logo_new, Pattern.compile(
                     "^4[0-9]{2,12}(?:[0-9]{3})?$"));
-            mCCPatterns.put(R.drawable.master_card_logo_svg, Pattern.compile(
+            mCCPatterns.put(R.drawable.mastercard_logo_svg, Pattern.compile(
                     "^5[1-5][0-9]{1,14}$"));
             mCCPatterns.put(R.drawable.amex, Pattern.compile(
                     "^3[47][0-9]{1,13}$"));
