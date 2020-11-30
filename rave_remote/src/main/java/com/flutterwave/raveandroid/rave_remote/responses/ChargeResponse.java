@@ -35,23 +35,23 @@ public class ChargeResponse {
     }
 
     public String getAmount() {
-        return data == null ? null : data.amount;
+        return data.getData() == null ? null : data.getData().amount;
     }
 
     public String getPaymentCode() {
-        return data == null ? null : data.payment_code;
+        return data.getData() == null ? null : data.getData().payment_code;
     }
 
     public String getFlwRef() {
-        return (data == null) ? null : data.getFlwRef();
+        return (data.getData() == null) ? null : data.getData().getFlwRef();
     }
 
     public String getTxRef() {
-        return (data == null) ? null : data.getTx_ref();
+        return (data.getData() == null) ? null : data.getData().getTx_ref();
     }
 
     public String getPingUrl() {
-        return (data == null) ? null : data.ping_url;
+        return (data.getData() == null) ? null : data.getData().ping_url;
     }
 
     public static class AccountValidateInstructions {
