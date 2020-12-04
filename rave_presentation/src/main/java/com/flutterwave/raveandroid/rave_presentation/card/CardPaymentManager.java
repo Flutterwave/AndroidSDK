@@ -53,7 +53,7 @@ public class CardPaymentManager {
                 .setCvv(card.getCvv())
                 .setEmail(manager.getEmail())
                 .setFirstname(manager.getfName())
-                .setLastname(manager.getfName())
+                .setLastname(manager.getlName())
                 .setIP(manager.getUniqueDeviceID())
                 .setTxRef(manager.getTxRef())
                 .setExpiryyear(card.getExpiryYear())
