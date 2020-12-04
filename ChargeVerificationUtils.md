@@ -16,7 +16,7 @@ This module helps you handle charge verification when not using the default drop
 	     implementation 'com.github.Flutterwave.rave-android:rave_utils:2.1.12'
 	}
 
-**Step 2.**  In your payment activity or fragment, create and instance of the `RaveVerificationUtils` class
+**Step 2.**  In your payment activity or fragment, create an instance of the `RaveVerificationUtils` class
 
      RaveVerificationUtils verificationUtils = new RaveVerificationUtils(contextProvider, isStaging, publicKey, theme);
 
