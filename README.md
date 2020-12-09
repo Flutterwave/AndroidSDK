@@ -12,6 +12,7 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 
 ## Before you begin
 - Ensure you have your test (and live) [API keys](https://developer.flutterwave.com/docs/api-keys).
+- The use of this SDK means you have signed up on Flutterwave and have accepted Flutterwave's [terms and conditions](https://flutterwave.com/us/terms) and [privacy policy](https://flutterwave.com/us/privacy-policy).
 
 ## Requirements
 - The minimum supported SDK version is 15
