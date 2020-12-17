@@ -152,6 +152,9 @@ public class UssdHandler implements UssdContract.Handler {
                 if (response.getData() == null) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                } else if (response.getData().getStatus().contains("fail")) {
+                    mInteractor.showProgressIndicator(false);
+                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);

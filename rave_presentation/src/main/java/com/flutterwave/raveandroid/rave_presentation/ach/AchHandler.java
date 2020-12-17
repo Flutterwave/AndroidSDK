@@ -97,7 +97,6 @@ public class AchHandler implements AchContract.Handler {
     }
 
     public void requeryTx(String flwRef, String publicKey) {
-        //todo call requery
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);

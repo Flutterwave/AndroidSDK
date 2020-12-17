@@ -134,6 +134,9 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
 
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                } else if (response.getData().getStatus().contains("fail")) {
+                    mInteractor.showProgressIndicator(false);
+                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     requeryTx(flwRef, txRef, publicKey);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
