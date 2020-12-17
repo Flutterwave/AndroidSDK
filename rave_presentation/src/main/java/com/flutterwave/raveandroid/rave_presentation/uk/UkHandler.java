@@ -181,6 +181,9 @@ public class UkHandler implements UkContract.Handler {
             public void onSuccess(RequeryResponse response, String responseAsJSONString) {
                 if (response.getData() == null) {
                     mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
+                } else if (response.getData().getStatus().contains("fail")) {
+                    mInteractor.showProgressIndicator(false);
+                    mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     if (pollingCancelled) {
                         mInteractor.showPollingIndicator(false);
