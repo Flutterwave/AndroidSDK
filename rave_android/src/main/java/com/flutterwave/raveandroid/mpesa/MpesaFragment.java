@@ -1,3 +1,4 @@
+
 package com.flutterwave.raveandroid.mpesa;
 
 
@@ -5,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,7 +268,7 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
 
         if (pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
-            pollingProgressDialog.setMessage(getResources().getString(R.string.checkStatus));
+            pollingProgressDialog.setMessage(Html.fromHtml(getResources().getString(R.string.kes_validate_instructions)));
         }
 
         if (active && !pollingProgressDialog.isShowing()) {
@@ -275,6 +277,7 @@ public class MpesaFragment extends Fragment implements MpesaUiContract.View, Vie
                 public void onClick(DialogInterface dialog, int which) {
                     presenter.logEvent(new RequeryCancelledEvent().getEvent(), ravePayInitializer.getPublicKey());
                     pollingProgressDialog.dismiss();
+                    presenter.cancelPolling();
                 }
             });
 
