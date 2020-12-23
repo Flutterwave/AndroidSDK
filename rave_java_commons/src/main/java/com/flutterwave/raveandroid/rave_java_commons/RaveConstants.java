@@ -109,7 +109,7 @@ public class RaveConstants {
     public static String transactionError = "An error occurred while retrieving transaction fee";
     public static String validCvvPrompt = "Enter a valid cvv";
     public static String validExpiryDatePrompt = "Enter a valid expiry date";
-    public static String validCreditCardPrompt = "Enter a valid credit card number";
+    public static String validCreditCardPrompt = "Enter a valid card number";
     public static String validVoucherPrompt = "Enter a valid voucher code";
     public static String validNetworkPrompt = "Select a network";
     public static String invalidChargeCode = "Invalid charge response code";
