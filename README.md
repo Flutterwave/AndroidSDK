@@ -35,7 +35,7 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 If you want to use the default Drop In UI, add the `rave-android` module dependency
 ```groovy
     dependencies {
-	     implementation 'com.github.flutterwave.rave-android:rave_android:2.1.14'
+	     implementation 'com.github.flutterwave.rave-android:rave_android:2.1.15'
 	}
 ```
 
@@ -43,7 +43,7 @@ if you are not interested in our default UI and you want to use yours and only w
 
 ```groovy
     dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.14'
+	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.15'
 	}
 ```
 **Step 3.** Add the  `INTERNET` permission to your android manifest
@@ -183,11 +183,12 @@ First specify the theme in your `styles.xml` file. In this theme, you can edit t
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
-        <item name="PayButtonStyle">@style/payBtnStyle2</item>
-        <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
-        <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
-        <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
+        <item name="OTPButtonStyle">@style/myOtpBtnStyle</item>
+        <item name="PayButtonStyle">@style/myBtnStyle</item>
+	<item name="PinButtonStyle">@style/myPinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/myOtpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/myTabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/myPinHeaderStyle</item>
         <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
         <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
         <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
