@@ -229,7 +229,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
             ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", amount));
             ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
             ((TextView) dialog.findViewById(R.id.sortCode)).setText(getString(R.string.flutterwave_sortcode));
-            ((TextView) dialog.findViewById(R.id.reference)).setText(amount);
+            ((TextView) dialog.findViewById(R.id.reference)).setText(paymentCode);
 
             dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {
                 @Override
