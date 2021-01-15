@@ -20,6 +20,15 @@ public class PollingResponse {
         return (getResponse() == null) ? null : getResponse().getFlwRef();
     }
 
+    public String getAccountNumber() {
+        return (getResponse() == null) ? null : getResponse().getAccountNumber();
+    }
+
+    public String getSortCode() {
+        return (getResponse() == null) ? null : getResponse().getSortCode();
+    }
+
+
     class Data {
         ChargeResponse response_parsed;
     }

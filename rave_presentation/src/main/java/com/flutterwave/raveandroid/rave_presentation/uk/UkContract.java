@@ -21,7 +21,7 @@ public interface UkContract {
 
         void onPaymentSuccessful(String status, String flwRef, String responseAsString);
 
-        void showTransactionPage(String amount, String paymentCode, String flwRef, String txRef);
+        void showTransactionPage(String amount, String paymentCode, String accountNumber, String sortCode, String flwRef, String txRef);
     }
 
     interface Handler {

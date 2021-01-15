@@ -44,6 +44,7 @@ dependencies {
 
     //dagger
     implementation 'com.google.dagger:dagger:2.27'
+    implementation 'org.jetbrains:annotations-java5:15.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
 
     testImplementation 'junit:junit:4.12'

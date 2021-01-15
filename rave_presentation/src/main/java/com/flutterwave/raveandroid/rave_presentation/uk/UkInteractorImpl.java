@@ -56,11 +56,11 @@ class UkInteractorImpl implements UkContract.Interactor {
     }
 
     @Override
-    public void showTransactionPage(String amount, String paymentCode, final String flwRef, final String txRef) {
+    public void showTransactionPage(String amount, String paymentCode, String accountNumber, String sortCode, final String flwRef, final String txRef) {
         callback.showTransactionDetails(
                 amount,
-                FLUTTERWAVE_UK_ACCOUNT,
-                FLUTTERWAVE_UK_SORT_CODE,
+                accountNumber != null ? accountNumber : FLUTTERWAVE_UK_ACCOUNT,
+                sortCode != null ? sortCode : FLUTTERWAVE_UK_SORT_CODE,
                 FLUTTERWAVE_UK_BENEFICIARY_NAME,
                 paymentCode
         );

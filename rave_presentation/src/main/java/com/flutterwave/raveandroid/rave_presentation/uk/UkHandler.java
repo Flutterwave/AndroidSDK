@@ -108,9 +108,11 @@ public class UkHandler implements UkContract.Handler {
                     String amount = response.getAmount();
                     String paymentCode = response.getPaymentCode();
                     String flwRef = response.getFlwRef();
+                    String accountNumber = response.getAccountNumber();
+                    String sortCode = response.getSortCode();
                     if (amount != null && paymentCode != null) {
                         mInteractor.showProgressIndicator(false);
-                        mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
+                        mInteractor.showTransactionPage(amount, paymentCode, accountNumber, sortCode, flwRef, txRef);
                     } else if (response.getPingUrl() != null) {
                         callPingUrl(response.getPingUrl());
                     } else {
@@ -145,8 +147,10 @@ public class UkHandler implements UkContract.Handler {
                         String amount = response.getAmount();
                         String paymentCode = response.getPaymentCode();
                         String flwRef = response.getFlwRef();
+                        String accountNumber = response.getAccountNumber();
+                        String sortCode = response.getSortCode();
                         if (amount != null && paymentCode != null)
-                            mInteractor.showTransactionPage(amount, paymentCode, flwRef, txRef);
+                            mInteractor.showTransactionPage(amount, paymentCode, accountNumber, sortCode, flwRef, txRef);
                         else mInteractor.onPaymentError(noResponse);
                     } else callPingUrl(pingUrl);
                 } else {

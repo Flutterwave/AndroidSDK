@@ -59,7 +59,7 @@ public class NullUkView implements UkUiContract.View {
     }
 
     @Override
-    public void showTransactionPage(String amount, String paymentCode, String flwRef, String txRef) {
+    public void showTransactionPage(String amount, String paymentCode, String accountNumber, String sortCode, String flwRef, String txRef) {
 
     }
 

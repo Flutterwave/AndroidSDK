@@ -218,7 +218,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
     }
 
     @Override
-    public void showTransactionPage(String amount, String paymentCode, final String flwRef, final String txRef) {
+    public void showTransactionPage(String amount, String paymentCode, String accountNumber, String sortCode, final String flwRef, final String txRef) {
 
         if (getContext() != null) {
             final Dialog dialog = new Dialog(getContext());
@@ -227,8 +227,9 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
             presenter.logEvent(new InstructionsDisplayedEvent("UK").getEvent(), ravePayInitializer.getPublicKey());
 
             ((TextView) dialog.findViewById(R.id.amount)).setText(String.format("%s %s", "GBP", amount));
-            ((TextView) dialog.findViewById(R.id.accountNumber)).setText(getString(R.string.flutterwave_ukaccount));
-            ((TextView) dialog.findViewById(R.id.sortCode)).setText(getString(R.string.flutterwave_sortcode));
+            ((TextView) dialog.findViewById(R.id.accountNumber)).setText(
+                    accountNumber != null ? accountNumber : getString(R.string.flutterwave_ukaccount));
+            ((TextView) dialog.findViewById(R.id.sortCode)).setText(sortCode != null ? sortCode : getString(R.string.flutterwave_sortcode));
             ((TextView) dialog.findViewById(R.id.reference)).setText(paymentCode);
 
             dialog.findViewById(R.id.ukPaymentButton).setOnClickListener(new View.OnClickListener() {

@@ -1,5 +1,9 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import androidx.annotation.Nullable;
+
+import com.google.gson.JsonObject;
+
 /**
  * Created by hamzafetuga on 18/07/2017.
  */
@@ -42,6 +46,28 @@ public class ChargeResponse {
         return data.getData() == null ? null : data.getData().payment_code;
     }
 
+    @Nullable
+    private JsonObject getMeta() {
+        return data.getData() == null ? null : data.getData().meta_data;
+    }
+
+    public String getAccountNumber() {
+        try {
+            return getMeta() == null ? null : getMeta().get("account_number").getAsString();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    public String getSortCode() {
+        try {
+            return getMeta() == null ? null : getMeta().get("sort_code").getAsString();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+
     public String getFlwRef() {
         return (data.getData() == null) ? null : data.getData().getFlwRef();
     }
@@ -69,6 +95,7 @@ public class ChargeResponse {
 
     public static class Data {
 
+        JsonObject meta_data;
         String ping_url;
         Data data;
         String suggested_auth;
