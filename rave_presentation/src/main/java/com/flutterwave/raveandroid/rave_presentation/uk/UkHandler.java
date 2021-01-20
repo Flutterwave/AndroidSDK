@@ -54,7 +54,7 @@ public class UkHandler implements UkContract.Handler {
         FeeCheckRequestBody body = new FeeCheckRequestBody();
         body.setAmount(payload.getAmount());
         body.setCurrency(payload.getCurrency());
-        body.setPtype("3");
+        body.setPtype("7");
         body.setPBFPubKey(payload.getPBFPubKey());
 
         mInteractor.showProgressIndicator(true);
