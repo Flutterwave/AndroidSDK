@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.rave_remote.responses;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
@@ -48,7 +49,11 @@ public class ChargeResponse {
 
     @Nullable
     private JsonObject getMeta() {
-        return data.getData() == null ? null : data.getData().meta_data;
+        try {
+            return data.getData() == null ? null : data.getData().meta_data.getAsJsonObject();
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public String getAccountNumber() {
@@ -95,7 +100,7 @@ public class ChargeResponse {
 
     public static class Data {
 
-        JsonObject meta_data;
+        JsonElement meta_data;
         String ping_url;
         Data data;
         String suggested_auth;
