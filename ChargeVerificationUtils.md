@@ -13,7 +13,7 @@ This module helps you handle charge verification when not using the default drop
 **Step 2.** Add the dependency for the utils library
 
     dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_utils:2.1.19'
+	     implementation 'com.github.Flutterwave.rave-android:rave_utils:2.1.20'
 	}
 
 **Step 2.**  In your payment activity or fragment, create an instance of the `RaveVerificationUtils` class
