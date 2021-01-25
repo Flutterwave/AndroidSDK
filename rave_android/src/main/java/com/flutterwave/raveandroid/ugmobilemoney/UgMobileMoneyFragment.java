@@ -229,7 +229,7 @@ public class UgMobileMoneyFragment extends Fragment implements UgMobileMoneyUiCo
 
 
     public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override

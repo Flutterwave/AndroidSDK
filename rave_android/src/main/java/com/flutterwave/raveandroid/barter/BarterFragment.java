@@ -53,10 +53,6 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     private RavePayInitializer ravePayInitializer;
     private String flwRef = "";
 
-    public BarterFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,7 +181,7 @@ public class BarterFragment extends Fragment implements BarterUiContract.View {
     }
 
     public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
