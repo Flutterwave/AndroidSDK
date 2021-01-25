@@ -76,12 +76,6 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
     private ProgressDialog progressDialog;
     private ProgressDialog pollingProgressDialog;
 
-
-    public UssdFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -256,7 +250,7 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
     }
 
     public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override

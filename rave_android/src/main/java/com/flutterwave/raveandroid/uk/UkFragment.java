@@ -214,7 +214,7 @@ public class UkFragment extends Fragment implements UkUiContract.View, View.OnCl
     }
 
     public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
