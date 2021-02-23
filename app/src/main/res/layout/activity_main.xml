@@ -306,7 +306,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/email"
-                android:text="mikelis135@gmail.com"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
 
@@ -315,7 +314,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="20"
                 android:hint="@string/amount_to_charge_required"
                 android:inputType="number"
                 android:textSize="14sp" />
@@ -343,7 +341,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="sdfsdfdfdfs"
                 android:hint="@string/txref_required"
                 android:textSize="14sp" />
 
@@ -353,7 +350,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="adfwdfd"
                 android:hint="@string/narration"
                 android:textSize="14sp" />
 
@@ -361,7 +357,6 @@
                 android:id="@+id/currencyEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="NGN"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/currency_code_e_g_ngn"
                 android:textSize="14sp" />
@@ -371,7 +366,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="NG"
                 android:hint="@string/country_code_e_g_ng"
                 android:textSize="14sp"
                 android:visibility="gone" />
@@ -381,7 +375,6 @@
                 android:id="@+id/fNameEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="taiwo"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/first_name"
                 android:textSize="14sp" />
@@ -390,7 +383,6 @@
                 android:id="@+id/lnameEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="adebayo"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/last_name"
                 android:textSize="14sp" />
@@ -399,7 +391,6 @@
                 android:id="@+id/phoneNumberEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="08132383284"
                 android:layout_marginBottom="10dp"
                 android:hint="@string/phone_number"
                 android:inputType="phone"
