@@ -161,6 +161,8 @@ public interface CardContract {
 
         void chargeCard(Payload payload, String encryptionKey);
 
+        void checkCard(String cardFirstSix, Payload body, Boolean isDisplayFee, String encryptionKey);
+
         void validateCardCharge(String flwRef, String otp, String publicKey);
 
         void requeryTx(String flwRef, String publicKey);

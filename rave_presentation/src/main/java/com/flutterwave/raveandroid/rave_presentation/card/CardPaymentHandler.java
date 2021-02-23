@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.CheckCardResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
@@ -48,6 +49,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.cardNotAllowed;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
@@ -184,6 +186,39 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                 mCardInteractor.onPaymentError(message);
             }
         });
+    }
+
+    @Override
+    public void checkCard(String cardFirstSix, final Payload body, final Boolean isDisplayFee, final String encryptionKey) {
+
+        mCardInteractor.showProgressIndicator(true);
+
+        networkRequest.checkCard(cardFirstSix, new ResultCallback<CheckCardResponse>() {
+            @Override
+            public void onSuccess(CheckCardResponse response) {
+                mCardInteractor.showProgressIndicator(false);
+
+                if (response.getData().getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())){
+
+                    if (isDisplayFee) {
+                        fetchFee(body);
+                    } else {
+                        chargeCard(body, encryptionKey);
+                    }
+
+                }else{
+                    mCardInteractor.onPaymentError(cardNotAllowed);
+                }
+
+            }
+
+            @Override
+            public void onError(String message) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onPaymentError(message);
+            }
+        });
+
     }
 
     @Override

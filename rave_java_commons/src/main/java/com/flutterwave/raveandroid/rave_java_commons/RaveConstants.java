@@ -32,6 +32,9 @@ public class RaveConstants {
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
     public static String LIVE_URL = "https://api.ravepay.co";
+    public static String BARTER_STAGING_URL = "https://pilot-barter-staging.azurewebsites.net";
+    public static String UserId = "4444444444";
+    public static String MerchSecret = "5555555555";
     public static String EVENT_LOGGING_URL = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/";
     public static String FLUTTERWAVE_UK_ACCOUNT = "43271228";
     public static String FLUTTERWAVE_UK_SORT_CODE = "04-00-53";
@@ -78,6 +81,7 @@ public class RaveConstants {
 
     public static String success = "success";
     public static String noResponse = "No response data was returned";
+    public static String cardNotAllowed = "Card not allowed, please use a card issued in your country";
     public static String invalidAccountNoMessage = "Enter a valid account number";
     public static String invalidDateOfBirthMessage = "Enter a valid date of birth";
     public static String invalidBvnMessage = "Enter a valid BVN";

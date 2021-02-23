@@ -209,6 +209,10 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
             String deviceID = deviceIdGetter.getDeviceId();
 
+            String cardFirstSix = "";
+            if (dataHashMap.get(fieldcardNoStripped).getData().length() > 6) {
+                cardFirstSix = dataHashMap.get(fieldcardNoStripped).getData().substring(0, 6);
+            }
 
             PayloadBuilder builder = new PayloadBuilder();
             builder.setAmount(String.valueOf(ravePayInitializer.getAmount()))
@@ -234,11 +238,8 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
             Payload body = builder.createPayload();
 
-            if (ravePayInitializer.getIsDisplayFee()) {
-                fetchFee(body);
-            } else {
-                chargeCard(body, ravePayInitializer.getEncryptionKey());
-            }
+            checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
+
         }
     }
 
@@ -273,11 +274,13 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
             Payload body = builder.createSavedCardChargePayload();
 
-            if (ravePayInitializer.getIsDisplayFee()) {
-                fetchFee(body);
-            } else {
-                chargeSavedCard(body, ravePayInitializer.getEncryptionKey());
+            String cardFirstSix = "";
+            if (savedCard.getMasked_pan().length() >= 6) {
+                cardFirstSix = savedCard.getMasked_pan().substring(0, 6);
             }
+
+            checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
+
         }
     }
 
@@ -298,7 +301,7 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
             savedCards = new ArrayList<>();
         }
 
-        if(ravePayInitializer.getPhoneNumber().equals(sharedManager.fetchPhoneNumber())){
+        if (ravePayInitializer.getPhoneNumber().equals(sharedManager.fetchPhoneNumber())) {
             retrieveSavedCardsFromMemory(ravePayInitializer.getPhoneNumber(), ravePayInitializer.getPublicKey());
         }
 

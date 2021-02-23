@@ -6,6 +6,7 @@ import com.flutterwave.raveandroid.rave_core.models.ErrorBody;
 import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
@@ -14,6 +15,7 @@ import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.CheckCardResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
@@ -49,18 +51,24 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenN
 public class RemoteRepository {
 
     private Retrofit mainRetrofit;
+    private Retrofit barterRetrofit;
     private ApiService service;
+    private ApiService barterService;
     private Gson gson;
     private NetworkRequestExecutor executor;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
     public RemoteRepository(@Named("mainRetrofit") Retrofit mainRetrofit,
-                            ApiService service,
+                            @Named("barterRetrofit") Retrofit barterRetrofit,
+                            @Named("mainApiService") ApiService service,
+                            @Named("barterApiService") ApiService barterService,
                             Gson gson,
                             NetworkRequestExecutor executor) {
         this.mainRetrofit = mainRetrofit;
+        this.barterRetrofit = barterRetrofit;
         this.service = service;
+        this.barterService = barterService;
         this.gson = gson;
         this.executor = executor;
     }
@@ -71,6 +79,18 @@ public class RemoteRepository {
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
+        );
+    }
+
+    public void checkCard(String cardFirstSix, final ResultCallback callback) {
+
+        AuthCredValue authCredValue = fetchAuthCred();
+
+        executor.execute(barterService.checkCard(cardFirstSix, authCredValue.authCred.customerRef,
+                authCredValue.authCred.userId, authCredValue.authCred.hash),
+                new TypeToken<CheckCardResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<CheckCardResponse>(callback)
         );
     }
 
@@ -423,5 +443,45 @@ public class RemoteRepository {
         public void onCallFailure(String exceptionMessage) {
             callback.onError(exceptionMessage, exceptionMessage);
         }
+    }
+
+    private AuthCredValue fetchAuthCred() {
+        AuthCred authCred = generateAuthCred();
+        Token tokens = new Token();
+        AuthCredValue authCredValue = new AuthCredValue();
+        authCredValue.authCred = authCred;
+        authCredValue.token = tokens;
+        return authCredValue;
+    }
+
+    private AuthCred generateAuthCred() {
+        String customerRef = fetchCustomerRef();
+        String valueToHash = customerRef + RaveConstants.UserId + RaveConstants.MerchSecret;
+        String hashValue = Hasher.sha(valueToHash, "SHA-256");
+
+        AuthCred authCred = new AuthCred();
+        authCred.customerRef = customerRef;
+        authCred.userId = RaveConstants.UserId;
+        authCred.hash = hashValue;
+        return authCred;
+    }
+
+    private static String fetchCustomerRef() {
+        long random = Double.valueOf(Math.random()).longValue();
+        return "ML_ANDROID_" + "deviceId" + System.currentTimeMillis() + random;
+    }
+
+    static class AuthCred {
+        String customerRef;
+        String userId;
+        String hash;
+    }
+
+    static class Token {
+    }
+
+    static class AuthCredValue {
+        AuthCred authCred;
+        Token token;
     }
 }

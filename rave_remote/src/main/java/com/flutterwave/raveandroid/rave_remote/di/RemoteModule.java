@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.rave_remote.di;
 
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.ApiService;
 import com.google.gson.Gson;
 
@@ -24,7 +25,9 @@ public class RemoteModule {
     String baseUrl;
 
     private Retrofit retrofit;
+    private Retrofit barterRetrofit;
     private ApiService apiService;
+    private ApiService barterApiService;
 
     public RemoteModule() {
     }
@@ -34,7 +37,6 @@ public class RemoteModule {
         baseUrl = url;
     }
 
-    @Singleton
     @Provides
     @Named("mainRetrofit")
     public Retrofit providesRetrofit() {
@@ -56,17 +58,45 @@ public class RemoteModule {
         return retrofit;
     }
 
+    @Provides
+    @Named("barterRetrofit")
+    public Retrofit providesBarterRetrofit() {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient okHttpClient = httpClient.addNetworkInterceptor(logging).connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS).build();
+
+        barterRetrofit = new Retrofit.Builder()
+                .baseUrl(RaveConstants.BARTER_STAGING_URL)
+                .client(okHttpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return barterRetrofit;
+    }
+
     @Singleton
     @Provides
     public Gson gson() {
         return new Gson();
     }
 
-    @Singleton
     @Provides
+    @Named("mainApiService")
     public ApiService providesApiService() {
         apiService = retrofit.create(ApiService.class);
         return apiService;
+    }
+
+    @Provides
+    @Named("barterApiService")
+    public ApiService providesBarterApiService() {
+        barterApiService = barterRetrofit.create(ApiService.class);
+        return barterApiService;
     }
 
 }
