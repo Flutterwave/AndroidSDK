@@ -238,7 +238,15 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
 
             Payload body = builder.createPayload();
 
-            checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
+            if (ravePayInitializer.getNarration().equalsIgnoreCase("barterRavePay")){
+                checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
+            }else{
+                if (ravePayInitializer.getIsDisplayFee()) {
+                    fetchFee(body);
+                } else {
+                    chargeCard(body, ravePayInitializer.getEncryptionKey());
+                }
+            }
 
         }
     }
@@ -279,8 +287,15 @@ public class CardUiPresenter extends CardPaymentHandler implements CardUiContrac
                 cardFirstSix = savedCard.getMasked_pan().substring(0, 6);
             }
 
-            checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
-
+            if (ravePayInitializer.getNarration().equalsIgnoreCase("barterRavePay")){
+                checkCard(cardFirstSix, body, ravePayInitializer.getIsDisplayFee(), ravePayInitializer.getEncryptionKey());
+            }else{
+                if (ravePayInitializer.getIsDisplayFee()) {
+                    fetchFee(body);
+                } else {
+                    chargeCard(body, ravePayInitializer.getEncryptionKey());
+                }
+            }
         }
     }
 
