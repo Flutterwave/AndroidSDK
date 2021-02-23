@@ -198,7 +198,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             public void onSuccess(CheckCardResponse response) {
                 mCardInteractor.showProgressIndicator(false);
 
-                if (response.getData().getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())){
+                if (response.getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())){
 
                     if (isDisplayFee) {
                         fetchFee(body);

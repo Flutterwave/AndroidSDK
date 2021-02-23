@@ -44,9 +44,6 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.expire
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenNotFound;
 
-/**
- * Created by hamzafetuga on 18/07/2017.
- */
 @Singleton
 public class RemoteRepository {
 
@@ -84,10 +81,8 @@ public class RemoteRepository {
 
     public void checkCard(String cardFirstSix, final ResultCallback callback) {
 
-        AuthCredValue authCredValue = fetchAuthCred();
 
-        executor.execute(barterService.checkCard(cardFirstSix, authCredValue.authCred.customerRef,
-                authCredValue.authCred.userId, authCredValue.authCred.hash),
+        executor.execute(barterService.checkCard(cardFirstSix),
                 new TypeToken<CheckCardResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<CheckCardResponse>(callback)
@@ -443,45 +438,5 @@ public class RemoteRepository {
         public void onCallFailure(String exceptionMessage) {
             callback.onError(exceptionMessage, exceptionMessage);
         }
-    }
-
-    private AuthCredValue fetchAuthCred() {
-        AuthCred authCred = generateAuthCred();
-        Token tokens = new Token();
-        AuthCredValue authCredValue = new AuthCredValue();
-        authCredValue.authCred = authCred;
-        authCredValue.token = tokens;
-        return authCredValue;
-    }
-
-    private AuthCred generateAuthCred() {
-        String customerRef = fetchCustomerRef();
-        String valueToHash = customerRef + RaveConstants.UserId + RaveConstants.MerchSecret;
-        String hashValue = Hasher.sha(valueToHash, "SHA-256");
-
-        AuthCred authCred = new AuthCred();
-        authCred.customerRef = customerRef;
-        authCred.userId = RaveConstants.UserId;
-        authCred.hash = hashValue;
-        return authCred;
-    }
-
-    private static String fetchCustomerRef() {
-        long random = Double.valueOf(Math.random()).longValue();
-        return "ML_ANDROID_" + "deviceId" + System.currentTimeMillis() + random;
-    }
-
-    static class AuthCred {
-        String customerRef;
-        String userId;
-        String hash;
-    }
-
-    static class Token {
-    }
-
-    static class AuthCredValue {
-        AuthCred authCred;
-        Token token;
     }
 }

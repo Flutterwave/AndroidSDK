@@ -30,11 +30,8 @@ public interface ApiService {
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> charge(@Body ChargeRequestBody body);
 
-    @GET("/api/v1/barter/cards/get-details-by-bin/{card-first-six}")
-    Call<String> checkCard(@Path("card-first-six") String cardFirstSix,
-                                      @Header("CustomerReference") String CustomerReference,
-                                      @Header("UserId") String UserId,
-                                      @Header("Hash")String Hash);
+    @GET("/{card-first-six}")
+    Call<String> checkCard(@Path("card-first-six") String cardFirstSix);
 
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);

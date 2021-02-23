@@ -71,7 +71,7 @@ public class RemoteModule {
                 .writeTimeout(60, TimeUnit.SECONDS).build();
 
         barterRetrofit = new Retrofit.Builder()
-                .baseUrl(RaveConstants.BARTER_STAGING_URL)
+                .baseUrl(RaveConstants.CARD_CHECK_URL)
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

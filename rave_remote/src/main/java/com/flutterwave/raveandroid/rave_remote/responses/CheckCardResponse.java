@@ -2,134 +2,71 @@ package com.flutterwave.raveandroid.rave_remote.responses;
 
 public class CheckCardResponse {
 
-    String Status;
-    String Message;
-    Data Data;
-    Reference Reference;
+    Number number;
+    String scheme;
+    String type;
+    String brand;
+    boolean prepaid;
+    Country country;
+    Bank bank;
 
-    public Reference getReference() {
-        return Reference;
+    public Number getNumber() {
+        return number;
     }
 
-    public void setReference(Reference reference) {
-        this.Reference = reference;
+    public void setNumber(Number number) {
+        this.number = number;
     }
 
-    public String getStatus() {
-        return Status;
+    public String getScheme() {
+        return scheme;
     }
 
-    public void setStatus(String status) {
-        this.Status = status;
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 
-    public String getMessage() {
-        return Message;
+    public String getType() {
+        return type;
     }
 
-    public void setMessage(String message) {
-        this.Message = message;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Data getData() {
-        return Data;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setData(Data data) {
-        this.Data = data;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public static class Data {
-
-        Number number;
-        String scheme;
-        String type;
-        String brand;
-        String prepaid;
-        Country country;
-        Bank bank;
-
-        public Number getNumber() {
-            return number;
-        }
-
-        public void setNumber(Number number) {
-            this.number = number;
-        }
-
-        public String getScheme() {
-            return scheme;
-        }
-
-        public void setScheme(String scheme) {
-            this.scheme = scheme;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getBrand() {
-            return brand;
-        }
-
-        public void setBrand(String brand) {
-            this.brand = brand;
-        }
-
-        public String getPrepaid() {
-            return prepaid;
-        }
-
-        public void setPrepaid(String prepaid) {
-            this.prepaid = prepaid;
-        }
-
-        public Country getCountry() {
-            return country;
-        }
-
-        public void setCountry(Country country) {
-            this.country = country;
-        }
-
-        public Bank getBank() {
-            return bank;
-        }
-
-        public void setBank(Bank bank) {
-            this.bank = bank;
-        }
+    public boolean getPrepaid() {
+        return prepaid;
     }
 
-    public static class Reference {
-
+    public void setPrepaid(boolean prepaid) {
+        this.prepaid = prepaid;
     }
 
-    public static class Bank {
-        String name;
-        String phone;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
+    public Country getCountry() {
+        return country;
     }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+    public static class Bank { }
 
     public static class Number {
         int length;
@@ -169,4 +106,6 @@ public class CheckCardResponse {
             this.currency = currency;
         }
     }
+
 }
+
