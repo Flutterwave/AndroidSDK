@@ -79,7 +79,7 @@ public class RaveConstants {
 
     public static String success = "success";
     public static String noResponse = "No response data was returned";
-    public static String cardNotAllowed = "Card not allowed, please use a card issued in your country";
+    public static String cardNotAllowed = "You can’t fund with cards from other countries yet. Please add a card issued in your country to proceed.";
     public static String invalidAccountNoMessage = "Enter a valid account number";
     public static String invalidDateOfBirthMessage = "Enter a valid date of birth";
     public static String invalidBvnMessage = "Enter a valid BVN";

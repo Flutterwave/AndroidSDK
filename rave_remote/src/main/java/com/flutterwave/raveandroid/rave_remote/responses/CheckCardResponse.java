@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import androidx.annotation.Nullable;
+
 public class CheckCardResponse {
 
     Number number;
@@ -7,6 +9,7 @@ public class CheckCardResponse {
     String type;
     String brand;
     boolean prepaid;
+    @Nullable
     Country country;
     Bank bank;
 
@@ -50,11 +53,12 @@ public class CheckCardResponse {
         this.prepaid = prepaid;
     }
 
+    @Nullable
     public Country getCountry() {
         return country;
     }
 
-    public void setCountry(Country country) {
+    public void setCountry(@Nullable Country country) {
         this.country = country;
     }
 
@@ -94,15 +98,17 @@ public class CheckCardResponse {
         String alpha2;
         String name;
         String emoji;
+        @Nullable
         String currency;
         int latitude;
         int longitude;
 
+        @Nullable
         public String getCurrency() {
             return currency;
         }
 
-        public void setCurrency(String currency) {
+        public void setCurrency(@Nullable String currency) {
             this.currency = currency;
         }
     }

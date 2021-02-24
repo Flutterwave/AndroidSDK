@@ -198,16 +198,15 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             public void onSuccess(CheckCardResponse response) {
                 mCardInteractor.showProgressIndicator(false);
 
-                if (response.getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())){
-
-                    if (isDisplayFee) {
-                        fetchFee(body);
+                if (response != null && response.getCountry() != null && response.getCountry().getCurrency() != null) {
+                    if (response.getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())) {
+                        continueCharge( isDisplayFee,  body,  encryptionKey);
                     } else {
-                        chargeCard(body, encryptionKey);
+                        mCardInteractor.onPaymentError(cardNotAllowed);
                     }
 
-                }else{
-                    mCardInteractor.onPaymentError(cardNotAllowed);
+                } else {
+                    continueCharge(isDisplayFee, body, encryptionKey);
                 }
 
             }
@@ -219,6 +218,14 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             }
         });
 
+    }
+
+    private void continueCharge(boolean isDisplayFee, Payload body, String encryptionKey) {
+        if (isDisplayFee) {
+            fetchFee(body);
+        } else {
+            chargeCard(body, encryptionKey);
+        }
     }
 
     @Override
@@ -379,7 +386,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey){
+    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey) {
         mCardInteractor.showProgressIndicator(true);
         RemoveSavedCardRequestBody body = new RemoveSavedCardRequestBody(cardHash, phoneNumber, publicKey);
         networkRequest.deleteASavedCard(body, new ResultCallback<SaveCardResponse>() {
@@ -406,7 +413,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
 
-        if(showLoader)
+        if (showLoader)
             mCardInteractor.showProgressIndicator(true);
 
 
