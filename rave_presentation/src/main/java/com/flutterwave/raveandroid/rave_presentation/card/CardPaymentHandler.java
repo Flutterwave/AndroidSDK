@@ -189,7 +189,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void checkCard(String cardFirstSix, final Payload body, final Boolean isDisplayFee, final String encryptionKey) {
+    public void checkCard(String cardFirstSix, final Payload body, final Boolean isDisplayFee, final String encryptionKey, final String barterCountry) {
 
         mCardInteractor.showProgressIndicator(true);
 
@@ -199,7 +199,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                 mCardInteractor.showProgressIndicator(false);
 
                 if (response != null && response.getCountry() != null && response.getCountry().getAlpha2() != null) {
-                    if (response.getCountry().getAlpha2().equalsIgnoreCase(body.getCountry())) {
+                    if (response.getCountry().getAlpha2().equalsIgnoreCase(barterCountry)) {
                         continueCharge( isDisplayFee,  body,  encryptionKey);
                     } else {
                         mCardInteractor.onPaymentError(cardNotAllowed);
