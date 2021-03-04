@@ -198,8 +198,8 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             public void onSuccess(CheckCardResponse response) {
                 mCardInteractor.showProgressIndicator(false);
 
-                if (response != null && response.getCountry() != null && response.getCountry().getCurrency() != null) {
-                    if (response.getCountry().getCurrency().equalsIgnoreCase(body.getCurrency())) {
+                if (response != null && response.getCountry() != null && response.getCountry().getAlpha2() != null) {
+                    if (response.getCountry().getAlpha2().equalsIgnoreCase(body.getCountry())) {
                         continueCharge( isDisplayFee,  body,  encryptionKey);
                     } else {
                         mCardInteractor.onPaymentError(cardNotAllowed);
