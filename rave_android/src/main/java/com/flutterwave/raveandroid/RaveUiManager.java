@@ -128,9 +128,13 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    @Deprecated
     public RaveUiManager setCountry(String country) {
         this.country = country;
+        return this;
+    }
+
+    public RaveUiManager setBarterCountry(String barterCountry) {
+        this.barterCountry = barterCountry;
         return this;
     }
 
@@ -348,6 +352,7 @@ public class RaveUiManager extends RavePayManager {
                 getNarration(),
                 getCurrency(),
                 getCountry(),
+                getBarterCountry(),
                 getfName(),
                 getlName(),
                 theme,

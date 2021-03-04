@@ -111,6 +111,14 @@ public class CheckCardResponse {
         public void setCurrency(@Nullable String currency) {
             this.currency = currency;
         }
+
+        public String getAlpha2() {
+            return alpha2;
+        }
+
+        public void setAlpha2(String alpha2) {
+            this.alpha2 = alpha2;
+        }
     }
 
 }

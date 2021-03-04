@@ -25,6 +25,7 @@ public class RavePayInitializer {
     String narration;
     String currency;
     String country;
+    String barterCountry;
     String fName;
     String lName;
     String meta;
@@ -41,7 +42,7 @@ public class RavePayInitializer {
 
     public RavePayInitializer(String email, double amount, String publicKey,
                               String encryptionKey, String txRef, String narration,
-                              String currency, String country, String fName,
+                              String currency, String country, String barterCountry, String fName,
                               String lName, int theme, String phoneNumber,
                               boolean isPhoneEditable, boolean saveCardFeatureAllowed, boolean usePhoneAndEmailSuppliedToSaveCards,
                               boolean isPermanent, int duration, int frequency,
@@ -55,6 +56,7 @@ public class RavePayInitializer {
         this.narration = narration;
         this.currency = currency;
         this.country = country;
+        this.barterCountry = barterCountry;
         this.fName = fName;
         this.lName = lName;
         this.isPermanent = isPermanent;
@@ -182,6 +184,14 @@ public class RavePayInitializer {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getBarterCountry() {
+        return barterCountry;
+    }
+
+    public void setBarterCountry(String barterCountry) {
+        this.barterCountry = barterCountry;
     }
 
     public String getfName() {
