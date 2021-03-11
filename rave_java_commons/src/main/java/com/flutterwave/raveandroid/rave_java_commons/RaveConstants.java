@@ -26,8 +26,11 @@ public class RaveConstants {
     public static final int ADDRESS_DETAILS_REQUEST_CODE = 5343;
     public static final int MANUAL_CARD_CHARGE = 403;
 
-    public static String PUBLIC_KEY = "FLWPUBK-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-X"; //test
-    public static String ENCRYPTION_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";//test
+//    public static String PUBLIC_KEY = "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X"; //test
+//    public static String ENCRYPTION_KEY = "bb9714020722eb4cf7a169f2";//test
+//
+    public static String PUBLIC_KEY = "FLWPUBK-8cb5be24ded0b03e7fac2ac1eeafdc9e-X"; //test
+    public static String ENCRYPTION_KEY = "81ae78b6896ffdb934abf0ef";//test
     //    public static String STAGING_URL = "https://ravesandbox.azurewebsites.net";
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
@@ -171,4 +174,5 @@ public class RaveConstants {
 
     public static final String responseParsingError = "Error parsing server response";
     public static String errorParsingError = "An error occurred parsing the error response";
+    public static String eTransact_GH = "ETRANZACT_GH";
 }

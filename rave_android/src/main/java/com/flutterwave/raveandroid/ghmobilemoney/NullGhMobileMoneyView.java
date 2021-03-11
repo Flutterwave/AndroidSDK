@@ -23,7 +23,7 @@ public class NullGhMobileMoneyView implements GhMobileMoneyUiContract.View {
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
+    public void showPollingIndicator(boolean active, String validateInstruction) {
 
     }
 
