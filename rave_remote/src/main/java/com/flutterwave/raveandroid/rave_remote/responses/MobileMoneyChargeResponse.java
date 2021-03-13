@@ -47,7 +47,24 @@ public class MobileMoneyChargeResponse {
         @SerializedName("link")
         String captchaLink;
         String code;
+        String provider;
+        String validateInstructions;
 
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getValidateInstructions() {
+            return validateInstructions;
+        }
+
+        public void setValidateInstructions(String validateInstructions) {
+            this.validateInstructions = validateInstructions;
+        }
 
         public void setFlwRef(String flwRef) {
             this.flwRef = flwRef;

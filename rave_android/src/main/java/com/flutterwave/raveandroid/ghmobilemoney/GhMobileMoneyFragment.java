@@ -360,7 +360,7 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyUiCo
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
+    public void showPollingIndicator(boolean active, String validateInstruction) {
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
@@ -368,7 +368,12 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyUiCo
         if (pollingProgressDialog == null) {
             pollingProgressDialog = new ProgressDialog(getActivity());
             pollingProgressDialog.setCanceledOnTouchOutside(false);
-            pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
+
+            if (validateInstruction.isEmpty()) {
+                pollingProgressDialog.setMessage(Html.fromHtml(validateInstructions));
+            }else {
+                pollingProgressDialog.setMessage(Html.fromHtml(validateInstruction));
+            }
         }
 
         if (active && !pollingProgressDialog.isShowing()) {

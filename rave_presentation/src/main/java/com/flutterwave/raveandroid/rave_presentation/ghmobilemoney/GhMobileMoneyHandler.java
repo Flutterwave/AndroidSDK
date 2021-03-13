@@ -3,6 +3,7 @@ package com.flutterwave.raveandroid.rave_presentation.ghmobilemoney;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
 import com.flutterwave.raveandroid.rave_presentation.data.PayloadEncryptor;
@@ -92,7 +93,6 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
 
         logEvent(new ChargeAttemptEvent("GH Mobile Money").getEvent(), payload.getPBFPubKey());
 
-
         networkRequest.chargeMobileMoneyWallet(body, new ResultCallback<MobileMoneyChargeResponse>() {
             @Override
             public void onSuccess(MobileMoneyChargeResponse response) {
@@ -106,7 +106,7 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
                     } else {
                         String flwRef = data.getFlwRef();
                         String txRef = data.getTx_ref();
-                        requeryTx(flwRef, txRef, payload.getPBFPubKey());
+                        requeryTx(flwRef, txRef, payload.getPBFPubKey(), data);
                     }
                 } else {
                     mInteractor.onPaymentError(noResponse);
@@ -124,18 +124,23 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
 
     @Override
     public void requeryTx(final String publicKey) {
-        requeryTx(null, txRef, publicKey);
+        requeryTx(null, txRef, publicKey, null);
     }
 
     @Override
-    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
+    public void requeryTx(final String flwRef, final String txRef, final String publicKey, final MobileMoneyChargeResponse.Data data) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
         body.setTx_ref(txRef);
         body.setPBFPubKey(publicKey);
 
-        mInteractor.showPollingIndicator(true);
+        if (data.getProvider().equalsIgnoreCase(RaveConstants.eTransact_GH)){
+            mInteractor.showPollingIndicator(true, data.getValidateInstructions());
+        }else{
+            mInteractor.showPollingIndicator(true, "");
+        }
+
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
@@ -149,10 +154,10 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
                     mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
                     if (!pollingCancelled) {
-                        requeryTx(flwRef, txRef, publicKey);
+                        requeryTx(flwRef, txRef, publicKey, data);
                     } else mInteractor.onPaymentFailed(response.getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mInteractor.showPollingIndicator(false);
+                    mInteractor.showPollingIndicator(false, "");
                     mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);

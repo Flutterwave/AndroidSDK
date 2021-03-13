@@ -66,7 +66,7 @@ class GhMobileMoneyInteractorImpl implements GhMobileMoneyContract.Interactor {
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
+    public void showPollingIndicator(boolean active, String validateInstruction) {
         // Todo: share validation message
         callback.showProgressIndicator(active);
     }
