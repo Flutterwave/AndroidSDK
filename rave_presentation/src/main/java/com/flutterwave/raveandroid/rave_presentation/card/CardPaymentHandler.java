@@ -27,6 +27,7 @@ import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.CheckCardResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.RequeryResponse;
@@ -48,6 +49,7 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.NOAUTH
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RAVEPAY;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.VBV;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.cardNotAllowed;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.enterOTP;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.noResponse;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.success;
@@ -184,6 +186,46 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                 mCardInteractor.onPaymentError(message);
             }
         });
+    }
+
+    @Override
+    public void checkCard(String cardFirstSix, final Payload body, final Boolean isDisplayFee, final String encryptionKey, final String barterCountry) {
+
+        mCardInteractor.showProgressIndicator(true);
+
+        networkRequest.checkCard(cardFirstSix, new ResultCallback<CheckCardResponse>() {
+            @Override
+            public void onSuccess(CheckCardResponse response) {
+                mCardInteractor.showProgressIndicator(false);
+
+                if (response != null && response.getCountry() != null && response.getCountry().getAlpha2() != null) {
+                    if (response.getCountry().getAlpha2().equalsIgnoreCase(barterCountry)) {
+                        continueCharge( isDisplayFee,  body,  encryptionKey);
+                    } else {
+                        mCardInteractor.onPaymentError(cardNotAllowed);
+                    }
+
+                } else {
+                    continueCharge(isDisplayFee, body, encryptionKey);
+                }
+
+            }
+
+            @Override
+            public void onError(String message) {
+                mCardInteractor.showProgressIndicator(false);
+                mCardInteractor.onPaymentError(message);
+            }
+        });
+
+    }
+
+    private void continueCharge(boolean isDisplayFee, Payload body, String encryptionKey) {
+        if (isDisplayFee) {
+            fetchFee(body);
+        } else {
+            chargeCard(body, encryptionKey);
+        }
     }
 
     @Override
@@ -344,7 +386,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
     }
 
     @Override
-    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey){
+    public void deleteASavedCard(String cardHash, String phoneNumber, String publicKey) {
         mCardInteractor.showProgressIndicator(true);
         RemoveSavedCardRequestBody body = new RemoveSavedCardRequestBody(cardHash, phoneNumber, publicKey);
         networkRequest.deleteASavedCard(body, new ResultCallback<SaveCardResponse>() {
@@ -371,7 +413,7 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
         body.setDevice_key(phoneNumber);
         body.setPublic_key(publicKey);
 
-        if(showLoader)
+        if (showLoader)
             mCardInteractor.showProgressIndicator(true);
 
 

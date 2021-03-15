@@ -10,11 +10,14 @@ import com.flutterwave.raveandroid.rave_remote.requests.RequeryRequestBodyv2;
 import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
+import com.flutterwave.raveandroid.rave_remote.responses.CheckCardResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 /**
@@ -26,6 +29,9 @@ public interface ApiService {
     @POST("/flwv3-pug/getpaidx/api/charge")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> charge(@Body ChargeRequestBody body);
+
+    @GET("/{card-first-six}")
+    Call<String> checkCard(@Path("card-first-six") String cardFirstSix);
 
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);

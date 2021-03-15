@@ -6,6 +6,7 @@ import com.flutterwave.raveandroid.rave_core.models.ErrorBody;
 import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
@@ -14,6 +15,7 @@ import com.flutterwave.raveandroid.rave_remote.requests.SaveCardRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.SendOtpRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.ValidateChargeBody;
 import com.flutterwave.raveandroid.rave_remote.responses.ChargeResponse;
+import com.flutterwave.raveandroid.rave_remote.responses.CheckCardResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.FeeCheckResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.LookupSavedCardsResponse;
 import com.flutterwave.raveandroid.rave_remote.responses.MobileMoneyChargeResponse;
@@ -42,25 +44,28 @@ import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.expire
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenExpired;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.tokenNotFound;
 
-/**
- * Created by hamzafetuga on 18/07/2017.
- */
 @Singleton
 public class RemoteRepository {
 
     private Retrofit mainRetrofit;
+    private Retrofit barterRetrofit;
     private ApiService service;
+    private ApiService barterService;
     private Gson gson;
     private NetworkRequestExecutor executor;
     private String errorParsingError = "An error occurred parsing the error response";
 
     @Inject
     public RemoteRepository(@Named("mainRetrofit") Retrofit mainRetrofit,
-                            ApiService service,
+                            @Named("barterRetrofit") Retrofit barterRetrofit,
+                            @Named("mainApiService") ApiService service,
+                            @Named("barterApiService") ApiService barterService,
                             Gson gson,
                             NetworkRequestExecutor executor) {
         this.mainRetrofit = mainRetrofit;
+        this.barterRetrofit = barterRetrofit;
         this.service = service;
+        this.barterService = barterService;
         this.gson = gson;
         this.executor = executor;
     }
@@ -71,6 +76,16 @@ public class RemoteRepository {
                 new TypeToken<ChargeResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<ChargeResponse>(callback)
+        );
+    }
+
+    public void checkCard(String cardFirstSix, final ResultCallback callback) {
+
+
+        executor.execute(barterService.checkCard(cardFirstSix),
+                new TypeToken<CheckCardResponse>() {
+                }.getType(),
+                new GenericNetworkCallback<CheckCardResponse>(callback)
         );
     }
 

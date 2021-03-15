@@ -9,6 +9,7 @@ abstract public class RavePayManager  {
     protected String narration = "";
     protected String currency = "NGN";
     protected String country = "NG";
+    protected String barterCountry = "NG";
     protected String fName = "";
     protected String lName = "";
     protected String meta = "";
@@ -55,6 +56,10 @@ abstract public class RavePayManager  {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getBarterCountry() {
+        return barterCountry;
     }
 
     public String getfName() {
