@@ -70,22 +70,15 @@
         ]]>
     </string>
 
-    <string name="ugx_validate_instructions">
-        <![CDATA[
-        <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
-        ]]>
-    </string>
-    <string name="rwf_validate_instructions">
-        <![CDATA[
-        <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
-        ]]>
-    </string>
+    <string name="ugx_validate_instructions">@string/push_notification_message</string>
+    <string name="rwf_validate_instructions">@string/push_notification_message </string>
+    <string name="kes_validate_instructions">@string/push_notification_message</string>
+    <string name="zmw_validate_instructions">@string/push_notification_message</string>
 
-    <string name="kes_validate_instructions">
+    <string name="push_notification_message">
         <![CDATA[
         <b>A push notification has been sent to your phone, please complete the transaction by entering your pin.</b>
-        ]]>
-    </string>
+        ]]></string>
 
     <string name="mtn">mtn</string>
     <string name="tigo">tigo</string>
@@ -198,5 +191,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_select_a_card">Please select a card</string>
     <string name="barter_funding">Barter Funding</string>
+    <string name="verifying_transaction">Verifying transaction...</string>
 
 </resources>

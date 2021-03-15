@@ -138,7 +138,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
 
                     if (network.equalsIgnoreCase(RaveConstants.mtn)) {
                         presenter.logEvent(new ListItemSelectedEvent("Network").getEvent(), ravePayInitializer.getPublicKey());
-                        validateInstructions = getResources().getString(R.string.mtn_validate_instructions);
+                        validateInstructions = getResources().getString(R.string.zmw_validate_instructions);
                     }
                 }
             }
