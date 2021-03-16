@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_remote.responses;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -47,14 +49,16 @@ public class MobileMoneyChargeResponse {
         @SerializedName("link")
         String captchaLink;
         String code;
+        @Nullable
         String provider;
         String validateInstructions;
 
+        @Nullable
         public String getProvider() {
             return provider;
         }
 
-        public void setProvider(String provider) {
+        public void setProvider(@Nullable String provider) {
             this.provider = provider;
         }
 
