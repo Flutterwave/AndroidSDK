@@ -135,8 +135,6 @@ public class GhMobileMoneyHandler implements GhMobileMoneyContract.Handler {
         body.setTx_ref(txRef);
         body.setPBFPubKey(publicKey);
 
-        data.setProvider(null);
-
         if (data.getProvider() != null && data.getProvider().equalsIgnoreCase(RaveConstants.eTransact_GH)){
             mInteractor.showPollingIndicator(true, data.getValidateInstructions());
         }else{
