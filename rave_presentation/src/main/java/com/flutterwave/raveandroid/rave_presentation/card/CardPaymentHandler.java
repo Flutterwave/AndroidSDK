@@ -198,14 +198,14 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
             public void onSuccess(CheckCardResponse response) {
                 mCardInteractor.showProgressIndicator(false);
 
-                if (response != null && response.getCountry() != null && response.getCountry().getAlpha2() != null) {
-                    if (response.getCountry().getAlpha2().equalsIgnoreCase(barterCountry)) {
+                try{
+                    if (response.getCountry().split(" ")[1].equalsIgnoreCase(barterCountry)){
                         continueCharge( isDisplayFee,  body,  encryptionKey);
                     } else {
                         mCardInteractor.onPaymentError(cardNotAllowed);
                     }
 
-                } else {
+                } catch (Exception ignored){
                     continueCharge(isDisplayFee, body, encryptionKey);
                 }
 
@@ -213,8 +213,9 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
 
             @Override
             public void onError(String message) {
-                mCardInteractor.showProgressIndicator(false);
-                mCardInteractor.onPaymentError(message);
+                continueCharge(isDisplayFee, body, encryptionKey);
+//                mCardInteractor.showProgressIndicator(false);
+//                mCardInteractor.onPaymentError(message);
             }
         });
 

@@ -32,7 +32,7 @@ public class RaveConstants {
 //    public static String LIVE_URL = "https://raveapi.azurewebsites.net";
     public static String STAGING_URL = "https://ravesandboxapi.flutterwave.com";
     public static String LIVE_URL = "https://api.ravepay.co";
-    public static String CARD_CHECK_URL = "https://lookup.binlist.net";
+    public static String CARD_CHECK_URL = "https://9wd5x7szl1.execute-api.eu-west-2.amazonaws.com";
     public static String EVENT_LOGGING_URL = "https://kgelfdz7mf.execute-api.us-east-1.amazonaws.com/";
     public static String FLUTTERWAVE_UK_ACCOUNT = "43271228";
     public static String FLUTTERWAVE_UK_SORT_CODE = "04-00-53";

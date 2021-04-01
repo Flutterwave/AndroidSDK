@@ -7,6 +7,7 @@ import com.flutterwave.raveandroid.rave_java_commons.ExecutorCallback;
 import com.flutterwave.raveandroid.rave_java_commons.NetworkRequestExecutor;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants;
+import com.flutterwave.raveandroid.rave_remote.requests.CardCheckRequest;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
@@ -81,8 +82,7 @@ public class RemoteRepository {
 
     public void checkCard(String cardFirstSix, final ResultCallback callback) {
 
-
-        executor.execute(barterService.checkCard(cardFirstSix),
+        executor.execute(barterService.checkCard(new CardCheckRequest(cardFirstSix)),
                 new TypeToken<CheckCardResponse>() {
                 }.getType(),
                 new GenericNetworkCallback<CheckCardResponse>(callback)

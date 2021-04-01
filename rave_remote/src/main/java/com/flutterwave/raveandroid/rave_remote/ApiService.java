@@ -2,6 +2,7 @@ package com.flutterwave.raveandroid.rave_remote;
 
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
+import com.flutterwave.raveandroid.rave_remote.requests.CardCheckRequest;
 import com.flutterwave.raveandroid.rave_remote.requests.ChargeRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.LookupSavedCardsRequestBody;
 import com.flutterwave.raveandroid.rave_remote.requests.RemoveSavedCardRequestBody;
@@ -30,8 +31,8 @@ public interface ApiService {
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
     Call<String> charge(@Body ChargeRequestBody body);
 
-    @GET("/{card-first-six}")
-    Call<String> checkCard(@Path("card-first-six") String cardFirstSix);
+    @POST("/binapi/bin/details")
+    Call<String> checkCard(@Body() CardCheckRequest body);
 
     @POST("/flwv3-pug/getpaidx/api/charge?use_polling=1")
 //    Call<ChargeResponse> charge(@Body ChargeRequestBody body);
