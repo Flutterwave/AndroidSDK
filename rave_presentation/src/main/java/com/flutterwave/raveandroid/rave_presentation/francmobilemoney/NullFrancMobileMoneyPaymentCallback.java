@@ -19,4 +19,9 @@ public class NullFrancMobileMoneyPaymentCallback implements FrancophoneMobileMon
 
     }
 
+    @Override
+    public void showAuthenticationWebPage(String authenticationUrl) {
+
+    }
+
 }

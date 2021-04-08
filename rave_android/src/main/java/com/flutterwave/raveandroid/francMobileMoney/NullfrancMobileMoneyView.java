@@ -13,6 +13,11 @@ public class NullfrancMobileMoneyView implements FrancMobileMoneyUiContract.View
     }
 
     @Override
+    public void showWebPage(String authenticationUrl, String flwRef) {
+
+    }
+
+    @Override
     public void onPaymentError(String message) {
 
     }
@@ -48,17 +53,17 @@ public class NullfrancMobileMoneyView implements FrancMobileMoneyUiContract.View
     }
 
     @Override
+    public void onPaymentSuccessful(String flwRef, String responseAsString) {
+
+    }
+
+    @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
 
     }
 
     @Override
     public void showFieldError(int viewID, String message, Class<?> viewType) {
-
-    }
-
-    @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
 
     }
 }

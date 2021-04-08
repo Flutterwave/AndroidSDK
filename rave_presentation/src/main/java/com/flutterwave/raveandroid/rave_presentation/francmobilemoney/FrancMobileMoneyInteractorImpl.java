@@ -41,7 +41,7 @@ class FrancMobileMoneyInteractorImpl implements FrancMobileMoneyContract.Interac
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+    public void onPaymentSuccessful(String flwRef, String responseAsString) {
         callback.onSuccessful(flwRef);
     }
 
@@ -65,6 +65,11 @@ class FrancMobileMoneyInteractorImpl implements FrancMobileMoneyContract.Interac
         callback.showProgressIndicator(active);
     }
 
+    @Override
+    public void showWebPage(String authenticationUrl, String flwRef) {
+        this.flwRef = flwRef;
+        callback.showAuthenticationWebPage(authenticationUrl);
+    }
     public String getFlwRef() {
         return flwRef;
     }

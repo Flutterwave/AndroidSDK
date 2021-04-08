@@ -21,7 +21,6 @@ public interface FrancMobileMoneyUiContract {
 
         void showFieldError(int viewID, String message, Class<?> viewType);
 
-        void onPaymentSuccessful(String status, String flwRef, String responseAsString);
     }
 
     interface UserActionsListener extends FrancMobileMoneyContract.Handler {

@@ -98,9 +98,14 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                 mInteractor.showProgressIndicator(false);
 
                 if (response.getData() != null) {
+
                     String flwRef = response.getData().getData().getFlw_reference();
                     String txRef = response.getData().getData().getTransaction_reference();
-                    requeryTx(flwRef, txRef, payload.getPBFPubKey());
+                    if (response.getRedirectUrl()!=null){
+                        mInteractor.showWebPage(response.getRedirectUrl(), flwRef);
+                    }else {
+                     requeryTx(flwRef, payload.getPBFPubKey());
+                    }
                 } else {
                     mInteractor.onPaymentError(noResponse);
                 }
@@ -117,7 +122,7 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
 
 
     @Override
-    public void requeryTx(final String flwRef, final String txRef, final String publicKey) {
+    public void requeryTx(final String flwRef, final String publicKey) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
@@ -138,10 +143,10 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                     mInteractor.showProgressIndicator(false);
                     mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
                 } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    requeryTx(flwRef, txRef, publicKey);
+                    requeryTx(flwRef, publicKey);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mInteractor.showPollingIndicator(false);
-                    mInteractor.onPaymentSuccessful(flwRef, txRef, responseAsJSONString);
+                    mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);
                     mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);

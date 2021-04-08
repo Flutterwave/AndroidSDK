@@ -98,6 +98,10 @@ public class ChargeResponse {
 
     }
 
+    public String getRedirectUrl() {
+        return (data == null) ? null : data.getRedirectUrl() != null ? data.getRedirectUrl() : data.getData() != null ? data.getData().getRedirectUrl() : null;
+    }
+
     public static class Data {
 
         JsonElement meta_data;
@@ -175,9 +179,6 @@ public class ChargeResponse {
             this.charged_amount = charged_amount;
         }
 
-        public void setRedirectUrl(String redirectUrl) {
-            this.redirectUrl = redirectUrl;
-        }
 
 
         String note;
@@ -260,8 +261,9 @@ public class ChargeResponse {
         String currency;
         String charged_amount;
 
+
         public String getRedirectUrl() {
-            return redirectUrl;
+            return redirectUrl == null ? redirect_url:redirectUrl;
         }
 
         String redirectUrl;

@@ -19,21 +19,33 @@ import com.flutterwave.raveandroid.R;
 import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayInitializer;
 import com.flutterwave.raveandroid.ViewObject;
+import com.flutterwave.raveandroid.card.savedcards.SavedCardsFragment;
 import com.flutterwave.raveandroid.data.Utils;
 import com.flutterwave.raveandroid.data.events.FeeDisplayResponseEvent;
 import com.flutterwave.raveandroid.data.events.RequeryCancelledEvent;
 import com.flutterwave.raveandroid.di.modules.FrancModule;
+import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.events.StartTypingEvent;
+import com.flutterwave.raveandroid.rave_presentation.data.AddressDetails;
 import com.flutterwave.raveandroid.rave_presentation.data.events.ErrorEvent;
+import com.flutterwave.raveutils.verification.AVSVBVFragment;
+import com.flutterwave.raveutils.verification.OTPFragment;
+import com.flutterwave.raveutils.verification.PinFragment;
+import com.flutterwave.raveutils.verification.RaveVerificationUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import static android.view.View.GONE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.ADDRESS_DETAILS_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.OTP_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.PIN_REQUEST_CODE;
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.WEB_VERIFICATION_REQUEST_CODE;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldAmount;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.fieldPhone;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.response;
@@ -59,6 +71,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
     private int rave_phoneEtInt;
     private RavePayInitializer ravePayInitializer;
+    private String flwRef;
 
 
     @Override
@@ -188,6 +201,34 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
         }
     }
 
+    /**
+     * Called when the auth model suggested is VBV. It opens a WebView
+     * that loads the authURL
+     *
+     * @param authenticationUrl URL to display in webview
+     * @param flwRef  Reference of the payment transaction
+     */
+    @Override
+    public void showWebPage(String authenticationUrl, String flwRef) {
+
+        this.flwRef = flwRef;
+        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                .showWebpageVerificationScreen(authenticationUrl);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+            //just to be sure this v sent the receiving intent
+            if (requestCode == WEB_VERIFICATION_REQUEST_CODE) {
+                presenter.requeryTx(flwRef, ravePayInitializer.getPublicKey());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     @Override
     public void onValidationSuccessful(HashMap<String, ViewObject> dataHashMap) {
         presenter.processTransaction(dataHashMap, ravePayInitializer);
@@ -230,7 +271,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     }
 
     @Override
-    public void onPaymentSuccessful(String status, String flwRef, String responseAsString) {
+    public void onPaymentSuccessful(String flwRef, String responseAsString) {
         Intent intent = new Intent();
         intent.putExtra(response, responseAsString);
 
