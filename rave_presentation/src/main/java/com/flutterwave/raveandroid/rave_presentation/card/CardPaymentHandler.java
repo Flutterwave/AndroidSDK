@@ -199,7 +199,9 @@ public class CardPaymentHandler implements CardContract.CardPaymentHandler {
                 mCardInteractor.showProgressIndicator(false);
 
                 try{
-                    if (response.getCountry().split(" ")[1].equalsIgnoreCase(barterCountry)){
+                    String[] countryArray = response.getCountry().split(" ");
+                    String countryCode = countryArray[countryArray.length-1];
+                    if (countryCode.equalsIgnoreCase(barterCountry)){
                         continueCharge( isDisplayFee,  body,  encryptionKey);
                     } else {
                         mCardInteractor.onPaymentError(cardNotAllowed);
