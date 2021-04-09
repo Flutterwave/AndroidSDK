@@ -29,6 +29,7 @@ import com.flutterwave.raveutils.verification.VerificationActivity;
 
 import javax.inject.Inject;
 
+import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.BARTER_CHECKOUT;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_ERROR;
 import static com.flutterwave.raveandroid.rave_java_commons.RaveConstants.RESULT_SUCCESS;
 import static com.flutterwave.raveutils.verification.VerificationActivity.PUBLIC_KEY_EXTRA;
@@ -44,6 +45,7 @@ public class WebFragment extends Fragment implements WebContract.View {
     String authurl;
     String flwRef = "";
     String publicKey = "";
+    String motive = "";
     WebView webView;
     ProgressDialog progressDialog;
     @Inject
@@ -70,6 +72,7 @@ public class WebFragment extends Fragment implements WebContract.View {
         try {
             flwRef = getArguments().getString(EXTRA_FLW_REF);
             publicKey = getArguments().getString(EXTRA_PUBLIC_KEY);
+            motive = getArguments().getString(VerificationActivity.ACTIVITY_MOTIVE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,9 +84,10 @@ public class WebFragment extends Fragment implements WebContract.View {
     }
 
     private void initPresenter() {
-        if (flwRef != null && publicKey != null)
-            if (!flwRef.isEmpty() && !publicKey.isEmpty())
-                presenter.init(flwRef, publicKey);
+        if (flwRef != null && publicKey != null && motive!=null)
+            if (!flwRef.isEmpty() && !publicKey.isEmpty()){
+                presenter.init(flwRef, publicKey, motive.equals(BARTER_CHECKOUT));
+            }
     }
 
     private void logEvent(Event event) {
@@ -218,7 +222,7 @@ public class WebFragment extends Fragment implements WebContract.View {
 
     @Override
     public void onPollingRoundComplete(String flwRef, String publicKey) {
-        presenter.requeryTx(flwRef, publicKey);
+        presenter.requeryTx(flwRef, publicKey, motive.equals(BARTER_CHECKOUT));
     }
 
     @Override

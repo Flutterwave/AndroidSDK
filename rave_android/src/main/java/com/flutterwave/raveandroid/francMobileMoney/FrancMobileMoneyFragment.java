@@ -213,7 +213,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
 
         this.flwRef = flwRef;
         new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showWebpageVerificationScreen(authenticationUrl);
+                .showWebpageVerificationScreen(authenticationUrl,flwRef);
     }
 
 

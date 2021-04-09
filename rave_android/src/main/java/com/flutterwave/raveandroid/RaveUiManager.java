@@ -108,22 +108,24 @@ public class RaveUiManager extends RavePayManager {
 
     public RaveUiManager setCurrency(String currency) {
         this.currency = currency;
-        switch (currency) {
-            case "KES":
-                country = "KE";
-                break;
-            case "GHS":
-                country = "GH";
-                break;
-            case "ZAR":
-                country = "ZA";
-                break;
-            case "TZS":
-                country = "TZ";
-                break;
-            default:
-                country = "NG";
-                break;
+        if (country==null || country.isEmpty()) { // Set the country based on Rave defaults if the country is not already set
+            switch (currency) {
+                case "KES":
+                    country = "KE";
+                    break;
+                case "GHS":
+                    country = "GH";
+                    break;
+                case "ZAR":
+                    country = "ZA";
+                    break;
+                case "TZS":
+                    country = "TZ";
+                    break;
+                default:
+                    country = "NG";
+                    break;
+            }
         }
         return this;
     }
@@ -260,9 +262,10 @@ public class RaveUiManager extends RavePayManager {
         return this;
     }
 
-    public RaveUiManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney) {
+    public RaveUiManager acceptFrancMobileMoneyPayments(boolean withFrancMobileMoney, String country) {
         if (!orderedPaymentTypesList.contains(PAYMENT_TYPE_FRANCO_MOBILE_MONEY) && withFrancMobileMoney)
             orderedPaymentTypesList.add(PAYMENT_TYPE_FRANCO_MOBILE_MONEY);
+        this.country = country;
         return this;
     }
 

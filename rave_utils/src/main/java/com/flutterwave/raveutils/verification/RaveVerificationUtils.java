@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.flutterwave.raveutils.R;
@@ -82,9 +83,14 @@ public class RaveVerificationUtils {
         else fragment.startActivityForResult(intent, OTP_REQUEST_CODE);
     }
 
-    public void showWebpageVerificationScreen(String authurl) {
+    public void showWebpageVerificationScreen(String authUrl) {
+        showWebpageVerificationScreen(authUrl, null);
+    }
+
+    public void showWebpageVerificationScreen(String authUrl, @Nullable String flwRef) {
         Intent intent = new Intent(context, VerificationActivity.class);
-        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authurl);
+        intent.putExtra(WebFragment.EXTRA_AUTH_URL, authUrl);
+        intent.putExtra(WebFragment.EXTRA_FLW_REF, flwRef);
         intent.putExtra(VerificationActivity.ACTIVITY_MOTIVE, "web");
         intent.putExtra(EXTRA_IS_STAGING, isStaging);
         intent.putExtra(VerificationActivity.PUBLIC_KEY_EXTRA, publicKey);

@@ -1,5 +1,6 @@
 package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
@@ -38,7 +39,8 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
     RemoteRepository networkRequest;
     @Inject
     PayloadEncryptor payloadEncryptor;
-    private FrancMobileMoneyContract.Interactor mInteractor;
+    private final FrancMobileMoneyContract.Interactor mInteractor;
+    private final Handler pollingHandler = new Handler();
 
     @Inject
     public FrancMobileMoneyHandler(FrancMobileMoneyContract.Interactor mInteractor) {
@@ -142,8 +144,13 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                 } else if (response.getData().getStatus().contains("fail")) {
                     mInteractor.showProgressIndicator(false);
                     mInteractor.onPaymentFailed(response.getData().getStatus(), responseAsJSONString);
-                } else if (response.getData().getChargeResponseCode().equals("02")) {
-                    requeryTx(flwRef, publicKey);
+                } else if (response.getData().getChargeResponseCode().equals("02")||response.getData().getChargeResponseCode().equals("01")) {
+                    pollingHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            requeryTx(flwRef, publicKey);
+                        }
+                    },2000);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
                     mInteractor.showPollingIndicator(false);
                     mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);

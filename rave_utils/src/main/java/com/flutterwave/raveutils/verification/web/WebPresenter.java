@@ -20,14 +20,19 @@ public class WebPresenter implements WebContract.UserActionsListener {
     }
 
     @Override
-    public void init(String flwRef, String publicKey) {
-        requeryTx(flwRef, publicKey);
+    public void init(String flwRef, String publicKey, Boolean isBarter) {
+        requeryTx(flwRef, publicKey,isBarter);
     }
 
     @Override
-    public void requeryTx(final String flwRef, final String publicKey) {
+    public void requeryTx(final String flwRef, final String publicKey, Boolean isBarter) {
         RequeryRequestBody body = new RequeryRequestBody();
-        body.setOrder_ref(flwRef); // Uses Order ref instead of flwref
+        if (isBarter){
+            body.setOrder_ref(flwRef); // Uses Order ref instead of flwref
+        } else{
+            body.setFlw_ref(flwRef);
+        }
+
         body.setPBFPubKey(publicKey);
 
         networkRequest.requeryTx(body, new Callbacks.OnRequeryRequestComplete() {

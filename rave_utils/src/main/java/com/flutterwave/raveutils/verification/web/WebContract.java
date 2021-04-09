@@ -18,9 +18,9 @@ public interface WebContract {
     interface UserActionsListener {
 
 
-        void init(String flwRef, String publicKey);
+        void init(String flwRef, String publicKey, Boolean isBarter);
 
-        void requeryTx(String flwRef, String publicKey);
+        void requeryTx(String flwRef, String publicKey, Boolean isBarter);
 
         void onAttachView(View view);
 
