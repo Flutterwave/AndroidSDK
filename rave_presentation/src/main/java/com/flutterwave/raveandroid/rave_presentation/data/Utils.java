@@ -62,7 +62,9 @@ public class Utils {
         Gson gson = new Gson();
         Type type = new TypeToken<Payload>() {
         }.getType();
-        return gson.toJson(body, type);
+        String jsonString = gson.toJson(body, type);
+        Log.d("Charge parameters",jsonString);
+        return jsonString;
     }
 
     public static List<Meta> pojofyMetaString(String meta) {

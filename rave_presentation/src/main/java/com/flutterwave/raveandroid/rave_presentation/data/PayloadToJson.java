@@ -1,5 +1,7 @@
 package com.flutterwave.raveandroid.rave_presentation.data;
 
+import android.util.Log;
+
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,7 +23,9 @@ public class PayloadToJson {
 
         Type type = new TypeToken<Payload>() {
         }.getType();
-        return gson.toJson(body, type);
+        String jsonString = gson.toJson(body, type);
+        Log.d("Charge parameters",jsonString);
+        return jsonString;
     }
 
 }

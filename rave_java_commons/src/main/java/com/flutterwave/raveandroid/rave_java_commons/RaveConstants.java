@@ -124,14 +124,26 @@ public class RaveConstants {
     public static String bankNameGtb = "Guaranty Trust Bank";
     public static final String BARTER_CHECKOUT = "barter";
 
+    /**
+     * The list of banks for USSD charge. This list should match that in [R.string.ussd_banks]
+     */
     public static ArrayList<Bank> ussdBanksList = new ArrayList<>(Arrays.asList(
-            new Bank(bankNameGtb, "058"),
-            new Bank("Fidelity Bank", "070"),
-            new Bank("Keystone Bank", "082"),
-            new Bank("Unity Bank PLC", "215"),
-            new Bank("Zenith bank PLC", "057"),
-            new Bank("Sterling Bank PLC", "232"),
-            new Bank("United Bank for Africa", "033")
+            new Bank("Access Bank", "044"),
+            new Bank("EcoBank", "050"),
+            new Bank("Fidelity Bank",  "070"),
+            new Bank("First Bank of Nigeria", "011"),
+            new Bank("First City Monument Bank", "214"),
+            new Bank(bankNameGtb,  "058"),
+            new Bank("Heritage Bank", "030"),
+            new Bank("Keystone Bank",  "082"),
+            new Bank("Stanbic IBTC Bank", "221"),
+            new Bank("Sterling Bank PLC",  "232"),
+            new Bank("Union Bank", "032"),
+            new Bank("United Bank for Africa", "033"),
+            new Bank("Unity Bank PLC",  "215"),
+            new Bank("VFD Microfinance Bank", "090110"),
+            new Bank("Wema Bank", "035"),
+            new Bank("Zenith bank PLC", "057")
     ));
     public static List<Bank> accountBanksList = new ArrayList<>(Arrays.asList(
             new Bank(bankNameGtb, "058"),

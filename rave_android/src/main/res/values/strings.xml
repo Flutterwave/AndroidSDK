@@ -173,12 +173,20 @@
 
     <string-array name="ussd_banks">
         <item>Select Bank</item>
+        <item>Access Bank</item>
+        <item>EcoBank</item>
         <item>Fidelity Bank</item>
+        <item>First City Monument Bank</item>
         <item>Guaranty Trust Bank</item>
+        <item>Heritage Bank</item>
         <item>Keystone Bank</item>
+        <item>Stanbic IBTC Bank</item>
         <item>Sterling Bank PLC</item>
+        <item>Union Bank</item>
         <item>United Bank for Africa</item>
         <item>Unity Bank PLC</item>
+        <item>VFD Microfinance Bank</item>
+        <item>Wema Bank</item>
         <item>Zenith bank PLC</item>
     </string-array>
 
