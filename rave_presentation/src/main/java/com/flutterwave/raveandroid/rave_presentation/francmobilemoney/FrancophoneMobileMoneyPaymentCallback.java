@@ -14,8 +14,9 @@ public interface FrancophoneMobileMoneyPaymentCallback {
      * This should typically show or hide a progress bar.
      *
      * @param active If true, background task is running. If false, background task has stopped
+     * @param note
      */
-    void showProgressIndicator(boolean active);
+    void showProgressIndicator(boolean active, String note);
 
     /**
      * Called when an error occurs with the payment. The error message can be displayed to the users.

@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 public class NullFrancMobileMoneyPaymentCallback implements FrancophoneMobileMoneyPaymentCallback {
 
     @Override
-    public void showProgressIndicator(boolean active) {
+    public void showProgressIndicator(boolean active, String note) {
 
     }
 

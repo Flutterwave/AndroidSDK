@@ -34,7 +34,7 @@ public interface FrancMobileMoneyContract {
 
         void onPaymentError(String message);
 
-        void showPollingIndicator(boolean active);
+        void showPollingIndicator(boolean active, String note);
 
         void showProgressIndicator(boolean active);
 
@@ -50,7 +50,7 @@ public interface FrancMobileMoneyContract {
 
         void chargeFranc(Payload payload, String encryptionKey);
 
-        void requeryTx(String flwRef, String publicKey);
+        void requeryTx(String flwRef, String publicKey, String note);
 
         void logEvent(Event event, String publicKey);
     }

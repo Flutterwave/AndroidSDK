@@ -85,6 +85,10 @@ public class ChargeResponse {
         return (data.getData() == null) ? null : data.getData().ping_url;
     }
 
+    public String getNote() {
+        return (data == null) ? null : data.getNote() != null ? data.getNote() : data.getData() != null ? data.getData().getNote() : null;
+    }
+
     public static class AccountValidateInstructions {
         public String getInstruction() {
             return instruction;

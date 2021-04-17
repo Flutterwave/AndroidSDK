@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 

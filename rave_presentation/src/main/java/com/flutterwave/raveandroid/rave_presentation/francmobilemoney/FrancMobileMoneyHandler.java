@@ -3,6 +3,8 @@ package com.flutterwave.raveandroid.rave_presentation.francmobilemoney;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
 import com.flutterwave.raveandroid.rave_logger.Event;
 import com.flutterwave.raveandroid.rave_logger.EventLogger;
@@ -106,7 +108,7 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                     if (response.getRedirectUrl()!=null){
                         mInteractor.showWebPage(response.getRedirectUrl(), flwRef);
                     }else {
-                     requeryTx(flwRef, payload.getPBFPubKey());
+                     requeryTx(flwRef, payload.getPBFPubKey(),response.getNote());
                     }
                 } else {
                     mInteractor.onPaymentError(noResponse);
@@ -124,13 +126,13 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
 
 
     @Override
-    public void requeryTx(final String flwRef, final String publicKey) {
+    public void requeryTx(final String flwRef, final String publicKey, @Nullable final String note) {
 
         RequeryRequestBody body = new RequeryRequestBody();
         body.setFlw_ref(flwRef);
         body.setPBFPubKey(publicKey);
 
-        mInteractor.showPollingIndicator(true);
+        mInteractor.showPollingIndicator(true,note);
 
         logEvent(new RequeryEvent().getEvent(), publicKey);
 
@@ -148,11 +150,11 @@ public class FrancMobileMoneyHandler implements FrancMobileMoneyContract.Handler
                     pollingHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            requeryTx(flwRef, publicKey);
+                            requeryTx(flwRef, publicKey, note);
                         }
                     },2000);
                 } else if (response.getData().getChargeResponseCode().equals("00")) {
-                    mInteractor.showPollingIndicator(false);
+                    mInteractor.showPollingIndicator(false, note);
                     mInteractor.onPaymentSuccessful(flwRef, responseAsJSONString);
                 } else {
                     mInteractor.showProgressIndicator(false);

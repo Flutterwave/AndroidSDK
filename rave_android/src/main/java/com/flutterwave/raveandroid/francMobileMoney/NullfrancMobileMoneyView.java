@@ -23,7 +23,7 @@ public class NullfrancMobileMoneyView implements FrancMobileMoneyUiContract.View
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
+    public void showPollingIndicator(boolean active, String note) {
 
     }
 

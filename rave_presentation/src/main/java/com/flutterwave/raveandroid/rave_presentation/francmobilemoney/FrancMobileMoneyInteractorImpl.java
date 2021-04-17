@@ -23,7 +23,7 @@ class FrancMobileMoneyInteractorImpl implements FrancMobileMoneyContract.Interac
 
     @Override
     public void showProgressIndicator(boolean active) {
-        callback.showProgressIndicator(active);
+        callback.showProgressIndicator(active, "");
     }
 
     @Override
@@ -61,8 +61,8 @@ class FrancMobileMoneyInteractorImpl implements FrancMobileMoneyContract.Interac
     }
 
     @Override
-    public void showPollingIndicator(boolean active) {
-        callback.showProgressIndicator(active);
+    public void showPollingIndicator(boolean active, String note) {
+        callback.showProgressIndicator(active,note);
     }
 
     @Override
