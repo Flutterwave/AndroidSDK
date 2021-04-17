@@ -247,6 +247,34 @@ public class MainActivity
             }
         });
 
+        setupTestDetails();
+    }
+
+    private void setupTestDetails() {
+        shouldDisplayFeeSwitch.setChecked(false);
+        emailEt.setText("varisiv@gmail.com");
+        amountEt.setText("1");
+        publicKeyEt.setText("FLWPUBK_TEST-0a3f83be04184b2e71ecfeb2067c4fd1-X");
+        encryptionKeyEt.setText("FLWSECK_TEST5d7ac1304e4f");
+        txRefEt.setText("1");
+        currencyEt.setText("NGN");
+        countryEt.setText("NG");
+        fNameEt.setText("Jeremiah Ifeanyichukwu");
+//        lNameEt.setText("Ifeanyichukwu");
+        phoneNumberEt.setText("237677551995");
+        isLiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    publicKeyEt.setText("FLWPUBK-aec2b6c6cfe500854a21a0808f1ca280-X");
+                    encryptionKeyEt.setText("7b52e2b832ecbb4451fe7b3b");
+                } else {
+                    publicKeyEt.setText("FLWPUBK_TEST-0a3f83be04184b2e71ecfeb2067c4fd1-X");
+                    encryptionKeyEt.setText("FLWSECK_TEST5d7ac1304e4f");
+                }
+            }
+        });
+
     }
 
     private void clear() {
