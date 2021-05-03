@@ -8,7 +8,7 @@ abstract public class RavePayManager  {
     protected String txRef;
     protected String narration = "";
     protected String currency = "NGN";
-    protected String country = "NG";
+    protected String country;
     protected String barterCountry = "NG";
     protected String fName = "";
     protected String lName = "";
