@@ -37,27 +37,28 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation "androidx.appcompat:appcompat:$v_appcompat"
+    implementation "com.google.android.material:material:$v_material"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'org.parceler:parceler-api:1.1.12'
-    annotationProcessor 'org.parceler:parceler:1.1.12'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
-    implementation 'com.scottyab:aescrypt:0.0.1'
+    implementation "com.squareup.retrofit2:retrofit:$v_retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$v_retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$v_logging_interceptor"
+    implementation "org.parceler:parceler-api:$v_parceler"
+    annotationProcessor "org.parceler:parceler:$v_parceler"
+    implementation "com.squareup.retrofit2:converter-scalars:$v_retrofit"
+    implementation "com.scottyab:aescrypt:$v_aescrypt"
     testImplementation 'junit:junit:4.12'
-    // dagger 2
-    implementation 'com.google.dagger:dagger:2.17'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.17'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    testImplementation 'com.google.dagger:dagger:2.17'
-    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.17'
-    testImplementation 'org.mockito:mockito-core:2.25.0'
-    testImplementation 'org.mockito:mockito-inline:2.13.0'
+    // dagger 2
+    implementation "com.google.dagger:dagger:$v_dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$v_dagger"
+    implementation "androidx.constraintlayout:constraintlayout:$v_constraintlayout"
+
+    testImplementation "com.google.dagger:dagger:$v_dagger"
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:$v_dagger"
+    testImplementation "org.mockito:mockito-core:$v_mockito_core"
+    testImplementation "org.mockito:mockito-inline:$v_mockito_inline"
 
     implementation 'androidx.cardview:cardview:1.0.0'
     api project(':rave_remote')

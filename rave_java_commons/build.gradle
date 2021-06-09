@@ -5,11 +5,11 @@ group = 'com.github.flutterwave'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation "com.squareup.retrofit2:converter-gson:$v_retrofit"
 
     //dagger
-    implementation 'com.google.dagger:dagger:2.27'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
+    implementation "com.google.dagger:dagger:$v_dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$v_dagger"
     api project(':rave_core')
 
 }

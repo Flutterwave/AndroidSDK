@@ -31,10 +31,10 @@ dependencies {
 //    implementation 'com.google.code.gson:gson:2.8.6'
 
     //network
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    implementation "com.squareup.retrofit2:retrofit:$v_retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$v_retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$v_logging_interceptor"
+    implementation "com.squareup.retrofit2:converter-scalars:$v_retrofit"
 
 
     api project(':rave_core')
@@ -43,11 +43,11 @@ dependencies {
 
 
     //dagger
-    implementation 'com.google.dagger:dagger:2.27'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
+    implementation "com.google.dagger:dagger:$v_dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$v_dagger"
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'androidx.annotation:annotation:1.0.0'
+    androidTestImplementation "androidx.test.ext:junit:$v_junit_test"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$v_espresso_core"
+    implementation "androidx.annotation:annotation:$v_annotation"
 }
