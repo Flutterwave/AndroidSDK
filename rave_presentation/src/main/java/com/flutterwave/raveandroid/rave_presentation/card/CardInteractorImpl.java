@@ -67,7 +67,7 @@ class CardInteractorImpl implements CardContract.CardInteractor {
     @Override
     public void onPaymentSuccessful(String status, String flwRef, String responseAsJSONString) {
         this.flwRef = flwRef;
-        callback.onSuccessful(flwRef);
+        callback.onSuccessful(flwRef, responseAsJSONString);
     }
 
     @Override

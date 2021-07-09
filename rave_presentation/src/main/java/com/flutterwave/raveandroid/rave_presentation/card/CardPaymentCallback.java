@@ -62,5 +62,5 @@ public interface CardPaymentCallback {
      *
      * @param flwRef The Flutterwave reference to the transaction.
      */
-    void onSuccessful(String flwRef);
+    void onSuccessful(String flwRef, @Nullable String responseAsJSONString);
 }
