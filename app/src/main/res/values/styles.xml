@@ -43,7 +43,20 @@
         <item name="android:background">@drawable/otp_button_curved_2</item>
         <item name="android:textColor">#009688</item>
     </style>
-
+ <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="OTPButtonStyle">@style/myOtpBtnStyle</item>
+        <item name="PayButtonStyle">@style/myBtnStyle</item>
+	<item name="PinButtonStyle">@style/myPinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/myOtpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/myTabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/myPinHeaderStyle</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
+    </style>
     <style name="svdCardsBtnStyle2" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/blue_btn_curved</item>
         <item name="android:textColor">#039be5</item>
