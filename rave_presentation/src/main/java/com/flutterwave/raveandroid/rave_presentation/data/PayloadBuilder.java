@@ -1,7 +1,5 @@
 package com.flutterwave.raveandroid.rave_presentation.data;
 
-import android.util.Log;
-
 import com.flutterwave.raveandroid.rave_core.models.SavedCard;
 import com.flutterwave.raveandroid.rave_java_commons.Meta;
 import com.flutterwave.raveandroid.rave_java_commons.Payload;
