@@ -91,6 +91,8 @@ public class RaveConstants {
     public static String mtn = "MTN";
     public static String tigo = "TIGO";
     public static String vodafone = "VODAFONE";
+    public static String airtel = "AIRTEL";
+    public static String zamtel = "ZAMTEL";
 
     public static String tokenNotFound = "token not found";
     public static String expired = "expired";

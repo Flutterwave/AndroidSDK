@@ -194,6 +194,8 @@
     <string-array name="zm_mobile_money_networks">
         <item>Select network</item>
         <item>MTN</item>
+        <item>AIRTEL</item>
+        <item>ZAMTEL</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
