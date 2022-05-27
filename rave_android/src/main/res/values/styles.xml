@@ -76,6 +76,9 @@
         <item name="PaymentTileStyle">@style/paymentTileStyle</item>
         <item name="PaymentTileTextStyle">@style/paymentTileTextStyle</item>
         <item name="PaymentTileDividerStyle">@style/paymentTileDividerStyle</item>
+        <item name="RaveDialogNegativeButtonStyle">@style/RaveDialogNegativeButtonStyle</item>
+        <item name="RaveDialogPositiveButtonStyle">@style/RaveDialogNegativeButtonStyle</item>
+        <item name="RaveDialogStyle">@style/RaveDialogStyle</item>
     </style>
 
 
@@ -101,6 +104,19 @@
     <style name="payBtnStyle2" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/green_btn_curved</item>
         <item name="android:textColor">#bcaaa4</item>
+    </style>
+
+    <style name="RaveDialogStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/RaveDialogNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/RaveDialogPositiveButtonStyle</item>
+    </style>
+
+    <style name="RaveDialogNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/raveAndroidColorAccent</item>
+    </style>
+
+    <style name="RaveDialogPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#039be5</item>
     </style>
 
 

@@ -231,7 +231,7 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
     @Override
     public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.RaveDialogStyle);
         builder.setMessage(getResources().getString(R.string.charge) + " " + charge_amount + " " + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
         builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
