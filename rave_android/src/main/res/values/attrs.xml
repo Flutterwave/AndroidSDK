@@ -10,4 +10,7 @@
     <attr name="PaymentTileTextStyle" format="reference" />
     <attr name="PaymentTileDividerStyle" format="reference" />
     <attr name="TabLayoutStyle" format="reference"/>
+    <attr name="RaveDialogNegativeButtonStyle" format="reference"/>
+    <attr name="RaveDialogPositiveButtonStyle" format="reference"/>
+    <attr name="RaveDialogStyle" format="reference"/>
 </resources>

@@ -166,7 +166,7 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
     public void onTransactionFeeRetrieved(String chargeAmount, final Payload payload, String fee) {
         if (getActivity() != null) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.RaveDialogStyle);
             builder.setMessage(getResources().getString(R.string.charge) + chargeAmount + ravePayInitializer.getCurrency() + getResources().getString(R.string.askToContinue));
             builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
