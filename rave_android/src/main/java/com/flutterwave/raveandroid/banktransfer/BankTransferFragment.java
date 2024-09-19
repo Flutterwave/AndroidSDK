@@ -322,7 +322,7 @@ public class BankTransferFragment extends Fragment implements BankTransferUiCont
 
     @Override
     public void onTransactionFeeFetched(String charge_amount, final Payload payload, String fee) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.RaveDialogStyle);
         builder.setMessage("You will be charged a total of " + charge_amount + ravePayInitializer.getCurrency() + ". Do you want to continue?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
