@@ -211,7 +211,7 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     public void showGTBankAmountIssue() {
 
         if (getActivity() != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.RaveDialogStyle);
             builder.setMessage(getResources().getString(R.string.payWithBankAmountLimitPrompt));
             builder.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
