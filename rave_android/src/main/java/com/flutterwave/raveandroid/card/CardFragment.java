@@ -485,7 +485,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
      * @param message = text to display
      */
     public void showToast(String message) {
-        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
+        if(isAdded()){
+            Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
