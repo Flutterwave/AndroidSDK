@@ -421,8 +421,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     @Override
     public void collectCardPin(final Payload payload) {
         this.payLoad = payload;   //added so as to get back in onActivityResult
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showPinScreen();
+        if (isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showPinScreen();
+        }
     }
 
     @Override
@@ -510,15 +512,19 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectOtp(String flwRef, String message) {
         this.flwRef = flwRef;
         dismissDialog();
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showOtpScreen(message);
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showOtpScreen(message);
+        }
     }
 
     public void showOTPLayoutForSavedCard(Payload payload, String authInstruction) {
         this.payLoad = payload;
         dismissDialog();
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showOtpScreenForSavedCard(authInstruction);
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showOtpScreenForSavedCard(authInstruction);
+        }
     }
 
     @Override
@@ -578,8 +584,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void showWebPage(String authenticationUrl, String flwRef) {
 
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showWebpageVerificationScreen(authenticationUrl);
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showWebpageVerificationScreen(authenticationUrl);
+        }
     }
 
     @Override
@@ -776,8 +784,10 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
     public void collectCardAddressDetails(final Payload payload, String authModel) {
         this.payLoad = payload;
         this.authModel = authModel;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showAddressScreen();
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showAddressScreen();
+        }
     }
 
     private class ExpiryWatcher implements TextWatcher {
