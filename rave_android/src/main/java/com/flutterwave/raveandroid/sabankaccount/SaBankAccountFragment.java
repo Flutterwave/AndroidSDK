@@ -137,8 +137,10 @@ public class SaBankAccountFragment extends Fragment implements SaBankAccountUiCo
     @Override
     public void showWebView(String authUrl, String flwRef){
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showWebpageVerificationScreen(authUrl);
+        if (isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showWebpageVerificationScreen(authUrl);
+        }
     }
 
     @Override
