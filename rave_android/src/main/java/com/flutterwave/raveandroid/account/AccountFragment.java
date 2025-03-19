@@ -401,8 +401,10 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     public void collectOtp(String publicKey, String flutterwaveReference, String validateInstruction) {
         this.flwRef = flutterwaveReference;
 
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showOtpScreen(validateInstruction);
+        if (isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showOtpScreen(validateInstruction);
+        }
     }
 
     @Override
@@ -424,8 +426,10 @@ public class AccountFragment extends Fragment implements AccountUiContract.View,
     @Override
     public void displayInternetBankingPage(String authurl, String flwRef) {
         this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
                 .showWebpageVerificationScreen(authurl);
+        }
     }
 
     @Override
