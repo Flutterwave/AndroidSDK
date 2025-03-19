@@ -782,13 +782,9 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
 
     private class ExpiryWatcher implements TextWatcher {
 
-        private final Calendar calendar;
-        private final SimpleDateFormat simpleDateFormat;
         private String lastInput = "";
 
         public ExpiryWatcher() {
-            calendar = Calendar.getInstance();
-            simpleDateFormat = new SimpleDateFormat("MM/yy");
         }
 
         @Override
@@ -805,44 +801,47 @@ public class CardFragment extends Fragment implements View.OnClickListener, Card
         public void afterTextChanged(Editable editable) {
             String input = editable.toString();
             String cardExpiryToSet = cardExpiryTv.getText().toString() + "/";
+            String defaultExpiry = "12";
 
-            try {
-                calendar.setTime(simpleDateFormat.parse(input));
-            } catch (ParseException e) {
+            if (editable.length() == 2 && !lastInput.endsWith("/")) {
 
-                if (editable.length() == 2 && !lastInput.endsWith("/")) {
-
+                try {
                     int month = Integer.parseInt(input);
                     if (month <= 12) {
                         cardExpiryTv.setText(cardExpiryToSet);
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     } else {
-                        cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
+                        cardExpiryTv.setText(defaultExpiry);
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     }
-                } else if (editable.length() == 2 && lastInput.endsWith("/")) {
-                    try {
-                        int month = Integer.parseInt(input);
-                        if (month <= 12) {
-                            cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
-                            cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                        } else {
-                            cardExpiryTv.setText(getResources().getString(R.string.defaultCardExpiry));
-                            cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                        }
-                    } catch (NumberFormatException ex) {
-                        cardExpiryTv.setText(input.replace("/", ""));
+                }catch (NumberFormatException ex){
+                    cardExpiryTv.setText(defaultExpiry);
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                }
+            } else if (editable.length() == 2 && lastInput.endsWith("/")) {
+                try {
+                    int month = Integer.parseInt(input);
+                    if (month <= 12) {
+                        cardExpiryTv.setText(cardExpiryTv.getText().toString().substring(0, 1));
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
-                    } catch (Resources.NotFoundException ex) {
-                        ex.printStackTrace();
+                    } else {
+                        cardExpiryTv.setText(defaultExpiry);
+                        cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     }
+                } catch (NumberFormatException ex) {
+                    cardExpiryTv.setText(input.replace("/", ""));
+                    cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
+                }
 
-                } else if (editable.length() == 1) {
+            } else if (editable.length() == 1) {
+                try {
                     int month = Integer.parseInt(input);
                     if (month > 1) {
-                        cardExpiryTv.setText("0" + cardExpiryTv.getText().toString() + "/");
+                        cardExpiryTv.setText(String.format(getString(R.string.formatted_expiry), input));
                         cardExpiryTv.setSelection(cardExpiryTv.getText().toString().length());
                     }
+                }catch (NumberFormatException ignored){
+
                 }
             }
 
