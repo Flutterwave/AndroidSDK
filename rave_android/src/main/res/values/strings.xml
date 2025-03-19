@@ -203,5 +203,6 @@
     <string name="please_select_a_card">Please select a card</string>
     <string name="barter_funding">Barter Funding</string>
     <string name="verifying_transaction">Verifying transaction...</string>
+    <string name="formatted_expiry">0%1$s/</string>
 
 </resources>
