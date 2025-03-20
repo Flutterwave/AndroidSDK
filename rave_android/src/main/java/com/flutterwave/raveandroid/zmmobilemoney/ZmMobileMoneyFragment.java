@@ -267,8 +267,10 @@ public class ZmMobileMoneyFragment extends Fragment implements ZmMobileMoneyUiCo
 
     @Override
     public void showWebPage(String authenticationUrl) {
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showWebpageVerificationScreen(authenticationUrl);
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showWebpageVerificationScreen(authenticationUrl);
+        }
     }
 
     @Override

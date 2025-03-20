@@ -232,8 +232,10 @@ public class GhMobileMoneyFragment extends Fragment implements GhMobileMoneyUiCo
     ) {
 
 //        this.flwRef = flwRef;
-        new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
-                .showWebpageVerificationScreen(authenticationUrl);
+        if(isAdded()){
+            new RaveVerificationUtils(this, ravePayInitializer.isStaging(), ravePayInitializer.getPublicKey(), ravePayInitializer.getTheme())
+                    .showWebpageVerificationScreen(authenticationUrl);
+        }
     }
 
 
