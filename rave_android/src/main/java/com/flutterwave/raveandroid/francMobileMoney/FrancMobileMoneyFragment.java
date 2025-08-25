@@ -173,7 +173,7 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     @Override
     public void showProgressIndicator(boolean active) {
 
-        if (getActivity().isFinishing()) {
+        if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
 
@@ -260,7 +260,9 @@ public class FrancMobileMoneyFragment extends Fragment implements FrancMobileMon
     }
 
     public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if(getActivity() != null){
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

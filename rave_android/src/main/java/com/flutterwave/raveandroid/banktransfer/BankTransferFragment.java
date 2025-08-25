@@ -216,12 +216,16 @@ public class BankTransferFragment extends Fragment implements BankTransferUiCont
 
     @Override
     public void onPollingCanceled(String flwRef, String txRef, final String responseAsJSONString) {
-        showBackToApp(getString(R.string.bant_transfer_polling_cancelled_message), responseAsJSONString);
+        if(isAdded()){
+            showBackToApp(getString(R.string.bant_transfer_polling_cancelled_message), responseAsJSONString);
+        }
     }
 
     @Override
     public void onPollingTimeout(String flwRef, String txRef, final String responseAsJSONString) {
-        showBackToApp(getString(R.string.pay_with_bank_timeout_notification), responseAsJSONString);
+        if(isAdded()){
+            showBackToApp(getString(R.string.pay_with_bank_timeout_notification), responseAsJSONString);
+        }
     }
 
     private void showBackToApp(String transferStatusMessage, final String responseAsJSONString) {
