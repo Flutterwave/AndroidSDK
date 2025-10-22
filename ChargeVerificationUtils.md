@@ -1,7 +1,7 @@
 # Charge Verification Utils
-This module helps you handle charge verification when not using the default drop-in UI provided by Flutterwave's android SDK.
+This module helps you in handling charge verification when you are not using the default drop-in UI provided by Flutterwave's Android SDK.
 
-**Step 1.** Add this in your root build.gradle at the end of repositories:
+**Step 1.** Add the following to your root build. gradle file at the end of the `repositories` section:
 
     allprojects {
 		repositories {
@@ -10,22 +10,22 @@ This module helps you handle charge verification when not using the default drop
 		}
 	}
 
-**Step 2.** Add the dependency for the utils library
+**Step 2.** Add the dependency for the utils library:
 
     dependencies {
 	     implementation 'com.github.Flutterwave.rave-android:rave_utils:2.1.39'
 	}
 
-**Step 2.**  In your payment activity or fragment, create an instance of the `RaveVerificationUtils` class
+**Step 2.**  In your payment activity or fragment, create an instance of the `RaveVerificationUtils` class.
 
      RaveVerificationUtils verificationUtils = new RaveVerificationUtils(contextProvider, isStaging, publicKey, theme);
 
 ##### Parameter definitions
 | Parameter Name      | Description           | Type | Required  |
 | ------------- |:-------------:| -----:| -----:|
-| contextProvider     |  This is the application or fragment class where you're handling the charge verification. | `Activity` or `Fragment` | Required
-| isStaging     |  Specifies whether it's the staging or live environment. | `Boolean` | Required
-| publicKey     |  Your Flutterwave account's public key. | `String` | Required
+| contextProvider     |  This is the application or fragment class handling charge verification. | `Activity` or `Fragment` | Required
+| isStaging     |  This specifies if the environment is test or live. | `Boolean` | Required
+| publicKey     |  Your Flutterwave public key. | `String` | Required
 | theme     |  Reference to your custom style. | `int` | Not required
 
 **Step 3** You can call the verification class for these scenarios:
@@ -35,12 +35,12 @@ This module helps you handle charge verification when not using the default drop
 verificationUtils.showPinScreen();
         
 // For OTP collection
-verificationUtils.showOtpScreen(instructionToBeDisplayed); // instruction parameter is optional
+verificationUtils.showOtpScreen(instructionToBeDisplayed); // The instruction parameter is optional
         
 // For Address collection
 verificationUtils.showAddressScreen();
         
-// For Authentication webpage display
+// For the Authentication webpage display
 verificationUtils.showWebpageVerificationScreen(authUrl);
 ```
 
