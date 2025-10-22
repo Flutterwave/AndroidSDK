@@ -1,7 +1,7 @@
 # Charge Verification Utils
 This module helps you in handling charge verification when you are not using the default drop-in UI provided by Flutterwave's Android SDK.
 
-**Step 1.** Add the following in your root build.gradle file at the end of the `repositories` section:
+**Step 1.** Add the following to your root build. gradle file at the end of the `repositories` section:
 
     allprojects {
 		repositories {
@@ -24,7 +24,7 @@ This module helps you in handling charge verification when you are not using the
 | Parameter Name      | Description           | Type | Required  |
 | ------------- |:-------------:| -----:| -----:|
 | contextProvider     |  This is the application or fragment class handling charge verification. | `Activity` or `Fragment` | Required
-| isStaging     |  This Specifies if the environment is test or live. | `Boolean` | Required
+| isStaging     |  This specifies if the environment is test or live. | `Boolean` | Required
 | publicKey     |  Your Flutterwave public key. | `String` | Required
 | theme     |  Reference to your custom style. | `int` | Not required
 
@@ -40,7 +40,7 @@ verificationUtils.showOtpScreen(instructionToBeDisplayed); // The instruction pa
 // For Address collection
 verificationUtils.showAddressScreen();
         
-// For Authentication webpage display
+// For the Authentication webpage display
 verificationUtils.showWebpageVerificationScreen(authUrl);
 ```
 
